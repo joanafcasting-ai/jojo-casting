@@ -2852,7 +2852,9 @@ function CastingAppInner({ authUser }) {
     .light-wrapper { filter: invert(1) hue-rotate(180deg); }
     .light-wrapper img, .light-wrapper video { filter: invert(1) hue-rotate(180deg); }
     input[type="date"] { background: #1a1a1e !important; border: 1px solid #3a3a3e !important; color: #e0e0e0 !important; border-radius: 8px; padding: 9px 12px; font-size: 13px; cursor: pointer; }
-    input[type="date"]::-webkit-calendar-picker-indicator, input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(0.9); cursor: pointer; font-size: 16px; }
+    input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.9); cursor: pointer; font-size: 16px; }
+    input[type="time"]::-webkit-calendar-picker-indicator { display: none; }
+    input[type="time"] { -webkit-appearance: none; }
     input[type="date"]:hover { border-color: #c9a44a !important; }
     input[type="date"]:focus { border-color: #c9a44a !important; outline: none; }
   `;
@@ -5891,7 +5893,7 @@ function CastingAppInner({ authUser }) {
                     <div style={{ background: "#111114", borderRadius: 14, border: "1px solid #1e1e22", overflow: "hidden", marginBottom: 20 }}>
                       {/* Column headers */}
                       <div style={{
-                        display: "grid", gridTemplateColumns: "28px 36px 90px 50px 1fr 100px 100px 36px 32px",
+                        display: "grid", gridTemplateColumns: "28px 36px 80px 50px 1fr 100px 100px 36px 32px",
                         padding: "12px 16px", borderBottom: "2px solid #c9a44a33", alignItems: "center", gap: 8,
                         background: "rgba(201,164,74,0.04)",
                       }}>
@@ -5932,7 +5934,7 @@ function CastingAppInner({ authUser }) {
                         return (
                           <div key={slot.id} draggable onDragStart={() => setDragSlot(i)} onDragOver={e => e.preventDefault()} onDrop={() => { if (dragSlot !== null && dragSlot !== i) { moveSlot(day.id, dragSlot, i); setDragSlot(null); } }} onDragEnd={() => setDragSlot(null)}
                             style={{
-                              display: "grid", gridTemplateColumns: "28px 36px 90px 50px 1fr 100px 100px 36px 32px",
+                              display: "grid", gridTemplateColumns: "28px 36px 80px 50px 1fr 100px 100px 36px 32px",
                               padding: "10px 16px", alignItems: "center", gap: 8,
                               borderBottom: i < day.slots.length - 1 ? "1px solid #1a1a1e" : "none",
                               borderLeft: `4px solid ${rc.border}`,
@@ -5948,7 +5950,7 @@ function CastingAppInner({ authUser }) {
                             </div>
                             {/* Profile: photo + name + agency + contact */}
                             <div style={{ display: "flex", gap: 10, alignItems: "center", minWidth: 0 }}>
-                              <div onClick={() => profile && setCastingDetailProfile(profile)} style={{ width: 48, height: 60, borderRadius: 8, overflow: "hidden", background: "#0c0c0e", border: "1px solid #1e1e22", flexShrink: 0, cursor: profile ? "pointer" : "default" }}>
+                              <div onClick={() => { if (profile) { setActiveRole(slot.role || profile._role); setEditingProfile(profile); setModalOpen(true); } }} style={{ width: 48, height: 60, borderRadius: 8, overflow: "hidden", background: "#0c0c0e", border: "1px solid #1e1e22", flexShrink: 0, cursor: profile ? "pointer" : "default" }}>
                                 {profile?.photos?.[0] ? <img src={profile.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 18 }}>◎</div>}
                               </div>
                               <div style={{ minWidth: 0, flex: 1 }}>
