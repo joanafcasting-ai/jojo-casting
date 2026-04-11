@@ -112,6 +112,8 @@ const getEmbedUrl = (url) => {
     // Vimeo: vimeo.com/ID
     const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
     if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+    // Dropbox: dropbox.com/...?dl=0 → ?raw=1 for direct embed
+    if (url.includes("dropbox.com")) return url.replace(/\?dl=0/, "?raw=1").replace(/&dl=0/, "&raw=1");
     return null;
   } catch(e) { return null; }
 };
@@ -6221,6 +6223,17 @@ function CastingAppInner({ authUser }) {
                                   </label>
                                 </div>
                               </div>
+                              {/* Lien video casting */}
+                              <div style={{ marginBottom: 16 }}>
+                                <div style={{ fontSize: 11, color: "#60a5fa", fontWeight: 600, textTransform: "uppercase", marginBottom: 8 }}>🔗 Lien vidéo casting</div>
+                                <input value={session.videoLink || ""} onChange={e => updateCastingSession(profile.id, { videoLink: e.target.value })} placeholder="https://dropbox.com/... ou https://drive.google.com/..." style={{ width: "100%", padding: "8px 12px", background: "#0c0c0e", border: "1px solid rgba(96,165,250,0.2)", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box", marginBottom: 6 }} />
+                                {session.videoLink && getEmbedUrl(session.videoLink) && (
+                                  <EmbedPlayer url={session.videoLink} height={180} />
+                                )}
+                                {session.videoLink && !getEmbedUrl(session.videoLink) && (
+                                  <a href={session.videoLink} target="_blank" rel="noreferrer" style={{ fontSize: 12, color: "#60a5fa", textDecoration: "none" }}>▶ Ouvrir le lien</a>
+                                )}
+                              </div>
                               {/* Notes de casting */}
                               <div>
                                 <div style={{ fontSize: 11, color: "#22c55e", fontWeight: 600, textTransform: "uppercase", marginBottom: 8 }}>📝 Notes & retours</div>
@@ -6278,6 +6291,19 @@ function CastingAppInner({ authUser }) {
                   </>
                 );
               })()}
+
+              {/* Global casting video link */}
+              <div style={{ marginTop: 24, padding: "20px 24px", background: "#111114", borderRadius: 14, border: "1px solid #1e1e22" }}>
+                <div style={{ fontSize: 12, color: "#60a5fa", fontWeight: 600, textTransform: "uppercase", marginBottom: 10 }}>🎬 Lien vidéo casting global</div>
+                <div style={{ fontSize: 11, color: "#666", marginBottom: 8 }}>Collez un lien Google Drive ou Dropbox avec toutes les vidéos du casting. Le réal y aura accès.</div>
+                <input value={state._castingGlobalVideoLink || ""} onChange={e => setState(p => ({ ...p, _castingGlobalVideoLink: e.target.value }))} placeholder="https://drive.google.com/... ou https://dropbox.com/..." style={{ width: "100%", padding: "10px 14px", background: "#0c0c0e", border: "1px solid rgba(96,165,250,0.2)", borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit", outline: "none", boxSizing: "border-box", marginBottom: 8 }} />
+                {state._castingGlobalVideoLink && getEmbedUrl(state._castingGlobalVideoLink) && (
+                  <EmbedPlayer url={state._castingGlobalVideoLink} height={240} />
+                )}
+                {state._castingGlobalVideoLink && !getEmbedUrl(state._castingGlobalVideoLink) && (
+                  <a href={state._castingGlobalVideoLink} target="_blank" rel="noreferrer" style={{ fontSize: 13, color: "#60a5fa", textDecoration: "none" }}>▶ Ouvrir le lien</a>
+                )}
+              </div>
             </div>
 
             ) : activeTab === "final" ? (
@@ -7220,80 +7246,7 @@ function CastingAppInner({ authUser }) {
       })()}
 
       {/* ===== CASTING DETAIL MODAL ===== */}
-      {castingDetailProfile && (() => {
-        const p = castingDetailProfile;
-        const fullName = [p.firstName, p.name].filter(Boolean).join(" ") || "Sans nom";
-        const session = state.castingSessions[p.id] || { passStatus: "not_yet", liveNotes: "", castingVideos: [] };
-        const rc = getRoleColor(p._role || "");
-        return (
-          <div onClick={() => setCastingDetailProfile(null)} style={{ position: "fixed", inset: 0, zIndex: 9999, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
-            <div onClick={e => e.stopPropagation()} style={{ width: "100%", maxWidth: 700, maxHeight: "90vh", background: "#141416", borderRadius: 20, border: "1px solid #2a2a2e", overflow: "auto" }}>
-              {/* Top: Photo + Main info */}
-              <div style={{ display: "flex", gap: 20, padding: "24px 28px", borderBottom: "1px solid #1e1e22" }}>
-                <div style={{ width: 100, height: 130, borderRadius: 12, overflow: "hidden", background: "#0c0c0e", flexShrink: 0 }}>
-                  {p.photos?.[0] ? <img src={p.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 32 }}>◎</div>}
-                </div>
-                <div style={{ flex: 1 }}>
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-                    <h3 style={{ fontSize: 20, fontWeight: 800, color: "#f0f0f0", fontFamily: "'Playfair Display',serif" }}>{fullName}</h3>
-                    <button onClick={() => setCastingDetailProfile(null)} style={{ background: "none", border: "none", color: "#666", cursor: "pointer", fontSize: 20 }}>×</button>
-                  </div>
-                  <span style={{ fontSize: 11, color: rc.color, background: rc.bg, padding: "3px 10px", borderRadius: 6, fontWeight: 600, border: `1px solid ${rc.border}` }}>{p._role}</span>
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px 20px", marginTop: 14, fontSize: 12, color: "#bbb" }}>
-                    {p.age && <div><span style={{ color: "#666" }}>Âge :</span> {p.age} ans</div>}
-                    {p.height && <div><span style={{ color: "#666" }}>Taille :</span> {p.height}</div>}
-                    {p.measurements && <div><span style={{ color: "#666" }}>Mensurations :</span> {p.measurements}</div>}
-                    {p.hairColor && <div><span style={{ color: "#666" }}>Cheveux :</span> {p.hairColor}</div>}
-                    {p.agency && <div><span style={{ color: "#666" }}>Agence :</span> {p.agency}</div>}
-                    {p.email && <div><span style={{ color: "#666" }}>Email :</span> {p.email}</div>}
-                    {p.phone && <div><span style={{ color: "#666" }}>Tél :</span> {p.phone}</div>}
-                    {p.agencyEmail && <div><span style={{ color: "#666" }}>Email agence :</span> {p.agencyEmail}</div>}
-                  </div>
-                </div>
-              </div>
-
-              {/* Editable notes */}
-              <div style={{ padding: "20px 28px" }}>
-                <label style={{ fontSize: 10, color: "#888", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", display: "block", marginBottom: 8 }}>📝 Notes de casting</label>
-                <textarea value={session.liveNotes || ""} onChange={e => updateCastingSession(p.id, { liveNotes: e.target.value })} rows={4} placeholder="Impressions, jeu, énergie..."
-                  style={{ width: "100%", padding: "12px 14px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 10, color: "#e0e0e0", fontSize: 13, fontFamily: "'DM Sans',sans-serif", outline: "none", resize: "vertical", lineHeight: 1.6 }} />
-              </div>
-
-              {/* Videos */}
-              <div style={{ padding: "0 28px 20px" }}>
-                <label style={{ fontSize: 10, color: "#888", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", display: "block", marginBottom: 8 }}>🎥 Vidéos & Selftapes</label>
-                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                  {(session.castingVideos || []).map((v, vi) => (
-                    <div key={vi} style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 12px", background: "#0c0c0e", borderRadius: 8, border: "1px solid #2a2a2e" }}>
-                      <button onClick={() => setCastingVideoModal(v.url)} style={{ fontSize: 10, color: "#fb923c", background: "rgba(251,146,60,0.1)", border: "1px solid rgba(251,146,60,0.2)", borderRadius: 4, padding: "3px 8px", cursor: "pointer", fontFamily: "inherit" }}>▶ {v.name || `Vidéo ${vi+1}`}</button>
-                      <button onClick={() => removeCastingVideo(p.id, vi)} style={{ fontSize: 12, color: "#ef4444", background: "none", border: "none", cursor: "pointer" }}>✕</button>
-                    </div>
-                  ))}
-                  {(p.selftapeLinks || []).map((link, li) => (
-                    <a key={`st${li}`} href={link} target="_blank" rel="noreferrer" style={{ fontSize: 10, color: "#60a5fa", background: "rgba(59,130,246,0.08)", padding: "8px 12px", borderRadius: 8, textDecoration: "none", border: "1px solid rgba(59,130,246,0.15)" }}>▶ Selftape {li + 1}</a>
-                  ))}
-                  <label style={{ display: "flex", alignItems: "center", gap: 6, padding: "8px 14px", background: "rgba(255,255,255,0.02)", border: "1px dashed #333", borderRadius: 8, cursor: "pointer", fontSize: 11, color: "#555" }}>
-                    <input type="file" accept="video/*" style={{ display: "none" }} onChange={e => { if (e.target.files?.[0]) addCastingVideo(p.id, e.target.files[0]); }} />
-                    + Ajouter vidéo
-                  </label>
-                </div>
-              </div>
-
-              {/* Edit profile button */}
-              <div style={{ padding: "16px 28px 24px", borderTop: "1px solid #1e1e22", display: "flex", gap: 10, justifyContent: "flex-end" }}>
-                <button onClick={() => { setCastingDetailProfile(null); setActiveRole(p._role); setEditingProfile(p); setModalOpen(true); }}
-                  style={{ padding: "10px 20px", background: "rgba(201,164,74,0.08)", border: "1px solid rgba(201,164,74,0.2)", borderRadius: 10, color: "#c9a44a", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
-                  ✏ Modifier la fiche
-                </button>
-                <button onClick={() => setCastingDetailProfile(null)}
-                  style={{ padding: "10px 20px", background: "rgba(255,255,255,0.03)", border: "1px solid #2a2a2e", borderRadius: 10, color: "#888", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
-                  Fermer
-                </button>
-              </div>
-            </div>
-          </div>
-        );
-      })()}
+      {/* Casting detail modal removed — now inline expandable */}
 
       {/* ===== INVITE MODAL ===== */}
       {inviteModal && (() => {
@@ -8461,6 +8414,11 @@ function GuestView({ shareCode, project, password }) {
             {profile._role && showCastingVotes && (
               <div style={{ fontSize: 10, color: "#c9a44a", marginTop: 2 }}>🎭 {profile._role}</div>
             )}
+            {showCastingVotes && session.videoLink && (
+              <div style={{ marginTop: 4 }}>
+                {getEmbedUrl(session.videoLink) ? <EmbedPlayer url={session.videoLink} height={120} /> : <a href={session.videoLink} target="_blank" rel="noreferrer" style={{ fontSize: 11, color: "#60a5fa", textDecoration: "none" }}>▶ Vidéo casting</a>}
+              </div>
+            )}
           </div>
 
           {/* Quick vote buttons (right side) */}
@@ -8727,6 +8685,18 @@ function GuestView({ shareCode, project, password }) {
                     ))}
                   </div>
                   {castingProfiles.map(p => renderProfileCard(p, true))}
+
+                  {/* Global casting video link for real */}
+                  {project._castingGlobalVideoLink && (
+                    <div style={{ marginTop: 20, padding: "16px 20px", background: "#111114", borderRadius: 14, border: "1px solid rgba(96,165,250,0.15)" }}>
+                      <div style={{ fontSize: 12, color: "#60a5fa", fontWeight: 600, textTransform: "uppercase", marginBottom: 10 }}>🎬 Vidéos casting</div>
+                      {getEmbedUrl(project._castingGlobalVideoLink) ? (
+                        <EmbedPlayer url={project._castingGlobalVideoLink} height={280} />
+                      ) : (
+                        <a href={project._castingGlobalVideoLink} target="_blank" rel="noreferrer" style={{ fontSize: 14, color: "#60a5fa", textDecoration: "none" }}>▶ Ouvrir les vidéos du casting</a>
+                      )}
+                    </div>
+                  )}
                 </div>
               )}
             </div>
