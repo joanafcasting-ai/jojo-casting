@@ -4851,7 +4851,7 @@ function CastingAppInner({ authUser }) {
                               {(rd.ageMin || rd.ageMax) && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Tranche</div><div style={{ fontSize: 13, color: "#e0e0e0" }}>{rd.ageMin || "?"} — {rd.ageMax || "?"} ans</div></div>}
                               {tD && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Type</div><div style={{ fontSize: 13, color: "#e0e0e0" }}>{tD}</div></div>}
                               {sD && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Jeu</div><div style={{ fontSize: 13, color: "#e0e0e0" }}>{sD}</div></div>}
-                              {rd.cachet && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Rému</div><div style={{ fontSize: 14, color: (rd.cachetType || "cachet") === "cachet" ? "#c9a44a" : (rd.cachetType === "facture" ? "#e879f9" : "#f59e0b"), fontWeight: 600 }}>{rd.cachet} € {(rd.cachetType || "cachet") === "cachet" ? "BRUT" : (rd.cachetType === "facture" ? "HT" : "DROIT")}</div></div>}
+                              {rd.cachet && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Rému</div><div style={{ fontSize: 14, color: (rd.cachetType === "ht" || rd.cachetType === "facture") ? "#e879f9" : "#c9a44a", fontWeight: 600 }}>{rd.cachet} € {(rd.cachetType === "ht" || rd.cachetType === "facture") ? "HT" : "BRUT"}</div></div>}
                               {rd.droits && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Droits</div><div style={{ fontSize: 14, color: "#f59e0b", fontWeight: 600 }}>{rd.droits} €</div></div>}
                             </div>
                             {(rd.ethnicities || []).length > 0 && <div style={{ marginTop: 10 }}>{rd.ethnicities.map(e => <span key={e} style={{ fontSize: 11, padding: "3px 10px", background: `${rc.color}18`, borderRadius: 12, color: rc.color, marginRight: 6 }}>{e}</span>)}</div>}
@@ -4968,6 +4968,61 @@ function CastingAppInner({ authUser }) {
                                     <input value={rd.nbJoursTournage || ""} onChange={e => uRoleDetail(role, "nbJoursTournage", e.target.value)} placeholder="Ex: 2" type="number" min="1" style={sInput} />
                                   </div>
                                 </div>
+                                {/* Sub-comedians */}
+                                {parseInt(rd.nbComediens) >= 2 && (() => {
+                                  const comedians = rd.comedians || [];
+                                  const max = parseInt(rd.nbComediens) || 2;
+                                  const updateComedian = (idx, field, value) => {
+                                    const arr = [...(rd.comedians || [])];
+                                    arr[idx] = { ...arr[idx], [field]: value };
+                                    uRoleDetail(role, "comedians", arr);
+                                  };
+                                  const addComedian = () => {
+                                    const arr = [...(rd.comedians || [])];
+                                    arr.push({ id: "c" + Date.now(), label: "Comédien " + (arr.length + 1), sex: "", ageStyle: "", ageMin: "", ageMax: "", profileType: "", ethnicities: [], notes: "" });
+                                    uRoleDetail(role, "comedians", arr);
+                                  };
+                                  const removeComedian = (idx) => {
+                                    const arr = [...(rd.comedians || [])];
+                                    arr.splice(idx, 1);
+                                    uRoleDetail(role, "comedians", arr);
+                                  };
+                                  return (
+                                    <div style={{ marginBottom: 16 }}>
+                                      <label style={{ display: "block", fontSize: 10, color: "#e879f9", marginBottom: 8, fontWeight: 600, textTransform: "uppercase" }}>🎭 Comédiens individuels ({comedians.length}/{max})</label>
+                                      {comedians.map((c, ci) => (
+                                        <div key={c.id || ci} style={{ marginBottom: 10, padding: "12px 16px", background: "rgba(232,121,249,0.03)", borderRadius: 10, border: "1px solid rgba(232,121,249,0.12)" }}>
+                                          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+                                            <input value={c.label || ""} onChange={e => updateComedian(ci, "label", e.target.value)} style={{ background: "none", border: "none", color: "#e879f9", fontSize: 12, fontWeight: 700, fontFamily: "inherit", outline: "none", padding: 0 }} />
+                                            <button onClick={() => removeComedian(ci)} style={{ background: "none", border: "none", color: "#44444488", cursor: "pointer", fontSize: 13 }}>×</button>
+                                          </div>
+                                          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 8 }}>
+                                            <select value={c.sex || ""} onChange={e => updateComedian(ci, "sex", e.target.value)} style={sInput}><option value="">Sexe —</option>{PROJET_SEX_OPTS.map(o => <option key={o} value={o}>{o}</option>)}</select>
+                                            <select value={c.ageStyle || ""} onChange={e => updateComedian(ci, "ageStyle", e.target.value)} style={sInput}><option value="">Âge —</option>{PROJET_AGE_OPTS.map(o => <option key={o} value={o}>{o}</option>)}</select>
+                                            <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
+                                              <input value={c.ageMin || ""} onChange={e => updateComedian(ci, "ageMin", e.target.value)} placeholder="Min" style={{ ...sInput, textAlign: "center" }} />
+                                              <span style={{ color: "#555", fontSize: 10 }}>—</span>
+                                              <input value={c.ageMax || ""} onChange={e => updateComedian(ci, "ageMax", e.target.value)} placeholder="Max" style={{ ...sInput, textAlign: "center" }} />
+                                            </div>
+                                          </div>
+                                          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 6 }}>
+                                            <select value={c.profileType || ""} onChange={e => updateComedian(ci, "profileType", e.target.value)} style={sInput}><option value="">Type —</option>{PROJET_TYPE_OPTS.map(o => <option key={o} value={o}>{o}</option>)}</select>
+                                            <input value={c.notes || ""} onChange={e => updateComedian(ci, "notes", e.target.value)} placeholder="Notes..." style={sInput} />
+                                          </div>
+                                          <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
+                                            {PROJET_ETH_OPTS.slice(0, 5).map(eth => {
+                                              const active = (c.ethnicities || []).includes(eth);
+                                              return <button key={eth} onClick={() => updateComedian(ci, "ethnicities", active ? (c.ethnicities || []).filter(e => e !== eth) : [...(c.ethnicities || []), eth])} style={{ padding: "3px 10px", borderRadius: 14, fontSize: 9, fontWeight: 500, fontFamily: "inherit", cursor: "pointer", border: "1px solid", background: active ? "#e879f920" : "rgba(255,255,255,0.02)", color: active ? "#e879f9" : "#555", borderColor: active ? "#e879f955" : "#2a2a2e" }}>{active ? "✓ " : ""}{eth}</button>;
+                                            })}
+                                          </div>
+                                        </div>
+                                      ))}
+                                      {comedians.length < max && (
+                                        <button onClick={addComedian} style={{ padding: "8px 16px", background: "rgba(232,121,249,0.06)", border: "1px dashed rgba(232,121,249,0.25)", borderRadius: 8, color: "#e879f9", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>+ Ajouter comédien ({comedians.length + 1}/{max})</button>
+                                      )}
+                                    </div>
+                                  );
+                                })()}
                                 {/* Photos */}
                                 <div style={{ marginBottom: 16 }}>
                                   <label style={{ display: "block", fontSize: 10, color: "#888", marginBottom: 8, fontWeight: 600, textTransform: "uppercase" }}>Photos de référence</label>
@@ -4996,13 +5051,14 @@ function CastingAppInner({ authUser }) {
                                   <div>
                                     <label style={{ display: "block", fontSize: 10, color: "#888", marginBottom: 6, fontWeight: 600, textTransform: "uppercase" }}>Rémunération</label>
                                     <div style={{ display: "flex", gap: 4, marginBottom: 6 }}>
-                                      {[{ k: "cachet", l: "Cachet", col: "#c9a44a" }, { k: "facture", l: "Facture", col: "#e879f9" }, { k: "droit", l: "Droit", col: "#f59e0b" }].map(opt => (
-                                        <button key={opt.k} onClick={() => uRoleDetail(role, "cachetType", opt.k)} style={{ flex: 1, padding: "7px 0", borderRadius: 6, fontSize: 10, fontWeight: 700, fontFamily: "inherit", border: "1px solid", cursor: "pointer", background: (rd.cachetType || "cachet") === opt.k ? opt.col + "20" : "rgba(255,255,255,0.02)", color: (rd.cachetType || "cachet") === opt.k ? opt.col : "#555", borderColor: (rd.cachetType || "cachet") === opt.k ? opt.col + "55" : "#2a2a2e" }}>{opt.l}</button>
-                                      ))}
+                                      {[{ k: "brut", l: "Brut", col: "#c9a44a" }, { k: "ht", l: "HT", col: "#e879f9" }].map(opt => {
+                                        const ct = rd.cachetType === "ht" || rd.cachetType === "facture" ? "ht" : "brut";
+                                        return <button key={opt.k} onClick={() => uRoleDetail(role, "cachetType", opt.k)} style={{ flex: 1, padding: "7px 0", borderRadius: 6, fontSize: 10, fontWeight: 700, fontFamily: "inherit", border: "1px solid", cursor: "pointer", background: ct === opt.k ? opt.col + "20" : "rgba(255,255,255,0.02)", color: ct === opt.k ? opt.col : "#555", borderColor: ct === opt.k ? opt.col + "55" : "#2a2a2e" }}>{opt.l}</button>;
+                                      })}
                                     </div>
                                     <div style={{ position: "relative" }}>
                                       <input value={rd.cachet || ""} onChange={e => uRoleDetail(role, "cachet", e.target.value)} placeholder="Montant" style={{ ...sInput, paddingRight: 55 }} />
-                                      <span style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", fontSize: 10, fontWeight: 700, color: (rd.cachetType || "cachet") === "cachet" ? "#c9a44a" : (rd.cachetType === "facture" ? "#e879f9" : "#f59e0b") }}>{(rd.cachetType || "cachet") === "cachet" ? "€ BRUT" : (rd.cachetType === "facture" ? "€ HT" : "€ DROIT")}</span>
+                                      <span style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", fontSize: 10, fontWeight: 700, color: (rd.cachetType === "ht" || rd.cachetType === "facture") ? "#e879f9" : "#c9a44a" }}>{(rd.cachetType === "ht" || rd.cachetType === "facture") ? "€ HT" : "€ BRUT"}</span>
                                     </div>
                                     <div style={{ marginTop: 8 }}>
                                       <label style={{ display: "block", fontSize: 9, color: "#f59e0b", marginBottom: 4, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em" }}>Droits (image, utilisation...)</label>
@@ -5198,7 +5254,7 @@ function CastingAppInner({ authUser }) {
                                 {(rd.ageMin || rd.ageMax) && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Tranche</div><div style={{ fontSize: 13, color: "#e0e0e0" }}>{rd.ageMin || "?"} — {rd.ageMax || "?"} ans</div></div>}
                                 {tD && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Type</div><div style={{ fontSize: 13, color: "#e0e0e0" }}>{tD}</div></div>}
                                 {sD && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Style de jeu</div><div style={{ fontSize: 13, color: "#e0e0e0" }}>{sD}</div></div>}
-                                {rd.cachet && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Rému</div><div style={{ fontSize: 14, color: (rd.cachetType || "cachet") === "cachet" ? "#c9a44a" : (rd.cachetType === "facture" ? "#e879f9" : "#f59e0b"), fontWeight: 700 }}>{rd.cachet} € {(rd.cachetType || "cachet") === "cachet" ? "BRUT" : (rd.cachetType === "facture" ? "HT" : "DROIT")}</div></div>}
+                                {rd.cachet && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Rému</div><div style={{ fontSize: 14, color: (rd.cachetType === "ht" || rd.cachetType === "facture") ? "#e879f9" : "#c9a44a", fontWeight: 700 }}>{rd.cachet} € {(rd.cachetType === "ht" || rd.cachetType === "facture") ? "HT" : "BRUT"}</div></div>}
                                 {rd.droits && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Droits</div><div style={{ fontSize: 14, color: "#f59e0b", fontWeight: 700 }}>{rd.droits} €</div></div>}
                                 {rd.nbComediens && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Nb comédiens</div><div style={{ fontSize: 13, color: "#e0e0e0" }}>{rd.nbComediens}</div></div>}
                                 {rd.nbJoursTournage && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Jours / comédien</div><div style={{ fontSize: 13, color: "#e0e0e0" }}>{rd.nbJoursTournage}j</div></div>}
