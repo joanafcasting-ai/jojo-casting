@@ -2642,9 +2642,16 @@ function CastingAppInner({ authUser }) {
       return `${String(Math.floor(end/60)).padStart(2,"0")}:${String(end%60).padStart(2,"0")}`;
     })();
 
-    const body = `Bonjour ${fullName},\n\nVous êtes convoqué(e) au casting pour le projet "${state.projectName || ""}".\n\nRôle : ${role}\nDate : ${dateFormatted}\nHoraire : ${slot.time} → ${endTime} (${slot.duration} min)\n${day.location ? "Lieu : " + day.location + "\n" : ""}\nMerci de confirmer votre disponibilité en répondant à cet email.\n\nCordialement,\n${authUser?.firstName || "La direction de casting"}`;
+    const practicalLines = [
+      day.location ? "📍 Lieu : " + day.location : null,
+      day.access ? "🚪 Accès : " + day.access : null,
+      day.horaires ? "⏰ Horaires : " + day.horaires : null,
+      day.catering ? "🍽 Catering : " + day.catering : null,
+      day.notes ? "📌 " + day.notes : null,
+    ].filter(Boolean);
+    const body = `Bonjour ${fullName},\n\nVous êtes convoqué(e) au casting pour le projet "${state.projectName || ""}".\n\nRôle : ${role}\nDate : ${dateFormatted}\nHoraire : ${slot.time} → ${endTime} (${slot.duration} min)\n${practicalLines.length > 0 && day.practicalInfoValidated ? "\n" + practicalLines.join("\n") + "\n" : day.location ? "Lieu : " + day.location + "\n" : ""}\nMerci de confirmer votre disponibilité en répondant à cet email.\n\nCordialement,\n${authUser?.firstName || "La direction de casting"}`;
 
-    const infoBlock = `📋 INFORMATIONS PRATIQUES\n━━━━━━━━━━━━━━━━━━━━━━━\n\n📍 Adresse : ${day.location || "[À compléter]"}\n🚪 Accès : [Digicode, étage, salle...]\n🅿️ Parking : [Infos stationnement]\n📅 Date : ${dateFormatted}\n⏰ Heure de passage : ${slot.time}\n⏱ Durée : ${slot.duration} min\n🎭 Rôle : ${role}\n${slot.actingNotes ? "\n📝 Notes de jeu :\n" + slot.actingNotes : ""}\n${day.notes ? "\n📌 Consignes :\n" + day.notes : ""}`;
+    const infoBlock = `📋 INFORMATIONS PRATIQUES\n━━━━━━━━━━━━━━━━━━━━━━━\n\n📍 Adresse : ${day.location || "[À compléter]"}\n${day.access ? "🚪 Accès : " + day.access + "\n" : ""}📅 Date : ${dateFormatted}\n⏰ Heure de passage : ${slot.time}\n⏱ Durée : ${slot.duration} min\n${day.horaires ? "🕐 Horaires : " + day.horaires + "\n" : ""}🎭 Rôle : ${role}\n${day.catering ? "🍽 Catering : " + day.catering + "\n" : ""}${slot.actingNotes ? "\n📝 Notes de jeu :\n" + slot.actingNotes : ""}\n${day.notes ? "\n📌 Consignes :\n" + day.notes : ""}`;
 
     setInviteMailBody(body);
     setInviteInfoBlock(infoBlock);
@@ -5760,17 +5767,40 @@ function CastingAppInner({ authUser }) {
                           }}
                         />
                       </div>
-                      <div style={{ flex: 2 }}>
-                        <label style={{ display: "block", fontSize: 10, color: "#666", marginBottom: 4, fontWeight: 500, textTransform: "uppercase", letterSpacing: "0.06em" }}>Notes de la journée</label>
-                        <input
-                          value={day.notes}
-                          onChange={e => updateCastingDay(day.id, { notes: e.target.value })}
-                          placeholder="Infos générales, consignes..."
-                          style={{
-                            width: "100%", padding: "8px 12px", background: "#111114", border: "1px solid #2a2a2e",
-                            borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit", outline: "none",
-                          }}
-                        />
+                    </div>
+                    {/* Informations pratiques */}
+                    <div style={{ marginBottom: 20, padding: "16px 20px", background: day.practicalInfoValidated ? "rgba(34,197,94,0.03)" : "rgba(255,255,255,0.01)", borderRadius: 12, border: day.practicalInfoValidated ? "1px solid rgba(34,197,94,0.2)" : "1px solid #1e1e22" }}>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+                        <label style={{ fontSize: 11, color: day.practicalInfoValidated ? "#22c55e" : "#f59e0b", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                          {day.practicalInfoValidated ? "✅ Informations pratiques (validées)" : "📋 Informations pratiques"}
+                        </label>
+                        <button onClick={() => updateCastingDay(day.id, { practicalInfoValidated: !day.practicalInfoValidated })} style={{
+                          padding: "5px 14px", borderRadius: 6, fontSize: 10, fontWeight: 600, fontFamily: "inherit", cursor: "pointer", border: "none",
+                          background: day.practicalInfoValidated ? "rgba(34,197,94,0.12)" : "rgba(245,158,11,0.12)",
+                          color: day.practicalInfoValidated ? "#22c55e" : "#f59e0b",
+                        }}>{day.practicalInfoValidated ? "✓ Validé" : "Valider"}</button>
+                      </div>
+                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
+                        <div>
+                          <label style={{ display: "block", fontSize: 9, color: "#555", marginBottom: 3, fontWeight: 600, textTransform: "uppercase" }}>📍 Adresse</label>
+                          <input value={day.location || ""} onChange={e => updateCastingDay(day.id, { location: e.target.value })} placeholder="Adresse complète" style={{ width: "100%", padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
+                        </div>
+                        <div>
+                          <label style={{ display: "block", fontSize: 9, color: "#555", marginBottom: 3, fontWeight: 600, textTransform: "uppercase" }}>🚪 Accès</label>
+                          <input value={day.access || ""} onChange={e => updateCastingDay(day.id, { access: e.target.value })} placeholder="Digicode, étage, salle..." style={{ width: "100%", padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
+                        </div>
+                        <div>
+                          <label style={{ display: "block", fontSize: 9, color: "#555", marginBottom: 3, fontWeight: 600, textTransform: "uppercase" }}>⏰ Horaires</label>
+                          <input value={day.horaires || ""} onChange={e => updateCastingDay(day.id, { horaires: e.target.value })} placeholder="9h-18h" style={{ width: "100%", padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
+                        </div>
+                        <div>
+                          <label style={{ display: "block", fontSize: 9, color: "#555", marginBottom: 3, fontWeight: 600, textTransform: "uppercase" }}>🍽 Catering / Repas</label>
+                          <input value={day.catering || ""} onChange={e => updateCastingDay(day.id, { catering: e.target.value })} placeholder="Prévu sur place, à proximité..." style={{ width: "100%", padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
+                        </div>
+                      </div>
+                      <div style={{ marginTop: 10 }}>
+                        <label style={{ display: "block", fontSize: 9, color: "#555", marginBottom: 3, fontWeight: 600, textTransform: "uppercase" }}>📝 Consignes / Notes</label>
+                        <textarea value={day.notes || ""} onChange={e => updateCastingDay(day.id, { notes: e.target.value })} placeholder="Consignes particulières, tenue, matériel à apporter..." rows={2} style={{ width: "100%", padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "inherit", outline: "none", resize: "vertical", boxSizing: "border-box" }} />
                       </div>
                     </div>
 
