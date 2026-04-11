@@ -3092,6 +3092,41 @@ function CastingAppInner({ authUser }) {
                     </div>
                     <input value={comptaSearch} onChange={e => setComptaSearch(e.target.value)} placeholder="🔍 Rechercher projet, client..."
                       style={{ marginLeft: "auto", padding: "8px 14px", background: "#111114", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "'DM Sans',sans-serif", outline: "none", width: 220 }} />
+                    <button onClick={() => {
+                      const headers = ["Projet","N° Devis","Client","Date Devis","Date Tournage","Rémunération","Type","Total HT","Total TVA","Total TTC","Statut","Date Envoi","Date Paiement","Relances","Notes"];
+                      const rows = filtered.map(inv => {
+                        const st = getInvoiceStatus(inv);
+                        const stInfo = COMPTA_STATUS[st] || COMPTA_STATUS.draft;
+                        const cs = comptaStatuses[inv.projectId] || {};
+                        return [
+                          inv.projectName || "",
+                          inv.devisNumber || "",
+                          inv.clientName || "",
+                          inv.devisDate || "",
+                          inv.dateTournage || "",
+                          inv.salary?.amount || "",
+                          inv.salary?.type || "",
+                          inv.totalHT || 0,
+                          inv.totalTVA || 0,
+                          inv.totalTTC || 0,
+                          stInfo.label,
+                          cs.sentDate || "",
+                          cs.paidDate || "",
+                          cs.relanceCount || 0,
+                          (cs.notes || "").replace(/\n/g, " ")
+                        ];
+                      });
+                      const csv = [headers, ...rows].map(r => r.map(c => '"' + String(c || "").replace(/"/g, '""') + '"').join(",")).join("\n");
+                      const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+                      const a = document.createElement("a");
+                      a.href = URL.createObjectURL(blob);
+                      a.download = `comptabilite-export-${new Date().toISOString().slice(0, 10)}.csv`;
+                      a.click();
+                    }} style={{
+                      padding: "8px 16px", background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.2)",
+                      borderRadius: 8, color: "#22c55e", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
+                      whiteSpace: "nowrap"
+                    }}>📊 Exporter CSV</button>
                   </div>
 
                   {/* Table */}
