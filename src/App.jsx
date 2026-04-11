@@ -4787,7 +4787,8 @@ function CastingAppInner({ authUser }) {
                               {(rd.ageMin || rd.ageMax) && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Tranche</div><div style={{ fontSize: 13, color: "#e0e0e0" }}>{rd.ageMin || "?"} — {rd.ageMax || "?"} ans</div></div>}
                               {tD && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Type</div><div style={{ fontSize: 13, color: "#e0e0e0" }}>{tD}</div></div>}
                               {sD && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Jeu</div><div style={{ fontSize: 13, color: "#e0e0e0" }}>{sD}</div></div>}
-                              {rd.cachet && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Rému</div><div style={{ fontSize: 14, color: (rd.cachetType || "cachet") === "cachet" ? "#c9a44a" : "#e879f9", fontWeight: 600 }}>{rd.cachet} € {(rd.cachetType || "cachet") === "cachet" ? "BRUT" : "HT"}</div></div>}
+                              {rd.cachet && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Rému</div><div style={{ fontSize: 14, color: (rd.cachetType || "cachet") === "cachet" ? "#c9a44a" : (rd.cachetType === "facture" ? "#e879f9" : "#f59e0b"), fontWeight: 600 }}>{rd.cachet} € {(rd.cachetType || "cachet") === "cachet" ? "BRUT" : (rd.cachetType === "facture" ? "HT" : "DROIT")}</div></div>}
+                              {rd.droits && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Droits</div><div style={{ fontSize: 14, color: "#f59e0b", fontWeight: 600 }}>{rd.droits} €</div></div>}
                             </div>
                             {(rd.ethnicities || []).length > 0 && <div style={{ marginTop: 10 }}>{rd.ethnicities.map(e => <span key={e} style={{ fontSize: 11, padding: "3px 10px", background: `${rc.color}18`, borderRadius: 12, color: rc.color, marginRight: 6 }}>{e}</span>)}</div>}
                             {rd.notes && <div style={{ marginTop: 10, padding: "10px 14px", background: "rgba(255,255,255,0.02)", borderRadius: 8, borderLeft: `3px solid ${rc.color}44`, fontSize: 13, color: "#aaa" }}>📝 {rd.notes}</div>}
@@ -4931,13 +4932,20 @@ function CastingAppInner({ authUser }) {
                                   <div>
                                     <label style={{ display: "block", fontSize: 10, color: "#888", marginBottom: 6, fontWeight: 600, textTransform: "uppercase" }}>Rémunération</label>
                                     <div style={{ display: "flex", gap: 4, marginBottom: 6 }}>
-                                      {[{ k: "cachet", l: "Cachet", col: "#c9a44a" }, { k: "facture", l: "Facture", col: "#e879f9" }].map(opt => (
+                                      {[{ k: "cachet", l: "Cachet", col: "#c9a44a" }, { k: "facture", l: "Facture", col: "#e879f9" }, { k: "droit", l: "Droit", col: "#f59e0b" }].map(opt => (
                                         <button key={opt.k} onClick={() => uRoleDetail(role, "cachetType", opt.k)} style={{ flex: 1, padding: "7px 0", borderRadius: 6, fontSize: 10, fontWeight: 700, fontFamily: "inherit", border: "1px solid", cursor: "pointer", background: (rd.cachetType || "cachet") === opt.k ? opt.col + "20" : "rgba(255,255,255,0.02)", color: (rd.cachetType || "cachet") === opt.k ? opt.col : "#555", borderColor: (rd.cachetType || "cachet") === opt.k ? opt.col + "55" : "#2a2a2e" }}>{opt.l}</button>
                                       ))}
                                     </div>
                                     <div style={{ position: "relative" }}>
                                       <input value={rd.cachet || ""} onChange={e => uRoleDetail(role, "cachet", e.target.value)} placeholder="Montant" style={{ ...sInput, paddingRight: 55 }} />
-                                      <span style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", fontSize: 10, fontWeight: 700, color: (rd.cachetType || "cachet") === "cachet" ? "#c9a44a" : "#e879f9" }}>{(rd.cachetType || "cachet") === "cachet" ? "€ BRUT" : "€ HT"}</span>
+                                      <span style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", fontSize: 10, fontWeight: 700, color: (rd.cachetType || "cachet") === "cachet" ? "#c9a44a" : (rd.cachetType === "facture" ? "#e879f9" : "#f59e0b") }}>{(rd.cachetType || "cachet") === "cachet" ? "€ BRUT" : (rd.cachetType === "facture" ? "€ HT" : "€ DROIT")}</span>
+                                    </div>
+                                    <div style={{ marginTop: 8 }}>
+                                      <label style={{ display: "block", fontSize: 9, color: "#f59e0b", marginBottom: 4, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em" }}>Droits (image, utilisation...)</label>
+                                      <div style={{ position: "relative" }}>
+                                        <input value={rd.droits || ""} onChange={e => uRoleDetail(role, "droits", e.target.value)} placeholder="Montant droits" style={{ ...sInput, paddingRight: 30 }} />
+                                        <span style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", fontSize: 10, fontWeight: 700, color: "#f59e0b" }}>€</span>
+                                      </div>
                                     </div>
                                   </div>
                                 </div>
@@ -5126,7 +5134,8 @@ function CastingAppInner({ authUser }) {
                                 {(rd.ageMin || rd.ageMax) && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Tranche</div><div style={{ fontSize: 13, color: "#e0e0e0" }}>{rd.ageMin || "?"} — {rd.ageMax || "?"} ans</div></div>}
                                 {tD && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Type</div><div style={{ fontSize: 13, color: "#e0e0e0" }}>{tD}</div></div>}
                                 {sD && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Style de jeu</div><div style={{ fontSize: 13, color: "#e0e0e0" }}>{sD}</div></div>}
-                                {rd.cachet && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Rému</div><div style={{ fontSize: 14, color: (rd.cachetType || "cachet") === "cachet" ? "#c9a44a" : "#e879f9", fontWeight: 700 }}>{rd.cachet} € {(rd.cachetType || "cachet") === "cachet" ? "BRUT" : "HT"}</div></div>}
+                                {rd.cachet && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Rému</div><div style={{ fontSize: 14, color: (rd.cachetType || "cachet") === "cachet" ? "#c9a44a" : (rd.cachetType === "facture" ? "#e879f9" : "#f59e0b"), fontWeight: 700 }}>{rd.cachet} € {(rd.cachetType || "cachet") === "cachet" ? "BRUT" : (rd.cachetType === "facture" ? "HT" : "DROIT")}</div></div>}
+                                {rd.droits && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Droits</div><div style={{ fontSize: 14, color: "#f59e0b", fontWeight: 700 }}>{rd.droits} €</div></div>}
                                 {rd.nbComediens && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Nb comédiens</div><div style={{ fontSize: 13, color: "#e0e0e0" }}>{rd.nbComediens}</div></div>}
                                 {rd.nbJoursTournage && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Jours / comédien</div><div style={{ fontSize: 13, color: "#e0e0e0" }}>{rd.nbJoursTournage}j</div></div>}
                               </div>
