@@ -1510,23 +1510,36 @@ function CastingAppInner({ authUser }) {
 
 
   // Strip heavy data from shared copy (documents are still base64, photos are now URLs so lightweight)
-  const cleanForSharing = (projectState) => {
+  const cleanForSharing = async (projectState) => {
     const clean = JSON.parse(JSON.stringify(projectState));
     // Strip documents and casting sheets (base64 heavy)
     if (clean.projectInfo) {
       clean.projectInfo.documents = (clean.projectInfo.documents || []).map(d => ({ ...d, dataUrl: undefined }));
       clean.projectInfo.castingSheets = (clean.projectInfo.castingSheets || []).map(d => ({ ...d, dataUrl: undefined }));
-      // Reference photos are now URLs, keep them
     }
-    // Keep only first photo per profile (reduces size while keeping avatar visible)
-    if (clean.profiles) {
-      Object.keys(clean.profiles).forEach(role => {
-        clean.profiles[role] = (clean.profiles[role] || []).map(p => ({
-          ...p,
-          photos: (p.photos || []).slice(0, 1),
-          selftapeVideos: [],
-        }));
+    // Remove profiles for roles that no longer exist
+    if (clean.profiles && clean.roles) {
+      const roleSet = new Set(clean.roles);
+      Object.keys(clean.profiles).forEach(key => {
+        if (!roleSet.has(key)) delete clean.profiles[key];
       });
+    }
+    // Keep only first photo per profile, compress base64 to tiny thumbnail
+    if (clean.profiles) {
+      for (const role of Object.keys(clean.profiles)) {
+        for (let i = 0; i < (clean.profiles[role] || []).length; i++) {
+          const p = clean.profiles[role][i];
+          p.selftapeVideos = [];
+          const firstPhoto = (p.photos || [])[0];
+          if (firstPhoto && typeof firstPhoto === "string" && firstPhoto.startsWith("data:")) {
+            try { p.photos = [await compressImage(firstPhoto, 150, 0.4)]; } catch { p.photos = []; }
+          } else if (firstPhoto) {
+            p.photos = [firstPhoto];
+          } else {
+            p.photos = [];
+          }
+        }
+      }
     }
     // Strip base64 reference photos from roleDetails (keep URLs only)
     if (clean.roleDetails) {
@@ -1576,7 +1589,7 @@ function CastingAppInner({ authUser }) {
                 guestUpdatedAt = ex._guestUpdatedAt || guestUpdatedAt;
               }
             } catch (e) {}
-            const sharedData = cleanForSharing({ ...cleanState,
+            const sharedData = await cleanForSharing({ ...cleanState,
               _guestVotes: guestVotes,
               _guestCastingVotes: guestCastingVotes,
               _guestComments: guestComments,
@@ -1750,7 +1763,7 @@ function CastingAppInner({ authUser }) {
       project._guestCastingVotes = project._guestCastingVotes || {};
       project._guestComments = project._guestComments || {};
       await window.storage.set(`project:${projectId}`, JSON.stringify(project));
-      const sharedProject = cleanForSharing(project);
+      const sharedProject = await cleanForSharing(project);
       await window.storage.set(`shared:${code}`, JSON.stringify(sharedProject), true);
       return { code, password };
     } catch (e) { console.error("Share failed:", e); return null; }
