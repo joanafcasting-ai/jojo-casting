@@ -509,7 +509,7 @@ function ProfileForm({ profile, onSave, onDelete, onClose }) {
     (async () => {
       try {
         const profileId = form.id || form.name || "profile";
-        const projId = currentProjectId || "default";
+        const projId = "default";
         const idx = (addingPhotoIdx !== null && addingPhotoIdx < (form.photos || []).length) ? addingPhotoIdx : (form.photos || []).length;
         const { url } = await uploadPhoto(file, projId, profileId, idx);
         const photos = [...(form.photos || [])];
@@ -536,7 +536,7 @@ function ProfileForm({ profile, onSave, onDelete, onClose }) {
       }
     })();
     e.target.value = "";
-  }, [form.photos, addingPhotoIdx, form.id, form.name, currentProjectId]);
+  }, [form.photos, addingPhotoIdx, form.id, form.name]);
 
   const removePhoto = (idx) => {
     const photos = [...(form.photos || [])];
