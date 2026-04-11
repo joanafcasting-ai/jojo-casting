@@ -309,9 +309,9 @@ function ProfileCard({ profile, onEdit, onStatusChange, viewMode }) {
     <div
       onClick={onEdit}
       style={{
-        cursor: "pointer", display: "grid", gridTemplateColumns: "130px 1fr",
-        background: "#0c0c0e", borderRadius: 3, overflow: "hidden",
-        border: "1px solid #1a1a1e", transition: "all 0.3s", minHeight: 180,
+        cursor: "pointer", display: "grid", gridTemplateColumns: "160px 1fr",
+        background: "#0c0c0e", borderRadius: 6, overflow: "hidden",
+        border: "1px solid #1a1a1e", transition: "all 0.3s", minHeight: 210,
       }}
       onMouseEnter={e => { e.currentTarget.style.borderColor = "#c9a44a33"; e.currentTarget.style.boxShadow = "0 8px 32px rgba(0,0,0,0.4)"; }}
       onMouseLeave={e => { e.currentTarget.style.borderColor = "#1a1a1e"; e.currentTarget.style.boxShadow = ""; }}
@@ -324,47 +324,47 @@ function ProfileCard({ profile, onEdit, onStatusChange, viewMode }) {
           <div style={{ width: "100%", height: "100%", background: "#111114", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 32 }}>◎</div>
         )}
         <div style={{ position: "absolute", bottom: 6, left: 6 }} onClick={e => e.stopPropagation()}>
-          <button onClick={() => onStatusChange(nextStatus())} style={{ padding: "2px 7px", background: "rgba(0,0,0,0.7)", borderRadius: 2, border: "none", fontSize: 8, color: av.color, fontWeight: 700, letterSpacing: "0.1em", backdropFilter: "blur(4px)", cursor: "pointer", fontFamily: "inherit" }}>● {av.label.toUpperCase()}</button>
+          <button onClick={() => onStatusChange(nextStatus())} style={{ padding: "4px 10px", background: "rgba(0,0,0,0.7)", borderRadius: 4, border: "none", fontSize: 11, color: av.color, fontWeight: 700, letterSpacing: "0.1em", backdropFilter: "blur(4px)", cursor: "pointer", fontFamily: "inherit" }}>● {av.label.toUpperCase()}</button>
         </div>
       </div>
       {/* Info */}
-      <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", justifyContent: "center", overflow: "hidden" }}>
-        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, marginBottom: 3 }}>
+      <div style={{ padding: "16px 20px", display: "flex", flexDirection: "column", justifyContent: "center", overflow: "hidden" }}>
+        <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, marginBottom: 5 }}>
           <div style={{ minWidth: 0 }}>
-            <div style={{ fontSize: 19, fontWeight: 900, color: "#fff", fontFamily: "'Bebas Neue','DM Sans',sans-serif", letterSpacing: "0.03em", lineHeight: 1.1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+            <div style={{ fontSize: 24, fontWeight: 900, color: "#fff", fontFamily: "'Bebas Neue','DM Sans',sans-serif", letterSpacing: "0.03em", lineHeight: 1.1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
               {[profile.firstName, profile.name].filter(Boolean).join(" ") || "Sans nom"}
             </div>
-            <div style={{ fontSize: 13, color: "#777", marginTop: 4, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+            <div style={{ fontSize: 15, color: "#777", marginTop: 5, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
               {[profile.age ? profile.age + " ans" : null, profile.height, profile.hairColor, profile.measurements].filter(Boolean).join(" · ") || "—"}
             </div>
           </div>
           <div style={{ display: "flex", gap: 4, flexShrink: 0, alignItems: "center" }}>
-            {profile.saveToCastingFile && <span style={{ fontSize: 11, color: "#a855f7" }} title="Fichier casting">📁</span>}
-            {profile.shareContacts && <span style={{ fontSize: 11, color: "#22c55e" }} title="Contacts partagés">🔓</span>}
+            {profile.saveToCastingFile && <span style={{ fontSize: 14, color: "#a855f7" }} title="Fichier casting">📁</span>}
+            {profile.shareContacts && <span style={{ fontSize: 14, color: "#22c55e" }} title="Contacts partagés">🔓</span>}
           </div>
         </div>
         {/* Agency */}
         {profile.agency && (
-          <div style={{ fontSize: 13, color: "#c9a44a", fontWeight: 700, marginBottom: 5, display: "flex", alignItems: "center", gap: 5 }}>
-            <div style={{ width: 8, height: 1, background: "#c9a44a", flexShrink: 0 }} />{profile.agency}
+          <div style={{ fontSize: 16, color: "#c9a44a", fontWeight: 700, marginBottom: 6, display: "flex", alignItems: "center", gap: 6 }}>
+            <div style={{ width: 10, height: 1, background: "#c9a44a", flexShrink: 0 }} />{profile.agency}
           </div>
         )}
         {/* Type + level + source */}
-        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 5 }}>
-          {profile.profileType && <span style={{ fontSize: 10, padding: "3px 9px", background: "rgba(168,85,247,0.1)", borderRadius: 3, color: "#a855f7", fontWeight: 700, textTransform: "uppercase" }}>{profile.profileType}</span>}
-          {profile.actingLevel > 0 && <div style={{ display: "flex", gap: 2 }}>{[1,2,3,4,5].map(n => <div key={n} style={{ width: 12, height: 2, background: n <= profile.actingLevel ? "#c9a44a" : "#222" }} />)}</div>}
-          <span style={{ fontSize: 9, color: "#444", fontWeight: 600, marginLeft: "auto" }}>{profile.source || "—"}</span>
+        <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
+          {profile.profileType && <span style={{ fontSize: 12, padding: "4px 10px", background: "rgba(168,85,247,0.1)", borderRadius: 4, color: "#a855f7", fontWeight: 700, textTransform: "uppercase" }}>{profile.profileType}</span>}
+          {profile.actingLevel > 0 && <div style={{ display: "flex", gap: 3 }}>{[1,2,3,4,5].map(n => <div key={n} style={{ width: 14, height: 3, background: n <= profile.actingLevel ? "#c9a44a" : "#222" }} />)}</div>}
+          <span style={{ fontSize: 11, color: "#444", fontWeight: 600, marginLeft: "auto" }}>{profile.source || "—"}</span>
         </div>
         {/* Bottom row */}
-        <div style={{ display: "flex", gap: 6, flexWrap: "wrap", paddingTop: 5, borderTop: "1px solid #1a1a1e", alignItems: "center" }}>
-          {tapes > 0 && <span style={{ fontSize: 9, color: "#60a5fa", fontWeight: 600 }}>▶ {tapes} selftape{tapes > 1 ? "s" : ""}</span>}
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", paddingTop: 6, borderTop: "1px solid #1a1a1e", alignItems: "center" }}>
+          {tapes > 0 && <span style={{ fontSize: 12, color: "#60a5fa", fontWeight: 600 }}>▶ {tapes} selftape{tapes > 1 ? "s" : ""}</span>}
           {hasContacts && showContacts && (
             <>
-              {profile.email && <span style={{ fontSize: 9, color: "#888", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 130 }}>✉ {profile.email}</span>}
-              {profile.phone && <span style={{ fontSize: 9, color: "#888" }}>☎ {profile.phone}</span>}
+              {profile.email && <span style={{ fontSize: 12, color: "#888", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 180 }}>✉ {profile.email}</span>}
+              {profile.phone && <span style={{ fontSize: 12, color: "#888" }}>☎ {profile.phone}</span>}
             </>
           )}
-          {hasContacts && !showContacts && <span style={{ fontSize: 9, color: "#444" }}>🔒</span>}
+          {hasContacts && !showContacts && <span style={{ fontSize: 12, color: "#444" }}>🔒</span>}
         </div>
       </div>
     </div>
