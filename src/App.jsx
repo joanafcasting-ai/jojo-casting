@@ -2270,6 +2270,7 @@ function CastingAppInner({ authUser }) {
             _guestVotes: sp._guestVotes || prev._guestVotes || {},
             _guestCastingVotes: sp._guestCastingVotes || prev._guestCastingVotes || {},
             _guestComments: sp._guestComments || prev._guestComments || {},
+            _guestGlobalFeedback: sp._guestGlobalFeedback || prev._guestGlobalFeedback || "",
           }));
           // Also update local project storage with new guest data
           try {
@@ -6811,6 +6812,14 @@ function CastingAppInner({ authUser }) {
                   );
                 })()}
 
+                {/* Global feedback from réal */}
+                {state._guestGlobalFeedback && (
+                  <div style={{ padding: "14px 18px", background: "rgba(96,165,250,0.04)", border: "1px solid rgba(96,165,250,0.15)", borderRadius: 10, marginBottom: 14 }}>
+                    <div style={{ fontSize: 11, color: "#60a5fa", fontWeight: 600, textTransform: "uppercase", marginBottom: 6 }}>✍ Retour global du réal/prod</div>
+                    <div style={{ fontSize: 14, color: "#ccc", lineHeight: 1.6, whiteSpace: "pre-wrap" }}>{state._guestGlobalFeedback}</div>
+                  </div>
+                )}
+
                 <div style={{
                   display: profileGridMode === "list" ? "flex" : "grid",
                   flexDirection: profileGridMode === "list" ? "column" : undefined,
@@ -6892,9 +6901,9 @@ function CastingAppInner({ authUser }) {
                                   R/P {state._guestVotes[profile.id].choice === "yes" ? "OUI" : state._guestVotes[profile.id].choice === "no" ? "NON" : "P-Ê"}
                                 </span>
                               )}
-                              {state._guestComments?.[profile.id]?.slice(-1).map((c, ci) => (
-                                <span key={ci} style={{ fontSize: 9, color: "#666", fontStyle: "italic", maxWidth: 150, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>💬 {c.text}</span>
-                              ))}
+                              {state._guestComments?.[profile.id]?.length > 0 && (
+                                <span onClick={e => { e.stopPropagation(); const allComments = state._guestComments[profile.id].map(c => `${c.text} (${new Date(c.at).toLocaleString("fr-FR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })})`).join("\n\n"); alert("💬 Commentaires du réal :\n\n" + allComments); }} style={{ fontSize: 13, color: "#60a5fa", fontStyle: "italic", maxWidth: 250, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", cursor: "pointer", textDecoration: "underline dotted", textUnderlineOffset: 3 }} title="Cliquer pour lire tous les commentaires">💬 {state._guestComments[profile.id].slice(-1)[0].text}</span>
+                              )}
                             </div>
                           )}
 
@@ -8252,9 +8261,11 @@ function GuestView({ shareCode, project, password }) {
   const [playingVideo, setPlayingVideo] = useState(null);
   const [selectedProfile, setSelectedProfile] = useState(null);
   const [selectedPhotoIdx, setSelectedPhotoIdx] = useState(0);
+  const [globalFeedback, setGlobalFeedback] = useState(project._guestGlobalFeedback || "");
+  const [showGlobalFeedback, setShowGlobalFeedback] = useState(false);
 
   // Auto-save votes to shared storage
-  const saveToShared = useCallback(async (newVotes, newCastingVotes, newComments) => {
+  const saveToShared = useCallback(async (newVotes, newCastingVotes, newComments, newGlobalFeedback) => {
     setSavingState("saving");
     try {
       const data = await window.storage.get(`shared:${shareCode}`, true);
@@ -8263,6 +8274,7 @@ function GuestView({ shareCode, project, password }) {
       proj._guestVotes = newVotes;
       proj._guestCastingVotes = newCastingVotes;
       proj._guestComments = newComments;
+      if (newGlobalFeedback !== undefined) proj._guestGlobalFeedback = newGlobalFeedback;
       proj._guestUpdatedAt = new Date().toISOString();
       await window.storage.set(`shared:${shareCode}`, JSON.stringify(proj), true);
       setSavingState("saved");
@@ -8629,11 +8641,40 @@ function GuestView({ shareCode, project, password }) {
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
             {savingState === "saved" && <span style={{ fontSize: 10, color: "#22c55e" }}>✓ Synchronisé</span>}
             {savingState === "saving" && <span style={{ fontSize: 10, color: "#f59e0b" }}>⏳ Sauvegarde...</span>}
+            <button onClick={() => setShowGlobalFeedback(!showGlobalFeedback)} style={{
+              padding: "6px 14px", background: showGlobalFeedback ? "rgba(96,165,250,0.12)" : "rgba(255,255,255,0.03)",
+              border: showGlobalFeedback ? "1px solid rgba(96,165,250,0.3)" : "1px solid #2a2a2e",
+              borderRadius: 8, color: showGlobalFeedback ? "#60a5fa" : "#888", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
+            }}>✍ Retour global</button>
             <span style={{ fontSize: 9, padding: "4px 10px", background: "rgba(168,85,247,0.1)", border: "1px solid rgba(168,85,247,0.2)", borderRadius: 6, color: "#a855f7", fontWeight: 700 }}>
-              RÉAL/PROD
+              RÉAL
             </span>
           </div>
         </header>
+
+        {/* Global feedback panel */}
+        {showGlobalFeedback && (
+          <div style={{ padding: "16px 24px", background: "#111114", borderBottom: "1px solid #1e1e22" }}>
+            <div style={{ maxWidth: 960, margin: "0 auto" }}>
+              <label style={{ display: "block", fontSize: 11, color: "#60a5fa", fontWeight: 600, textTransform: "uppercase", marginBottom: 8 }}>✍ Retour global — Notes pour la directrice de casting</label>
+              <textarea
+                value={globalFeedback}
+                onChange={e => setGlobalFeedback(e.target.value)}
+                placeholder="Vos impressions générales, remarques sur le casting, orientations souhaitées..."
+                rows={4}
+                style={{ width: "100%", padding: "12px 16px", background: "#0c0c0e", border: "1px solid rgba(96,165,250,0.2)", borderRadius: 10, color: "#e0e0e0", fontSize: 14, fontFamily: "'DM Sans',sans-serif", outline: "none", resize: "vertical", lineHeight: 1.6, boxSizing: "border-box" }}
+                onFocus={e => e.target.style.borderColor = "#60a5fa"}
+                onBlur={e => e.target.style.borderColor = "rgba(96,165,250,0.2)"}
+              />
+              <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 8 }}>
+                <button onClick={() => { saveToShared(votes, castingVotes, comments, globalFeedback); }} style={{
+                  padding: "8px 20px", background: "rgba(96,165,250,0.12)", border: "1px solid rgba(96,165,250,0.3)",
+                  borderRadius: 8, color: "#60a5fa", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
+                }}>💾 Envoyer le retour</button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Tabs */}
         <div style={{ display: "flex", borderBottom: "1px solid #1a1a1e", padding: "0 24px" }}>
