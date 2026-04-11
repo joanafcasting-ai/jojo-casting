@@ -100,6 +100,28 @@ const compressImage = (dataUrl, maxWidth = 600, quality = 0.7) => {
 
 const fmtDateFR = (d) => { if (!d) return null; try { return new Date(d + "T00:00:00").toLocaleDateString("fr-FR", { day: "numeric", month: "short", year: "numeric" }); } catch(e) { return d; } };
 
+const getEmbedUrl = (url) => {
+  if (!url || typeof url !== "string") return null;
+  try {
+    // Google Drive: drive.google.com/file/d/FILE_ID/view → /preview
+    const driveMatch = url.match(/drive\.google\.com\/file\/d\/([^/]+)/);
+    if (driveMatch) return `https://drive.google.com/file/d/${driveMatch[1]}/preview`;
+    // YouTube: youtube.com/watch?v=ID or youtu.be/ID
+    const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+    if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`;
+    // Vimeo: vimeo.com/ID
+    const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+    if (vimeoMatch) return `https://player.vimeo.com/video/${vimeoMatch[1]}`;
+    return null;
+  } catch(e) { return null; }
+};
+
+const EmbedPlayer = ({ url, height = 180 }) => {
+  const embedUrl = getEmbedUrl(url);
+  if (!embedUrl) return <a href={url} target="_blank" rel="noopener noreferrer" style={{ color: "#60a5fa", fontSize: 12, textDecoration: "none" }}>▶ {url.length > 40 ? url.slice(0, 40) + "..." : url}</a>;
+  return <iframe src={embedUrl} style={{ width: "100%", height, borderRadius: 8, border: "1px solid #2a2a2e", background: "#000" }} allow="autoplay; encrypted-media" allowFullScreen frameBorder="0" />;
+};
+
 const INITIAL_STATE = {
   projectName: "",
   roles: [],
@@ -633,38 +655,45 @@ function ProfileForm({ profile, onSave, onDelete, onClose }) {
           Selftapes — Liens ({(form.selftapeLinks || []).length})
         </label>
         {(form.selftapeLinks || []).map((link, i) => (
-          <div key={i} style={{ display: "flex", gap: 8, marginBottom: 8, alignItems: "center" }}>
-            <span style={{ fontSize: 11, color: "#c9a44a", fontWeight: 600, minWidth: 52 }}>Essai {i + 1}</span>
-            <input
-              value={link}
-              onChange={e => {
-                const links = [...(form.selftapeLinks || [])];
-                links[i] = e.target.value;
-                update("selftapeLinks", links);
-              }}
-              placeholder="https://youtube.com/... ou https://vimeo.com/..."
-              style={{
-                flex: 1, padding: "8px 12px", background: "#111114", border: "1px solid #2a2a2e",
-                borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "'DM Sans', sans-serif",
-                outline: "none",
-              }}
-              onFocus={e => e.target.style.borderColor = "#c9a44a"}
-              onBlur={e => e.target.style.borderColor = "#2a2a2e"}
-            />
-            <button
-              onClick={() => {
-                const links = [...(form.selftapeLinks || [])];
-                links.splice(i, 1);
-                update("selftapeLinks", links);
-              }}
-              style={{
-                background: "none", border: "none", color: "#555", cursor: "pointer",
-                fontSize: 18, fontFamily: "inherit", padding: "0 4px",
-              }}
-            >
-              ×
-            </button>
-          </div>
+          <React.Fragment key={i}>
+            <div style={{ display: "flex", gap: 8, marginBottom: 8, alignItems: "center" }}>
+              <span style={{ fontSize: 11, color: "#c9a44a", fontWeight: 600, minWidth: 52 }}>Essai {i + 1}</span>
+              <input
+                value={link}
+                onChange={e => {
+                  const links = [...(form.selftapeLinks || [])];
+                  links[i] = e.target.value;
+                  update("selftapeLinks", links);
+                }}
+                placeholder="https://drive.google.com/... ou https://youtube.com/..."
+                style={{
+                  flex: 1, padding: "8px 12px", background: "#111114", border: "1px solid #2a2a2e",
+                  borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "'DM Sans', sans-serif",
+                  outline: "none",
+                }}
+                onFocus={e => e.target.style.borderColor = "#c9a44a"}
+                onBlur={e => e.target.style.borderColor = "#2a2a2e"}
+              />
+              <button
+                onClick={() => {
+                  const links = [...(form.selftapeLinks || [])];
+                  links.splice(i, 1);
+                  update("selftapeLinks", links);
+                }}
+                style={{
+                  background: "none", border: "none", color: "#555", cursor: "pointer",
+                  fontSize: 18, fontFamily: "inherit", padding: "0 4px",
+                }}
+              >
+                ×
+              </button>
+            </div>
+            {link && getEmbedUrl(link) && (
+              <div style={{ marginBottom: 12, marginLeft: 60 }}>
+                <EmbedPlayer url={link} height={160} />
+              </div>
+            )}
+          </React.Fragment>
         ))}
         <button
           onClick={() => update("selftapeLinks", [...(form.selftapeLinks || []), ""])}
@@ -1004,12 +1033,19 @@ function RealisateurProfileCard({ profile, selection, onSelect, onComment }) {
         </div>
         {/* Selftapes */}
         {hasSelftapes && (
-          <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 4 }}>
-            {(profile.selftapeLinks || []).filter(l => l).map((link, i) => (
-              <a key={i} href={link} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ fontSize: 10, color: "#60a5fa", padding: "3px 8px", background: "rgba(96,165,250,0.08)", borderRadius: 3, textDecoration: "none", fontWeight: 600 }}>▶ {i + 1}</a>
-            ))}
-            {(profile.selftapeVideos || []).map((v, i) => (
-              <button key={i} onClick={() => setPlayingVideo(v)} style={{ fontSize: 10, color: "#c9a44a", padding: "3px 8px", background: "rgba(201,164,74,0.08)", borderRadius: 3, border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>⬆ {i + 1}</button>
+          <div style={{ marginBottom: 4 }}>
+            <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 4 }}>
+              {(profile.selftapeLinks || []).filter(l => l).map((link, i) => (
+                <a key={i} href={link} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ fontSize: 10, color: "#60a5fa", padding: "3px 8px", background: "rgba(96,165,250,0.08)", borderRadius: 3, textDecoration: "none", fontWeight: 600 }}>▶ Tape {i + 1}</a>
+              ))}
+              {(profile.selftapeVideos || []).map((v, i) => (
+                <button key={i} onClick={() => setPlayingVideo(v)} style={{ fontSize: 10, color: "#c9a44a", padding: "3px 8px", background: "rgba(201,164,74,0.08)", borderRadius: 3, border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>⬆ {i + 1}</button>
+              ))}
+            </div>
+            {(profile.selftapeLinks || []).filter(l => l && getEmbedUrl(l)).slice(0, 1).map((link, i) => (
+              <div key={i} onClick={e => e.stopPropagation()} style={{ marginTop: 4 }}>
+                <EmbedPlayer url={link} height={140} />
+              </div>
             ))}
           </div>
         )}
@@ -6110,10 +6146,15 @@ function CastingAppInner({ authUser }) {
                           )}
 
                           {/* Selftapes */}
-                          {profile.selftapeLinks?.length > 0 && (
-                            <div style={{ padding: "0 20px 12px", display: "flex", gap: 8 }}>
-                              {profile.selftapeLinks.map((link, li) => (
-                                <a key={li} href={link} target="_blank" rel="noreferrer" style={{ fontSize: 11, color: "#60a5fa", background: "rgba(59,130,246,0.08)", padding: "5px 12px", borderRadius: 6, textDecoration: "none" }}>▶ Selftape {li + 1}</a>
+                          {profile.selftapeLinks?.filter(l => l).length > 0 && (
+                            <div style={{ padding: "0 20px 12px" }}>
+                              <div style={{ display: "flex", gap: 8, marginBottom: 4 }}>
+                                {profile.selftapeLinks.filter(l => l).map((link, li) => (
+                                  <a key={li} href={link} target="_blank" rel="noreferrer" style={{ fontSize: 11, color: "#60a5fa", background: "rgba(59,130,246,0.08)", padding: "5px 12px", borderRadius: 6, textDecoration: "none" }}>▶ Tape {li + 1}</a>
+                                ))}
+                              </div>
+                              {profile.selftapeLinks.filter(l => l && getEmbedUrl(l)).slice(0, 1).map((link, li) => (
+                                <div key={li}><EmbedPlayer url={link} height={200} /></div>
                               ))}
                             </div>
                           )}
@@ -8249,12 +8290,17 @@ function GuestView({ shareCode, project, password }) {
 
           {/* Selftapes */}
           {(profile.selftapeLinks?.filter(l => l).length > 0 || profile.selftapeVideos?.length > 0) && (
-            <div style={{ padding: "0 14px 8px", display: "flex", gap: 6, flexWrap: "wrap" }}>
-              {profile.selftapeLinks?.filter(l => l).map((link, i) => (
-                <a key={i} href={link} target="_blank" rel="noreferrer" style={{ fontSize: 10, color: "#60a5fa", textDecoration: "none", padding: "3px 8px", background: "rgba(96,165,250,0.06)", borderRadius: 4 }}>▶ Lien {i + 1}</a>
-              ))}
-              {profile.selftapeVideos?.map((video, i) => (
-                <button key={i} onClick={() => setPlayingVideo(video)} style={{ fontSize: 10, color: "#60a5fa", background: "rgba(96,165,250,0.06)", padding: "3px 8px", borderRadius: 4, border: "none", cursor: "pointer", fontFamily: "inherit" }}>▶ Vidéo {i + 1}</button>
+            <div style={{ padding: "0 14px 8px" }}>
+              <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 4 }}>
+                {profile.selftapeLinks?.filter(l => l).map((link, i) => (
+                  <a key={i} href={link} target="_blank" rel="noreferrer" style={{ fontSize: 10, color: "#60a5fa", textDecoration: "none", padding: "3px 8px", background: "rgba(96,165,250,0.06)", borderRadius: 4 }}>▶ Tape {i + 1}</a>
+                ))}
+                {profile.selftapeVideos?.map((video, i) => (
+                  <button key={i} onClick={() => setPlayingVideo(video)} style={{ fontSize: 10, color: "#60a5fa", background: "rgba(96,165,250,0.06)", padding: "3px 8px", borderRadius: 4, border: "none", cursor: "pointer", fontFamily: "inherit" }}>▶ Video {i + 1}</button>
+                ))}
+              </div>
+              {profile.selftapeLinks?.filter(l => l && getEmbedUrl(l)).slice(0, 1).map((link, i) => (
+                <div key={i}><EmbedPlayer url={link} height={160} /></div>
               ))}
             </div>
           )}
@@ -8399,12 +8445,17 @@ function GuestView({ shareCode, project, password }) {
 
             {/* Selftapes */}
             {(profile.selftapeLinks?.filter(l => l).length > 0 || profile.selftapeVideos?.length > 0) && (
-              <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 10 }}>
-                {profile.selftapeLinks?.filter(l => l).map((link, i) => (
-                  <a key={i} href={link} target="_blank" rel="noreferrer" style={{ fontSize: 10, color: "#60a5fa", textDecoration: "none", padding: "4px 10px", background: "rgba(96,165,250,0.06)", borderRadius: 6 }}>▶ Lien {i + 1}</a>
-                ))}
-                {profile.selftapeVideos?.map((video, i) => (
-                  <button key={i} onClick={() => setPlayingVideo(video)} style={{ fontSize: 10, color: "#60a5fa", background: "rgba(96,165,250,0.06)", padding: "4px 10px", borderRadius: 6, border: "none", cursor: "pointer", fontFamily: "inherit" }}>▶ Vidéo {i + 1}</button>
+              <div style={{ marginBottom: 10 }}>
+                <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 4 }}>
+                  {profile.selftapeLinks?.filter(l => l).map((link, i) => (
+                    <a key={i} href={link} target="_blank" rel="noreferrer" style={{ fontSize: 10, color: "#60a5fa", textDecoration: "none", padding: "4px 10px", background: "rgba(96,165,250,0.06)", borderRadius: 6 }}>▶ Tape {i + 1}</a>
+                  ))}
+                  {profile.selftapeVideos?.map((video, i) => (
+                    <button key={i} onClick={() => setPlayingVideo(video)} style={{ fontSize: 10, color: "#60a5fa", background: "rgba(96,165,250,0.06)", padding: "4px 10px", borderRadius: 6, border: "none", cursor: "pointer", fontFamily: "inherit" }}>▶ Video {i + 1}</button>
+                  ))}
+                </div>
+                {profile.selftapeLinks?.filter(l => l && getEmbedUrl(l)).slice(0, 1).map((link, i) => (
+                  <div key={i}><EmbedPlayer url={link} height={180} /></div>
                 ))}
               </div>
             )}
