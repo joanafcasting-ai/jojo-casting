@@ -1518,17 +1518,17 @@ function CastingAppInner({ authUser }) {
       clean.projectInfo.castingSheets = (clean.projectInfo.castingSheets || []).map(d => ({ ...d, dataUrl: undefined }));
       // Reference photos are now URLs, keep them
     }
-    // Strip base64 photos (keep only URL-based ones) and videos
+    // Keep only first photo per profile (reduces size while keeping avatar visible)
     if (clean.profiles) {
       Object.keys(clean.profiles).forEach(role => {
         clean.profiles[role] = (clean.profiles[role] || []).map(p => ({
           ...p,
-          photos: (p.photos || []).filter(ph => typeof ph === "string" && (ph.startsWith("http://") || ph.startsWith("https://"))),
+          photos: (p.photos || []).slice(0, 1),
           selftapeVideos: [],
         }));
       });
     }
-    // Strip base64 reference photos from roleDetails
+    // Strip base64 reference photos from roleDetails (keep URLs only)
     if (clean.roleDetails) {
       Object.keys(clean.roleDetails).forEach(role => {
         const rd = clean.roleDetails[role];
