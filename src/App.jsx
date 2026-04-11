@@ -1518,13 +1518,23 @@ function CastingAppInner({ authUser }) {
       clean.projectInfo.castingSheets = (clean.projectInfo.castingSheets || []).map(d => ({ ...d, dataUrl: undefined }));
       // Reference photos are now URLs, keep them
     }
-    // Photos are now URLs (not base64), so they're tiny — keep all of them
+    // Strip base64 photos (keep only URL-based ones) and videos
     if (clean.profiles) {
       Object.keys(clean.profiles).forEach(role => {
         clean.profiles[role] = (clean.profiles[role] || []).map(p => ({
           ...p,
-          selftapeVideos: [], // videos are in supabase, not needed in shared
+          photos: (p.photos || []).filter(ph => typeof ph === "string" && (ph.startsWith("http://") || ph.startsWith("https://"))),
+          selftapeVideos: [],
         }));
+      });
+    }
+    // Strip base64 reference photos from roleDetails
+    if (clean.roleDetails) {
+      Object.keys(clean.roleDetails).forEach(role => {
+        const rd = clean.roleDetails[role];
+        if (rd?.referencePhotos) {
+          rd.referencePhotos = rd.referencePhotos.filter(ph => typeof ph === "string" && (ph.startsWith("http://") || ph.startsWith("https://")));
+        }
       });
     }
     // Strip castingSessions videos
@@ -8666,7 +8676,7 @@ export default function CastingApp() {
     let cancelled = false;
     const loadProject = async () => {
       // Try with timeout — if Supabase hangs, fall back quickly
-      const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), 6000));
+      const timeoutPromise = new Promise((_, reject) => setTimeout(() => reject(new Error("timeout")), 30000));
       
       try {
         console.log("[Guest] Loading shared project:", shareCodeFromUrl);
