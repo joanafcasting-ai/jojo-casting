@@ -1624,13 +1624,7 @@ function CastingAppInner({ authUser }) {
       const data = await window.storage.get(`project:${projectId}`);
       if (data?.value) {
         const parsed = JSON.parse(data.value);
-        if (parsed.castingSessions) {
-          Object.keys(parsed.castingSessions).forEach(k => {
-            if (parsed.castingSessions[k]?.castingVideos) {
-              parsed.castingSessions[k].castingVideos = [];
-            }
-          });
-        }
+        // Note: castingVideos are kept on load (only stripped in cleanForSharing)
         // Batch state updates
         setCurrentProjectId(projectId);
         setActiveTab("roles");
@@ -1658,6 +1652,16 @@ function CastingAppInner({ authUser }) {
 
   const deleteProject = async (projectId) => {
     try {
+      // Load project first to check for shared copy
+      try {
+        const data = await window.storage.get(`project:${projectId}`);
+        if (data?.value) {
+          const parsed = JSON.parse(data.value);
+          if (parsed._shareCode) {
+            await window.storage.delete(`shared:${parsed._shareCode}`, true);
+          }
+        }
+      } catch (e) { /* project may not exist, continue with delete */ }
       await window.storage.delete(`project:${projectId}`);
       setProjectList(prev => prev.filter(p => p.id !== projectId));
       if (currentProjectId === projectId) {

@@ -60,20 +60,24 @@ const storage = {
         const { data: existing } = await supabase.from('kv_store')
           .select('id').eq('key', key).eq('shared', true).maybeSingle()
         if (existing) {
-          await supabase.from('kv_store').update({ value: strValue, updated_at: new Date().toISOString() })
+          const { error: upErr } = await supabase.from('kv_store').update({ value: strValue, updated_at: new Date().toISOString() })
             .eq('id', existing.id)
+          if (upErr) throw upErr
         } else {
-          await supabase.from('kv_store').insert({ key, value: strValue, user_id: userId, shared: true })
+          const { error: insErr } = await supabase.from('kv_store').insert({ key, value: strValue, user_id: userId, shared: true })
+          if (insErr) throw insErr
         }
       } else {
         // Upsert user-specific
         const { data: existing } = await supabase.from('kv_store')
           .select('id').eq('key', key).eq('user_id', userId).eq('shared', false).maybeSingle()
         if (existing) {
-          await supabase.from('kv_store').update({ value: strValue, updated_at: new Date().toISOString() })
+          const { error: upErr } = await supabase.from('kv_store').update({ value: strValue, updated_at: new Date().toISOString() })
             .eq('id', existing.id)
+          if (upErr) throw upErr
         } else {
-          await supabase.from('kv_store').insert({ key, value: strValue, user_id: userId, shared: false })
+          const { error: insErr } = await supabase.from('kv_store').insert({ key, value: strValue, user_id: userId, shared: false })
+          if (insErr) throw insErr
         }
       }
       // Also save to localStorage as cache
