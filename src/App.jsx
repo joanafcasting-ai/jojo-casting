@@ -331,27 +331,27 @@ function ProfileCard({ profile, onEdit, onStatusChange, viewMode }) {
       <div style={{ padding: "12px 16px", display: "flex", flexDirection: "column", justifyContent: "center", overflow: "hidden" }}>
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, marginBottom: 3 }}>
           <div style={{ minWidth: 0 }}>
-            <div style={{ fontSize: 17, fontWeight: 900, color: "#fff", fontFamily: "'Bebas Neue','DM Sans',sans-serif", letterSpacing: "0.03em", lineHeight: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+            <div style={{ fontSize: 19, fontWeight: 900, color: "#fff", fontFamily: "'Bebas Neue','DM Sans',sans-serif", letterSpacing: "0.03em", lineHeight: 1.1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
               {[profile.firstName, profile.name].filter(Boolean).join(" ") || "Sans nom"}
             </div>
-            <div style={{ fontSize: 11, color: "#777", marginTop: 3, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+            <div style={{ fontSize: 13, color: "#777", marginTop: 4, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
               {[profile.age ? profile.age + " ans" : null, profile.height, profile.hairColor, profile.measurements].filter(Boolean).join(" · ") || "—"}
             </div>
           </div>
           <div style={{ display: "flex", gap: 4, flexShrink: 0, alignItems: "center" }}>
-            {profile.saveToCastingFile && <span style={{ fontSize: 10, color: "#a855f7" }} title="Fichier casting">📁</span>}
-            {profile.shareContacts && <span style={{ fontSize: 10, color: "#22c55e" }} title="Contacts partagés">🔓</span>}
+            {profile.saveToCastingFile && <span style={{ fontSize: 11, color: "#a855f7" }} title="Fichier casting">📁</span>}
+            {profile.shareContacts && <span style={{ fontSize: 11, color: "#22c55e" }} title="Contacts partagés">🔓</span>}
           </div>
         </div>
         {/* Agency */}
         {profile.agency && (
-          <div style={{ fontSize: 12, color: "#c9a44a", fontWeight: 700, marginBottom: 5, display: "flex", alignItems: "center", gap: 5 }}>
+          <div style={{ fontSize: 13, color: "#c9a44a", fontWeight: 700, marginBottom: 5, display: "flex", alignItems: "center", gap: 5 }}>
             <div style={{ width: 8, height: 1, background: "#c9a44a", flexShrink: 0 }} />{profile.agency}
           </div>
         )}
         {/* Type + level + source */}
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 5 }}>
-          {profile.profileType && <span style={{ fontSize: 9, padding: "2px 8px", background: "rgba(168,85,247,0.1)", borderRadius: 3, color: "#a855f7", fontWeight: 700, textTransform: "uppercase" }}>{profile.profileType}</span>}
+          {profile.profileType && <span style={{ fontSize: 10, padding: "3px 9px", background: "rgba(168,85,247,0.1)", borderRadius: 3, color: "#a855f7", fontWeight: 700, textTransform: "uppercase" }}>{profile.profileType}</span>}
           {profile.actingLevel > 0 && <div style={{ display: "flex", gap: 2 }}>{[1,2,3,4,5].map(n => <div key={n} style={{ width: 12, height: 2, background: n <= profile.actingLevel ? "#c9a44a" : "#222" }} />)}</div>}
           <span style={{ fontSize: 9, color: "#444", fontWeight: 600, marginLeft: "auto" }}>{profile.source || "—"}</span>
         </div>
@@ -1478,6 +1478,7 @@ function CastingAppInner({ authUser }) {
   const [shareLinkCopied, setShareLinkCopied] = useState(false);
   const [compareMode, setCompareMode] = useState(false);
   const [compareSelection, setCompareSelection] = useState([]);
+  const [profileGridMode, setProfileGridMode] = useState("grid"); // "grid" | "list"
   const [moveProfileModal, setMoveProfileModal] = useState(null); // { profile, fromRole }
   const [copyProfileModal, setCopyProfileModal] = useState(null); // { profile }
   const [presentationMode, setPresentationMode] = useState(false);
@@ -2841,6 +2842,10 @@ function CastingAppInner({ authUser }) {
     ::selection { background: #c9a44a44; color: #fff; }
     .light-wrapper { filter: invert(1) hue-rotate(180deg); }
     .light-wrapper img, .light-wrapper video { filter: invert(1) hue-rotate(180deg); }
+    input[type="date"] { background: #1a1a1e !important; border: 1px solid #3a3a3e !important; color: #e0e0e0 !important; border-radius: 8px; padding: 9px 12px; font-size: 13px; cursor: pointer; }
+    input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.7); cursor: pointer; font-size: 16px; }
+    input[type="date"]:hover { border-color: #c9a44a !important; }
+    input[type="date"]:focus { border-color: #c9a44a !important; outline: none; }
   `;
 
   // ===== LOADING =====
@@ -4989,7 +4994,7 @@ function CastingAppInner({ authUser }) {
                                     <input value={rd.nbComediens || ""} onChange={e => uRoleDetail(role, "nbComediens", e.target.value)} placeholder="Ex: 3" type="number" min="1" style={sInput} />
                                   </div>
                                   <div>
-                                    <label style={{ display: "block", fontSize: 10, color: "#c9a44a", marginBottom: 6, fontWeight: 600, textTransform: "uppercase" }}>Jours tournage / comédien</label>
+                                    <label style={{ display: "block", fontSize: 10, color: "#c9a44a", marginBottom: 6, fontWeight: 600, textTransform: "uppercase" }}>Nb de jours de tournage</label>
                                     <input value={rd.nbJoursTournage || ""} onChange={e => uRoleDetail(role, "nbJoursTournage", e.target.value)} placeholder="Ex: 2" type="number" min="1" style={sInput} />
                                   </div>
                                 </div>
@@ -6750,10 +6755,15 @@ function CastingAppInner({ authUser }) {
                     )}
                   </div>
                 )}
+                {/* Grid/List toggle */}
+                <div style={{ display: "flex", gap: 4, marginLeft: "auto" }}>
+                  <button onClick={() => setProfileGridMode("grid")} style={{ padding: "6px 10px", borderRadius: 6, border: "none", cursor: "pointer", background: profileGridMode === "grid" ? "rgba(201,164,74,0.12)" : "transparent", color: profileGridMode === "grid" ? "#c9a44a" : "#555", fontSize: 14 }}>▦</button>
+                  <button onClick={() => setProfileGridMode("list")} style={{ padding: "6px 10px", borderRadius: 6, border: "none", cursor: "pointer", background: profileGridMode === "list" ? "rgba(201,164,74,0.12)" : "transparent", color: profileGridMode === "list" ? "#c9a44a" : "#555", fontSize: 14 }}>☰</button>
+                </div>
               </div>
             </div>
 
-            {/* Profile Grid */}
+            {/* Profile Grid / List */}
             {filteredProfiles.length === 0 ? (
               <div style={{
                 display: "flex", flexDirection: "column", alignItems: "center",
@@ -6802,8 +6812,9 @@ function CastingAppInner({ authUser }) {
                 })()}
 
                 <div style={{
-                  display: "grid",
-                  gridTemplateColumns: "1fr 1fr",
+                  display: profileGridMode === "list" ? "flex" : "grid",
+                  flexDirection: profileGridMode === "list" ? "column" : undefined,
+                  gridTemplateColumns: profileGridMode === "list" ? undefined : "1fr 1fr",
                   gap: 10,
                 }}>
                   {filteredProfiles.map((profile, i) => (
