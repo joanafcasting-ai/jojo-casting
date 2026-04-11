@@ -2605,9 +2605,18 @@ function CastingAppInner({ authUser }) {
       ...prev,
       castingDays: prev.castingDays.map(d => {
         if (d.id !== dayId) return d;
-        const [startH, startM] = (startTime || d.slots[0]?.time || "09:00").split(":").map(Number);
+        const firstNonPause = d.slots.find(s => !s._isPause);
+        const [startH, startM] = (startTime || firstNonPause?.time || "09:00").split(":").map(Number);
         let currentMin = startH * 60 + startM;
         const slots = d.slots.map(s => {
+          if (s._isPause) {
+            // Pause: set start time, skip to end time
+            const time = `${String(Math.floor(currentMin / 60)).padStart(2, "0")}:${String(currentMin % 60).padStart(2, "0")}`;
+            const pauseDur = parseInt(s.duration) || 30;
+            currentMin += pauseDur;
+            const pauseEnd = `${String(Math.floor(currentMin / 60)).padStart(2, "0")}:${String(currentMin % 60).padStart(2, "0")}`;
+            return { ...s, time, _pauseEnd: pauseEnd };
+          }
           const time = `${String(Math.floor(currentMin / 60)).padStart(2, "0")}:${String(currentMin % 60).padStart(2, "0")}`;
           currentMin += parseInt(s.duration) || 15;
           return { ...s, time };
@@ -2853,7 +2862,7 @@ function CastingAppInner({ authUser }) {
     .light-wrapper { filter: invert(1) hue-rotate(180deg); }
     .light-wrapper img, .light-wrapper video { filter: invert(1) hue-rotate(180deg); }
     input[type="date"] { background: #1a1a1e !important; border: 1px solid #3a3a3e !important; color: #e0e0e0 !important; border-radius: 8px; padding: 9px 12px; font-size: 13px; cursor: pointer; }
-    input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.7); cursor: pointer; font-size: 16px; }
+    input[type="date"]::-webkit-calendar-picker-indicator, input[type="time"]::-webkit-calendar-picker-indicator { filter: invert(0.9); cursor: pointer; font-size: 16px; }
     input[type="date"]:hover { border-color: #c9a44a !important; }
     input[type="date"]:focus { border-color: #c9a44a !important; outline: none; }
   `;
@@ -5677,7 +5686,7 @@ function CastingAppInner({ authUser }) {
                         </h2>
                         <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 13, color: "#666" }}>
                           {day.location && <span>📍 {day.location}</span>}
-                          <span>{day.slots.length} passage{day.slots.length !== 1 ? "s" : ""}</span>
+                          <span>{day.slots.filter(s => !s._isPause).length} passage{day.slots.filter(s => !s._isPause).length !== 1 ? "s" : ""}</span>
                           {day.slots.length > 0 && (
                             <span>· {day.slots[0]?.time} → {(() => {
                               const last = day.slots[day.slots.length - 1];
@@ -5864,40 +5873,39 @@ function CastingAppInner({ authUser }) {
                     <div style={{ background: "#111114", borderRadius: 14, border: "1px solid #1e1e22", overflow: "hidden", marginBottom: 20 }}>
                       {/* Column headers */}
                       <div style={{
-                        display: "grid", gridTemplateColumns: "28px 36px 72px 52px 56px 1fr 100px 140px 90px 90px 70px 32px",
-                        padding: "12px 16px", borderBottom: "2px solid #c9a44a33", alignItems: "center", gap: 6,
+                        display: "grid", gridTemplateColumns: "28px 36px 90px 50px 1fr 100px 100px 36px 32px",
+                        padding: "12px 16px", borderBottom: "2px solid #c9a44a33", alignItems: "center", gap: 8,
                         background: "rgba(201,164,74,0.04)",
                       }}>
                         <span></span>
                         <span style={{ fontSize: 10, color: "#c9a44a", fontWeight: 700, textTransform: "uppercase", textAlign: "center" }}>N°</span>
-                        <span style={{ fontSize: 10, color: "#c9a44a", fontWeight: 700, textTransform: "uppercase" }}>Heure</span>
+                        <span style={{ fontSize: 10, color: "#c9a44a", fontWeight: 700, textTransform: "uppercase" }}>🕐 Heure</span>
                         <span style={{ fontSize: 10, color: "#c9a44a", fontWeight: 700, textTransform: "uppercase", textAlign: "center" }}>Durée</span>
-                        <span style={{ fontSize: 10, color: "#c9a44a", fontWeight: 700, textTransform: "uppercase" }}>Photo</span>
-                        <span style={{ fontSize: 10, color: "#c9a44a", fontWeight: 700, textTransform: "uppercase" }}>Prénom / Nom / Rôle</span>
-                        <span style={{ fontSize: 10, color: "#c9a44a", fontWeight: 700, textTransform: "uppercase" }}>Agence</span>
-                        <span style={{ fontSize: 10, color: "#c9a44a", fontWeight: 700, textTransform: "uppercase" }}>Contact</span>
+                        <span style={{ fontSize: 10, color: "#c9a44a", fontWeight: 700, textTransform: "uppercase" }}>Profil</span>
                         <span style={{ fontSize: 10, color: "#c9a44a", fontWeight: 700, textTransform: "uppercase", textAlign: "center" }}>Statut</span>
                         <span style={{ fontSize: 10, color: "#c9a44a", fontWeight: 700, textTransform: "uppercase", textAlign: "center" }}>Prévenir</span>
-                        <span style={{ fontSize: 10, color: "#c9a44a", fontWeight: 700, textTransform: "uppercase", textAlign: "center" }}>Notes</span>
+                        <span style={{ fontSize: 10, color: "#c9a44a", fontWeight: 700, textTransform: "uppercase", textAlign: "center" }}>📝</span>
                         <span></span>
                       </div>
 
                       {/* Slot rows */}
-                      {day.slots.map((slot, i) => {
+                      {(() => { let passageNum = 0; return day.slots.map((slot, i) => {
                         // Pause slot
                         if (slot._isPause) {
                           return (
-                            <div key={slot.id} style={{ display: "flex", alignItems: "center", padding: "10px 16px", background: slot._pauseType === "dej" ? "rgba(245,158,11,0.06)" : "rgba(255,255,255,0.02)", borderBottom: "1px solid #1a1a1e", gap: 12 }}>
-                              <div style={{ width: 28 }} />
-                              <span style={{ fontSize: 14, fontWeight: 700, color: slot._pauseType === "dej" ? "#f59e0b" : "#888" }}>{slot._pauseType === "dej" ? "🍽 PAUSE DÉJEUNER" : "☕ PAUSE"}</span>
-                              <input type="time" value={slot.time || ""} onChange={e => updateSlot(day.id, slot.id, { time: e.target.value })} style={{ padding: "4px 6px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 6, color: "#f0f0f0", fontSize: 13, fontFamily: "inherit", outline: "none", fontWeight: 700, width: 80 }} />
-                              <span style={{ color: "#555" }}>→</span>
-                              <input value={slot._pauseEnd || ""} onChange={e => updateSlot(day.id, slot.id, { _pauseEnd: e.target.value })} placeholder="Fin" style={{ padding: "4px 6px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 6, color: "#f0f0f0", fontSize: 13, fontFamily: "inherit", outline: "none", width: 80 }} />
+                            <div key={slot.id} draggable onDragStart={() => setDragSlot(i)} onDragOver={e => e.preventDefault()} onDrop={() => { if (dragSlot !== null && dragSlot !== i) { moveSlot(day.id, dragSlot, i); setDragSlot(null); } }} onDragEnd={() => setDragSlot(null)}
+                              style={{ display: "flex", alignItems: "center", padding: "12px 16px", background: slot._pauseType === "dej" ? "rgba(245,158,11,0.06)" : "rgba(255,255,255,0.02)", borderBottom: "1px solid #1a1a1e", gap: 12 }}>
+                              <div style={{ cursor: "grab", color: "#444", fontSize: 14, width: 28, textAlign: "center", userSelect: "none" }}>⠿</div>
+                              <span style={{ fontSize: 15, fontWeight: 800, color: slot._pauseType === "dej" ? "#f59e0b" : "#888" }}>{slot._pauseType === "dej" ? "🍽 PAUSE DÉJEUNER" : "☕ PAUSE"}</span>
+                              <input type="time" value={slot.time || ""} onChange={e => updateSlot(day.id, slot.id, { time: e.target.value })} style={{ padding: "6px 8px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 6, color: "#fff", fontSize: 14, fontFamily: "inherit", outline: "none", fontWeight: 700, width: 90 }} />
+                              <span style={{ color: "#666", fontSize: 14 }}>→</span>
+                              <input type="time" value={slot._pauseEnd || ""} onChange={e => updateSlot(day.id, slot.id, { _pauseEnd: e.target.value })} style={{ padding: "6px 8px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 6, color: "#fff", fontSize: 14, fontFamily: "inherit", outline: "none", fontWeight: 700, width: 90 }} />
                               <div style={{ flex: 1 }} />
-                              <button onClick={() => removeSlot(day.id, slot.id)} style={{ background: "none", border: "none", color: "#333", cursor: "pointer", fontSize: 16 }}>×</button>
+                              <button onClick={() => removeSlot(day.id, slot.id)} style={{ background: "none", border: "none", color: "#444", cursor: "pointer", fontSize: 18 }} onMouseEnter={e => e.currentTarget.style.color = "#ef4444"} onMouseLeave={e => e.currentTarget.style.color = "#444"}>×</button>
                             </div>
                           );
                         }
+                        passageNum++;
                         const profile = findProfile(slot.profileId);
                         const avail = SLOT_AVAILABILITY[slot.availability || "pending"];
                         const rc = getRoleColor(slot.role || profile?._role || "");
@@ -5906,54 +5914,46 @@ function CastingAppInner({ authUser }) {
                         return (
                           <div key={slot.id} draggable onDragStart={() => setDragSlot(i)} onDragOver={e => e.preventDefault()} onDrop={() => { if (dragSlot !== null && dragSlot !== i) { moveSlot(day.id, dragSlot, i); setDragSlot(null); } }} onDragEnd={() => setDragSlot(null)}
                             style={{
-                              display: "grid", gridTemplateColumns: "28px 36px 72px 52px 56px 1fr 100px 140px 90px 90px 70px 32px",
-                              padding: "12px 16px", alignItems: "center", gap: 6,
+                              display: "grid", gridTemplateColumns: "28px 36px 90px 50px 1fr 100px 100px 36px 32px",
+                              padding: "10px 16px", alignItems: "center", gap: 8,
                               borderBottom: i < day.slots.length - 1 ? "1px solid #1a1a1e" : "none",
                               borderLeft: `4px solid ${rc.border}`,
                               background: dragSlot === i ? "rgba(168,85,247,0.06)" : slot.availability === "not_dispo" ? "rgba(239,68,68,0.02)" : slot.availability === "dispo" ? "rgba(34,197,94,0.02)" : "transparent",
                             }}>
-                            {/* Drag */}
                             <div style={{ cursor: "grab", color: "#444", fontSize: 14, textAlign: "center", userSelect: "none" }}>⠿</div>
-                            {/* N° */}
-                            <div style={{ fontSize: 16, fontWeight: 800, color: "#c9a44a", textAlign: "center" }}>{i + 1}</div>
-                            {/* Time */}
-                            <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                              <input type="time" value={slot.time} onChange={e => updateSlot(day.id, slot.id, { time: e.target.value })} style={{ padding: "6px 4px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 6, color: "#fff", fontSize: 15, fontFamily: "inherit", outline: "none", fontWeight: 800, width: "100%" }} />
+                            <div style={{ fontSize: 18, fontWeight: 800, color: "#c9a44a", textAlign: "center" }}>{passageNum}</div>
+                            <div style={{ fontSize: 17, fontWeight: 800, color: "#fff", fontFamily: "inherit" }}>
+                              <input type="time" value={slot.time} onChange={e => updateSlot(day.id, slot.id, { time: e.target.value })} style={{ padding: "6px 6px", background: "#0c0c0e", border: "1px solid #333", borderRadius: 6, color: "#fff", fontSize: 16, fontFamily: "inherit", outline: "none", fontWeight: 800, width: "100%", boxSizing: "border-box" }} />
                             </div>
-                            {/* Duration */}
-                            <input type="number" value={slot.duration} onChange={e => updateSlot(day.id, slot.id, { duration: e.target.value })} min="5" max="120" step="5" style={{ width: "100%", padding: "6px 2px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 6, color: "#fff", fontSize: 13, fontFamily: "inherit", outline: "none", textAlign: "center", fontWeight: 600 }} />
-                            {/* Photo */}
-                            <div onClick={() => profile && setCastingDetailProfile(profile)} style={{ width: 50, height: 62, borderRadius: 8, overflow: "hidden", background: "#0c0c0e", border: "1px solid #1e1e22", cursor: profile ? "pointer" : "default" }}>
-                              {profile?.photos?.[0] ? <img src={profile.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 18 }}>◎</div>}
+                            <div style={{ fontSize: 14, color: "#ccc", textAlign: "center", fontWeight: 600 }}>
+                              <input type="number" value={slot.duration} onChange={e => updateSlot(day.id, slot.id, { duration: e.target.value })} min="5" max="120" step="5" style={{ width: "100%", padding: "4px 2px", background: "transparent", border: "1px solid #2a2a2e", borderRadius: 6, color: "#ccc", fontSize: 13, fontFamily: "inherit", outline: "none", textAlign: "center", fontWeight: 600, boxSizing: "border-box" }} />
                             </div>
-                            {/* Name + role */}
-                            <div style={{ minWidth: 0 }}>
-                              <div style={{ fontSize: 16, fontWeight: 800, color: "#fff", marginBottom: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{fullName}</div>
-                              <span style={{ fontSize: 11, color: rc.color, background: `${rc.color}14`, padding: "2px 10px", borderRadius: 4, fontWeight: 700 }}>{slot.role || profile?._role || "—"}</span>
-                              {profile?.age && <span style={{ fontSize: 11, color: "#888", marginLeft: 6 }}>{profile.age} ans</span>}
+                            {/* Profile: photo + name + agency + contact */}
+                            <div style={{ display: "flex", gap: 10, alignItems: "center", minWidth: 0 }}>
+                              <div onClick={() => profile && setCastingDetailProfile(profile)} style={{ width: 48, height: 60, borderRadius: 8, overflow: "hidden", background: "#0c0c0e", border: "1px solid #1e1e22", flexShrink: 0, cursor: profile ? "pointer" : "default" }}>
+                                {profile?.photos?.[0] ? <img src={profile.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 18 }}>◎</div>}
+                              </div>
+                              <div style={{ minWidth: 0, flex: 1 }}>
+                                <div style={{ fontSize: 15, fontWeight: 800, color: "#fff", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{fullName}</div>
+                                {profile?.agency && <div style={{ fontSize: 12, color: "#c9a44a", fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>— {profile.agency}</div>}
+                                <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 2 }}>
+                                  <span style={{ fontSize: 10, color: rc.color, background: `${rc.color}14`, padding: "1px 8px", borderRadius: 4, fontWeight: 700 }}>{slot.role || profile?._role || "—"}</span>
+                                  {profile?.age && <span style={{ fontSize: 11, color: "#888" }}>{profile.age} ans</span>}
+                                </div>
+                                {(profile?.phone || profile?.email) && <div style={{ fontSize: 10, color: "#666", marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{profile.phone && `☎ ${profile.phone}`}{profile.phone && profile.email && " · "}{profile.email && `✉ ${profile.email}`}</div>}
+                              </div>
                             </div>
-                            {/* Agency */}
-                            <div style={{ fontSize: 13, color: "#c9a44a", fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{profile?.agency || "—"}</div>
-                            {/* Contact */}
-                            <div style={{ minWidth: 0 }}>
-                              {profile?.phone && <div style={{ fontSize: 11, color: "#ccc", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>☎ {profile.phone}</div>}
-                              {profile?.email && <div style={{ fontSize: 10, color: "#60a5fa", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>✉ {profile.email}</div>}
-                            </div>
-                            {/* Status */}
                             <select value={slot.availability || "pending"} onChange={e => updateSlot(day.id, slot.id, { availability: e.target.value })} style={{ padding: "6px 4px", background: avail.bg, border: `1px solid ${avail.color}44`, borderRadius: 8, color: avail.color, fontSize: 11, fontFamily: "inherit", fontWeight: 700, outline: "none", cursor: "pointer", width: "100%" }}>
                               {Object.entries(SLOT_AVAILABILITY).map(([k, v]) => <option key={k} value={k}>{v.icon} {v.label}</option>)}
                             </select>
-                            {/* Invite */}
                             <div style={{ textAlign: "center" }}>
-                              {hasEmail ? <button onClick={e => { e.stopPropagation(); openInviteModal(day, slot, profile); }} style={{ padding: "6px 10px", background: slot._invitedAt ? "rgba(34,197,94,0.08)" : "rgba(234,67,53,0.08)", border: `1px solid ${slot._invitedAt ? "rgba(34,197,94,0.25)" : "rgba(234,67,53,0.25)"}`, borderRadius: 8, color: slot._invitedAt ? "#22c55e" : "#EA4335", cursor: "pointer", fontSize: 11, fontWeight: 700, fontFamily: "inherit", width: "100%" }}>{slot._invitedAt ? "✓ Envoyé" : "📨 Prévenir"}</button> : <span style={{ fontSize: 10, color: "#333" }}>—</span>}
+                              {hasEmail ? <button onClick={e => { e.stopPropagation(); openInviteModal(day, slot, profile); }} style={{ padding: "6px 10px", background: slot._invitedAt ? "rgba(34,197,94,0.08)" : "rgba(234,67,53,0.08)", border: `1px solid ${slot._invitedAt ? "rgba(34,197,94,0.25)" : "rgba(234,67,53,0.25)"}`, borderRadius: 8, color: slot._invitedAt ? "#22c55e" : "#EA4335", cursor: "pointer", fontSize: 11, fontWeight: 700, fontFamily: "inherit", width: "100%" }}>{slot._invitedAt ? "✓ Envoyé" : "📨"}</button> : <span style={{ fontSize: 10, color: "#333" }}>—</span>}
                             </div>
-                            {/* Notes */}
                             <div style={{ textAlign: "center" }}><button onClick={() => setActingNotesModal({ dayId: day.id, slotId: slot.id })} style={{ background: slot.actingNotes || slot.actingFileName ? "rgba(168,85,247,0.12)" : "rgba(255,255,255,0.03)", border: slot.actingNotes || slot.actingFileName ? "1px solid rgba(168,85,247,0.3)" : "1px solid #2a2a2e", borderRadius: 8, color: slot.actingNotes || slot.actingFileName ? "#a855f7" : "#444", cursor: "pointer", fontSize: 14, width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center" }}>📝</button></div>
-                            {/* Remove */}
                             <button onClick={() => removeSlot(day.id, slot.id)} style={{ background: "none", border: "none", color: "#333", cursor: "pointer", fontSize: 18, fontFamily: "inherit", padding: 0 }} onMouseEnter={e => e.currentTarget.style.color = "#ef4444"} onMouseLeave={e => e.currentTarget.style.color = "#333"}>×</button>
                           </div>
                         );
-                      })}
+                      }); })()}
 
                       {day.slots.length === 0 && (
                         <div style={{ padding: "40px", textAlign: "center", color: "#555", fontSize: 14 }}>
