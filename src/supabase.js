@@ -116,7 +116,11 @@ const storage = {
       if (prefix) {
         query = query.like('key', prefix + '%')
       }
-      const { data, error } = await query
+      const result = await Promise.race([
+        query,
+        new Promise((_, reject) => setTimeout(() => reject(new Error('Supabase list timeout')), 8000))
+      ])
+      const { data, error } = result
       if (error) throw error
       return { keys: (data || []).map(d => d.key), prefix, shared }
     } catch (e) {
