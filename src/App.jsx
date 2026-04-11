@@ -6122,210 +6122,129 @@ function CastingAppInner({ authUser }) {
 
                 // ====== RENDER PROFILE CARD (shared between director & réal) ======
                 const renderProfileCard = (profile, i) => {
-                  const session = state.castingSessions[profile.id] || { passStatus: "not_yet", liveNotes: "", castingVideos: [] };
+                  const session = state.castingSessions[profile.id] || { passStatus: "not_yet", liveNotes: "", castingVideos: [], castingPhotos: [] };
                   const passInfo = CASTING_PASS_STATUS[session.passStatus || "not_yet"];
                   const finalSel = state.finalSelections[profile.id];
                   const slotInfo = getSlotInfo(profile.id);
                   const sel = { ...(state.selections[profile.id] || {}), choice: getChoice(profile.id) };
-                  const reaSel = state.realisateurSelections?.[profile.id];
                   const fullName = [profile.firstName, profile.name].filter(Boolean).join(" ") || "Sans nom";
+                  const isExpanded = castingDetailProfile?.id === profile.id;
 
                   return (
                     <div key={profile.id} style={{
-                      background: "#111114", borderRadius: 16, border: "1px solid #1e1e22",
+                      background: "#111114", borderRadius: 14, border: "1px solid #1e1e22",
                       borderLeft: `4px solid ${rc.color}`,
                       overflow: "hidden",
                       opacity: session.passStatus === "absent" ? 0.5 : 1,
                       transition: "all 0.2s",
                       animation: `fadeIn 0.3s ease ${i * 0.04}s both`,
                     }}>
-                      {/* === CARD HEADER: Profile + slot time + status === */}
-                      <div style={{ display: "flex", gap: 16, padding: "18px 20px", alignItems: "center", cursor: isDirector ? "pointer" : "default" }}
-                        onClick={() => isDirector ? setCastingDetailProfile(profile) : null}
-                      >
-                        {/* Slot time */}
-                        {slotInfo && (
-                          <div style={{ textAlign: "center", flexShrink: 0, minWidth: 52 }}>
-                            <div style={{ fontSize: 18, fontWeight: 800, color: "#f0f0f0", lineHeight: 1 }}>{slotInfo.slot.time}</div>
-                            <div style={{ fontSize: 9, color: "#666", marginTop: 2 }}>{slotInfo.slot.duration} min</div>
-                          </div>
-                        )}
-
-                        {/* Photo */}
-                        <div style={{ width: 56, height: 70, borderRadius: 10, overflow: "hidden", background: "#0c0c0e", flexShrink: 0, border: "1px solid #1e1e22" }}>
-                          {profile.photos?.[0] ? (
-                            <img src={profile.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
-                          ) : (
-                            <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 22 }}>◎</div>
-                          )}
+                      {/* === LIST ROW (always visible) === */}
+                      <div onClick={() => setCastingDetailProfile(isExpanded ? null : profile)}
+                        style={{ display: "flex", gap: 14, padding: "14px 18px", alignItems: "center", cursor: "pointer" }}
+                        onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.015)"}
+                        onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                        {slotInfo && <div style={{ textAlign: "center", flexShrink: 0, minWidth: 50 }}><div style={{ fontSize: 16, fontWeight: 800, color: "#f0f0f0" }}>{slotInfo.slot.time}</div><div style={{ fontSize: 9, color: "#666" }}>{slotInfo.slot.duration}min</div></div>}
+                        <div style={{ width: 50, height: 62, borderRadius: 8, overflow: "hidden", background: "#0c0c0e", flexShrink: 0 }}>
+                          {profile.photos?.[0] ? <img src={profile.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 20 }}>◎</div>}
                         </div>
-
-                        {/* Info */}
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: 16, fontWeight: 700, color: "#f0f0f0", marginBottom: 4 }}>{fullName}</div>
-                          <div style={{ display: "flex", flexWrap: "wrap", gap: 8, fontSize: 11, color: "#888" }}>
-                            {profile.age && <span>{profile.age} ans</span>}
-                            {profile.height && <span>📏 {profile.height}</span>}
-                            {profile.agency && <span>🏢 {profile.agency}</span>}
-                            {profile.email && <span style={{ color: "#666" }}>✉ {profile.email}</span>}
+                          <div style={{ fontSize: 18, fontWeight: 800, color: "#f0f0f0", fontFamily: "'Playfair Display', serif" }}>{fullName}</div>
+                          <div style={{ fontSize: 13, color: "#888", marginTop: 2 }}>
+                            {[profile.age ? profile.age + " ans" : null, profile.agency ? "— " + profile.agency : null].filter(Boolean).join(" ")}
                           </div>
                         </div>
-
-                        {/* Status + role badges */}
-                        <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end", gap: 6, flexShrink: 0 }}>
-                          <span style={{ fontSize: 10, color: rc.color, background: rc.bg, padding: "3px 10px", borderRadius: 6, fontWeight: 600, border: `1px solid ${rc.border}` }}>
-                            {currentRole}
-                          </span>
-                          {isDirector && (
-                            <select value={session.passStatus || "not_yet"}
-                              onClick={e => e.stopPropagation()}
-                              onChange={e => { e.stopPropagation(); updateCastingSession(profile.id, { passStatus: e.target.value }); }}
-                              style={{ padding: "4px 8px", background: passInfo.bg, border: `1px solid ${passInfo.color}44`, borderRadius: 6, color: passInfo.color, fontSize: 10, fontFamily: "inherit", fontWeight: 600, outline: "none", cursor: "pointer" }}>
-                              {Object.entries(CASTING_PASS_STATUS).map(([k, v]) => (
-                                <option key={k} value={k}>{v.icon} {v.label}</option>
-                              ))}
-                            </select>
-                          )}
-                          {session.passStatus === "passed" && (
-                            <span style={{ fontSize: 10, color: "#22c55e", fontWeight: 600, background: "rgba(34,197,94,0.1)", padding: "3px 8px", borderRadius: 6 }}>✓ Passé</span>
-                          )}
-                          {finalSel?.selected === true && (
-                            <span style={{ fontSize: 10, color: "#22c55e", background: "rgba(34,197,94,0.1)", padding: "3px 8px", borderRadius: 6, fontWeight: 600 }}>🏆 Retenu</span>
-                          )}
-                          {/* Guest vote indicator */}
-                          {state._guestVotes?.[profile.id] && (
-                            <span style={{ fontSize: 9, padding: "3px 8px", borderRadius: 6, fontWeight: 700,
-                              background: state._guestVotes[profile.id].choice === "yes" ? "rgba(96,165,250,0.1)" : state._guestVotes[profile.id].choice === "no" ? "rgba(239,68,68,0.08)" : "rgba(245,158,11,0.08)",
-                              color: state._guestVotes[profile.id].choice === "yes" ? "#60a5fa" : state._guestVotes[profile.id].choice === "no" ? "#ef4444" : "#f59e0b",
-                              border: `1px solid ${state._guestVotes[profile.id].choice === "yes" ? "rgba(96,165,250,0.2)" : state._guestVotes[profile.id].choice === "no" ? "rgba(239,68,68,0.15)" : "rgba(245,158,11,0.15)"}`,
-                            }}>
-                              👥 {state._guestVotes[profile.id].choice === "yes" ? "OUI" : state._guestVotes[profile.id].choice === "no" ? "NON" : "P-Ê"}
-                            </span>
-                          )}
-                          {state._guestCastingVotes?.[profile.id] && (
-                            <span style={{ fontSize: 9, padding: "3px 8px", borderRadius: 6, fontWeight: 700,
-                              background: state._guestCastingVotes[profile.id].choice === "yes" ? "rgba(34,197,94,0.08)" : "rgba(239,68,68,0.08)",
-                              color: state._guestCastingVotes[profile.id].choice === "yes" ? "#22c55e" : "#ef4444",
-                            }}>
-                              🎬 {state._guestCastingVotes[profile.id].choice === "yes" ? "OUI" : "NON"}
-                            </span>
-                          )}
+                        <div style={{ display: "flex", gap: 6, alignItems: "center", flexShrink: 0 }}>
+                          {isDirector && <select value={session.passStatus || "not_yet"} onClick={e => e.stopPropagation()} onChange={e => { e.stopPropagation(); updateCastingSession(profile.id, { passStatus: e.target.value }); }} style={{ padding: "5px 10px", background: passInfo.bg, border: `1px solid ${passInfo.color}44`, borderRadius: 6, color: passInfo.color, fontSize: 11, fontFamily: "inherit", fontWeight: 600, outline: "none", cursor: "pointer" }}>
+                            {Object.entries(CASTING_PASS_STATUS).map(([k, v]) => <option key={k} value={k}>{v.icon} {v.label}</option>)}
+                          </select>}
+                          {finalSel?.selected === true && <span style={{ fontSize: 11, color: "#22c55e", background: "rgba(34,197,94,0.1)", padding: "4px 10px", borderRadius: 6, fontWeight: 700 }}>🏆 Retenu</span>}
+                          {finalSel?.selected === false && <span style={{ fontSize: 11, color: "#ef4444", background: "rgba(239,68,68,0.08)", padding: "4px 10px", borderRadius: 6, fontWeight: 700 }}>✕ Refusé</span>}
+                          {state._guestVotes?.[profile.id] && <span style={{ fontSize: 10, padding: "4px 8px", borderRadius: 6, fontWeight: 700, background: state._guestVotes[profile.id].choice === "yes" ? "rgba(96,165,250,0.1)" : "rgba(239,68,68,0.08)", color: state._guestVotes[profile.id].choice === "yes" ? "#60a5fa" : state._guestVotes[profile.id].choice === "no" ? "#ef4444" : "#f59e0b" }}>👥 {state._guestVotes[profile.id].choice === "yes" ? "OUI" : state._guestVotes[profile.id].choice === "no" ? "NON" : "P-Ê"}</span>}
+                          <span style={{ fontSize: 16, color: "#444", transform: isExpanded ? "rotate(180deg)" : "rotate(0)", transition: "transform 0.2s" }}>▾</span>
                         </div>
                       </div>
 
-                      {/* === DIRECTOR: Notes + Videos inline === */}
-                      {isDirector && (
-                        <div style={{ padding: "0 20px 16px", display: "flex", gap: 12 }}>
-                          <div style={{ flex: 1 }}>
-                            <textarea value={session.liveNotes || ""}
-                              onChange={e => updateCastingSession(profile.id, { liveNotes: e.target.value })}
-                              placeholder="Notes de casting..."
-                              rows={2}
-                              style={{ width: "100%", padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "'DM Sans',sans-serif", outline: "none", resize: "vertical", lineHeight: 1.5 }}
-                            />
-                          </div>
-                          <div style={{ display: "flex", gap: 6, alignItems: "flex-start", flexShrink: 0 }}>
-                            {(session.castingVideos || []).map((v, vi) => (
-                              <div key={vi} style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 2 }}>
-                                <button onClick={() => setCastingVideoModal(v.url)} style={{ width: 36, height: 36, background: "rgba(251,146,60,0.1)", border: "1px solid rgba(251,146,60,0.2)", borderRadius: 8, color: "#fb923c", cursor: "pointer", fontSize: 14, display: "flex", alignItems: "center", justifyContent: "center" }}>▶</button>
-                                <span style={{ fontSize: 8, color: "#555" }}>{v.name?.slice(0, 8)}</span>
+                      {/* === EXPANDED DETAIL (click to open) === */}
+                      {isExpanded && (
+                        <div style={{ borderTop: "1px solid #1e1e22" }}>
+                          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 0 }}>
+                            {/* LEFT: Profile info */}
+                            <div style={{ padding: "20px 24px", borderRight: "1px solid #1e1e22" }}>
+                              <div style={{ fontSize: 11, color: "#c9a44a", fontWeight: 600, textTransform: "uppercase", marginBottom: 14 }}>Fiche profil</div>
+                              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px 20px" }}>
+                                <div><span style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Prénom</span><div style={{ fontSize: 15, color: "#e0e0e0", fontWeight: 600 }}>{profile.firstName || "—"}</div></div>
+                                <div><span style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Nom</span><div style={{ fontSize: 15, color: "#e0e0e0", fontWeight: 600 }}>{(profile.name || "—").toUpperCase()}</div></div>
+                                {profile.agency && <div><span style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Agence</span><div style={{ fontSize: 14, color: "#c9a44a", fontWeight: 600 }}>{profile.agency}</div></div>}
+                                <div><span style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Âge</span><div style={{ fontSize: 14, color: "#e0e0e0" }}>{profile.age ? profile.age + " ans" : "—"}</div></div>
+                                {profile.birthDate && <div><span style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Date de naissance</span><div style={{ fontSize: 14, color: "#e0e0e0" }}>{fmtDateFR(profile.birthDate) || profile.birthDate}</div></div>}
+                                {profile.height && <div><span style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Taille</span><div style={{ fontSize: 14, color: "#e0e0e0" }}>{profile.height}</div></div>}
+                                {profile.measurements && <div><span style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Mensurations</span><div style={{ fontSize: 14, color: "#e0e0e0" }}>{profile.measurements}</div></div>}
+                                {profile.hairColor && <div><span style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Cheveux</span><div style={{ fontSize: 14, color: "#e0e0e0" }}>{profile.hairColor}</div></div>}
                               </div>
-                            ))}
-                            <label style={{ width: 36, height: 36, display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(255,255,255,0.02)", border: "1px dashed #333", borderRadius: 8, cursor: "pointer", fontSize: 14, color: "#444" }}>
-                              <input type="file" accept="video/*" style={{ display: "none" }} onChange={e => { if (e.target.files?.[0]) addCastingVideo(profile.id, e.target.files[0]); }} />
-                              +
-                            </label>
-                          </div>
-                        </div>
-                      )}
-
-                      {/* === DIRECTOR: See réalisateur's final selection === */}
-                      {isDirector && finalSel?.selected != null && (
-                        <div style={{
-                          padding: "10px 20px", borderTop: "1px solid #1e1e22",
-                          background: finalSel.selected ? "rgba(34,197,94,0.03)" : "rgba(239,68,68,0.03)",
-                          display: "flex", alignItems: "center", gap: 10,
-                        }}>
-                          <span style={{ fontSize: 11, fontWeight: 600, color: finalSel.selected ? "#22c55e" : "#ef4444" }}>
-                            {finalSel.selected ? "🏆 Sélectionné" : "✕ Non retenu"}
-                          </span>
-                          {finalSel.comment && <span style={{ fontSize: 11, color: "#888" }}>— « {finalSel.comment} »</span>}
-                        </div>
-                      )}
-
-                      {/* === Notes display + Selection buttons === */}
-                      {(
-                        <>
-                          {session.liveNotes && (
-                            <div style={{ padding: "0 20px 12px" }}>
-                              <div style={{ fontSize: 12, color: "#bbb", lineHeight: 1.6, padding: "10px 14px", background: "rgba(255,255,255,0.02)", borderRadius: 10, border: "1px solid #1a1a1e" }}>
-                                📝 {session.liveNotes}
+                              {/* Contact */}
+                              <div style={{ marginTop: 14, paddingTop: 12, borderTop: "1px solid #1e1e22" }}>
+                                <div style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 6 }}>Contact</div>
+                                {profile.email && <div style={{ fontSize: 13, color: "#60a5fa", marginBottom: 3 }}>✉ {profile.email}</div>}
+                                {profile.phone && <div style={{ fontSize: 13, color: "#ccc", marginBottom: 3 }}>☎ {profile.phone}</div>}
+                                {profile.agencyEmail && <div style={{ fontSize: 13, color: "#c9a44a", marginBottom: 3 }}>🏢 {profile.agencyEmail}</div>}
                               </div>
                             </div>
-                          )}
 
-                          {/* Selftapes */}
-                          {profile.selftapeLinks?.filter(l => l).length > 0 && (
-                            <div style={{ padding: "0 20px 12px" }}>
-                              <div style={{ display: "flex", gap: 8, marginBottom: 4 }}>
-                                {profile.selftapeLinks.filter(l => l).map((link, li) => (
-                                  <a key={li} href={link} target="_blank" rel="noreferrer" style={{ fontSize: 11, color: "#60a5fa", background: "rgba(59,130,246,0.08)", padding: "5px 12px", borderRadius: 6, textDecoration: "none" }}>▶ Tape {li + 1}</a>
-                                ))}
-                              </div>
-                              {profile.selftapeLinks.filter(l => l && getEmbedUrl(l)).slice(0, 1).map((link, li) => (
-                                <div key={li}><EmbedPlayer url={link} height={200} /></div>
-                              ))}
-                            </div>
-                          )}
-
-                          {/* Casting videos */}
-                          {(session.castingVideos || []).length > 0 && (
-                            <div style={{ padding: "0 20px 12px", display: "flex", gap: 8 }}>
-                              {session.castingVideos.map((v, vi) => (
-                                <button key={vi} onClick={() => setCastingVideoModal(v.url)} style={{ fontSize: 11, color: "#fb923c", background: "rgba(251,146,60,0.08)", padding: "5px 12px", borderRadius: 6, border: "1px solid rgba(251,146,60,0.15)", cursor: "pointer", fontFamily: "inherit" }}>▶ {v.name || `Vidéo ${vi+1}`}</button>
-                              ))}
-                            </div>
-                          )}
-
-                          {/* === CHOICE BUTTONS (réalisateur/guest) === */}
-                          <div style={{
-                            padding: "14px 20px", borderTop: "1px solid #1e1e22",
-                            background: finalSel?.selected === true ? "rgba(34,197,94,0.04)" : finalSel?.selected === false ? "rgba(239,68,68,0.04)" : "rgba(255,255,255,0.01)",
-                          }}>
-                            <div style={{ display: "flex", gap: 8, alignItems: "center", marginBottom: finalSel?.selected != null ? 10 : 0 }}>
-                              {[
-                                { val: true, label: "✓ OUI", color: "#22c55e", bg: "rgba(34,197,94,0.1)" },
-                                { val: "maybe", label: "? PEUT-ÊTRE", color: "#f59e0b", bg: "rgba(245,158,11,0.1)" },
-                                { val: false, label: "✕ NON", color: "#ef4444", bg: "rgba(239,68,68,0.1)" },
-                              ].map(opt => {
-                                const isSelected = opt.val === "maybe"
-                                  ? finalSel?.selected === "maybe"
-                                  : finalSel?.selected === opt.val;
-                                return (
-                                  <button key={String(opt.val)}
-                                    onClick={() => updateFinalSelection(profile.id, { selected: isSelected ? null : opt.val })}
-                                    style={{
-                                      flex: 1, padding: "12px 0", borderRadius: 10, cursor: "pointer",
-                                      fontFamily: "inherit", fontSize: 14, fontWeight: 800,
-                                      background: isSelected ? opt.bg : "rgba(255,255,255,0.02)",
-                                      border: isSelected ? `2px solid ${opt.color}` : "2px solid #222",
-                                      color: isSelected ? opt.color : "#555",
-                                      transition: "all 0.15s", letterSpacing: "0.02em",
-                                    }}>
-                                    {opt.label}
+                            {/* RIGHT: Casting media + notes */}
+                            <div style={{ padding: "20px 24px" }}>
+                              {/* Photos casting */}
+                              <div style={{ marginBottom: 16 }}>
+                                <div style={{ fontSize: 11, color: "#fb923c", fontWeight: 600, textTransform: "uppercase", marginBottom: 8 }}>📸 Photos casting</div>
+                                <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                                  {(session.castingPhotos || []).map((ph, phi) => (
+                                    <div key={phi} style={{ position: "relative", width: 64, height: 80, borderRadius: 6, overflow: "hidden", border: "1px solid rgba(251,146,60,0.2)" }}>
+                                      <img src={ph} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                                      <button onClick={() => updateCastingSession(profile.id, { castingPhotos: (session.castingPhotos || []).filter((_, j) => j !== phi) })} style={{ position: "absolute", top: 1, right: 1, background: "rgba(0,0,0,0.7)", color: "#fff", border: "none", borderRadius: "50%", width: 14, height: 14, cursor: "pointer", fontSize: 8, display: "flex", alignItems: "center", justifyContent: "center" }}>×</button>
+                                    </div>
+                                  ))}
+                                  <button onClick={() => { const inp = document.createElement("input"); inp.type = "file"; inp.accept = "image/*"; inp.multiple = true; inp.onchange = ev => { Array.from(ev.target.files || []).forEach(f => { const r = new FileReader(); r.onload = async () => { const compressed = await compressImage(r.result, 800, 0.8); updateCastingSession(profile.id, { castingPhotos: [...(session.castingPhotos || []), compressed] }); }; r.readAsDataURL(f); }); }; inp.click(); }} style={{ width: 64, height: 80, borderRadius: 6, border: "1px dashed rgba(251,146,60,0.3)", background: "rgba(255,255,255,0.02)", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", color: "#555", fontSize: 9, fontFamily: "inherit", gap: 2 }}>
+                                    <span style={{ fontSize: 16 }}>📷</span><span>Ajouter</span>
                                   </button>
-                                );
+                                </div>
+                              </div>
+                              {/* Videos casting */}
+                              <div style={{ marginBottom: 16 }}>
+                                <div style={{ fontSize: 11, color: "#fb923c", fontWeight: 600, textTransform: "uppercase", marginBottom: 8 }}>🎥 Vidéos casting</div>
+                                <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                                  {(session.castingVideos || []).map((v, vi) => (
+                                    <button key={vi} onClick={() => setCastingVideoModal(v.url)} style={{ padding: "8px 14px", background: "rgba(251,146,60,0.08)", border: "1px solid rgba(251,146,60,0.2)", borderRadius: 8, color: "#fb923c", cursor: "pointer", fontSize: 12, fontFamily: "inherit", fontWeight: 600 }}>▶ {v.name || `Vidéo ${vi+1}`}</button>
+                                  ))}
+                                  <label style={{ padding: "8px 14px", display: "flex", alignItems: "center", gap: 4, background: "rgba(255,255,255,0.02)", border: "1px dashed #333", borderRadius: 8, cursor: "pointer", fontSize: 12, color: "#555", fontFamily: "inherit" }}>
+                                    <input type="file" accept="video/*" style={{ display: "none" }} onChange={e => { if (e.target.files?.[0]) addCastingVideo(profile.id, e.target.files[0]); }} />
+                                    + Vidéo
+                                  </label>
+                                </div>
+                              </div>
+                              {/* Notes de casting */}
+                              <div>
+                                <div style={{ fontSize: 11, color: "#22c55e", fontWeight: 600, textTransform: "uppercase", marginBottom: 8 }}>📝 Notes & retours</div>
+                                <textarea value={session.liveNotes || ""}
+                                  onChange={e => updateCastingSession(profile.id, { liveNotes: e.target.value })}
+                                  placeholder="Vos impressions, retours sur le passage..."
+                                  rows={4}
+                                  style={{ width: "100%", padding: "12px 14px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 10, color: "#e0e0e0", fontSize: 14, fontFamily: "'DM Sans',sans-serif", outline: "none", resize: "vertical", lineHeight: 1.6, boxSizing: "border-box" }}
+                                />
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* === SELECTION BUTTONS === */}
+                          <div style={{ padding: "16px 24px", borderTop: "1px solid #1e1e22", background: finalSel?.selected === true ? "rgba(34,197,94,0.03)" : finalSel?.selected === false ? "rgba(239,68,68,0.03)" : "rgba(255,255,255,0.01)" }}>
+                            <div style={{ display: "flex", gap: 10, marginBottom: finalSel?.selected != null ? 10 : 0 }}>
+                              {[{ val: true, label: "✓ OUI", color: "#22c55e", bg: "rgba(34,197,94,0.1)" }, { val: "maybe", label: "? PEUT-ÊTRE", color: "#f59e0b", bg: "rgba(245,158,11,0.1)" }, { val: false, label: "✕ NON", color: "#ef4444", bg: "rgba(239,68,68,0.1)" }].map(opt => {
+                                const isSel = opt.val === "maybe" ? finalSel?.selected === "maybe" : finalSel?.selected === opt.val;
+                                return <button key={String(opt.val)} onClick={() => updateFinalSelection(profile.id, { selected: isSel ? null : opt.val })} style={{ flex: 1, padding: "14px 0", borderRadius: 10, cursor: "pointer", fontFamily: "inherit", fontSize: 15, fontWeight: 800, background: isSel ? opt.bg : "rgba(255,255,255,0.02)", border: isSel ? `2px solid ${opt.color}` : "2px solid #222", color: isSel ? opt.color : "#555", transition: "all 0.15s" }}>{opt.label}</button>;
                               })}
                             </div>
-                            {finalSel?.selected != null && (
-                              <input value={finalSel?.comment || ""}
-                                onChange={e => updateFinalSelection(profile.id, { comment: e.target.value })}
-                                placeholder="Commentaire sur votre choix..."
-                                style={{ width: "100%", padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#ccc", fontSize: 12, fontFamily: "inherit", outline: "none" }}
-                              />
-                            )}
+                            {finalSel?.selected != null && <input value={finalSel?.comment || ""} onChange={e => updateFinalSelection(profile.id, { comment: e.target.value })} placeholder="Commentaire sur votre choix..." style={{ width: "100%", padding: "10px 14px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#ccc", fontSize: 13, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />}
                           </div>
-                        </>
+                        </div>
                       )}
                     </div>
                   );
