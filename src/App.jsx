@@ -2600,26 +2600,16 @@ function CastingAppInner({ authUser }) {
     }));
   };
 
-  const recalcTimes = (dayId, startTime) => {
+  const recalcTimes = (dayId) => {
     setState(prev => ({
       ...prev,
       castingDays: prev.castingDays.map(d => {
         if (d.id !== dayId) return d;
-        const firstNonPause = d.slots.find(s => !s._isPause);
-        const [startH, startM] = (startTime || firstNonPause?.time || "09:00").split(":").map(Number);
-        let currentMin = startH * 60 + startM;
-        const slots = d.slots.map(s => {
-          if (s._isPause) {
-            // Pause: set start time, skip to end time
-            const time = `${String(Math.floor(currentMin / 60)).padStart(2, "0")}:${String(currentMin % 60).padStart(2, "0")}`;
-            const pauseDur = parseInt(s.duration) || 30;
-            currentMin += pauseDur;
-            const pauseEnd = `${String(Math.floor(currentMin / 60)).padStart(2, "0")}:${String(currentMin % 60).padStart(2, "0")}`;
-            return { ...s, time, _pauseEnd: pauseEnd };
-          }
-          const time = `${String(Math.floor(currentMin / 60)).padStart(2, "0")}:${String(currentMin % 60).padStart(2, "0")}`;
-          currentMin += parseInt(s.duration) || 15;
-          return { ...s, time };
+        // Sort slots chronologically by time (keep times unchanged)
+        const slots = [...d.slots].sort((a, b) => {
+          const tA = (a.time || "99:99").replace(":", "");
+          const tB = (b.time || "99:99").replace(":", "");
+          return tA.localeCompare(tB);
         });
         return { ...d, slots };
       }),
@@ -5894,7 +5884,7 @@ function CastingAppInner({ authUser }) {
                         if (slot._isPause) {
                           return (
                             <div key={slot.id} draggable onDragStart={() => setDragSlot(i)} onDragOver={e => e.preventDefault()} onDrop={() => { if (dragSlot !== null && dragSlot !== i) { moveSlot(day.id, dragSlot, i); setDragSlot(null); } }} onDragEnd={() => setDragSlot(null)}
-                              style={{ display: "flex", alignItems: "center", padding: "12px 16px", background: slot._pauseType === "dej" ? "rgba(245,158,11,0.06)" : "rgba(255,255,255,0.02)", borderBottom: "1px solid #1a1a1e", gap: 12 }}>
+                              style={{ display: "flex", alignItems: "center", padding: "14px 16px", background: slot._pauseType === "dej" ? "rgba(245,158,11,0.08)" : "rgba(255,255,255,0.05)", borderBottom: "1px solid #2a2a2e", borderTop: "1px solid #2a2a2e", gap: 12 }}>
                               <div style={{ cursor: "grab", color: "#444", fontSize: 14, width: 28, textAlign: "center", userSelect: "none" }}>⠿</div>
                               <span style={{ fontSize: 15, fontWeight: 800, color: slot._pauseType === "dej" ? "#f59e0b" : "#888" }}>{slot._pauseType === "dej" ? "🍽 PAUSE DÉJEUNER" : "☕ PAUSE"}</span>
                               <input type="time" value={slot.time || ""} onChange={e => updateSlot(day.id, slot.id, { time: e.target.value })} style={{ padding: "6px 8px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 6, color: "#fff", fontSize: 14, fontFamily: "inherit", outline: "none", fontWeight: 700, width: 90 }} />
@@ -6040,7 +6030,9 @@ function CastingAppInner({ authUser }) {
                             addSlot(day.id, id, role);
                             document.getElementById(`newProfile_first_${day.id}`).value = "";
                             document.getElementById(`newProfile_last_${day.id}`).value = "";
-                          }} style={{ padding: "8px 16px", background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.3)", borderRadius: 8, color: "#22c55e", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap" }}>+ Ajouter</button>
+                            // Open profile edit modal to fill details
+                            setTimeout(() => { setActiveRole(role); setEditingProfile(newProfile); setModalOpen(true); }, 100);
+                          }} style={{ padding: "8px 16px", background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.3)", borderRadius: 8, color: "#22c55e", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap" }}>+ Ajouter & Éditer</button>
                         </div>
                       </div>
                     </div>
