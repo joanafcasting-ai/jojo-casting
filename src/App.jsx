@@ -6066,6 +6066,64 @@ function CastingAppInner({ authUser }) {
                         </div>
                       </div>
                     </div>
+
+                    {/* === VALIDER LE PLANNING === */}
+                    <div style={{ marginTop: 24, padding: "20px 24px", background: day._planningValidated ? "rgba(34,197,94,0.04)" : "rgba(255,255,255,0.01)", borderRadius: 14, border: day._planningValidated ? "1px solid rgba(34,197,94,0.25)" : "1px solid #1e1e22", textAlign: "center" }}>
+                      <button onClick={() => updateCastingDay(day.id, { _planningValidated: !day._planningValidated })} style={{
+                        padding: "14px 36px", borderRadius: 10, fontSize: 15, fontWeight: 800, fontFamily: "inherit", cursor: "pointer", border: "none", letterSpacing: "0.05em",
+                        background: day._planningValidated ? "rgba(34,197,94,0.15)" : "linear-gradient(135deg, #c9a44a, #a67c2e)",
+                        color: day._planningValidated ? "#22c55e" : "#000",
+                      }}>{day._planningValidated ? "✅ Planning validé" : "Valider le planning"}</button>
+
+                      {day._planningValidated && (
+                        <div style={{ marginTop: 16, display: "flex", gap: 12, justifyContent: "center" }}>
+                          {/* Export Excel/CSV */}
+                          <button onClick={() => {
+                            const realSlots = day.slots.filter(s => !s._isPause);
+                            const pauses = day.slots.filter(s => s._isPause);
+                            const headers = ["N°","Heure","Durée","Prénom","Nom","Rôle","Âge","Taille","Mensurations","Agence","Téléphone","Email","Statut","Notes"];
+                            let num = 0;
+                            const rows = day.slots.map(s => {
+                              if (s._isPause) return ["",(s.time||"")+" → "+(s._pauseEnd||""),"",s._pauseType === "dej" ? "PAUSE DÉJEUNER" : "PAUSE","","","","","","","","","",""];
+                              num++;
+                              const p = findProfile(s.profileId);
+                              const av = SLOT_AVAILABILITY[s.availability || "pending"];
+                              return [num, s.time, s.duration+"min", p?.firstName||"", (p?.name||"").toUpperCase(), s.role||p?._role||"", p?.age||"", p?.height||"", p?.measurements||"", p?.agency||"", p?.phone||"", p?.email||"", av.label, s.actingNotes||""];
+                            });
+                            const info = ["PLANNING CASTING — " + state.projectName, day.date ? new Date(day.date+"T00:00").toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"}) : "", day.location ? "Lieu: "+day.location : "", day.access ? "Accès: "+day.access : "", day.horaires ? "Horaires: "+day.horaires : ""].filter(Boolean);
+                            const csvRows = [...info.map(l => [l]), [""], headers, ...rows];
+                            const csv = csvRows.map(r => r.map(c => '"'+String(c||"").replace(/"/g,'""')+'"').join(",")).join("\n");
+                            const blob = new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"});
+                            const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
+                            a.download = `planning-${state.projectName||"casting"}-${day.date||"jour"}.csv`; a.click();
+                          }} style={{ padding: "12px 24px", background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.25)", borderRadius: 10, color: "#22c55e", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
+                            📊 Exporter Excel
+                          </button>
+
+                          {/* Export PDF */}
+                          <button onClick={() => {
+                            const realSlots = day.slots.filter(s => !s._isPause);
+                            const dateStr = day.date ? new Date(day.date+"T00:00").toLocaleDateString("fr-FR",{weekday:"long",day:"numeric",month:"long",year:"numeric"}) : "Date à définir";
+                            let num = 0;
+                            const slotRows = day.slots.map(s => {
+                              if (s._isPause) return `<tr style="background:#f5f0e0"><td colspan="9" style="padding:10px 14px;font-weight:700;color:#8B7000;text-align:center">${s._pauseType==="dej"?"🍽 PAUSE DÉJEUNER":"☕ PAUSE"} ${s.time||""} → ${s._pauseEnd||""}</td></tr>`;
+                              num++;
+                              const p = findProfile(s.profileId);
+                              const av = SLOT_AVAILABILITY[s.availability||"pending"];
+                              const photo = p?.photos?.[0];
+                              return `<tr><td style="text-align:center;font-weight:700;color:#8B6914">${num}</td><td style="font-weight:700;font-size:15px">${s.time||""}</td><td>${s.duration}min</td><td>${photo?`<img src="${photo}" style="width:45px;height:56px;object-fit:cover;border-radius:4px">`:"—"}</td><td><strong>${p?.firstName||""} ${(p?.name||"").toUpperCase()}</strong><br><span style="color:#8B6914;font-size:11px">${s.role||p?._role||""}</span>${p?.age?` · ${p.age} ans`:""}</td><td style="color:#8B6914">${p?.agency||"—"}</td><td style="font-size:11px">${p?.phone||""}<br>${p?.email||""}</td><td style="color:${av.color}">${av.label}</td><td style="font-size:11px">${s.actingNotes||""}</td></tr>`;
+                            }).join("");
+                            const html = `<html><head><meta charset="utf-8"><title>Planning ${state.projectName||""}</title><style>body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;padding:30px;color:#222}h1{font-size:22px;margin-bottom:4px}h2{font-size:16px;color:#666;font-weight:400;margin-bottom:16px}.info{margin-bottom:16px;font-size:13px;color:#555}table{width:100%;border-collapse:collapse;font-size:12px}th{background:#1a1a1a;color:#c9a44a;padding:10px 8px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.08em}td{padding:8px;border-bottom:1px solid #e0e0e0;vertical-align:middle}tr:nth-child(even){background:#fafafa}@media print{body{padding:10px}}</style></head><body><h1>📋 Planning — ${state.projectName||"Casting"}</h1><h2>${dateStr}</h2><div class="info">${[day.location?"📍 "+day.location:"",day.access?"🚪 "+day.access:"",day.horaires?"⏰ "+day.horaires:"",day.catering?"🍽 "+day.catering:""].filter(Boolean).join(" · ")}</div><table><thead><tr><th>N°</th><th>Heure</th><th>Durée</th><th>Photo</th><th>Prénom / Nom</th><th>Agence</th><th>Contact</th><th>Statut</th><th>Notes</th></tr></thead><tbody>${slotRows}</tbody></table><div style="margin-top:20px;font-size:11px;color:#999;text-align:center">Joana Fontaine Casting · ${dateStr}</div></body></html>`;
+                            const w = window.open("","_blank");
+                            w.document.write(html);
+                            w.document.close();
+                            setTimeout(() => w.print(), 500);
+                          }} style={{ padding: "12px 24px", background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 10, color: "#ef4444", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
+                            🖨 Exporter PDF
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </>
                 );
               })()}
