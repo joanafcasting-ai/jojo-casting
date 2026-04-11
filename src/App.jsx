@@ -1532,7 +1532,7 @@ function CastingAppInner({ authUser }) {
           p.selftapeVideos = [];
           const firstPhoto = (p.photos || [])[0];
           if (firstPhoto && typeof firstPhoto === "string" && firstPhoto.startsWith("data:")) {
-            try { p.photos = [await compressImage(firstPhoto, 150, 0.4)]; } catch { p.photos = []; }
+            try { p.photos = [await compressImage(firstPhoto, 150, 0.4)]; } catch(e) { p.photos = []; }
           } else if (firstPhoto) {
             p.photos = [firstPhoto];
           } else {
