@@ -6012,9 +6012,36 @@ function CastingAppInner({ authUser }) {
                         })}
                         {availableProfiles.length === 0 && (
                           <div style={{ fontSize: 12, color: "#555", fontStyle: "italic" }}>
-                            Aucun profil sélectionné. Évaluez des profils dans l'onglet Casting.
+                            Aucun profil sélectionné — ajoutez-en un ci-dessous.
                           </div>
                         )}
+                      </div>
+                      {/* Add new profile directly from planning */}
+                      <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid #1e1e22" }}>
+                        <label style={{ display: "block", fontSize: 10, color: "#22c55e", marginBottom: 8, fontWeight: 600, textTransform: "uppercase" }}>+ Ajouter un nouveau profil</label>
+                        <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                          <input id={`newProfile_first_${day.id}`} placeholder="Prénom" style={{ flex: 1, padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit", outline: "none" }} />
+                          <input id={`newProfile_last_${day.id}`} placeholder="Nom" style={{ flex: 1, padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit", outline: "none" }} />
+                          <select id={`newProfile_role_${day.id}`} style={{ padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "inherit", outline: "none" }}>
+                            {state.roles.map(r => <option key={r} value={r}>{r}</option>)}
+                          </select>
+                          <button onClick={() => {
+                            const first = document.getElementById(`newProfile_first_${day.id}`)?.value?.trim();
+                            const last = document.getElementById(`newProfile_last_${day.id}`)?.value?.trim();
+                            const role = document.getElementById(`newProfile_role_${day.id}`)?.value || state.roles[0] || "Rôle";
+                            if (!first && !last) return;
+                            const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+                            const newProfile = { id, firstName: first || "", name: last || "", availability: "pending", photos: [], selftapeLinks: [], selftapeVideos: [] };
+                            setState(prev => ({
+                              ...prev,
+                              profiles: { ...prev.profiles, [role]: [...(prev.profiles[role] || []), newProfile] },
+                              selections: { ...prev.selections, [id]: { choice: "yes" } },
+                            }));
+                            addSlot(day.id, id, role);
+                            document.getElementById(`newProfile_first_${day.id}`).value = "";
+                            document.getElementById(`newProfile_last_${day.id}`).value = "";
+                          }} style={{ padding: "8px 16px", background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.3)", borderRadius: 8, color: "#22c55e", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap" }}>+ Ajouter</button>
+                        </div>
                       </div>
                     </div>
                   </>
