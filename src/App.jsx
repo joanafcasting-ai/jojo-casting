@@ -73,7 +73,7 @@ const CASTING_PASS_STATUS = {
   absent: { label: "Absent", color: "#ef4444", bg: "rgba(239,68,68,0.1)", icon: "✕" },
 };
 
-const PROJET_SEX_OPTS = ["Homme", "Femme", "Garçon", "Fille"];
+const PROJET_SEX_OPTS = ["Homme", "Femme", "Non-binaire"];
 const PROJET_AGE_OPTS = ["Enfant", "Ado", "Jeune adulte", "Adulte", "Senior"];
 const PROJET_ETH_OPTS = ["Toutes", "Caucasien", "Noir / Afro", "Maghrébin / Moyen-Orient", "Asiatique", "Latino / Hispanique", "Métis", "Indien / Sud-asiatique"];
 const PROJET_TYPE_OPTS = ["Acteur", "Comédien·ne·s", "Modèle·s", "Figurant", "Danseur·se·s", "Autres"];
@@ -139,8 +139,8 @@ const INITIAL_STATE = {
     production: "", director: "", photographer: "",
     salary: { amount: "", type: "facture" },
     shootingDays: "",
-    dateTournage: "", dateRenduProfils: "", datePPM: "",
-    castingDates: [], dateValidation: "", dateRepetition: "",
+    dateTournageDe: "", dateTournageA: "", dateRenduProfils: "", datePPM: "",
+    castingDates: [], dateValidation: "", customDates: [],
     documents: [], castingSheets: [], customEthnicities: [],
     devis: { fields: {}, lines: [] },
   },
@@ -2212,6 +2212,9 @@ function CastingAppInner({ authUser }) {
   const addProjetCastingDate = () => uPI("castingDates", [...(pi.castingDates || []), ""]);
   const updateProjetCastingDate = (i, v) => { const a = [...(pi.castingDates || [])]; a[i] = v; uPI("castingDates", a); };
   const removeProjetCastingDate = (i) => uPI("castingDates", (pi.castingDates || []).filter((_, j) => j !== i));
+  const addCustomDate = () => uPI("customDates", [...(pi.customDates || []), { label: "", date: "" }]);
+  const updateCustomDate = (i, field, v) => { const a = [...(pi.customDates || [])]; a[i] = { ...a[i], [field]: v }; uPI("customDates", a); };
+  const removeCustomDate = (i) => uPI("customDates", (pi.customDates || []).filter((_, j) => j !== i));
   const addDevisLine = () => uPI("devis", { ...(pi.devis || {}), lines: [...(pi.devis?.lines || []), { id: "l" + Date.now(), description: "", qty: 1, unit: "forfait", unitPrice: "", tva: 20 }] });
   const updateDevisLine = (id, f, v) => uPI("devis", { ...(pi.devis || {}), lines: (pi.devis?.lines || []).map(l => l.id === id ? { ...l, [f]: v } : l) });
   const removeDevisLine = (id) => uPI("devis", { ...(pi.devis || {}), lines: (pi.devis?.lines || []).filter(l => l.id !== id) });
@@ -2220,12 +2223,12 @@ function CastingAppInner({ authUser }) {
   const devisTotalTVA = devisLines.reduce((s, l) => s + (parseFloat(l.unitPrice) || 0) * (parseFloat(l.qty) || 0) * ((parseFloat(l.tva) || 0) / 100), 0);
   const totalComediens = state.roles.reduce((s, r) => s + (parseInt(state.roleDetails?.[r]?.nbComediens) || 0), 0);
   const projetDateChips = [
-    { label: "Tournage", value: fmtDateFR(pi.dateTournage), icon: "🎬" },
+    { label: "Tournage", value: pi.dateTournageDe ? (pi.dateTournageA ? fmtDateFR(pi.dateTournageDe) + " → " + fmtDateFR(pi.dateTournageA) : fmtDateFR(pi.dateTournageDe)) : fmtDateFR(pi.dateTournage), icon: "🎬" },
     { label: "Rendu profils", value: fmtDateFR(pi.dateRenduProfils), icon: "📤" },
     { label: "PPM", value: fmtDateFR(pi.datePPM), icon: "📋" },
     ...(pi.castingDates || []).filter(d => d).map((d, i) => ({ label: "Casting " + (i + 1), value: fmtDateFR(d), icon: "🎭" })),
     { label: "Validation", value: fmtDateFR(pi.dateValidation), icon: "✅" },
-    { label: "Répétition", value: fmtDateFR(pi.dateRepetition), icon: "🔄" },
+    ...(pi.customDates || []).filter(d => d.date).map(d => ({ label: d.label || "Date", value: fmtDateFR(d.date), icon: "📌" })),
   ].filter(x => x.value);
   const addCustomEth = (val) => { if (!(pi.customEthnicities || []).includes(val)) uPI("customEthnicities", [...(pi.customEthnicities || []), val]); };
 
@@ -4904,10 +4907,32 @@ function CastingAppInner({ authUser }) {
                     <div style={{ background: "#141416", borderRadius: 14, border: "1px solid #222226", padding: "22px 26px", marginBottom: 24 }}>
                       <div style={{ fontSize: 11, color: "#60a5fa", fontWeight: 600, textTransform: "uppercase", marginBottom: 16 }}>📅 Dates clés</div>
                       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "12px 14px", marginBottom: 14 }}>
-                        {[{ l: "Date de tournage", k: "dateTournage" }, { l: "Rendu 1ère salve profils", k: "dateRenduProfils" }, { l: "Date PPM", k: "datePPM" }, { l: "Date validation", k: "dateValidation" }, { l: "Date répétition", k: "dateRepetition" }].map(d => (
+                        <div style={{ gridColumn: "1 / 3" }}>
+                          <label style={{ display: "block", fontSize: 10, color: "#888", marginBottom: 6, fontWeight: 600, textTransform: "uppercase" }}>Date de tournage</label>
+                          <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
+                            <input type="date" value={pi.dateTournageDe || pi.dateTournage || ""} onChange={e => uPI("dateTournageDe", e.target.value)} style={{ flex: 1, padding: "9px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "'DM Sans',sans-serif", outline: "none", cursor: "pointer", boxSizing: "border-box" }} />
+                            <span style={{ color: "#555", fontSize: 11, fontWeight: 600 }}>au</span>
+                            <input type="date" value={pi.dateTournageA || ""} onChange={e => uPI("dateTournageA", e.target.value)} placeholder="(optionnel)" style={{ flex: 1, padding: "9px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "'DM Sans',sans-serif", outline: "none", cursor: "pointer", boxSizing: "border-box" }} />
+                          </div>
+                        </div>
+                        {[{ l: "Rendu 1ère salve profils", k: "dateRenduProfils" }, { l: "Date PPM", k: "datePPM" }, { l: "Date validation", k: "dateValidation" }].map(d => (
                           <div key={d.k}>
                             <label style={{ display: "block", fontSize: 10, color: "#888", marginBottom: 6, fontWeight: 600, textTransform: "uppercase" }}>{d.l}</label>
                             <input type="date" value={pi[d.k] || ""} onChange={e => uPI(d.k, e.target.value)} style={{ width: "100%", padding: "9px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "'DM Sans',sans-serif", outline: "none", cursor: "pointer", boxSizing: "border-box" }} />
+                          </div>
+                        ))}
+                      </div>
+                      {/* Custom dates */}
+                      <div style={{ marginBottom: 14 }}>
+                        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+                          <label style={{ fontSize: 10, color: "#f59e0b", fontWeight: 600, textTransform: "uppercase" }}>📌 Dates supplémentaires</label>
+                          <button onClick={addCustomDate} style={{ padding: "4px 12px", background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.2)", borderRadius: 6, color: "#f59e0b", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>+ Ajouter</button>
+                        </div>
+                        {(pi.customDates || []).map((cd, i) => (
+                          <div key={i} style={{ display: "flex", gap: 8, marginBottom: 6, alignItems: "center" }}>
+                            <input value={cd.label || ""} onChange={e => updateCustomDate(i, "label", e.target.value)} placeholder="Nature (ex: Essayage)" style={{ width: 160, padding: "8px 12px", background: "#0c0c0e", border: "1px solid rgba(245,158,11,0.25)", borderRadius: 8, color: "#f59e0b", fontSize: 12, fontFamily: "'DM Sans',sans-serif", outline: "none" }} />
+                            <input type="date" value={cd.date || ""} onChange={e => updateCustomDate(i, "date", e.target.value)} style={{ flex: 1, padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "'DM Sans',sans-serif", outline: "none", cursor: "pointer" }} />
+                            <button onClick={() => removeCustomDate(i)} style={{ background: "none", border: "none", color: "#44444488", cursor: "pointer", fontSize: 13 }}>×</button>
                           </div>
                         ))}
                       </div>
@@ -4968,10 +4993,10 @@ function CastingAppInner({ authUser }) {
                                     <input value={rd.nbJoursTournage || ""} onChange={e => uRoleDetail(role, "nbJoursTournage", e.target.value)} placeholder="Ex: 2" type="number" min="1" style={sInput} />
                                   </div>
                                 </div>
-                                {/* Sub-comedians */}
-                                {parseInt(rd.nbComediens) >= 2 && (() => {
+                                {/* Sub-comedians — always visible */}
+                                {(() => {
                                   const comedians = rd.comedians || [];
-                                  const max = parseInt(rd.nbComediens) || 2;
+                                  const max = Math.max(parseInt(rd.nbComediens) || 1, 1);
                                   const updateComedian = (idx, field, value) => {
                                     const arr = [...(rd.comedians || [])];
                                     arr[idx] = { ...arr[idx], [field]: value };
@@ -4979,7 +5004,7 @@ function CastingAppInner({ authUser }) {
                                   };
                                   const addComedian = () => {
                                     const arr = [...(rd.comedians || [])];
-                                    arr.push({ id: "c" + Date.now(), label: "Comédien " + (arr.length + 1), sex: "", ageStyle: "", ageMin: "", ageMax: "", profileType: "", ethnicities: [], notes: "" });
+                                    arr.push({ id: "c" + Date.now(), label: "", sex: "", ageMin: "", ageMax: "", profileType: "", ethnicities: [], notes: "", cachet: "", cachetType: "brut", droits: "", referencePhotos: [] });
                                     uRoleDetail(role, "comedians", arr);
                                   };
                                   const removeComedian = (idx) => {
@@ -4987,34 +5012,78 @@ function CastingAppInner({ authUser }) {
                                     arr.splice(idx, 1);
                                     uRoleDetail(role, "comedians", arr);
                                   };
+                                  const addComPhoto = (ci, url) => {
+                                    const arr = [...(rd.comedians || [])];
+                                    arr[ci] = { ...arr[ci], referencePhotos: [...(arr[ci].referencePhotos || []), url] };
+                                    uRoleDetail(role, "comedians", arr);
+                                  };
+                                  const removeComPhoto = (ci, pi2) => {
+                                    const arr = [...(rd.comedians || [])];
+                                    arr[ci] = { ...arr[ci], referencePhotos: (arr[ci].referencePhotos || []).filter((_, j) => j !== pi2) };
+                                    uRoleDetail(role, "comedians", arr);
+                                  };
                                   return (
                                     <div style={{ marginBottom: 16 }}>
-                                      <label style={{ display: "block", fontSize: 10, color: "#e879f9", marginBottom: 8, fontWeight: 600, textTransform: "uppercase" }}>🎭 Comédiens individuels ({comedians.length}/{max})</label>
+                                      <label style={{ display: "block", fontSize: 10, color: "#e879f9", marginBottom: 8, fontWeight: 600, textTransform: "uppercase" }}>🎭 Comédiens ({comedians.length}/{max})</label>
                                       {comedians.map((c, ci) => (
-                                        <div key={c.id || ci} style={{ marginBottom: 10, padding: "12px 16px", background: "rgba(232,121,249,0.03)", borderRadius: 10, border: "1px solid rgba(232,121,249,0.12)" }}>
-                                          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-                                            <input value={c.label || ""} onChange={e => updateComedian(ci, "label", e.target.value)} style={{ background: "none", border: "none", color: "#e879f9", fontSize: 12, fontWeight: 700, fontFamily: "inherit", outline: "none", padding: 0 }} />
+                                        <div key={c.id || ci} style={{ marginBottom: 10, padding: "14px 16px", background: "rgba(232,121,249,0.03)", borderRadius: 10, border: "1px solid rgba(232,121,249,0.12)" }}>
+                                          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+                                            <input value={c.label || ""} onChange={e => updateComedian(ci, "label", e.target.value)} placeholder="Nom du rôle..." style={{ background: "none", border: "none", color: "#e879f9", fontSize: 13, fontWeight: 700, fontFamily: "inherit", outline: "none", padding: 0, width: "70%" }} />
                                             <button onClick={() => removeComedian(ci)} style={{ background: "none", border: "none", color: "#44444488", cursor: "pointer", fontSize: 13 }}>×</button>
                                           </div>
+                                          {/* Photos de reference */}
+                                          <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 10 }}>
+                                            {(c.referencePhotos || []).map((ph, phi) => (
+                                              <div key={phi} style={{ position: "relative", width: 56, height: 70, borderRadius: 6, overflow: "hidden", border: "1px solid rgba(232,121,249,0.2)" }}>
+                                                <img src={ph} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                                                <button onClick={() => removeComPhoto(ci, phi)} style={{ position: "absolute", top: 1, right: 1, background: "rgba(0,0,0,0.7)", color: "#fff", border: "none", borderRadius: "50%", width: 14, height: 14, cursor: "pointer", fontSize: 8, display: "flex", alignItems: "center", justifyContent: "center" }}>×</button>
+                                              </div>
+                                            ))}
+                                            <button onClick={() => { const inp = document.createElement("input"); inp.type = "file"; inp.accept = "image/*"; inp.multiple = true; inp.onchange = ev => { Array.from(ev.target.files || []).forEach(async (f) => { try { const { url } = await uploadPhoto(f, "default", role + "_c" + ci, (c.referencePhotos || []).length); addComPhoto(ci, url); } catch(e2) { const r = new FileReader(); r.onload = async () => { const compressed = await compressImage(r.result, 600, 0.7); addComPhoto(ci, compressed); }; r.readAsDataURL(f); } }); }; inp.click(); }} style={{ width: 56, height: 70, borderRadius: 6, border: "1px dashed rgba(232,121,249,0.3)", background: "rgba(255,255,255,0.02)", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", color: "#555", fontSize: 9, fontFamily: "inherit", gap: 2 }}>
+                                              <span style={{ fontSize: 14 }}>+</span><span>Photo</span>
+                                            </button>
+                                          </div>
+                                          {/* Criteres */}
                                           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 8 }}>
                                             <select value={c.sex || ""} onChange={e => updateComedian(ci, "sex", e.target.value)} style={sInput}><option value="">Sexe —</option>{PROJET_SEX_OPTS.map(o => <option key={o} value={o}>{o}</option>)}</select>
-                                            <select value={c.ageStyle || ""} onChange={e => updateComedian(ci, "ageStyle", e.target.value)} style={sInput}><option value="">Âge —</option>{PROJET_AGE_OPTS.map(o => <option key={o} value={o}>{o}</option>)}</select>
                                             <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
-                                              <input value={c.ageMin || ""} onChange={e => updateComedian(ci, "ageMin", e.target.value)} placeholder="Min" style={{ ...sInput, textAlign: "center" }} />
+                                              <input value={c.ageMin || ""} onChange={e => updateComedian(ci, "ageMin", e.target.value)} placeholder="Âge min" style={{ ...sInput, textAlign: "center" }} />
                                               <span style={{ color: "#555", fontSize: 10 }}>—</span>
-                                              <input value={c.ageMax || ""} onChange={e => updateComedian(ci, "ageMax", e.target.value)} placeholder="Max" style={{ ...sInput, textAlign: "center" }} />
+                                              <input value={c.ageMax || ""} onChange={e => updateComedian(ci, "ageMax", e.target.value)} placeholder="Âge max" style={{ ...sInput, textAlign: "center" }} />
                                             </div>
-                                          </div>
-                                          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 6 }}>
                                             <select value={c.profileType || ""} onChange={e => updateComedian(ci, "profileType", e.target.value)} style={sInput}><option value="">Type —</option>{PROJET_TYPE_OPTS.map(o => <option key={o} value={o}>{o}</option>)}</select>
-                                            <input value={c.notes || ""} onChange={e => updateComedian(ci, "notes", e.target.value)} placeholder="Notes..." style={sInput} />
                                           </div>
-                                          <div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>
-                                            {PROJET_ETH_OPTS.slice(0, 5).map(eth => {
+                                          {/* Ethnies */}
+                                          <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 8 }}>
+                                            {PROJET_ETH_OPTS.map(eth => {
                                               const active = (c.ethnicities || []).includes(eth);
-                                              return <button key={eth} onClick={() => updateComedian(ci, "ethnicities", active ? (c.ethnicities || []).filter(e => e !== eth) : [...(c.ethnicities || []), eth])} style={{ padding: "3px 10px", borderRadius: 14, fontSize: 9, fontWeight: 500, fontFamily: "inherit", cursor: "pointer", border: "1px solid", background: active ? "#e879f920" : "rgba(255,255,255,0.02)", color: active ? "#e879f9" : "#555", borderColor: active ? "#e879f955" : "#2a2a2e" }}>{active ? "✓ " : ""}{eth}</button>;
+                                              return <button key={eth} onClick={() => { if (eth === "Toutes") updateComedian(ci, "ethnicities", active ? [] : ["Toutes"]); else { const cur = (c.ethnicities || []).filter(e => e !== "Toutes"); updateComedian(ci, "ethnicities", active ? cur.filter(e => e !== eth) : [...cur, eth]); } }} style={{ padding: "3px 10px", borderRadius: 14, fontSize: 9, fontWeight: 500, fontFamily: "inherit", cursor: "pointer", border: "1px solid", background: active ? "#e879f920" : "rgba(255,255,255,0.02)", color: active ? "#e879f9" : "#555", borderColor: active ? "#e879f955" : "#2a2a2e" }}>{active ? "✓ " : ""}{eth}</button>;
                                             })}
                                           </div>
+                                          {/* Remuneration */}
+                                          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 6 }}>
+                                            <div>
+                                              <div style={{ display: "flex", gap: 3, marginBottom: 4 }}>
+                                                {[{ k: "brut", l: "Brut", col: "#c9a44a" }, { k: "ht", l: "HT", col: "#e879f9" }].map(opt => {
+                                                  const ct = c.cachetType === "ht" ? "ht" : "brut";
+                                                  return <button key={opt.k} onClick={() => updateComedian(ci, "cachetType", opt.k)} style={{ flex: 1, padding: "5px 0", borderRadius: 5, fontSize: 9, fontWeight: 700, fontFamily: "inherit", border: "1px solid", cursor: "pointer", background: ct === opt.k ? opt.col + "20" : "rgba(255,255,255,0.02)", color: ct === opt.k ? opt.col : "#555", borderColor: ct === opt.k ? opt.col + "55" : "#2a2a2e" }}>{opt.l}</button>;
+                                                })}
+                                              </div>
+                                              <div style={{ position: "relative" }}>
+                                                <input value={c.cachet || ""} onChange={e => updateComedian(ci, "cachet", e.target.value)} placeholder="Montant" style={{ ...sInput, paddingRight: 45, fontSize: 11 }} />
+                                                <span style={{ position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)", fontSize: 9, fontWeight: 700, color: c.cachetType === "ht" ? "#e879f9" : "#c9a44a" }}>{c.cachetType === "ht" ? "€ HT" : "€ BRUT"}</span>
+                                              </div>
+                                            </div>
+                                            <div>
+                                              <label style={{ display: "block", fontSize: 8, color: "#f59e0b", marginBottom: 4, fontWeight: 600, textTransform: "uppercase" }}>Droits</label>
+                                              <div style={{ position: "relative" }}>
+                                                <input value={c.droits || ""} onChange={e => updateComedian(ci, "droits", e.target.value)} placeholder="Montant droits" style={{ ...sInput, paddingRight: 20, fontSize: 11 }} />
+                                                <span style={{ position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)", fontSize: 9, fontWeight: 700, color: "#f59e0b" }}>€</span>
+                                              </div>
+                                            </div>
+                                          </div>
+                                          {/* Notes */}
+                                          <input value={c.notes || ""} onChange={e => updateComedian(ci, "notes", e.target.value)} placeholder="Notes..." style={{ ...sInput, fontSize: 11 }} />
                                         </div>
                                       ))}
                                       {comedians.length < max && (
@@ -5038,50 +5107,7 @@ function CastingAppInner({ authUser }) {
                                     </button>
                                   </div>
                                 </div>
-                                {/* Sexe, Age, Tranche */}
-                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginBottom: 14 }}>
-                                  <div><label style={{ display: "block", fontSize: 10, color: "#888", marginBottom: 6, fontWeight: 600, textTransform: "uppercase" }}>Sexe</label><select value={rd.sex || ""} onChange={e => uRoleDetail(role, "sex", e.target.value)} style={sInput}><option value="">—</option>{PROJET_SEX_OPTS.map(o => <option key={o} value={o}>{o}</option>)}</select></div>
-                                  <div><label style={{ display: "block", fontSize: 10, color: "#888", marginBottom: 6, fontWeight: 600, textTransform: "uppercase" }}>Style d'âge</label><select value={rd.ageStyle || ""} onChange={e => uRoleDetail(role, "ageStyle", e.target.value)} style={sInput}><option value="">—</option>{PROJET_AGE_OPTS.map(o => <option key={o} value={o}>{o}</option>)}</select></div>
-                                  <div><label style={{ display: "block", fontSize: 10, color: "#888", marginBottom: 6, fontWeight: 600, textTransform: "uppercase" }}>Tranche d'âge</label><div style={{ display: "flex", gap: 6, alignItems: "center" }}><input value={rd.ageMin || ""} onChange={e => uRoleDetail(role, "ageMin", e.target.value)} placeholder="Min" style={{ ...sInput, textAlign: "center" }} /><span style={{ color: "#555" }}>—</span><input value={rd.ageMax || ""} onChange={e => uRoleDetail(role, "ageMax", e.target.value)} placeholder="Max" style={{ ...sInput, textAlign: "center" }} /></div></div>
-                                </div>
-                                {/* Type, Style, Rémunération */}
-                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12, marginBottom: 14 }}>
-                                  <div><label style={{ display: "block", fontSize: 10, color: "#888", marginBottom: 6, fontWeight: 600, textTransform: "uppercase" }}>Type</label><select value={rd.profileType || ""} onChange={e => { uRoleDetail(role, "profileType", e.target.value); if (e.target.value !== "Autres") uRoleDetail(role, "profileTypeCustom", ""); }} style={sInput}><option value="">—</option>{PROJET_TYPE_OPTS.map(o => <option key={o} value={o}>{o}</option>)}</select>{rd.profileType === "Autres" && <input value={rd.profileTypeCustom || ""} onChange={e => uRoleDetail(role, "profileTypeCustom", e.target.value)} placeholder="Précisez..." autoFocus style={{ ...sInput, marginTop: 6, border: "1px solid #e879f944", color: "#e879f9" }} />}</div>
-                                  <div><label style={{ display: "block", fontSize: 10, color: "#888", marginBottom: 6, fontWeight: 600, textTransform: "uppercase" }}>Style de jeu</label><select value={rd.actingStyle || ""} onChange={e => { uRoleDetail(role, "actingStyle", e.target.value); if (e.target.value !== "Autres") uRoleDetail(role, "actingStyleCustom", ""); }} style={sInput}><option value="">—</option>{PROJET_STYLE_OPTS.map(o => <option key={o} value={o}>{o}</option>)}</select>{rd.actingStyle === "Autres" && <input value={rd.actingStyleCustom || ""} onChange={e => uRoleDetail(role, "actingStyleCustom", e.target.value)} placeholder="Précisez..." autoFocus style={{ ...sInput, marginTop: 6, border: "1px solid #e879f944", color: "#e879f9" }} />}</div>
-                                  <div>
-                                    <label style={{ display: "block", fontSize: 10, color: "#888", marginBottom: 6, fontWeight: 600, textTransform: "uppercase" }}>Rémunération</label>
-                                    <div style={{ display: "flex", gap: 4, marginBottom: 6 }}>
-                                      {[{ k: "brut", l: "Brut", col: "#c9a44a" }, { k: "ht", l: "HT", col: "#e879f9" }].map(opt => {
-                                        const ct = rd.cachetType === "ht" || rd.cachetType === "facture" ? "ht" : "brut";
-                                        return <button key={opt.k} onClick={() => uRoleDetail(role, "cachetType", opt.k)} style={{ flex: 1, padding: "7px 0", borderRadius: 6, fontSize: 10, fontWeight: 700, fontFamily: "inherit", border: "1px solid", cursor: "pointer", background: ct === opt.k ? opt.col + "20" : "rgba(255,255,255,0.02)", color: ct === opt.k ? opt.col : "#555", borderColor: ct === opt.k ? opt.col + "55" : "#2a2a2e" }}>{opt.l}</button>;
-                                      })}
-                                    </div>
-                                    <div style={{ position: "relative" }}>
-                                      <input value={rd.cachet || ""} onChange={e => uRoleDetail(role, "cachet", e.target.value)} placeholder="Montant" style={{ ...sInput, paddingRight: 55 }} />
-                                      <span style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", fontSize: 10, fontWeight: 700, color: (rd.cachetType === "ht" || rd.cachetType === "facture") ? "#e879f9" : "#c9a44a" }}>{(rd.cachetType === "ht" || rd.cachetType === "facture") ? "€ HT" : "€ BRUT"}</span>
-                                    </div>
-                                    <div style={{ marginTop: 8 }}>
-                                      <label style={{ display: "block", fontSize: 9, color: "#f59e0b", marginBottom: 4, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.04em" }}>Droits (image, utilisation...)</label>
-                                      <div style={{ position: "relative" }}>
-                                        <input value={rd.droits || ""} onChange={e => uRoleDetail(role, "droits", e.target.value)} placeholder="Montant droits" style={{ ...sInput, paddingRight: 30 }} />
-                                        <span style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", fontSize: 10, fontWeight: 700, color: "#f59e0b" }}>€</span>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                {/* Ethnies */}
-                                <div style={{ marginBottom: 14 }}>
-                                  <label style={{ display: "block", fontSize: 10, color: "#888", marginBottom: 8, fontWeight: 600, textTransform: "uppercase" }}>Ethnie</label>
-                                  <div style={{ display: "flex", flexWrap: "wrap", gap: 6, alignItems: "center" }}>
-                                    {allEth.map(eth => { const active = (rd.ethnicities || []).includes(eth); return <button key={eth} onClick={() => { if (eth === "Toutes") uRoleDetail(role, "ethnicities", active ? [] : ["Toutes"]); else { const c = (rd.ethnicities || []).filter(e => e !== "Toutes"); uRoleDetail(role, "ethnicities", active ? c.filter(e => e !== eth) : [...c, eth]); } }} style={{ padding: "5px 14px", borderRadius: 20, fontSize: 11, fontWeight: 500, fontFamily: "inherit", cursor: "pointer", border: "1px solid", background: active ? "#e879f920" : "rgba(255,255,255,0.02)", color: active ? "#e879f9" : "#666", borderColor: active ? "#e879f955" : "#2a2a2e" }}>{active ? "✓ " : ""}{eth}</button>; })}
-                                    {projetEthAdd[role] ? (
-                                      <div style={{ display: "flex", gap: 4, alignItems: "center" }}>
-                                        <input value={projetEthInput[role] || ""} onChange={e => setProjetEthInput(p => ({ ...p, [role]: e.target.value }))} onKeyDown={e => { if (e.key === "Enter" && projetEthInput[role]?.trim()) { addCustomEth(projetEthInput[role].trim()); setProjetEthInput(p => ({ ...p, [role]: "" })); setProjetEthAdd(p => ({ ...p, [role]: false })); } if (e.key === "Escape") setProjetEthAdd(p => ({ ...p, [role]: false })); }} autoFocus placeholder="+ Entrée" style={{ padding: "5px 10px", background: "#0c0c0e", border: "1px solid #e879f944", borderRadius: 16, color: "#e879f9", fontSize: 11, fontFamily: "'DM Sans',sans-serif", outline: "none", width: 140 }} />
-                                        <button onClick={() => setProjetEthAdd(p => ({ ...p, [role]: false }))} style={{ background: "none", border: "none", color: "#555", cursor: "pointer", fontSize: 14 }}>×</button>
-                                      </div>
-                                    ) : <button onClick={() => setProjetEthAdd(p => ({ ...p, [role]: true }))} style={{ padding: "5px 12px", borderRadius: 20, fontSize: 11, fontFamily: "inherit", cursor: "pointer", border: "1px dashed #444", background: "transparent", color: "#555" }}>+ Ajouter</button>}
-                                  </div>
-                                </div>
+                                {/* Sex/Age/Type/Style/Remu/Ethnie moved to sub-comedian slots */}
                                 {/* Notes */}
                                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
                                   <div style={{ marginBottom: 12 }}><label style={{ display: "block", fontSize: 10, color: "#888", marginBottom: 6, fontWeight: 600, textTransform: "uppercase" }}>Notes</label><textarea value={rd.notes || ""} onChange={e => uRoleDetail(role, "notes", e.target.value)} placeholder="Description..." rows={3} style={{ ...sInput, resize: "vertical" }} /></div>
