@@ -10,7 +10,7 @@ export const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
 // Uses Supabase as primary, localStorage as fallback
 // =============================================
 
-// Single user — always the same ID so data is always found
+// Single user â€” always the same ID so data is always found
 const FIXED_USER_ID = 'joana_casting_director'
 
 function getUserId() {
@@ -18,7 +18,7 @@ function getUserId() {
 }
 
 export function setCurrentUserId(id) {
-  // No-op — single user mode
+  // No-op â€” single user mode
 }
 
 const storage = {
@@ -42,7 +42,7 @@ const storage = {
       if (!data) throw new Error('Key not found: ' + key)
       return { key: data.key, value: data.value, shared: data.shared }
     } catch (e) {
-      console.warn('[storage.get] Supabase failed for', key, ':', e?.message || e, '— trying localStorage')
+      console.warn('[storage.get] Supabase failed for', key, ':', e?.message || e, 'â€” trying localStorage')
       // Fallback to localStorage
       const prefix = shared ? 'shared:' : ''
       const val = localStorage.getItem(prefix + key)
@@ -140,7 +140,7 @@ const storage = {
 window.storage = storage
 
 // =============================================
-// Video Storage — Supabase Storage (1GB free)
+// Video Storage â€” Supabase Storage
 // =============================================
 
 export async function uploadVideo(file, projectId, profileId) {
@@ -178,36 +178,125 @@ export async function deleteVideo(path) {
   return true
 }
 
+// =============================================
+// Photo Storage â€” Supabase Storage (NEW!)
+// Photos are stored as files, not base64 in DB
+// =============================================
+
+/**
+ * Upload a photo to Supabase Storage.
+ * Accepts a File object OR a base64 data URL string.
+ * Returns { path, url } â€” the URL can be stored in profile data.
+ */
+export async function uploadPhoto(fileOrBase64, projectId, profileId, index = 0) {
+  let file
+  let ext = 'jpg'
+
+  if (typeof fileOrBase64 === 'string' && fileOrBase64.startsWith('data:')) {
+    // Convert base64 data URL to File
+    const res = await fetch(fileOrBase64)
+    const blob = await res.blob()
+    const mimeMatch = fileOrBase64.match(/data:image\/(\w+)/)
+    ext = mimeMatch ? mimeMatch[1].replace('jpeg', 'jpg') : 'jpg'
+    file = new File([blob], `photo.${ext}`, { type: blob.type })
+  } else if (fileOrBase64 instanceof File || fileOrBase64 instanceof Blob) {
+    file = fileOrBase64
+    ext = file.name?.split('.').pop() || 'jpg'
+  } else {
+    throw new Error('uploadPhoto: invalid input â€” expected File or base64 string')
+  }
+
+  const path = `${FIXED_USER_ID}/${projectId}/${profileId}_${index}_${Date.now()}.${ext}`
+
+  const { data, error } = await supabase.storage
+    .from('photos')
+    .upload(path, file, {
+      cacheControl: '31536000',
+      upsert: false,
+    })
+
+  if (error) {
+    console.error('[uploadPhoto] Error:', error.message)
+    throw error
+  }
+
+  const { data: urlData } = supabase.storage
+    .from('photos')
+    .getPublicUrl(path)
+
+  return {
+    path,
+    url: urlData.publicUrl,
+  }
+}
+
+/**
+ * Delete a photo from Supabase Storage by its path.
+ */
+export async function deletePhoto(path) {
+  const { error } = await supabase.storage
+    .from('photos')
+    .remove([path])
+
+  if (error) {
+    console.error('[deletePhoto] Error:', error.message)
+    throw error
+  }
+  return true
+}
+
+/**
+ * Migrate a base64 photo to Supabase Storage.
+ * Returns the public URL, or the original string if it's already a URL.
+ */
+export async function migratePhotoIfNeeded(photoStr, projectId, profileId, index = 0) {
+  // Already a URL â€” no migration needed
+  if (!photoStr || photoStr.startsWith('http://') || photoStr.startsWith('https://')) {
+    return photoStr
+  }
+  // It's a base64 string â€” upload to Supabase
+  if (photoStr.startsWith('data:')) {
+    try {
+      const { url } = await uploadPhoto(photoStr, projectId, profileId, index)
+      console.log('[migratePhoto] Migrated base64 to URL:', url)
+      return url
+    } catch (e) {
+      console.error('[migratePhoto] Failed, keeping base64:', e.message)
+      return photoStr
+    }
+  }
+  return photoStr
+}
+
+// =============================================
+// Storage Usage â€” Combined videos + photos
+// =============================================
+
 export async function getStorageUsage() {
   try {
-    const { data, error } = await supabase.storage
-      .from('videos')
-      .list(FIXED_USER_ID, { limit: 1000, sortBy: { column: 'created_at', order: 'desc' } })
-    
-    if (error) throw error
-    
     let totalSize = 0
-    const countFiles = async (prefix) => {
-      const { data: files } = await supabase.storage.from('videos').list(prefix, { limit: 1000 })
+    const countFiles = async (bucket, prefix) => {
+      const { data: files } = await supabase.storage.from(bucket).list(prefix, { limit: 1000 })
       if (!files) return
       for (const f of files) {
         if (f.metadata?.size) totalSize += f.metadata.size
         else if (f.id === null) {
           // It's a folder, recurse
-          await countFiles(prefix + '/' + f.name)
+          await countFiles(bucket, prefix + '/' + f.name)
         }
       }
     }
-    await countFiles(FIXED_USER_ID)
-    
+    await countFiles('videos', FIXED_USER_ID)
+    await countFiles('photos', FIXED_USER_ID)
+
     return {
       usedBytes: totalSize,
       usedMB: Math.round(totalSize / 1024 / 1024 * 10) / 10,
-      maxMB: 1024, // 1GB free
-      percentage: Math.round(totalSize / (1024 * 1024 * 1024) * 100),
+      maxMB: 100 * 1024, // 100GB Pro plan
+      percentage: Math.round(totalSize / (100 * 1024 * 1024 * 1024) * 100),
     }
   } catch (e) {
-    return { usedBytes: 0, usedMB: 0, maxMB: 1024, percentage: 0 }
+    return { usedBytes: 0, usedMB: 0, maxMB: 100 * 1024, percentage: 0 }
   }
 }
 
