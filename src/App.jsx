@@ -1560,20 +1560,21 @@ function CastingAppInner({ authUser }) {
         if (!roleSet.has(key)) delete clean.profiles[key];
       });
     }
-    // Keep only first photo per profile, compress base64 to tiny thumbnail
+    // Compress all photos for sharing (keep all, reduce size)
     if (clean.profiles) {
       for (const role of Object.keys(clean.profiles)) {
         for (let i = 0; i < (clean.profiles[role] || []).length; i++) {
           const p = clean.profiles[role][i];
           p.selftapeVideos = [];
-          const firstPhoto = (p.photos || [])[0];
-          if (firstPhoto && typeof firstPhoto === "string" && firstPhoto.startsWith("data:")) {
-            try { p.photos = [await compressImage(firstPhoto, 150, 0.4)]; } catch(e) { p.photos = []; }
-          } else if (firstPhoto) {
-            p.photos = [firstPhoto];
-          } else {
-            p.photos = [];
+          const compressed = [];
+          for (const ph of (p.photos || [])) {
+            if (typeof ph === "string" && ph.startsWith("data:")) {
+              try { compressed.push(await compressImage(ph, 300, 0.5)); } catch(e) { /* skip */ }
+            } else if (ph) {
+              compressed.push(ph);
+            }
           }
+          p.photos = compressed;
         }
       }
     }
@@ -8156,6 +8157,8 @@ function GuestView({ shareCode, project, password }) {
   const [savingState, setSavingState] = useState(null);
   const [expandedProfile, setExpandedProfile] = useState(null);
   const [playingVideo, setPlayingVideo] = useState(null);
+  const [selectedProfile, setSelectedProfile] = useState(null);
+  const [selectedPhotoIdx, setSelectedPhotoIdx] = useState(0);
 
   // Auto-save votes to shared storage
   const saveToShared = useCallback(async (newVotes, newCastingVotes, newComments) => {
@@ -8249,10 +8252,10 @@ function GuestView({ shareCode, project, password }) {
         <div key={profile.id} style={{
           background: "#111114", borderRadius: 16, overflow: "hidden",
           border: v?.choice === "yes" ? "1px solid rgba(34,197,94,0.25)" : v?.choice === "no" ? "1px solid rgba(239,68,68,0.25)" : v?.choice === "maybe" ? "1px solid rgba(245,158,11,0.25)" : "1px solid #1e1e22",
-          transition: "all 0.3s", position: "relative",
+          transition: "all 0.3s", position: "relative", cursor: "pointer",
         }}>
           {/* Photo */}
-          <div style={{ width: "100%", aspectRatio: "3/4", background: "#0c0c0e", position: "relative", overflow: "hidden" }}>
+          <div onClick={() => { setSelectedProfile(profile); setSelectedPhotoIdx(0); }} style={{ width: "100%", aspectRatio: "3/4", background: "#0c0c0e", position: "relative", overflow: "hidden" }}>
             {profile.photos?.[0] ? (
               <img src={profile.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             ) : (
@@ -8373,7 +8376,7 @@ function GuestView({ shareCode, project, password }) {
       }}>
         <div style={{ display: "flex", alignItems: "stretch" }}>
           {/* Photo */}
-          <div style={{ width: 80, minHeight: 90, background: "#0c0c0e", flexShrink: 0, position: "relative", overflow: "hidden" }}>
+          <div onClick={() => { setSelectedProfile(profile); setSelectedPhotoIdx(0); }} style={{ width: 80, minHeight: 90, background: "#0c0c0e", flexShrink: 0, position: "relative", overflow: "hidden", cursor: "pointer" }}>
             {profile.photos?.[0] ? (
               <img src={profile.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             ) : (
@@ -8689,6 +8692,87 @@ function GuestView({ shareCode, project, password }) {
         </div>
 
         {/* Video player overlay */}
+        {/* Profile Detail Modal */}
+        {selectedProfile && (() => {
+          const sp = selectedProfile;
+          const photos = sp.photos || [];
+          const fullName = [sp.firstName, (sp.name || "").toUpperCase()].filter(Boolean).join(" ");
+          const spVote = votes[sp.id];
+          const voteProfile = (choice) => {
+            const nv = { ...votes, [sp.id]: { ...(votes[sp.id] || {}), choice, at: new Date().toISOString() } };
+            setVotes(nv);
+            saveToShared(nv, castingVotes, comments);
+          };
+          return (
+            <div onClick={() => setSelectedProfile(null)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", zIndex: 2000, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 20 }}>
+              <div onClick={e => e.stopPropagation()} style={{ background: "#111114", borderRadius: 20, maxWidth: 500, width: "100%", maxHeight: "90vh", overflow: "auto", border: "1px solid #2a2a2e", cursor: "default" }}>
+                {/* Photo gallery */}
+                <div style={{ position: "relative", width: "100%", aspectRatio: "3/4", background: "#0c0c0e", overflow: "hidden", borderRadius: "20px 20px 0 0" }}>
+                  {photos.length > 0 ? (
+                    <img src={photos[selectedPhotoIdx] || photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                  ) : (
+                    <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 80, fontFamily: "'Playfair Display', serif" }}>{(sp.firstName || "?")[0]}</div>
+                  )}
+                  {/* Close button */}
+                  <button onClick={() => setSelectedProfile(null)} style={{ position: "absolute", top: 12, right: 12, width: 32, height: 32, borderRadius: "50%", background: "rgba(0,0,0,0.6)", border: "none", color: "#fff", fontSize: 16, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>×</button>
+                  {/* Photo navigation */}
+                  {photos.length > 1 && (
+                    <>
+                      <button onClick={() => setSelectedPhotoIdx(i => (i - 1 + photos.length) % photos.length)} style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", width: 36, height: 36, borderRadius: "50%", background: "rgba(0,0,0,0.5)", border: "none", color: "#fff", fontSize: 18, cursor: "pointer" }}>‹</button>
+                      <button onClick={() => setSelectedPhotoIdx(i => (i + 1) % photos.length)} style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", width: 36, height: 36, borderRadius: "50%", background: "rgba(0,0,0,0.5)", border: "none", color: "#fff", fontSize: 18, cursor: "pointer" }}>›</button>
+                      <div style={{ position: "absolute", bottom: 10, left: "50%", transform: "translateX(-50%)", display: "flex", gap: 6 }}>
+                        {photos.map((_, pi) => (
+                          <div key={pi} onClick={() => setSelectedPhotoIdx(pi)} style={{ width: 8, height: 8, borderRadius: "50%", background: pi === selectedPhotoIdx ? "#fff" : "rgba(255,255,255,0.35)", cursor: "pointer", transition: "background 0.2s" }} />
+                        ))}
+                      </div>
+                    </>
+                  )}
+                </div>
+                {/* Profile info */}
+                <div style={{ padding: "20px 24px" }}>
+                  <div style={{ fontSize: 22, fontWeight: 800, color: "#f0f0f0", fontFamily: "'Playfair Display', serif", marginBottom: 4 }}>{fullName}</div>
+                  <div style={{ fontSize: 13, color: "#888", marginBottom: 12 }}>
+                    {[sp.age ? sp.age + " ans" : null, sp.height, sp.hairColor].filter(Boolean).join(" · ")}
+                  </div>
+                  {sp.agency && <div style={{ fontSize: 12, color: "#c9a44a", fontWeight: 700, marginBottom: 10 }}>— {sp.agency}</div>}
+                  {/* Details grid */}
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px 16px", marginBottom: 16 }}>
+                    {sp.measurements && <div><span style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Mensurations</span><div style={{ fontSize: 13, color: "#ccc" }}>{sp.measurements}</div></div>}
+                    {sp.profileType && <div><span style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Type</span><div style={{ fontSize: 13, color: "#ccc" }}>{sp.profileType}</div></div>}
+                    {sp.eyeColor && <div><span style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Yeux</span><div style={{ fontSize: 13, color: "#ccc" }}>{sp.eyeColor}</div></div>}
+                    {sp.city && <div><span style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Ville</span><div style={{ fontSize: 13, color: "#ccc" }}>{sp.city}</div></div>}
+                    {sp.email && <div><span style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Email</span><div style={{ fontSize: 13, color: "#60a5fa" }}>{sp.email}</div></div>}
+                    {sp.phone && <div><span style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Tel</span><div style={{ fontSize: 13, color: "#ccc" }}>{sp.phone}</div></div>}
+                  </div>
+                  {sp.notes && <div style={{ padding: "10px 14px", background: "rgba(255,255,255,0.02)", borderRadius: 8, borderLeft: "3px solid #c9a44a44", fontSize: 13, color: "#aaa", marginBottom: 12, lineHeight: 1.5 }}>{sp.notes}</div>}
+                  {sp.specificities && <div style={{ padding: "10px 14px", background: "rgba(255,255,255,0.02)", borderRadius: 8, borderLeft: "3px solid #f59e0b44", fontSize: 13, color: "#aaa", marginBottom: 12, lineHeight: 1.5 }}>{sp.specificities}</div>}
+                  {/* Selftapes */}
+                  {(sp.selftapeLinks?.filter(l => l).length > 0) && (
+                    <div style={{ marginBottom: 16 }}>
+                      <div style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 8 }}>Selftapes</div>
+                      {sp.selftapeLinks.filter(l => l).map((link, li) => (
+                        <div key={li} style={{ marginBottom: 8 }}><EmbedPlayer url={link} height={200} /></div>
+                      ))}
+                    </div>
+                  )}
+                  {/* Vote buttons */}
+                  <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
+                    {[{ k: "yes", l: "OUI", c: "#22c55e" }, { k: "maybe", l: "PEUT-ETRE", c: "#f59e0b" }, { k: "no", l: "NON", c: "#ef4444" }].map(opt => (
+                      <button key={opt.k} onClick={() => voteProfile(opt.k)} style={{
+                        flex: 1, padding: "12px 0", borderRadius: 10, fontSize: 12, fontWeight: 700,
+                        fontFamily: "inherit", border: "none", cursor: "pointer",
+                        background: spVote?.choice === opt.k ? opt.c + "20" : "rgba(255,255,255,0.03)",
+                        color: spVote?.choice === opt.k ? opt.c : "#555",
+                        transition: "all 0.2s",
+                      }}>{spVote?.choice === opt.k ? "✓ " : ""}{opt.l}</button>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
+
         {playingVideo && (
           <div onClick={() => setPlayingVideo(null)}
             style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.9)", zIndex: 2000, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
