@@ -5626,27 +5626,49 @@ function CastingAppInner({ authUser }) {
 
                 if (!day) {
                   return (
-                    <div style={{
-                      display: "flex", flexDirection: "column", alignItems: "center",
-                      justifyContent: "center", minHeight: 400, color: "#444",
-                    }}>
-                      <div style={{ fontSize: 48, marginBottom: 16, opacity: 0.4 }}>📋</div>
-                      <div style={{ fontSize: 14, marginBottom: 8 }}>
-                        {state.castingDays.length === 0 ? "Aucune journée de casting créée" : "Sélectionnez une journée à gauche"}
-                      </div>
-                      {state.castingDays.length === 0 && (
+                    <div>
+                      <div style={{ fontSize: 14, color: "#c9a44a", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 20 }}>📋 Journées de casting</div>
+                      {state.castingDays.length > 0 ? (
+                        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 14 }}>
+                          {state.castingDays.map(d => {
+                            const realSlots = d.slots.filter(s => !s._isPause);
+                            const confirmed = realSlots.filter(s => s.availability === "dispo").length;
+                            return (
+                              <div key={d.id} onClick={() => setActiveCastingDay(d.id)} style={{ background: "#111114", borderRadius: 14, border: "1px solid #1e1e22", padding: "20px 24px", cursor: "pointer", transition: "all 0.2s" }}
+                                onMouseEnter={e => { e.currentTarget.style.borderColor = "#a855f7"; e.currentTarget.style.background = "#141418"; }}
+                                onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e1e22"; e.currentTarget.style.background = "#111114"; }}>
+                                <div style={{ fontSize: 20, fontWeight: 800, color: "#f0f0f0", fontFamily: "'Playfair Display', serif", marginBottom: 6 }}>
+                                  {d.date ? new Date(d.date + "T00:00").toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" }) : "Date à définir"}
+                                </div>
+                                {d.location && <div style={{ fontSize: 13, color: "#888", marginBottom: 8 }}>📍 {d.location}</div>}
+                                <div style={{ display: "flex", gap: 12, fontSize: 12 }}>
+                                  <span style={{ color: "#a855f7", fontWeight: 600 }}>{realSlots.length} passage{realSlots.length !== 1 ? "s" : ""}</span>
+                                  {confirmed > 0 && <span style={{ color: "#22c55e", fontWeight: 600 }}>✓ {confirmed} confirmé{confirmed !== 1 ? "s" : ""}</span>}
+                                  {d.practicalInfoValidated && <span style={{ color: "#22c55e", fontSize: 10 }}>✅ Infos OK</span>}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      ) : (
+                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: 300, color: "#444" }}>
+                          <div style={{ fontSize: 48, marginBottom: 16, opacity: 0.4 }}>📋</div>
+                          <div style={{ fontSize: 14, marginBottom: 8 }}>Aucune journée de casting créée</div>
+                        </div>
+                      )}
+                      <div style={{ marginTop: 20, textAlign: "center" }}>
                         <button
                           onClick={() => setShowAddDay(true)}
                           style={{
-                            padding: "10px 24px", background: "rgba(168,85,247,0.1)",
+                            padding: "12px 28px", background: "rgba(168,85,247,0.1)",
                             color: "#a855f7", border: "1px solid rgba(168,85,247,0.3)",
-                            borderRadius: 10, cursor: "pointer", fontSize: 13,
-                            fontWeight: 600, fontFamily: "inherit", marginTop: 8,
+                            borderRadius: 10, cursor: "pointer", fontSize: 14,
+                            fontWeight: 600, fontFamily: "inherit",
                           }}
                         >
                           + Créer une journée
                         </button>
-                      )}
+                      </div>
                     </div>
                   );
                 }
@@ -5665,6 +5687,12 @@ function CastingAppInner({ authUser }) {
 
                 return (
                   <>
+                    {/* Back button */}
+                    <button onClick={() => setActiveCastingDay(null)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 14px", background: "transparent", border: "1px solid #2a2a2e", borderRadius: 8, color: "#888", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", marginBottom: 16 }}
+                      onMouseEnter={e => { e.currentTarget.style.color = "#a855f7"; e.currentTarget.style.borderColor = "#a855f7"; }}
+                      onMouseLeave={e => { e.currentTarget.style.color = "#888"; e.currentTarget.style.borderColor = "#2a2a2e"; }}>
+                      ← Toutes les journées
+                    </button>
                     {/* Day header */}
                     <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 20 }}>
                       <div>
