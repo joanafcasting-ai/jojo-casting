@@ -2175,18 +2175,30 @@ function CastingAppInner({ authUser }) {
 
   const GMAIL_CLIENT_ID = "564140044631-42vkp5roid29t80kcj7av6744ikq3bbe.apps.googleusercontent.com";
 
-  const connectGmail = () => {
+  const gmailTokenClient = useRef(null);
+
+  const connectGmail = (prompt = "consent") => {
     if (!window.google?.accounts?.oauth2) { setGmailError("Google Identity Services not loaded"); return; }
-    const client = window.google.accounts.oauth2.initTokenClient({
-      client_id: GMAIL_CLIENT_ID,
-      scope: "https://www.googleapis.com/auth/gmail.readonly",
-      callback: (response) => {
-        if (response.access_token) { setGmailToken(response.access_token); setGmailError(null); fetchGmailEmails(response.access_token); }
-        else setGmailError("Connexion échouée");
-      },
-    });
-    client.requestAccessToken();
+    if (!gmailTokenClient.current) {
+      gmailTokenClient.current = window.google.accounts.oauth2.initTokenClient({
+        client_id: GMAIL_CLIENT_ID,
+        scope: "https://www.googleapis.com/auth/gmail.readonly",
+        callback: (response) => {
+          if (response.access_token) { setGmailToken(response.access_token); setGmailError(null); fetchGmailEmails(response.access_token); }
+          else setGmailError("Connexion échouée");
+        },
+      });
+    }
+    gmailTokenClient.current.requestAccessToken({ prompt });
   };
+
+  // Auto-connect Gmail silently when opening Candidatures tab
+  useEffect(() => {
+    if (activeTab === "candidatures" && !gmailToken && window.google?.accounts?.oauth2) {
+      // Try silent reconnect (no popup if already authorized)
+      setTimeout(() => connectGmail("none"), 500);
+    }
+  }, [activeTab]);
 
   // Recursively extract body from Gmail payload parts
   const extractGmailBody = (payload) => {
