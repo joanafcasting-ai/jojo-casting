@@ -124,6 +124,53 @@ const EmbedPlayer = ({ url, height = 180 }) => {
   return <iframe src={embedUrl} style={{ width: "100%", height, borderRadius: 8, border: "1px solid #2a2a2e", background: "#000" }} allow="autoplay; encrypted-media" allowFullScreen frameBorder="0" />;
 };
 
+const parseEmailForCasting = (text) => {
+  const result = { firstName: "", name: "", age: "", sex: "", agency: "", measurements: "", email: "", phone: "", links: [] };
+  if (!text) return result;
+  // Email
+  const emailMatch = text.match(/[\w.-]+@[\w.-]+\.\w{2,}/);
+  if (emailMatch) result.email = emailMatch[0];
+  // Phone FR
+  const phoneMatch = text.match(/(?:0|\+33)[\s.]?\d(?:[\s.]?\d{2}){4}/);
+  if (phoneMatch) result.phone = phoneMatch[0].replace(/\s/g, "").replace(/\./g, "");
+  // Age
+  const ageMatch = text.match(/(\d{1,2})\s*ans/i);
+  if (ageMatch) result.age = ageMatch[1];
+  // Links
+  const urlMatches = text.match(/https?:\/\/[^\s<>"']+/g);
+  if (urlMatches) result.links = [...new Set(urlMatches)];
+  // Measurements (170cm, 1m70, etc.)
+  const measMatch = text.match(/(\d{2,3})\s*(?:cm|CM)/);
+  if (measMatch) result.measurements = measMatch[0];
+  // Agency keywords
+  const agencyPatterns = ["agence", "agency", "représenté", "management"];
+  const lines = text.split("\n");
+  for (const line of lines) {
+    const lower = line.toLowerCase();
+    for (const kw of agencyPatterns) {
+      if (lower.includes(kw)) {
+        const after = line.replace(/.*(?:agence|agency|représenté|management)\s*:?\s*/i, "").trim();
+        if (after && after.length < 60) result.agency = after;
+        break;
+      }
+    }
+  }
+  // Name: try first non-empty line that looks like a name
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (trimmed.length >= 3 && trimmed.length < 40 && !trimmed.includes("@") && !trimmed.match(/^https?:/) && !trimmed.match(/^\d/) && !trimmed.match(/^(bonjour|hello|madame|monsieur|objet|re:|fwd:)/i)) {
+      const parts = trimmed.split(/\s+/);
+      if (parts.length >= 2) { result.firstName = parts[0]; result.name = parts.slice(1).join(" "); }
+      else if (parts.length === 1) { result.firstName = parts[0]; }
+      break;
+    }
+  }
+  // Sex
+  if (text.match(/\b(actrice|comédienne|femme|fille)\b/i)) result.sex = "Femme";
+  else if (text.match(/\b(acteur|comédien|homme|garçon)\b/i)) result.sex = "Homme";
+  return result;
+};
+
 const INITIAL_STATE = {
   projectName: "",
   roles: [],
@@ -135,7 +182,8 @@ const INITIAL_STATE = {
   finalSelections: {},
   finalContacts: {},
   gmailLabel: "",
-  emailLog: [], // { id, to, toName, subject, sentAt, role, type }
+  emailLog: [],
+  candidatures: [], // { id, rawEmail, firstName, name, age, sex, agency, measurements, email, phone, links, role, status, createdAt }
   started: false,
   projectInfo: {
     production: "", director: "", photographer: "",
@@ -2104,6 +2152,8 @@ function CastingAppInner({ authUser }) {
   const [contactSubTab, setContactSubTab] = useState("premier"); // "premier" | "final"
   const [activeCastingDay, setActiveCastingDay] = useState(null);
   const [showAddDay, setShowAddDay] = useState(false);
+  const [candidatureModal, setCandidatureModal] = useState(false);
+  const [expandedCandidature, setExpandedCandidature] = useState(null);
   const [dragSlot, setDragSlot] = useState(null);
   const [actingNotesModal, setActingNotesModal] = useState(null); // { dayId, slotId }
   const [inviteModal, setInviteModal] = useState(null); // { day, slot, profile }
@@ -4330,6 +4380,7 @@ function CastingAppInner({ authUser }) {
             <div style={{ padding: "0 8px", marginBottom: 20, display: "flex", flexDirection: "column", gap: 2 }}>
               {[
                 { key: "projet", icon: "📄", label: "Projet", color: "#e879f9", show: true },
+                { key: "candidatures", icon: "📩", label: "Candidatures", color: "#f472b6", show: true, badge: (state.candidatures || []).length },
                 { key: "roles", icon: "🎭", label: "Rôles", color: "#c9a44a", show: true },
                 { key: "contacts", icon: "📇", label: "Contacts", color: "#60a5fa", show: true, badge: (() => { const all = Object.values(state.profiles).flat(); return all.filter(p => getChoice(p.id)).length; })() },
                 { key: "planning", icon: "📋", label: "Planning", color: "#a855f7", show: true, badge: state.castingDays.length },
@@ -5329,6 +5380,135 @@ function CastingAppInner({ authUser }) {
                 </div>
               )}
 
+              </div>
+            ) :
+
+            /* ===== CANDIDATURES VIEW ===== */
+            activeTab === "candidatures" ? (
+              <div style={{ maxWidth: 1000 }}>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
+                  <div>
+                    <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f0f0f0", fontFamily: "'Playfair Display', serif", marginBottom: 4 }}>📩 Candidatures</h2>
+                    <div style={{ fontSize: 13, color: "#888" }}>{(state.candidatures || []).length} candidature{(state.candidatures || []).length !== 1 ? "s" : ""}</div>
+                  </div>
+                  <button onClick={() => setCandidatureModal(true)} style={{ padding: "12px 24px", background: "linear-gradient(135deg, #f472b6, #db2777)", border: "none", borderRadius: 10, color: "#fff", fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>📩 Coller un email</button>
+                </div>
+
+                {/* Candidatures list */}
+                <div style={{ background: "#111114", borderRadius: 14, border: "1px solid #1e1e22", overflow: "hidden" }}>
+                  {/* Header */}
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 60px 120px 100px 80px 32px", padding: "10px 18px", borderBottom: "2px solid #f472b633", gap: 8, background: "rgba(244,114,182,0.04)" }}>
+                    {["Prénom", "Nom", "Âge", "Agence", "Rôle visé", "Statut", ""].map(h => (
+                      <span key={h} style={{ fontSize: 10, color: "#f472b6", fontWeight: 700, textTransform: "uppercase" }}>{h}</span>
+                    ))}
+                  </div>
+                  {(state.candidatures || []).length === 0 && (
+                    <div style={{ padding: "40px 20px", textAlign: "center", color: "#555", fontSize: 14 }}>Aucune candidature — collez un email pour commencer</div>
+                  )}
+                  {(state.candidatures || []).map((c, ci) => {
+                    const isOpen = expandedCandidature === c.id;
+                    return (
+                      <React.Fragment key={c.id}>
+                        <div onClick={() => setExpandedCandidature(isOpen ? null : c.id)} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 60px 120px 100px 80px 32px", padding: "12px 18px", alignItems: "center", gap: 8, borderBottom: "1px solid #1a1a1e", cursor: "pointer", background: isOpen ? "rgba(244,114,182,0.03)" : "transparent" }}
+                          onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.015)"}
+                          onMouseLeave={e => e.currentTarget.style.background = isOpen ? "rgba(244,114,182,0.03)" : "transparent"}>
+                          <span style={{ fontSize: 14, fontWeight: 600, color: "#f0f0f0" }}>{c.firstName || "—"}</span>
+                          <span style={{ fontSize: 14, fontWeight: 700, color: "#f0f0f0" }}>{(c.name || "—").toUpperCase()}</span>
+                          <span style={{ fontSize: 13, color: "#ccc" }}>{c.age || "—"}</span>
+                          <span style={{ fontSize: 12, color: "#c9a44a" }}>{c.agency || "—"}</span>
+                          <span style={{ fontSize: 12, color: "#a855f7" }}>{c.role || "—"}</span>
+                          <span style={{ fontSize: 11, padding: "3px 8px", borderRadius: 6, fontWeight: 600, background: c.status === "transferred" ? "rgba(34,197,94,0.1)" : c.status === "rejected" ? "rgba(239,68,68,0.08)" : "rgba(245,158,11,0.08)", color: c.status === "transferred" ? "#22c55e" : c.status === "rejected" ? "#ef4444" : "#f59e0b" }}>
+                            {c.status === "transferred" ? "✓ Transféré" : c.status === "rejected" ? "✕ Refusé" : "En attente"}
+                          </span>
+                          <span style={{ fontSize: 14, color: "#555", transform: isOpen ? "rotate(180deg)" : "rotate(0)", transition: "transform 0.2s" }}>▾</span>
+                        </div>
+                        {/* Expanded detail */}
+                        {isOpen && (
+                          <div style={{ padding: "20px", borderBottom: "2px solid #1e1e22", background: "rgba(244,114,182,0.02)" }}>
+                            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
+                              {/* Left: original email */}
+                              <div>
+                                <label style={{ display: "block", fontSize: 10, color: "#f472b6", fontWeight: 600, textTransform: "uppercase", marginBottom: 6 }}>Email original</label>
+                                <textarea value={c.rawEmail || ""} readOnly rows={12} style={{ width: "100%", padding: "12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 10, color: "#ccc", fontSize: 12, fontFamily: "'DM Sans',sans-serif", outline: "none", resize: "vertical", lineHeight: 1.6, boxSizing: "border-box" }} />
+                              </div>
+                              {/* Right: editable form */}
+                              <div>
+                                <label style={{ display: "block", fontSize: 10, color: "#f472b6", fontWeight: 600, textTransform: "uppercase", marginBottom: 6 }}>Fiche candidat</label>
+                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 10 }}>
+                                  <input value={c.firstName || ""} onChange={e => { const arr = [...(state.candidatures || [])]; arr[ci] = { ...arr[ci], firstName: e.target.value }; setState(p => ({ ...p, candidatures: arr })); }} placeholder="Prénom" style={{ padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit", outline: "none" }} />
+                                  <input value={c.name || ""} onChange={e => { const arr = [...(state.candidatures || [])]; arr[ci] = { ...arr[ci], name: e.target.value }; setState(p => ({ ...p, candidatures: arr })); }} placeholder="Nom" style={{ padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit", outline: "none" }} />
+                                </div>
+                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 10 }}>
+                                  <input value={c.age || ""} onChange={e => { const arr = [...(state.candidatures || [])]; arr[ci] = { ...arr[ci], age: e.target.value }; setState(p => ({ ...p, candidatures: arr })); }} placeholder="Âge" style={{ padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit", outline: "none" }} />
+                                  <select value={c.sex || ""} onChange={e => { const arr = [...(state.candidatures || [])]; arr[ci] = { ...arr[ci], sex: e.target.value }; setState(p => ({ ...p, candidatures: arr })); }} style={{ padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit", outline: "none" }}><option value="">Sexe —</option><option>Homme</option><option>Femme</option><option>Non-binaire</option></select>
+                                  <input value={c.measurements || ""} onChange={e => { const arr = [...(state.candidatures || [])]; arr[ci] = { ...arr[ci], measurements: e.target.value }; setState(p => ({ ...p, candidatures: arr })); }} placeholder="Mensurations" style={{ padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit", outline: "none" }} />
+                                </div>
+                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 10 }}>
+                                  <input value={c.agency || ""} onChange={e => { const arr = [...(state.candidatures || [])]; arr[ci] = { ...arr[ci], agency: e.target.value }; setState(p => ({ ...p, candidatures: arr })); }} placeholder="Agence" style={{ padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit", outline: "none" }} />
+                                  <input value={c.email || ""} onChange={e => { const arr = [...(state.candidatures || [])]; arr[ci] = { ...arr[ci], email: e.target.value }; setState(p => ({ ...p, candidatures: arr })); }} placeholder="Email" style={{ padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit", outline: "none" }} />
+                                </div>
+                                <input value={c.phone || ""} onChange={e => { const arr = [...(state.candidatures || [])]; arr[ci] = { ...arr[ci], phone: e.target.value }; setState(p => ({ ...p, candidatures: arr })); }} placeholder="Téléphone" style={{ width: "100%", padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit", outline: "none", marginBottom: 10, boxSizing: "border-box" }} />
+                                {/* Links */}
+                                {(c.links || []).length > 0 && (
+                                  <div style={{ marginBottom: 10 }}>
+                                    <label style={{ display: "block", fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 4 }}>Liens extraits</label>
+                                    {c.links.map((link, li) => (
+                                      <div key={li} style={{ marginBottom: 4 }}><a href={link} target="_blank" rel="noreferrer" style={{ fontSize: 12, color: "#60a5fa", textDecoration: "none", wordBreak: "break-all" }}>🔗 {link.length > 60 ? link.slice(0, 60) + "..." : link}</a></div>
+                                    ))}
+                                  </div>
+                                )}
+                              </div>
+                            </div>
+                            {/* Transfer to role */}
+                            <div style={{ marginTop: 16, paddingTop: 14, borderTop: "1px solid #1e1e22", display: "flex", gap: 10, alignItems: "center" }}>
+                              <select value={c.role || ""} onChange={e => { const arr = [...(state.candidatures || [])]; arr[ci] = { ...arr[ci], role: e.target.value }; setState(p => ({ ...p, candidatures: arr })); }} style={{ padding: "8px 14px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit", outline: "none" }}>
+                                <option value="">Assigner un rôle...</option>
+                                {state.roles.map(r => <option key={r} value={r}>{r}</option>)}
+                              </select>
+                              <button onClick={() => {
+                                if (!c.role) return alert("Sélectionnez un rôle d'abord");
+                                const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
+                                const newProfile = { id, firstName: c.firstName || "", name: c.name || "", age: c.age || "", agency: c.agency || "", email: c.email || "", phone: c.phone || "", measurements: c.measurements || "", availability: "pending", photos: [], selftapeLinks: c.links || [], selftapeVideos: [], source: "Candidature" };
+                                setState(prev => ({
+                                  ...prev,
+                                  profiles: { ...prev.profiles, [c.role]: [...(prev.profiles[c.role] || []), newProfile] },
+                                  candidatures: (prev.candidatures || []).map((x, xi) => xi === ci ? { ...x, status: "transferred" } : x),
+                                }));
+                              }} style={{ padding: "8px 20px", background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.3)", borderRadius: 8, color: "#22c55e", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>✓ Transférer dans les rôles</button>
+                              <button onClick={() => {
+                                const arr = [...(state.candidatures || [])]; arr[ci] = { ...arr[ci], status: "rejected" }; setState(p => ({ ...p, candidatures: arr }));
+                              }} style={{ padding: "8px 16px", background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 8, color: "#ef4444", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>✕ Refuser</button>
+                              <button onClick={() => {
+                                if (window.confirm("Supprimer cette candidature ?")) setState(p => ({ ...p, candidatures: (p.candidatures || []).filter((_, xi) => xi !== ci) }));
+                              }} style={{ marginLeft: "auto", background: "none", border: "none", color: "#333", cursor: "pointer", fontSize: 16 }}>🗑</button>
+                            </div>
+                          </div>
+                        )}
+                      </React.Fragment>
+                    );
+                  })}
+                </div>
+
+                {/* Paste email modal */}
+                {candidatureModal && (
+                  <div onClick={() => setCandidatureModal(false)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.8)", zIndex: 2000, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
+                    <div onClick={e => e.stopPropagation()} style={{ background: "#141416", borderRadius: 20, maxWidth: 600, width: "100%", padding: "28px 32px", border: "1px solid #2a2a2e" }}>
+                      <h3 style={{ fontSize: 18, fontWeight: 700, color: "#f0f0f0", fontFamily: "'Playfair Display', serif", marginBottom: 14 }}>📩 Coller un email de candidature</h3>
+                      <textarea id="candidatureEmailInput" rows={14} placeholder="Collez ici le contenu de l'email reçu (texte, liens, infos du candidat)..." style={{ width: "100%", padding: "14px 16px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 10, color: "#e0e0e0", fontSize: 14, fontFamily: "'DM Sans',sans-serif", outline: "none", resize: "vertical", lineHeight: 1.6, boxSizing: "border-box" }} />
+                      <div style={{ display: "flex", gap: 10, marginTop: 14, justifyContent: "flex-end" }}>
+                        <button onClick={() => setCandidatureModal(false)} style={{ padding: "10px 20px", background: "rgba(255,255,255,0.03)", border: "1px solid #2a2a2e", borderRadius: 8, color: "#888", fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Annuler</button>
+                        <button onClick={() => {
+                          const text = document.getElementById("candidatureEmailInput")?.value?.trim();
+                          if (!text) return;
+                          const parsed = parseEmailForCasting(text);
+                          const newCandidature = { id: "cand_" + Date.now(), rawEmail: text, ...parsed, role: "", status: "pending", createdAt: new Date().toISOString() };
+                          setState(prev => ({ ...prev, candidatures: [...(prev.candidatures || []), newCandidature] }));
+                          setCandidatureModal(false);
+                        }} style={{ padding: "10px 24px", background: "linear-gradient(135deg, #f472b6, #db2777)", border: "none", borderRadius: 8, color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>🔍 Analyser & Ajouter</button>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             ) :
 
