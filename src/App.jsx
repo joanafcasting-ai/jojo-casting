@@ -124,9 +124,17 @@ const EmbedPlayer = ({ url, height = 180 }) => {
   return <iframe src={embedUrl} style={{ width: "100%", height, borderRadius: 8, border: "1px solid #2a2a2e", background: "#000" }} allow="autoplay; encrypted-media" allowFullScreen frameBorder="0" />;
 };
 
-const parseEmailForCasting = (text) => {
-  const result = { firstName: "", name: "", age: "", sex: "", agency: "", measurements: "", email: "", phone: "", links: [] };
-  if (!text) return result;
+const decodeHtmlEntities = (str) => {
+  if (!str) return str;
+  const txt = document.createElement("textarea");
+  txt.innerHTML = str;
+  return txt.value;
+};
+
+const parseEmailForCasting = (rawText) => {
+  const result = { firstName: "", name: "", age: "", sex: "", agency: "", measurements: "", email: "", phone: "", links: [], height: "" };
+  if (!rawText) return result;
+  const text = decodeHtmlEntities(rawText);
   // Email
   const emailMatch = text.match(/[\w.-]+@[\w.-]+\.\w{2,}/);
   if (emailMatch) result.email = emailMatch[0];
@@ -139,9 +147,12 @@ const parseEmailForCasting = (text) => {
   // Links
   const urlMatches = text.match(/https?:\/\/[^\s<>"']+/g);
   if (urlMatches) result.links = [...new Set(urlMatches)];
-  // Measurements (170cm, 1m70, etc.)
-  const measMatch = text.match(/(\d{2,3})\s*(?:cm|CM)/);
-  if (measMatch) result.measurements = measMatch[0];
+  // Height (170cm, 1m70, 1.80m, etc.)
+  const heightMatch = text.match(/(\d{2,3})\s*(?:cm|CM)/) || text.match(/(\d)[.,](\d{2})\s*m\b/) || text.match(/(\d)m(\d{2})/);
+  if (heightMatch) result.height = heightMatch[0].trim();
+  // Measurements (Haut: XX, Bas: XX, confection, etc.)
+  const measMatch = text.match(/(?:haut|bas|poitrine|tour|confection|taille)\s*:?\s*\d+/gi);
+  if (measMatch) result.measurements = measMatch.join(" · ");
   // Agency keywords
   const agencyPatterns = ["agence", "agency", "représenté", "management"];
   const lines = text.split("\n");
@@ -5456,35 +5467,58 @@ function CastingAppInner({ authUser }) {
                 {/* Gmail emails */}
                 {gmailToken && (
                   <div style={{ marginBottom: 24 }}>
-                    <div style={{ fontSize: 12, color: "#EA4335", fontWeight: 700, textTransform: "uppercase", marginBottom: 10 }}>📧 Emails Gmail ({gmailEmails.length})</div>
-                    <div style={{ background: "#111114", borderRadius: 14, border: "1px solid #1e1e22", overflow: "hidden", maxHeight: 400, overflowY: "auto" }}>
-                      {gmailLoading && <div style={{ padding: "20px", textAlign: "center", color: "#888" }}>⏳ Chargement des emails...</div>}
-                      {!gmailLoading && gmailEmails.length === 0 && <div style={{ padding: "20px", textAlign: "center", color: "#555" }}>Aucun email trouvé</div>}
-                      {gmailEmails.map(em => (
-                        <div key={em.id} style={{ display: "flex", alignItems: "center", padding: "12px 18px", borderBottom: "1px solid #1a1a1e", gap: 14 }}
-                          onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.015)"}
-                          onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-                          <div style={{ flex: 1, minWidth: 0 }}>
-                            <div style={{ fontSize: 13, fontWeight: 600, color: "#f0f0f0", marginBottom: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{em.subject || "(Sans objet)"}</div>
-                            <div style={{ fontSize: 11, color: "#888", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{em.from}</div>
-                            <div style={{ fontSize: 11, color: "#555", marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{em.snippet}</div>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
+                      <div style={{ fontSize: 13, color: "#EA4335", fontWeight: 700, textTransform: "uppercase" }}>📧 Boîte de réception ({gmailEmails.length})</div>
+                      <input placeholder="🔍 Filtrer les emails..." onChange={e => setGmailFilter && setGmailFilter(e.target.value)} style={{ padding: "6px 14px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "inherit", outline: "none", width: 220 }} />
+                    </div>
+                    <div style={{ background: "#111114", borderRadius: 14, border: "1px solid #1e1e22", overflow: "hidden" }}>
+                      {gmailLoading && <div style={{ padding: "30px", textAlign: "center", color: "#888", fontSize: 14 }}>⏳ Chargement des emails...</div>}
+                      {!gmailLoading && gmailEmails.length === 0 && <div style={{ padding: "30px", textAlign: "center", color: "#555", fontSize: 14 }}>Aucun email trouvé</div>}
+                      <div style={{ maxHeight: 500, overflowY: "auto" }}>
+                      {gmailEmails.map(em => {
+                        const fromName = em.from?.match(/^"?([^"<]+)"?\s*</) ? em.from.match(/^"?([^"<]+)"?\s*</)[1].replace(/^["']|["']$/g, "").trim() : em.from?.split("@")[0] || "—";
+                        const fromEmail = em.from?.match(/<([^>]+)>/) ? em.from.match(/<([^>]+)>/)[1] : em.from || "";
+                        const decodedSnippet = decodeHtmlEntities(em.snippet || "");
+                        return (
+                          <div key={em.id} style={{ padding: "16px 20px", borderBottom: "1px solid #1a1a1e", cursor: "pointer", transition: "background 0.15s" }}
+                            onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.02)"}
+                            onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                            <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
+                              {/* Avatar */}
+                              <div style={{ width: 40, height: 40, borderRadius: "50%", background: "rgba(234,67,53,0.1)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 16, color: "#EA4335", fontWeight: 700 }}>{fromName[0]?.toUpperCase() || "?"}</div>
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
+                                  <div style={{ fontSize: 15, fontWeight: 700, color: "#f0f0f0" }}>{fromName}</div>
+                                  <div style={{ fontSize: 11, color: "#666", flexShrink: 0 }}>{em.date ? new Date(em.date).toLocaleDateString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : ""}</div>
+                                </div>
+                                <div style={{ fontSize: 11, color: "#888", marginBottom: 2 }}>{fromEmail}</div>
+                                <div style={{ fontSize: 14, fontWeight: 600, color: "#ccc", marginBottom: 4 }}>{decodeHtmlEntities(em.subject) || "(Sans objet)"}</div>
+                                <div style={{ fontSize: 13, color: "#777", lineHeight: 1.5 }}>{decodedSnippet.length > 200 ? decodedSnippet.slice(0, 200) + "..." : decodedSnippet}</div>
+                              </div>
+                            </div>
+                            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 10 }}>
+                              <button onClick={(ev) => {
+                                ev.stopPropagation();
+                                const decoded = decodeHtmlEntities(em.body || em.snippet || "");
+                                const parsed = parseEmailForCasting(decoded);
+                                const fMatch = em.from?.match(/^"?([^"<]+)"?\s*</);
+                                if (fMatch && !parsed.firstName) {
+                                  const clean = fMatch[1].replace(/^["']|["']$/g, "").trim().split(/\s+/);
+                                  if (clean.length >= 2) { parsed.firstName = clean[0]; parsed.name = clean.slice(1).join(" "); }
+                                  else parsed.firstName = clean[0] || "";
+                                }
+                                parsed.firstName = (parsed.firstName || "").replace(/^["']|["']$/g, "").trim();
+                                parsed.name = (parsed.name || "").replace(/^["']|["']$/g, "").trim();
+                                if (!parsed.email) { const eM = em.from?.match(/<([^>]+)>/); if (eM) parsed.email = eM[1]; }
+                                const newC = { id: "cand_" + Date.now(), rawEmail: decodeHtmlEntities(`De: ${fromName} <${fromEmail}>\nObjet: ${em.subject}\nDate: ${em.date}\n\n${em.body || em.snippet || ""}`), ...parsed, role: "", status: "pending", createdAt: new Date().toISOString() };
+                                setState(prev => ({ ...prev, candidatures: [...(prev.candidatures || []), newC] }));
+                                setExpandedCandidature(newC.id);
+                              }} style={{ padding: "8px 20px", background: "linear-gradient(135deg, #f472b6, #db2777)", border: "none", borderRadius: 8, color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>📋 Transformer en fiche</button>
+                            </div>
                           </div>
-                          <div style={{ fontSize: 10, color: "#555", flexShrink: 0, whiteSpace: "nowrap" }}>{em.date ? new Date(em.date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" }) : ""}</div>
-                          <button onClick={() => {
-                            const parsed = parseEmailForCasting(em.body || em.snippet || "");
-                            // Try to extract name from "From" field
-                            const fromMatch = em.from?.match(/^([^<]+)</);
-                            if (fromMatch && !parsed.firstName) {
-                              const parts = fromMatch[1].trim().split(/\s+/);
-                              if (parts.length >= 2) { parsed.firstName = parts[0]; parsed.name = parts.slice(1).join(" "); }
-                              else if (parts.length === 1) { parsed.firstName = parts[0]; }
-                            }
-                            if (!parsed.email) { const emMatch = em.from?.match(/<([^>]+)>/); if (emMatch) parsed.email = emMatch[1]; }
-                            const newCandidature = { id: "cand_" + Date.now(), rawEmail: `De: ${em.from}\nObjet: ${em.subject}\nDate: ${em.date}\n\n${em.body || em.snippet || ""}`, ...parsed, role: "", status: "pending", createdAt: new Date().toISOString() };
-                            setState(prev => ({ ...prev, candidatures: [...(prev.candidatures || []), newCandidature] }));
-                          }} style={{ padding: "6px 14px", background: "linear-gradient(135deg, #f472b6, #db2777)", border: "none", borderRadius: 8, color: "#fff", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", flexShrink: 0 }}>→ Fiche</button>
-                        </div>
-                      ))}
+                        );
+                      })}
+                      </div>
                     </div>
                   </div>
                 )}
@@ -5529,7 +5563,7 @@ function CastingAppInner({ authUser }) {
                               {/* Left: original email */}
                               <div>
                                 <label style={{ display: "block", fontSize: 10, color: "#f472b6", fontWeight: 600, textTransform: "uppercase", marginBottom: 6 }}>Email original</label>
-                                <textarea value={c.rawEmail || ""} readOnly rows={12} style={{ width: "100%", padding: "12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 10, color: "#ccc", fontSize: 12, fontFamily: "'DM Sans',sans-serif", outline: "none", resize: "vertical", lineHeight: 1.6, boxSizing: "border-box" }} />
+                                <div style={{ width: "100%", padding: "14px 16px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 10, color: "#ccc", fontSize: 13, fontFamily: "'DM Sans',sans-serif", lineHeight: 1.7, maxHeight: 400, overflowY: "auto", whiteSpace: "pre-wrap", boxSizing: "border-box" }}>{decodeHtmlEntities(c.rawEmail || "")}</div>
                               </div>
                               {/* Right: editable form */}
                               <div>
