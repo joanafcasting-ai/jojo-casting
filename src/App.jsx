@@ -2169,6 +2169,9 @@ function CastingAppInner({ authUser }) {
   const [gmailEmails, setGmailEmails] = useState([]);
   const [gmailLoading, setGmailLoading] = useState(false);
   const [gmailError, setGmailError] = useState(null);
+  const [gmailOpenEmail, setGmailOpenEmail] = useState(null);
+  const [gmailReadIds, setGmailReadIds] = useState(new Set());
+  const [gmailProcessedIds, setGmailProcessedIds] = useState(new Set());
 
   const GMAIL_CLIENT_ID = "564140044631-42vkp5roid29t80kcj7av6744ikq3bbe.apps.googleusercontent.com";
 
@@ -2185,6 +2188,27 @@ function CastingAppInner({ authUser }) {
     client.requestAccessToken();
   };
 
+  // Recursively extract body from Gmail payload parts
+  const extractGmailBody = (payload) => {
+    const b64decode = (d) => { try { return decodeURIComponent(escape(atob(d.replace(/-/g, "+").replace(/_/g, "/")))); } catch(e) { try { return atob(d.replace(/-/g, "+").replace(/_/g, "/")); } catch(e2) { return ""; } } };
+    if (payload.body?.data) return { text: b64decode(payload.body.data), mimeType: payload.mimeType };
+    if (payload.parts) {
+      let textBody = "", htmlBody = "";
+      for (const part of payload.parts) {
+        if (part.mimeType === "text/plain" && part.body?.data) textBody = b64decode(part.body.data);
+        else if (part.mimeType === "text/html" && part.body?.data) htmlBody = b64decode(part.body.data);
+        else if (part.parts) {
+          const sub = extractGmailBody(part);
+          if (sub.mimeType === "text/plain" && sub.text) textBody = textBody || sub.text;
+          if (sub.mimeType === "text/html" && sub.text) htmlBody = htmlBody || sub.text;
+        }
+      }
+      if (htmlBody) return { text: htmlBody, mimeType: "text/html" };
+      if (textBody) return { text: textBody, mimeType: "text/plain" };
+    }
+    return { text: "", mimeType: "text/plain" };
+  };
+
   const fetchGmailEmails = async (token) => {
     setGmailLoading(true);
     try {
@@ -2192,24 +2216,19 @@ function CastingAppInner({ authUser }) {
       const listData = await listRes.json();
       if (!listData.messages) { setGmailEmails([]); setGmailLoading(false); return; }
       const emails = [];
-      for (const msg of listData.messages.slice(0, 20)) {
+      for (const msg of listData.messages.slice(0, 25)) {
         try {
           const msgRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${msg.id}?format=full`, { headers: { Authorization: `Bearer ${token}` } });
           const msgData = await msgRes.json();
-          const headers = msgData.payload?.headers || [];
-          const getH = (n) => headers.find(h => h.name.toLowerCase() === n.toLowerCase())?.value || "";
-          let body = "";
-          if (msgData.payload?.body?.data) body = atob(msgData.payload.body.data.replace(/-/g, "+").replace(/_/g, "/"));
-          else if (msgData.payload?.parts) {
-            const textPart = msgData.payload.parts.find(p => p.mimeType === "text/plain");
-            if (textPart?.body?.data) body = atob(textPart.body.data.replace(/-/g, "+").replace(/_/g, "/"));
-            else {
-              const htmlPart = msgData.payload.parts.find(p => p.mimeType === "text/html");
-              if (htmlPart?.body?.data) { const html = atob(htmlPart.body.data.replace(/-/g, "+").replace(/_/g, "/")); body = html.replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim(); }
-            }
-          }
-          emails.push({ id: msg.id, from: getH("From"), subject: getH("Subject"), date: getH("Date"), body, snippet: msgData.snippet || "" });
-        } catch(e) { /* skip unreadable */ }
+          const hdr = msgData.payload?.headers || [];
+          const getH = (n) => hdr.find(h => h.name.toLowerCase() === n.toLowerCase())?.value || "";
+          const extracted = extractGmailBody(msgData.payload || {});
+          const isUnread = (msgData.labelIds || []).includes("UNREAD");
+          // Extract plain text version for parsing
+          let plainText = extracted.text;
+          if (extracted.mimeType === "text/html") plainText = extracted.text.replace(/<br\s*\/?>/gi, "\n").replace(/<\/p>/gi, "\n").replace(/<\/div>/gi, "\n").replace(/<[^>]+>/g, "").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&#39;/g, "'").replace(/&quot;/g, '"');
+          emails.push({ id: msg.id, from: getH("From"), subject: getH("Subject"), date: getH("Date"), bodyHtml: extracted.mimeType === "text/html" ? extracted.text : null, bodyText: plainText, snippet: msgData.snippet || "", unread: isUnread });
+        } catch(e) { /* skip */ }
       }
       setGmailEmails(emails);
     } catch(e) { setGmailError("Erreur de chargement: " + e.message); }
@@ -5465,63 +5484,95 @@ function CastingAppInner({ authUser }) {
                 {gmailError && <div style={{ padding: "10px 16px", background: "rgba(239,68,68,0.08)", borderRadius: 8, color: "#ef4444", fontSize: 12, marginBottom: 14 }}>⚠ {gmailError}</div>}
 
                 {/* Gmail emails */}
-                {gmailToken && (
+                {gmailToken && !gmailOpenEmail && (
                   <div style={{ marginBottom: 24 }}>
-                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 10 }}>
-                      <div style={{ fontSize: 13, color: "#EA4335", fontWeight: 700, textTransform: "uppercase" }}>📧 Boîte de réception ({gmailEmails.length})</div>
-                      <input placeholder="🔍 Filtrer les emails..." onChange={e => setGmailFilter && setGmailFilter(e.target.value)} style={{ padding: "6px 14px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "inherit", outline: "none", width: 220 }} />
-                    </div>
+                    <div style={{ fontSize: 13, color: "#EA4335", fontWeight: 700, textTransform: "uppercase", marginBottom: 10 }}>📧 Boîte de réception ({gmailEmails.length})</div>
                     <div style={{ background: "#111114", borderRadius: 14, border: "1px solid #1e1e22", overflow: "hidden" }}>
-                      {gmailLoading && <div style={{ padding: "30px", textAlign: "center", color: "#888", fontSize: 14 }}>⏳ Chargement des emails...</div>}
-                      {!gmailLoading && gmailEmails.length === 0 && <div style={{ padding: "30px", textAlign: "center", color: "#555", fontSize: 14 }}>Aucun email trouvé</div>}
-                      <div style={{ maxHeight: 500, overflowY: "auto" }}>
+                      {gmailLoading && <div style={{ padding: "30px", textAlign: "center", color: "#888", fontSize: 14 }}>⏳ Chargement...</div>}
+                      {!gmailLoading && gmailEmails.length === 0 && <div style={{ padding: "30px", textAlign: "center", color: "#555" }}>Aucun email</div>}
                       {gmailEmails.map(em => {
                         const fromName = em.from?.match(/^"?([^"<]+)"?\s*</) ? em.from.match(/^"?([^"<]+)"?\s*</)[1].replace(/^["']|["']$/g, "").trim() : em.from?.split("@")[0] || "—";
-                        const fromEmail = em.from?.match(/<([^>]+)>/) ? em.from.match(/<([^>]+)>/)[1] : em.from || "";
-                        const decodedSnippet = decodeHtmlEntities(em.snippet || "");
+                        const isRead = gmailReadIds.has(em.id) || !em.unread;
+                        const isProcessed = gmailProcessedIds.has(em.id);
                         return (
-                          <div key={em.id} style={{ padding: "16px 20px", borderBottom: "1px solid #1a1a1e", cursor: "pointer", transition: "background 0.15s" }}
-                            onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.02)"}
-                            onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-                            <div style={{ display: "flex", alignItems: "flex-start", gap: 14 }}>
-                              {/* Avatar */}
-                              <div style={{ width: 40, height: 40, borderRadius: "50%", background: "rgba(234,67,53,0.1)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, fontSize: 16, color: "#EA4335", fontWeight: 700 }}>{fromName[0]?.toUpperCase() || "?"}</div>
-                              <div style={{ flex: 1, minWidth: 0 }}>
-                                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 4 }}>
-                                  <div style={{ fontSize: 15, fontWeight: 700, color: "#f0f0f0" }}>{fromName}</div>
-                                  <div style={{ fontSize: 11, color: "#666", flexShrink: 0 }}>{em.date ? new Date(em.date).toLocaleDateString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }) : ""}</div>
-                                </div>
-                                <div style={{ fontSize: 11, color: "#888", marginBottom: 2 }}>{fromEmail}</div>
-                                <div style={{ fontSize: 14, fontWeight: 600, color: "#ccc", marginBottom: 4 }}>{decodeHtmlEntities(em.subject) || "(Sans objet)"}</div>
-                                <div style={{ fontSize: 13, color: "#777", lineHeight: 1.5 }}>{decodedSnippet.length > 200 ? decodedSnippet.slice(0, 200) + "..." : decodedSnippet}</div>
-                              </div>
+                          <div key={em.id} onClick={() => { setGmailOpenEmail(em); setGmailReadIds(prev => new Set([...prev, em.id])); }}
+                            style={{ display: "flex", alignItems: "center", padding: "14px 18px", borderBottom: "1px solid #1a1a1e", cursor: "pointer", gap: 12, background: isProcessed ? "rgba(34,197,94,0.02)" : "transparent" }}
+                            onMouseEnter={e => e.currentTarget.style.background = isProcessed ? "rgba(34,197,94,0.04)" : "rgba(255,255,255,0.02)"}
+                            onMouseLeave={e => e.currentTarget.style.background = isProcessed ? "rgba(34,197,94,0.02)" : "transparent"}>
+                            {/* Processed check */}
+                            <div style={{ width: 20, flexShrink: 0, textAlign: "center" }}>
+                              {isProcessed ? <span style={{ color: "#22c55e", fontSize: 14 }}>✓</span> : <span style={{ color: "#333", fontSize: 10 }}>○</span>}
                             </div>
-                            <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 10 }}>
-                              <button onClick={(ev) => {
-                                ev.stopPropagation();
-                                const decoded = decodeHtmlEntities(em.body || em.snippet || "");
-                                const parsed = parseEmailForCasting(decoded);
-                                const fMatch = em.from?.match(/^"?([^"<]+)"?\s*</);
-                                if (fMatch && !parsed.firstName) {
-                                  const clean = fMatch[1].replace(/^["']|["']$/g, "").trim().split(/\s+/);
-                                  if (clean.length >= 2) { parsed.firstName = clean[0]; parsed.name = clean.slice(1).join(" "); }
-                                  else parsed.firstName = clean[0] || "";
-                                }
-                                parsed.firstName = (parsed.firstName || "").replace(/^["']|["']$/g, "").trim();
-                                parsed.name = (parsed.name || "").replace(/^["']|["']$/g, "").trim();
-                                if (!parsed.email) { const eM = em.from?.match(/<([^>]+)>/); if (eM) parsed.email = eM[1]; }
-                                const newC = { id: "cand_" + Date.now(), rawEmail: decodeHtmlEntities(`De: ${fromName} <${fromEmail}>\nObjet: ${em.subject}\nDate: ${em.date}\n\n${em.body || em.snippet || ""}`), ...parsed, role: "", status: "pending", createdAt: new Date().toISOString() };
-                                setState(prev => ({ ...prev, candidatures: [...(prev.candidatures || []), newC] }));
-                                setExpandedCandidature(newC.id);
-                              }} style={{ padding: "8px 20px", background: "linear-gradient(135deg, #f472b6, #db2777)", border: "none", borderRadius: 8, color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>📋 Transformer en fiche</button>
+                            {/* Unread dot */}
+                            <div style={{ width: 8, height: 8, borderRadius: "50%", background: !isRead ? "#EA4335" : "transparent", flexShrink: 0 }} />
+                            {/* Content */}
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                                <span style={{ fontSize: 14, fontWeight: isRead ? 400 : 700, color: isRead ? "#aaa" : "#f0f0f0" }}>{fromName}</span>
+                                <span style={{ fontSize: 10, color: "#666", flexShrink: 0 }}>{em.date ? new Date(em.date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" }) : ""}</span>
+                              </div>
+                              <div style={{ fontSize: 13, fontWeight: isRead ? 400 : 600, color: isRead ? "#888" : "#ccc", marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{decodeHtmlEntities(em.subject) || "(Sans objet)"}</div>
+                              <div style={{ fontSize: 12, color: "#555", marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{decodeHtmlEntities(em.snippet || "")}</div>
                             </div>
                           </div>
                         );
                       })}
-                      </div>
                     </div>
                   </div>
                 )}
+
+                {/* Email open view - full email */}
+                {gmailOpenEmail && (() => {
+                  const em = gmailOpenEmail;
+                  const fromName = em.from?.match(/^"?([^"<]+)"?\s*</) ? em.from.match(/^"?([^"<]+)"?\s*</)[1].replace(/^["']|["']$/g, "").trim() : em.from?.split("@")[0] || "—";
+                  const fromEmail = em.from?.match(/<([^>]+)>/) ? em.from.match(/<([^>]+)>/)[1] : em.from || "";
+                  return (
+                    <div style={{ marginBottom: 24 }}>
+                      <button onClick={() => setGmailOpenEmail(null)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 14px", background: "transparent", border: "1px solid #2a2a2e", borderRadius: 8, color: "#888", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", marginBottom: 14 }}
+                        onMouseEnter={e => e.currentTarget.style.color = "#EA4335"} onMouseLeave={e => e.currentTarget.style.color = "#888"}>← Retour à la boîte de réception</button>
+                      <div style={{ background: "#111114", borderRadius: 14, border: "1px solid #1e1e22", overflow: "hidden" }}>
+                        {/* Email header */}
+                        <div style={{ padding: "20px 24px", borderBottom: "1px solid #1e1e22" }}>
+                          <div style={{ fontSize: 20, fontWeight: 700, color: "#f0f0f0", marginBottom: 10 }}>{decodeHtmlEntities(em.subject) || "(Sans objet)"}</div>
+                          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                            <div style={{ width: 44, height: 44, borderRadius: "50%", background: "rgba(234,67,53,0.1)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, color: "#EA4335", fontWeight: 700, flexShrink: 0 }}>{fromName[0]?.toUpperCase()}</div>
+                            <div>
+                              <div style={{ fontSize: 15, fontWeight: 700, color: "#f0f0f0" }}>{fromName}</div>
+                              <div style={{ fontSize: 12, color: "#888" }}>{fromEmail}</div>
+                            </div>
+                            <div style={{ marginLeft: "auto", fontSize: 12, color: "#666" }}>{em.date ? new Date(em.date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }) : ""}</div>
+                          </div>
+                        </div>
+                        {/* Email body - FULL */}
+                        <div style={{ padding: "24px", minHeight: 200 }}>
+                          {em.bodyHtml ? (
+                            <div dangerouslySetInnerHTML={{ __html: em.bodyHtml }} style={{ fontSize: 14, color: "#ddd", lineHeight: 1.7, fontFamily: "'DM Sans',sans-serif", wordBreak: "break-word", overflowWrap: "break-word" }} />
+                          ) : (
+                            <div style={{ fontSize: 14, color: "#ddd", lineHeight: 1.7, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{decodeHtmlEntities(em.bodyText || em.snippet || "")}</div>
+                          )}
+                        </div>
+                        {/* Action bar */}
+                        <div style={{ padding: "16px 24px", borderTop: "1px solid #1e1e22", display: "flex", gap: 10 }}>
+                          <button onClick={() => {
+                            const text = em.bodyText || em.snippet || "";
+                            const parsed = parseEmailForCasting(text);
+                            const fMatch = em.from?.match(/^"?([^"<]+)"?\s*</);
+                            if (fMatch && !parsed.firstName) { const p = fMatch[1].replace(/^["']|["']$/g, "").trim().split(/\s+/); if (p.length >= 2) { parsed.firstName = p[0]; parsed.name = p.slice(1).join(" "); } else parsed.firstName = p[0] || ""; }
+                            parsed.firstName = (parsed.firstName || "").replace(/^["']|["']$/g, "").trim();
+                            parsed.name = (parsed.name || "").replace(/^["']|["']$/g, "").trim();
+                            if (!parsed.email) { const eM2 = em.from?.match(/<([^>]+)>/); if (eM2) parsed.email = eM2[1]; }
+                            const newC = { id: "cand_" + Date.now(), rawEmail: `De: ${fromName} <${fromEmail}>\nObjet: ${em.subject}\nDate: ${em.date}\n\n${em.bodyText || em.snippet || ""}`, ...parsed, role: "", status: "pending", createdAt: new Date().toISOString() };
+                            setState(prev => ({ ...prev, candidatures: [...(prev.candidatures || []), newC] }));
+                            setGmailProcessedIds(prev => new Set([...prev, em.id]));
+                            setGmailOpenEmail(null);
+                            setExpandedCandidature(newC.id);
+                          }} style={{ padding: "10px 24px", background: "linear-gradient(135deg, #f472b6, #db2777)", border: "none", borderRadius: 10, color: "#fff", fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>📋 Transformer en fiche candidat</button>
+                          <button onClick={() => setGmailOpenEmail(null)} style={{ padding: "10px 20px", background: "rgba(255,255,255,0.03)", border: "1px solid #2a2a2e", borderRadius: 10, color: "#888", fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Retour</button>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })()}
 
                 {/* Separator */}
                 {gmailToken && (state.candidatures || []).length > 0 && (
