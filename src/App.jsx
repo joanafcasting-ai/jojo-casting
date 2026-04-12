@@ -132,53 +132,64 @@ const decodeHtmlEntities = (str) => {
 };
 
 const parseEmailForCasting = (rawText) => {
-  const result = { firstName: "", name: "", age: "", sex: "", agency: "", measurements: "", email: "", phone: "", links: [], height: "" };
+  const result = { firstName: "", name: "", age: "", sex: "", agency: "", measurements: "", email: "", phone: "", links: [], height: "", birthDate: "" };
   if (!rawText) return result;
-  const text = decodeHtmlEntities(rawText);
-  // Email
-  const emailMatch = text.match(/[\w.-]+@[\w.-]+\.\w{2,}/);
-  if (emailMatch) result.email = emailMatch[0];
-  // Phone FR
-  const phoneMatch = text.match(/(?:0|\+33)[\s.]?\d(?:[\s.]?\d{2}){4}/);
-  if (phoneMatch) result.phone = phoneMatch[0].replace(/\s/g, "").replace(/\./g, "");
-  // Age
-  const ageMatch = text.match(/(\d{1,2})\s*ans/i);
+  const text = decodeHtmlEntities(rawText).replace(/\r\n/g, "\n");
+  const lines = text.split("\n").map(l => l.trim()).filter(Boolean);
+  // Email (skip noreply/system emails)
+  const allEmails = text.match(/[\w.+-]+@[\w.-]+\.\w{2,}/g) || [];
+  result.email = allEmails.find(e => !e.match(/noreply|no-reply|mailer|daemon|google|system/i)) || allEmails[0] || "";
+  // Phone FR (multiple formats)
+  const phoneMatch = text.match(/(?:\+33|0)[\s.]?[1-9](?:[\s.]?\d{2}){4}/) || text.match(/\d{2}[\s.]\d{2}[\s.]\d{2}[\s.]\d{2}[\s.]\d{2}/);
+  if (phoneMatch) result.phone = phoneMatch[0].replace(/[\s.]/g, "");
+  // Age — "XX ans" or born date
+  const ageMatch = text.match(/(\d{1,2})\s*ans\b/i);
   if (ageMatch) result.age = ageMatch[1];
-  // Links
-  const urlMatches = text.match(/https?:\/\/[^\s<>"']+/g);
-  if (urlMatches) result.links = [...new Set(urlMatches)];
-  // Height (170cm, 1m70, 1.80m, etc.)
-  const heightMatch = text.match(/(\d{2,3})\s*(?:cm|CM)/) || text.match(/(\d)[.,](\d{2})\s*m\b/) || text.match(/(\d)m(\d{2})/);
-  if (heightMatch) result.height = heightMatch[0].trim();
-  // Measurements (Haut: XX, Bas: XX, confection, etc.)
-  const measMatch = text.match(/(?:haut|bas|poitrine|tour|confection|taille)\s*:?\s*\d+/gi);
-  if (measMatch) result.measurements = measMatch.join(" · ");
-  // Agency keywords
-  const agencyPatterns = ["agence", "agency", "représenté", "management"];
-  const lines = text.split("\n");
+  // Birth date — "née le XX/XX/XXXX" or "DD/MM/YYYY"
+  const birthMatch = text.match(/n[ée]+\s+(?:le\s+)?(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})/i) || text.match(/date\s+de\s+naissance\s*:?\s*(\d{1,2})[\/.-](\d{1,2})[\/.-](\d{4})/i);
+  if (birthMatch) {
+    result.birthDate = `${birthMatch[3]}-${birthMatch[2].padStart(2,"0")}-${birthMatch[1].padStart(2,"0")}`;
+    if (!result.age) { const age = Math.floor((Date.now() - new Date(result.birthDate).getTime()) / 31557600000); if (age > 0 && age < 100) result.age = String(age); }
+  }
+  // Links (clean trailing punctuation)
+  const urlMatches = text.match(/https?:\/\/[^\s<>"'\])}]+/g) || [];
+  result.links = [...new Set(urlMatches.map(u => u.replace(/[.,;:!?)]+$/, "")))];
+  // Height (170cm, 1m70, 1.80m, 180, etc.)
+  const heightMatch = text.match(/(?:taille|height)\s*:?\s*(\d{2,3})\s*(?:cm)?/i) || text.match(/(\d{2,3})\s*cm\b/i) || text.match(/(\d)[.,](\d{2})\s*m\b/) || text.match(/(\d)m(\d{2})\b/);
+  if (heightMatch) result.height = heightMatch[0].replace(/taille\s*:?\s*/i, "").trim();
+  // Measurements (90-60-90, or "Haut: XX Bas: XX")
+  const measStd = text.match(/\d{2,3}\s*[-–]\s*\d{2,3}\s*[-–]\s*\d{2,3}/);
+  if (measStd) result.measurements = measStd[0];
+  else { const measParts = text.match(/(?:haut|poitrine|bust|tour de|confection)\s*:?\s*\d+/gi); if (measParts) result.measurements = measParts.join(" · "); }
+  // Agency — look for "Agence X", "chez X", "représenté par X"
   for (const line of lines) {
-    const lower = line.toLowerCase();
-    for (const kw of agencyPatterns) {
-      if (lower.includes(kw)) {
-        const after = line.replace(/.*(?:agence|agency|représenté|management)\s*:?\s*/i, "").trim();
-        if (after && after.length < 60) result.agency = after;
+    const agMatch = line.match(/(?:agence|agency|représent[ée]+\s+par|chez)\s*:?\s+(.{2,50})/i);
+    if (agMatch) { result.agency = agMatch[1].replace(/[.,;:]+$/, "").trim(); break; }
+  }
+  // Name — smarter extraction
+  const namePatterns = [
+    /(?:je\s+(?:suis|m'appelle|me\s+nomme))\s+([A-ZÀ-Ÿ][a-zà-ÿ]+)\s+([A-ZÀ-Ÿ][A-ZÀ-Ÿa-zà-ÿ-]+)/i,
+    /(?:candidature\s+de|profil\s+de|présentation\s+de)\s*:?\s*([A-ZÀ-Ÿ][a-zà-ÿ]+)\s+([A-ZÀ-Ÿ][A-ZÀ-Ÿa-zà-ÿ-]+)/i,
+    /^([A-ZÀ-Ÿ][a-zà-ÿ]+)\s+([A-ZÀ-Ÿ][A-ZÀ-Ÿa-zà-ÿ-]+)\s*$/m,
+  ];
+  for (const pat of namePatterns) {
+    const m = text.match(pat);
+    if (m) { result.firstName = m[1]; result.name = m[2]; break; }
+  }
+  // Fallback name: first clean line
+  if (!result.firstName) {
+    for (const line of lines) {
+      if (line.length >= 3 && line.length < 40 && !line.includes("@") && !line.match(/^https?:/) && !line.match(/^\d/) && !line.match(/^(bonjour|hello|madame|monsieur|objet|re:|fwd:|de:|date:|cordialement|bien|merci|sent|from|to:|cc:)/i) && !line.match(/[<>{}[\]]/)) {
+        const parts = line.replace(/^[-–•*]\s*/, "").split(/\s+/);
+        if (parts.length >= 2) { result.firstName = parts[0]; result.name = parts.slice(1).join(" "); }
+        else if (parts.length === 1 && parts[0].length > 2) result.firstName = parts[0];
         break;
       }
     }
   }
-  // Name: try first non-empty line that looks like a name
-  for (const line of lines) {
-    const trimmed = line.trim();
-    if (trimmed.length >= 3 && trimmed.length < 40 && !trimmed.includes("@") && !trimmed.match(/^https?:/) && !trimmed.match(/^\d/) && !trimmed.match(/^(bonjour|hello|madame|monsieur|objet|re:|fwd:)/i)) {
-      const parts = trimmed.split(/\s+/);
-      if (parts.length >= 2) { result.firstName = parts[0]; result.name = parts.slice(1).join(" "); }
-      else if (parts.length === 1) { result.firstName = parts[0]; }
-      break;
-    }
-  }
   // Sex
-  if (text.match(/\b(actrice|comédienne|femme|fille)\b/i)) result.sex = "Femme";
-  else if (text.match(/\b(acteur|comédien|homme|garçon)\b/i)) result.sex = "Homme";
+  if (text.match(/\b(actrice|comédienne)\b/i)) result.sex = "Femme";
+  else if (text.match(/\b(acteur|comédien)\b/i)) result.sex = "Homme";
   return result;
 };
 
@@ -2201,24 +2212,33 @@ function CastingAppInner({ authUser }) {
   }, [activeTab]);
 
   // Recursively extract body from Gmail payload parts
+  const b64decode = (d) => { if (!d) return ""; try { return decodeURIComponent(escape(atob(d.replace(/-/g, "+").replace(/_/g, "/")))); } catch(e) { try { return atob(d.replace(/-/g, "+").replace(/_/g, "/")); } catch(e2) { return ""; } } };
+
   const extractGmailBody = (payload) => {
-    const b64decode = (d) => { try { return decodeURIComponent(escape(atob(d.replace(/-/g, "+").replace(/_/g, "/")))); } catch(e) { try { return atob(d.replace(/-/g, "+").replace(/_/g, "/")); } catch(e2) { return ""; } } };
-    if (payload.body?.data) return { text: b64decode(payload.body.data), mimeType: payload.mimeType };
-    if (payload.parts) {
-      let textBody = "", htmlBody = "";
-      for (const part of payload.parts) {
-        if (part.mimeType === "text/plain" && part.body?.data) textBody = b64decode(part.body.data);
-        else if (part.mimeType === "text/html" && part.body?.data) htmlBody = b64decode(part.body.data);
-        else if (part.parts) {
-          const sub = extractGmailBody(part);
-          if (sub.mimeType === "text/plain" && sub.text) textBody = textBody || sub.text;
-          if (sub.mimeType === "text/html" && sub.text) htmlBody = htmlBody || sub.text;
+    let textBody = "", htmlBody = "";
+    const attachments = [];
+    const extractParts = (parts) => {
+      if (!parts) return;
+      for (const part of parts) {
+        const mime = part.mimeType || "";
+        if (mime === "text/plain" && part.body?.data && !textBody) textBody = b64decode(part.body.data);
+        else if (mime === "text/html" && part.body?.data) htmlBody = b64decode(part.body.data);
+        else if (mime.startsWith("image/") && part.filename) {
+          attachments.push({ filename: part.filename, mimeType: mime, attachmentId: part.body?.attachmentId, size: part.body?.size || 0 });
+        } else if (mime.startsWith("application/") && part.filename) {
+          attachments.push({ filename: part.filename, mimeType: mime, attachmentId: part.body?.attachmentId, size: part.body?.size || 0 });
         }
+        if (part.parts) extractParts(part.parts);
       }
-      if (htmlBody) return { text: htmlBody, mimeType: "text/html" };
-      if (textBody) return { text: textBody, mimeType: "text/plain" };
+    };
+    if (payload.body?.data) {
+      if (payload.mimeType === "text/html") htmlBody = b64decode(payload.body.data);
+      else textBody = b64decode(payload.body.data);
     }
-    return { text: "", mimeType: "text/plain" };
+    if (payload.parts) extractParts(payload.parts);
+    const text = htmlBody || textBody;
+    const mimeType = htmlBody ? "text/html" : "text/plain";
+    return { text, mimeType, attachments };
   };
 
   const fetchGmailEmails = async (token) => {
@@ -2236,10 +2256,22 @@ function CastingAppInner({ authUser }) {
           const getH = (n) => hdr.find(h => h.name.toLowerCase() === n.toLowerCase())?.value || "";
           const extracted = extractGmailBody(msgData.payload || {});
           const isUnread = (msgData.labelIds || []).includes("UNREAD");
-          // Extract plain text version for parsing
           let plainText = extracted.text;
-          if (extracted.mimeType === "text/html") plainText = extracted.text.replace(/<br\s*\/?>/gi, "\n").replace(/<\/p>/gi, "\n").replace(/<\/div>/gi, "\n").replace(/<[^>]+>/g, "").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&#39;/g, "'").replace(/&quot;/g, '"');
-          emails.push({ id: msg.id, from: getH("From"), subject: getH("Subject"), date: getH("Date"), bodyHtml: extracted.mimeType === "text/html" ? extracted.text : null, bodyText: plainText, snippet: msgData.snippet || "", unread: isUnread });
+          if (extracted.mimeType === "text/html") plainText = extracted.text.replace(/<br\s*\/?>/gi, "\n").replace(/<\/p>/gi, "\n\n").replace(/<\/div>/gi, "\n").replace(/<\/li>/gi, "\n").replace(/<li[^>]*>/gi, "• ").replace(/<[^>]+>/g, "").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/\n{3,}/g, "\n\n").trim();
+          // Sanitize HTML: remove scripts, event handlers, external style tags
+          let safeHtml = extracted.mimeType === "text/html" ? extracted.text : null;
+          if (safeHtml) {
+            safeHtml = safeHtml.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "");
+            safeHtml = safeHtml.replace(/\son\w+="[^"]*"/gi, "");
+            safeHtml = safeHtml.replace(/\son\w+='[^']*'/gi, "");
+            safeHtml = safeHtml.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "");
+            safeHtml = safeHtml.replace(/javascript:/gi, "");
+            // Make images responsive
+            safeHtml = safeHtml.replace(/<img /gi, '<img style="max-width:100%;height:auto;border-radius:4px" ');
+            // Make links open in new tab
+            safeHtml = safeHtml.replace(/<a /gi, '<a target="_blank" rel="noopener noreferrer" ');
+          }
+          emails.push({ id: msg.id, msgId: msg.id, from: getH("From"), subject: getH("Subject"), date: getH("Date"), bodyHtml: safeHtml, bodyText: plainText, snippet: msgData.snippet || "", unread: isUnread, attachments: extracted.attachments || [] });
         } catch(e) { /* skip */ }
       }
       setGmailEmails(emails);
@@ -3013,6 +3045,16 @@ function CastingAppInner({ authUser }) {
     input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.9); cursor: pointer; font-size: 16px; }
     input[type="time"]::-webkit-calendar-picker-indicator { display: none; }
     input[type="time"] { -webkit-appearance: none; }
+    .email-body-render { all: initial; font-family: 'DM Sans', sans-serif; font-size: 14px; color: #e0e0e0; line-height: 1.7; }
+    .email-body-render * { max-width: 100% !important; box-sizing: border-box; }
+    .email-body-render img { max-width: 100% !important; height: auto !important; border-radius: 4px; margin: 4px 0; }
+    .email-body-render a { color: #60a5fa !important; text-decoration: underline; }
+    .email-body-render table { border-collapse: collapse; width: 100%; margin: 8px 0; }
+    .email-body-render td, .email-body-render th { padding: 6px 10px; border: 1px solid #2a2a2e; }
+    .email-body-render p { margin: 0 0 8px 0; }
+    .email-body-render blockquote { border-left: 3px solid #333; padding-left: 12px; margin: 8px 0; color: #888; }
+    .email-body-render h1, .email-body-render h2, .email-body-render h3 { color: #f0f0f0; margin: 12px 0 6px; }
+    .email-body-render ul, .email-body-render ol { padding-left: 20px; margin: 6px 0; }
     input[type="date"]:hover { border-color: #c9a44a !important; }
     input[type="date"]:focus { border-color: #c9a44a !important; outline: none; }
   `;
@@ -5555,14 +5597,49 @@ function CastingAppInner({ authUser }) {
                             <div style={{ marginLeft: "auto", fontSize: 12, color: "#666" }}>{em.date ? new Date(em.date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }) : ""}</div>
                           </div>
                         </div>
-                        {/* Email body - FULL */}
+                        {/* Email body - FULL with scoped CSS */}
                         <div style={{ padding: "24px", minHeight: 200 }}>
                           {em.bodyHtml ? (
-                            <div dangerouslySetInnerHTML={{ __html: em.bodyHtml }} style={{ fontSize: 14, color: "#ddd", lineHeight: 1.7, fontFamily: "'DM Sans',sans-serif", wordBreak: "break-word", overflowWrap: "break-word" }} />
+                            <div className="email-body-render" dangerouslySetInnerHTML={{ __html: em.bodyHtml }} style={{ fontSize: 14, color: "#e0e0e0", lineHeight: 1.7, wordBreak: "break-word", overflowWrap: "break-word" }} />
                           ) : (
-                            <div style={{ fontSize: 14, color: "#ddd", lineHeight: 1.7, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{decodeHtmlEntities(em.bodyText || em.snippet || "")}</div>
+                            <div style={{ fontSize: 14, color: "#e0e0e0", lineHeight: 1.7, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{decodeHtmlEntities(em.bodyText || em.snippet || "")}</div>
                           )}
                         </div>
+                        {/* Attachments */}
+                        {(em.attachments || []).length > 0 && (
+                          <div style={{ padding: "0 24px 16px" }}>
+                            <div style={{ fontSize: 11, color: "#888", fontWeight: 600, textTransform: "uppercase", marginBottom: 8 }}>📎 Pièces jointes ({em.attachments.length})</div>
+                            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                              {em.attachments.map((att, ai) => (
+                                <div key={ai} style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 14px", background: "#0c0c0e", borderRadius: 8, border: "1px solid #2a2a2e" }}>
+                                  <span style={{ fontSize: 16 }}>{att.mimeType?.startsWith("image/") ? "🖼" : att.mimeType?.includes("pdf") ? "📄" : "📎"}</span>
+                                  <div>
+                                    <div style={{ fontSize: 12, color: "#ccc", fontWeight: 500 }}>{att.filename}</div>
+                                    <div style={{ fontSize: 10, color: "#555" }}>{att.size ? Math.round(att.size / 1024) + " Ko" : ""}</div>
+                                  </div>
+                                  {att.attachmentId && gmailToken && (
+                                    <button onClick={async () => {
+                                      try {
+                                        const res = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${em.id}/attachments/${att.attachmentId}`, { headers: { Authorization: `Bearer ${gmailToken}` } });
+                                        const data = await res.json();
+                                        if (data.data) {
+                                          const binary = atob(data.data.replace(/-/g, "+").replace(/_/g, "/"));
+                                          const bytes = new Uint8Array(binary.length); for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+                                          const blob = new Blob([bytes], { type: att.mimeType });
+                                          const url = URL.createObjectURL(blob);
+                                          if (att.mimeType?.startsWith("image/")) window.open(url, "_blank");
+                                          else { const a = document.createElement("a"); a.href = url; a.download = att.filename; a.click(); }
+                                        }
+                                      } catch(e) { console.error("Attachment download failed:", e); }
+                                    }} style={{ padding: "4px 10px", background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.2)", borderRadius: 6, color: "#60a5fa", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+                                      {att.mimeType?.startsWith("image/") ? "👁 Voir" : "⬇ Télécharger"}
+                                    </button>
+                                  )}
+                                </div>
+                              ))}
+                            </div>
+                          </div>
+                        )}
                         {/* Action bar */}
                         <div style={{ padding: "16px 24px", borderTop: "1px solid #1e1e22", display: "flex", gap: 10 }}>
                           <button onClick={() => {
