@@ -2154,6 +2154,56 @@ function CastingAppInner({ authUser }) {
   const [showAddDay, setShowAddDay] = useState(false);
   const [candidatureModal, setCandidatureModal] = useState(false);
   const [expandedCandidature, setExpandedCandidature] = useState(null);
+  const [gmailToken, setGmailToken] = useState(null);
+  const [gmailEmails, setGmailEmails] = useState([]);
+  const [gmailLoading, setGmailLoading] = useState(false);
+  const [gmailError, setGmailError] = useState(null);
+
+  const GMAIL_CLIENT_ID = "564140044631-42vkp5roid29t80kcj7av6744ikq3bbe.apps.googleusercontent.com";
+
+  const connectGmail = () => {
+    if (!window.google?.accounts?.oauth2) { setGmailError("Google Identity Services not loaded"); return; }
+    const client = window.google.accounts.oauth2.initTokenClient({
+      client_id: GMAIL_CLIENT_ID,
+      scope: "https://www.googleapis.com/auth/gmail.readonly",
+      callback: (response) => {
+        if (response.access_token) { setGmailToken(response.access_token); setGmailError(null); fetchGmailEmails(response.access_token); }
+        else setGmailError("Connexion échouée");
+      },
+    });
+    client.requestAccessToken();
+  };
+
+  const fetchGmailEmails = async (token) => {
+    setGmailLoading(true);
+    try {
+      const listRes = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=30&q=in:inbox", { headers: { Authorization: `Bearer ${token}` } });
+      const listData = await listRes.json();
+      if (!listData.messages) { setGmailEmails([]); setGmailLoading(false); return; }
+      const emails = [];
+      for (const msg of listData.messages.slice(0, 20)) {
+        try {
+          const msgRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${msg.id}?format=full`, { headers: { Authorization: `Bearer ${token}` } });
+          const msgData = await msgRes.json();
+          const headers = msgData.payload?.headers || [];
+          const getH = (n) => headers.find(h => h.name.toLowerCase() === n.toLowerCase())?.value || "";
+          let body = "";
+          if (msgData.payload?.body?.data) body = atob(msgData.payload.body.data.replace(/-/g, "+").replace(/_/g, "/"));
+          else if (msgData.payload?.parts) {
+            const textPart = msgData.payload.parts.find(p => p.mimeType === "text/plain");
+            if (textPart?.body?.data) body = atob(textPart.body.data.replace(/-/g, "+").replace(/_/g, "/"));
+            else {
+              const htmlPart = msgData.payload.parts.find(p => p.mimeType === "text/html");
+              if (htmlPart?.body?.data) { const html = atob(htmlPart.body.data.replace(/-/g, "+").replace(/_/g, "/")); body = html.replace(/<[^>]+>/g, " ").replace(/&nbsp;/g, " ").replace(/\s+/g, " ").trim(); }
+            }
+          }
+          emails.push({ id: msg.id, from: getH("From"), subject: getH("Subject"), date: getH("Date"), body, snippet: msgData.snippet || "" });
+        } catch(e) { /* skip unreadable */ }
+      }
+      setGmailEmails(emails);
+    } catch(e) { setGmailError("Erreur de chargement: " + e.message); }
+    setGmailLoading(false);
+  };
   const [dragSlot, setDragSlot] = useState(null);
   const [actingNotesModal, setActingNotesModal] = useState(null); // { dayId, slotId }
   const [inviteModal, setInviteModal] = useState(null); // { day, slot, profile }
@@ -5391,8 +5441,58 @@ function CastingAppInner({ authUser }) {
                     <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f0f0f0", fontFamily: "'Playfair Display', serif", marginBottom: 4 }}>📩 Candidatures</h2>
                     <div style={{ fontSize: 13, color: "#888" }}>{(state.candidatures || []).length} candidature{(state.candidatures || []).length !== 1 ? "s" : ""}</div>
                   </div>
-                  <button onClick={() => setCandidatureModal(true)} style={{ padding: "12px 24px", background: "linear-gradient(135deg, #f472b6, #db2777)", border: "none", borderRadius: 10, color: "#fff", fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>📩 Coller un email</button>
+                  <div style={{ display: "flex", gap: 10 }}>
+                    <button onClick={() => setCandidatureModal(true)} style={{ padding: "10px 20px", background: "rgba(255,255,255,0.03)", border: "1px solid #2a2a2e", borderRadius: 10, color: "#888", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>📋 Coller un email</button>
+                    {!gmailToken ? (
+                      <button onClick={connectGmail} style={{ padding: "10px 20px", background: "linear-gradient(135deg, #EA4335, #c5221f)", border: "none", borderRadius: 10, color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>📧 Connecter Gmail</button>
+                    ) : (
+                      <button onClick={() => fetchGmailEmails(gmailToken)} style={{ padding: "10px 20px", background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.25)", borderRadius: 10, color: "#22c55e", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>🔄 Actualiser</button>
+                    )}
+                  </div>
                 </div>
+
+                {gmailError && <div style={{ padding: "10px 16px", background: "rgba(239,68,68,0.08)", borderRadius: 8, color: "#ef4444", fontSize: 12, marginBottom: 14 }}>⚠ {gmailError}</div>}
+
+                {/* Gmail emails */}
+                {gmailToken && (
+                  <div style={{ marginBottom: 24 }}>
+                    <div style={{ fontSize: 12, color: "#EA4335", fontWeight: 700, textTransform: "uppercase", marginBottom: 10 }}>📧 Emails Gmail ({gmailEmails.length})</div>
+                    <div style={{ background: "#111114", borderRadius: 14, border: "1px solid #1e1e22", overflow: "hidden", maxHeight: 400, overflowY: "auto" }}>
+                      {gmailLoading && <div style={{ padding: "20px", textAlign: "center", color: "#888" }}>⏳ Chargement des emails...</div>}
+                      {!gmailLoading && gmailEmails.length === 0 && <div style={{ padding: "20px", textAlign: "center", color: "#555" }}>Aucun email trouvé</div>}
+                      {gmailEmails.map(em => (
+                        <div key={em.id} style={{ display: "flex", alignItems: "center", padding: "12px 18px", borderBottom: "1px solid #1a1a1e", gap: 14 }}
+                          onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.015)"}
+                          onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                          <div style={{ flex: 1, minWidth: 0 }}>
+                            <div style={{ fontSize: 13, fontWeight: 600, color: "#f0f0f0", marginBottom: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{em.subject || "(Sans objet)"}</div>
+                            <div style={{ fontSize: 11, color: "#888", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{em.from}</div>
+                            <div style={{ fontSize: 11, color: "#555", marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{em.snippet}</div>
+                          </div>
+                          <div style={{ fontSize: 10, color: "#555", flexShrink: 0, whiteSpace: "nowrap" }}>{em.date ? new Date(em.date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" }) : ""}</div>
+                          <button onClick={() => {
+                            const parsed = parseEmailForCasting(em.body || em.snippet || "");
+                            // Try to extract name from "From" field
+                            const fromMatch = em.from?.match(/^([^<]+)</);
+                            if (fromMatch && !parsed.firstName) {
+                              const parts = fromMatch[1].trim().split(/\s+/);
+                              if (parts.length >= 2) { parsed.firstName = parts[0]; parsed.name = parts.slice(1).join(" "); }
+                              else if (parts.length === 1) { parsed.firstName = parts[0]; }
+                            }
+                            if (!parsed.email) { const emMatch = em.from?.match(/<([^>]+)>/); if (emMatch) parsed.email = emMatch[1]; }
+                            const newCandidature = { id: "cand_" + Date.now(), rawEmail: `De: ${em.from}\nObjet: ${em.subject}\nDate: ${em.date}\n\n${em.body || em.snippet || ""}`, ...parsed, role: "", status: "pending", createdAt: new Date().toISOString() };
+                            setState(prev => ({ ...prev, candidatures: [...(prev.candidatures || []), newCandidature] }));
+                          }} style={{ padding: "6px 14px", background: "linear-gradient(135deg, #f472b6, #db2777)", border: "none", borderRadius: 8, color: "#fff", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", flexShrink: 0 }}>→ Fiche</button>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Separator */}
+                {gmailToken && (state.candidatures || []).length > 0 && (
+                  <div style={{ height: 1, background: "#2a2a2e", marginBottom: 20 }} />
+                )}
 
                 {/* Candidatures list */}
                 <div style={{ background: "#111114", borderRadius: 14, border: "1px solid #1e1e22", overflow: "hidden" }}>
