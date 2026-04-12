@@ -2724,18 +2724,34 @@ function CastingAppInner({ authUser }) {
     }));
   };
 
-  const addCastingVideo = (profileId, file) => {
-    const url = URL.createObjectURL(file);
-    setState(prev => {
-      const session = prev.castingSessions[profileId] || { passStatus: "passed", liveNotes: "", castingVideos: [] };
-      return {
-        ...prev,
-        castingSessions: {
-          ...prev.castingSessions,
-          [profileId]: { ...session, passStatus: "passed", castingVideos: [...(session.castingVideos || []), { url, name: file.name }] },
-        },
-      };
-    });
+  const addCastingVideo = async (profileId, file) => {
+    try {
+      const result = await uploadVideo(file, currentProjectId || "default", profileId + "_casting");
+      setState(prev => {
+        const session = prev.castingSessions[profileId] || { passStatus: "passed", liveNotes: "", castingVideos: [] };
+        return {
+          ...prev,
+          castingSessions: {
+            ...prev.castingSessions,
+            [profileId]: { ...session, passStatus: "passed", castingVideos: [...(session.castingVideos || []), { url: result.url, storagePath: result.path, name: file.name }] },
+          },
+        };
+      });
+    } catch (e) {
+      console.error("[addCastingVideo] Upload failed:", e.message);
+      // Fallback: blob URL (temporary, will be lost on reload)
+      const url = URL.createObjectURL(file);
+      setState(prev => {
+        const session = prev.castingSessions[profileId] || { passStatus: "passed", liveNotes: "", castingVideos: [] };
+        return {
+          ...prev,
+          castingSessions: {
+            ...prev.castingSessions,
+            [profileId]: { ...session, passStatus: "passed", castingVideos: [...(session.castingVideos || []), { url, name: file.name }] },
+          },
+        };
+      });
+    }
   };
 
   const removeCastingVideo = (profileId, idx) => {
@@ -6267,7 +6283,7 @@ function CastingAppInner({ authUser }) {
                                       <button onClick={() => updateCastingSession(profile.id, { castingPhotos: (session.castingPhotos || []).filter((_, j) => j !== phi) })} style={{ position: "absolute", top: 1, right: 1, background: "rgba(0,0,0,0.7)", color: "#fff", border: "none", borderRadius: "50%", width: 14, height: 14, cursor: "pointer", fontSize: 8, display: "flex", alignItems: "center", justifyContent: "center" }}>×</button>
                                     </div>
                                   ))}
-                                  <button onClick={() => { const inp = document.createElement("input"); inp.type = "file"; inp.accept = "image/*"; inp.multiple = true; inp.onchange = ev => { Array.from(ev.target.files || []).forEach(f => { const r = new FileReader(); r.onload = async () => { const compressed = await compressImage(r.result, 800, 0.8); updateCastingSession(profile.id, { castingPhotos: [...(session.castingPhotos || []), compressed] }); }; r.readAsDataURL(f); }); }; inp.click(); }} style={{ width: 64, height: 80, borderRadius: 6, border: "1px dashed rgba(251,146,60,0.3)", background: "rgba(255,255,255,0.02)", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", color: "#555", fontSize: 9, fontFamily: "inherit", gap: 2 }}>
+                                  <button onClick={() => { const inp = document.createElement("input"); inp.type = "file"; inp.accept = "image/*"; inp.multiple = true; inp.onchange = ev => { Array.from(ev.target.files || []).forEach(async (f, fi) => { try { const { url } = await uploadPhoto(f, currentProjectId || "default", profile.id + "_casting", (session.castingPhotos || []).length + fi); updateCastingSession(profile.id, { castingPhotos: [...(session.castingPhotos || []), url] }); } catch(e) { console.error("[castingPhoto] fallback base64:", e.message); const r = new FileReader(); r.onload = async () => { const compressed = await compressImage(r.result, 800, 0.8); updateCastingSession(profile.id, { castingPhotos: [...(session.castingPhotos || []), compressed] }); }; r.readAsDataURL(f); } }); }; inp.click(); }} style={{ width: 64, height: 80, borderRadius: 6, border: "1px dashed rgba(251,146,60,0.3)", background: "rgba(255,255,255,0.02)", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", color: "#555", fontSize: 9, fontFamily: "inherit", gap: 2 }}>
                                     <span style={{ fontSize: 16 }}>📷</span><span>Ajouter</span>
                                   </button>
                                 </div>
