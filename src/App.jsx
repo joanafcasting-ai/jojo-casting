@@ -2190,6 +2190,7 @@ function CastingAppInner({ authUser }) {
   const [showAddDay, setShowAddDay] = useState(false);
   const [candidatureModal, setCandidatureModal] = useState(false);
   const [expandedCandidature, setExpandedCandidature] = useState(null);
+  const [selectedCandidatures, setSelectedCandidatures] = useState(new Set());
   const [gmailToken, setGmailToken] = useState(null);
   const [gmailEmails, setGmailEmails] = useState([]);
   const [gmailLoading, setGmailLoading] = useState(false);
@@ -5556,8 +5557,11 @@ function CastingAppInner({ authUser }) {
                     <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f0f0f0", fontFamily: "'Playfair Display', serif", marginBottom: 4 }}>📩 Candidatures</h2>
                     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                       <span style={{ fontSize: 13, color: "#888" }}>{(state.candidatures || []).length} candidature{(state.candidatures || []).length !== 1 ? "s" : ""}</span>
+                      {selectedCandidatures.size > 0 && (
+                        <button onClick={() => { if (window.confirm(`Supprimer ${selectedCandidatures.size} candidature${selectedCandidatures.size > 1 ? "s" : ""} ?`)) { setState(p => ({ ...p, candidatures: (p.candidatures || []).filter(c => !selectedCandidatures.has(c.id)) })); setSelectedCandidatures(new Set()); } }} style={{ padding: "4px 12px", background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.25)", borderRadius: 6, color: "#ef4444", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>🗑 Supprimer ({selectedCandidatures.size})</button>
+                      )}
                       {(state.candidatures || []).length > 0 && (
-                        <button onClick={() => { if (window.confirm("Supprimer TOUTES les " + (state.candidatures || []).length + " candidatures ?")) setState(p => ({ ...p, candidatures: [] })); }} style={{ padding: "3px 10px", background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.15)", borderRadius: 6, color: "#ef4444", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>🗑 Tout supprimer</button>
+                        <button onClick={() => { if (selectedCandidatures.size === (state.candidatures || []).length) setSelectedCandidatures(new Set()); else setSelectedCandidatures(new Set((state.candidatures || []).map(c => c.id))); }} style={{ padding: "3px 10px", background: "rgba(255,255,255,0.03)", border: "1px solid #2a2a2e", borderRadius: 6, color: "#888", fontSize: 10, fontWeight: 500, cursor: "pointer", fontFamily: "inherit" }}>{selectedCandidatures.size === (state.candidatures || []).length ? "Tout désélectionner" : "Tout sélectionner"}</button>
                       )}
                     </div>
                   </div>
@@ -5730,9 +5734,9 @@ function CastingAppInner({ authUser }) {
                 {/* Candidatures list */}
                 <div style={{ background: "#111114", borderRadius: 14, border: "1px solid #1e1e22", overflow: "hidden" }}>
                   {/* Header */}
-                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 60px 120px 100px 80px 32px", padding: "10px 18px", borderBottom: "2px solid #f472b633", gap: 8, background: "rgba(244,114,182,0.04)" }}>
-                    {["Prénom", "Nom", "Âge", "Agence", "Rôle visé", "Statut", ""].map(h => (
-                      <span key={h} style={{ fontSize: 10, color: "#f472b6", fontWeight: 700, textTransform: "uppercase" }}>{h}</span>
+                  <div style={{ display: "grid", gridTemplateColumns: "28px 1fr 1fr 60px 120px 100px 80px 32px", padding: "10px 18px", borderBottom: "2px solid #f472b633", gap: 8, background: "rgba(244,114,182,0.04)" }}>
+                    {["", "Prénom", "Nom", "Âge", "Agence", "Rôle visé", "Statut", ""].map((h, hi) => (
+                      <span key={hi} style={{ fontSize: 10, color: "#f472b6", fontWeight: 700, textTransform: "uppercase" }}>{h}</span>
                     ))}
                   </div>
                   {(state.candidatures || []).length === 0 && (
@@ -5742,9 +5746,12 @@ function CastingAppInner({ authUser }) {
                     const isOpen = expandedCandidature === c.id;
                     return (
                       <React.Fragment key={c.id}>
-                        <div onClick={() => setExpandedCandidature(isOpen ? null : c.id)} style={{ display: "grid", gridTemplateColumns: "1fr 1fr 60px 120px 100px 80px 32px", padding: "12px 18px", alignItems: "center", gap: 8, borderBottom: "1px solid #1a1a1e", cursor: "pointer", background: isOpen ? "rgba(244,114,182,0.03)" : "transparent" }}
+                        <div onClick={() => setExpandedCandidature(isOpen ? null : c.id)} style={{ display: "grid", gridTemplateColumns: "28px 1fr 1fr 60px 120px 100px 80px 32px", padding: "12px 18px", alignItems: "center", gap: 8, borderBottom: "1px solid #1a1a1e", cursor: "pointer", background: isOpen ? "rgba(244,114,182,0.03)" : "transparent" }}
                           onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.015)"}
                           onMouseLeave={e => e.currentTarget.style.background = isOpen ? "rgba(244,114,182,0.03)" : "transparent"}>
+                          <div onClick={e => e.stopPropagation()} style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <input type="checkbox" checked={selectedCandidatures.has(c.id)} onChange={() => setSelectedCandidatures(prev => { const s = new Set(prev); if (s.has(c.id)) s.delete(c.id); else s.add(c.id); return s; })} style={{ width: 16, height: 16, cursor: "pointer", accentColor: "#f472b6" }} />
+                          </div>
                           <span style={{ fontSize: 14, fontWeight: 600, color: "#f0f0f0" }}>{c.firstName || "—"}</span>
                           <span style={{ fontSize: 14, fontWeight: 700, color: "#f0f0f0" }}>{(c.name || "—").toUpperCase()}</span>
                           <span style={{ fontSize: 13, color: "#ccc" }}>{c.age || "—"}</span>
