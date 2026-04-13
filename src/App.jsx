@@ -2196,8 +2196,12 @@ function CastingAppInner({ authUser }) {
   const [gmailLoading, setGmailLoading] = useState(false);
   const [gmailError, setGmailError] = useState(null);
   const [gmailOpenEmail, setGmailOpenEmail] = useState(null);
-  const [gmailReadIds, setGmailReadIds] = useState(new Set());
-  const [gmailProcessedIds, setGmailProcessedIds] = useState(new Set());
+  const [gmailReadIds, setGmailReadIds] = useState(() => { try { return new Set(JSON.parse(localStorage.getItem("gmail_read_ids") || "[]")); } catch(e) { return new Set(); } });
+  const [gmailProcessedIds, setGmailProcessedIds] = useState(() => { try { return new Set(JSON.parse(localStorage.getItem("gmail_processed_ids") || "[]")); } catch(e) { return new Set(); } });
+
+  // Persist read/processed IDs
+  useEffect(() => { try { localStorage.setItem("gmail_read_ids", JSON.stringify([...gmailReadIds])); } catch(e) {} }, [gmailReadIds]);
+  useEffect(() => { try { localStorage.setItem("gmail_processed_ids", JSON.stringify([...gmailProcessedIds])); } catch(e) {} }, [gmailProcessedIds]);
 
   const GMAIL_CLIENT_ID = "564140044631-42vkp5roid29t80kcj7av6744ikq3bbe.apps.googleusercontent.com";
 
@@ -2271,7 +2275,9 @@ function CastingAppInner({ authUser }) {
 
   const [gmailNextPage, setGmailNextPage] = useState(null);
   const [gmailSearchQuery, setGmailSearchQuery] = useState("");
+  const [gmailCollapsed, setGmailCollapsed] = useState(false);
 
+  // STEP 1: Fast list — metadata only (from, subject, snippet, date, unread)
   const fetchGmailEmails = async (token, query, pageToken, append) => {
     setGmailLoading(true);
     try {
@@ -2285,47 +2291,58 @@ function CastingAppInner({ authUser }) {
       const emails = [];
       for (const msg of listData.messages) {
         try {
-          const msgRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${msg.id}?format=full`, { headers: { Authorization: `Bearer ${token}` } });
+          const msgRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${msg.id}?format=metadata&metadataHeaders=From&metadataHeaders=Subject&metadataHeaders=Date`, { headers: { Authorization: `Bearer ${token}` } });
           const msgData = await msgRes.json();
           const hdr = msgData.payload?.headers || [];
           const getH = (n) => hdr.find(h => h.name.toLowerCase() === n.toLowerCase())?.value || "";
-          const extracted = extractGmailBody(msgData.payload || {});
-          // Fetch pending body parts (body with size but no inline data)
-          if ((!extracted.text || extracted.text.trim().length < 5) && extracted.pendingBodyParts?.length > 0) {
-            for (const pending of extracted.pendingBodyParts) {
-              try {
-                const partRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${msg.id}/attachments/${pending.attachmentId}`, { headers: { Authorization: `Bearer ${token}` } });
-                const partData = await partRes.json();
-                if (partData.data) {
-                  const decoded = b64decode(partData.data);
-                  if (pending.mime === "text/html") { extracted.text = decoded; extracted.mimeType = "text/html"; }
-                  else if (!extracted.text) { extracted.text = decoded; extracted.mimeType = "text/plain"; }
-                }
-              } catch(e2) { /* skip */ }
-            }
-          }
           const isUnread = (msgData.labelIds || []).includes("UNREAD");
-          let plainText = extracted.text;
-          if (extracted.mimeType === "text/html") plainText = extracted.text.replace(/<br\s*\/?>/gi, "\n").replace(/<\/p>/gi, "\n\n").replace(/<\/div>/gi, "\n").replace(/<\/li>/gi, "\n").replace(/<li[^>]*>/gi, "• ").replace(/<[^>]+>/g, "").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/\n{3,}/g, "\n\n").trim();
-          // Sanitize HTML: remove scripts, event handlers, external style tags
-          let safeHtml = extracted.mimeType === "text/html" ? extracted.text : null;
-          if (safeHtml) {
-            safeHtml = safeHtml.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "");
-            safeHtml = safeHtml.replace(/\son\w+="[^"]*"/gi, "");
-            safeHtml = safeHtml.replace(/\son\w+='[^']*'/gi, "");
-            safeHtml = safeHtml.replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "");
-            safeHtml = safeHtml.replace(/javascript:/gi, "");
-            // Make images responsive
-            safeHtml = safeHtml.replace(/<img /gi, '<img style="max-width:100%;height:auto;border-radius:4px" ');
-            // Make links open in new tab
-            safeHtml = safeHtml.replace(/<a /gi, '<a target="_blank" rel="noopener noreferrer" ');
-          }
-          emails.push({ id: msg.id, msgId: msg.id, from: getH("From"), subject: getH("Subject"), date: getH("Date"), bodyHtml: safeHtml, bodyText: plainText, snippet: msgData.snippet || "", unread: isUnread, attachments: extracted.attachments || [] });
+          emails.push({ id: msg.id, from: getH("From"), subject: getH("Subject"), date: getH("Date"), snippet: decodeHtmlEntities(msgData.snippet || ""), unread: isUnread, _loaded: false });
         } catch(e) { /* skip */ }
       }
+      // Sort by internalDate (Gmail returns in order, but ensure it)
       if (append) setGmailEmails(prev => [...prev, ...emails]);
       else setGmailEmails(emails);
     } catch(e) { setGmailError("Erreur de chargement: " + e.message); }
+    setGmailLoading(false);
+  };
+
+  // STEP 2: Full fetch — when user OPENS an email
+  const fetchGmailFullEmail = async (emailMeta) => {
+    if (emailMeta._loaded) { setGmailOpenEmail(emailMeta); return; }
+    setGmailLoading(true);
+    try {
+      const msgRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${emailMeta.id}?format=full`, { headers: { Authorization: `Bearer ${gmailToken}` } });
+      const msgData = await msgRes.json();
+      const extracted = extractGmailBody(msgData.payload || {});
+      // Fetch pending body parts
+      if ((!extracted.text || extracted.text.trim().length < 5) && extracted.pendingBodyParts?.length > 0) {
+        for (const pending of extracted.pendingBodyParts) {
+          try {
+            const partRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${emailMeta.id}/attachments/${pending.attachmentId}`, { headers: { Authorization: `Bearer ${gmailToken}` } });
+            const partData = await partRes.json();
+            if (partData.data) {
+              const decoded = b64decode(partData.data);
+              if (pending.mime === "text/html") { extracted.text = decoded; extracted.mimeType = "text/html"; }
+              else if (!extracted.text) { extracted.text = decoded; extracted.mimeType = "text/plain"; }
+            }
+          } catch(e2) { /* skip */ }
+        }
+      }
+      let plainText = extracted.text;
+      if (extracted.mimeType === "text/html") plainText = extracted.text.replace(/<br\s*\/?>/gi, "\n").replace(/<\/p>/gi, "\n\n").replace(/<\/div>/gi, "\n").replace(/<\/li>/gi, "\n").replace(/<li[^>]*>/gi, "• ").replace(/<[^>]+>/g, "").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/\n{3,}/g, "\n\n").trim();
+      let safeHtml = extracted.mimeType === "text/html" ? extracted.text : null;
+      if (safeHtml) {
+        safeHtml = safeHtml.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, "").replace(/\son\w+="[^"]*"/gi, "").replace(/\son\w+='[^']*'/gi, "").replace(/<style[^>]*>[\s\S]*?<\/style>/gi, "").replace(/javascript:/gi, "");
+        safeHtml = safeHtml.replace(/<img /gi, '<img style="max-width:100%;height:auto;border-radius:4px" ');
+        safeHtml = safeHtml.replace(/<a /gi, '<a target="_blank" rel="noopener noreferrer" ');
+      }
+      // Use snippet as last resort
+      if (!safeHtml && (!plainText || plainText.trim().length < 5)) plainText = decodeHtmlEntities(msgData.snippet || "");
+      const fullEmail = { ...emailMeta, bodyHtml: safeHtml, bodyText: plainText, attachments: extracted.attachments || [], _loaded: true };
+      // Update in list cache
+      setGmailEmails(prev => prev.map(e => e.id === emailMeta.id ? fullEmail : e));
+      setGmailOpenEmail(fullEmail);
+    } catch(e) { setGmailError("Erreur lecture email: " + e.message); }
     setGmailLoading(false);
   };
   const [dragSlot, setDragSlot] = useState(null);
@@ -5599,23 +5616,26 @@ function CastingAppInner({ authUser }) {
                 {/* Gmail emails */}
                 {gmailToken && !gmailOpenEmail && (
                   <div style={{ marginBottom: 24 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
-                      <div style={{ fontSize: 13, color: "#EA4335", fontWeight: 700, textTransform: "uppercase" }}>📧 Boîte de réception ({gmailEmails.length})</div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: gmailCollapsed ? 0 : 10 }}>
+                      <div onClick={() => setGmailCollapsed(!gmailCollapsed)} style={{ fontSize: 13, color: "#EA4335", fontWeight: 700, textTransform: "uppercase", cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}>
+                        <span style={{ transform: gmailCollapsed ? "rotate(-90deg)" : "rotate(0)", transition: "transform 0.2s", fontSize: 12 }}>▾</span>
+                        📧 Boîte de réception ({gmailEmails.length})
+                      </div>
                       <div style={{ flex: 1 }} />
                       <form onSubmit={e => { e.preventDefault(); fetchGmailEmails(gmailToken, gmailSearchQuery || ""); }} style={{ display: "flex", gap: 6 }}>
                         <input value={gmailSearchQuery} onChange={e => setGmailSearchQuery(e.target.value)} placeholder="Rechercher (ex: casting, nom...)" style={{ padding: "6px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "inherit", outline: "none", width: 220 }} />
                         <button type="submit" style={{ padding: "6px 14px", background: "rgba(234,67,53,0.08)", border: "1px solid rgba(234,67,53,0.2)", borderRadius: 8, color: "#EA4335", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>🔍</button>
                       </form>
                     </div>
-                    <div style={{ background: "#111114", borderRadius: 14, border: "1px solid #1e1e22", overflow: "hidden" }}>
-                      {gmailLoading && <div style={{ padding: "30px", textAlign: "center", color: "#888", fontSize: 14 }}>⏳ Chargement...</div>}
+                    {!gmailCollapsed && <div style={{ background: "#111114", borderRadius: 14, border: "1px solid #1e1e22", overflow: "hidden" }}>
+                      {gmailLoading && !gmailEmails.length && <div style={{ padding: "30px", textAlign: "center", color: "#888", fontSize: 14 }}>⏳ Chargement...</div>}
                       {!gmailLoading && gmailEmails.length === 0 && <div style={{ padding: "30px", textAlign: "center", color: "#555" }}>Aucun email</div>}
                       {gmailEmails.map(em => {
                         const fromName = em.from?.match(/^"?([^"<]+)"?\s*</) ? em.from.match(/^"?([^"<]+)"?\s*</)[1].replace(/^["']|["']$/g, "").trim() : em.from?.split("@")[0] || "—";
                         const isRead = gmailReadIds.has(em.id) || !em.unread;
                         const isProcessed = gmailProcessedIds.has(em.id);
                         return (
-                          <div key={em.id} onClick={() => { setGmailOpenEmail(em); setGmailReadIds(prev => new Set([...prev, em.id])); }}
+                          <div key={em.id} onClick={() => { fetchGmailFullEmail(em); setGmailReadIds(prev => new Set([...prev, em.id])); }}
                             style={{ display: "flex", alignItems: "center", padding: "14px 18px", borderBottom: "1px solid #1a1a1e", cursor: "pointer", gap: 12, background: isProcessed ? "rgba(34,197,94,0.02)" : "transparent" }}
                             onMouseEnter={e => e.currentTarget.style.background = isProcessed ? "rgba(34,197,94,0.04)" : "rgba(255,255,255,0.02)"}
                             onMouseLeave={e => e.currentTarget.style.background = isProcessed ? "rgba(34,197,94,0.02)" : "transparent"}>
@@ -5646,7 +5666,7 @@ function CastingAppInner({ authUser }) {
                           </button>
                         </div>
                       )}
-                    </div>
+                    </div>}
                   </div>
                 )}
 
