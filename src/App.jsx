@@ -6992,9 +6992,6 @@ function CastingAppInner({ authUser }) {
                   );
                 }
 
-                /* Mode toggle — physique */
-                // (selftape mode is handled above with early return)
-
                 // Filter profiles by role
                 let roleProfiles = allCasting.filter(p => p._role === currentRole);
 
@@ -7670,6 +7667,12 @@ function CastingAppInner({ authUser }) {
               </div>
             ) : (
               <>
+                {/* Casting mode toggle */}
+                <div style={{ display: "flex", gap: 6, marginBottom: 16 }}>
+                  <button style={{ padding: "8px 20px", borderRadius: 8, fontSize: 13, fontWeight: 700, fontFamily: "inherit", border: "none", cursor: "pointer", background: "rgba(251,146,60,0.12)", color: "#fb923c" }}>🎬 Casting physique</button>
+                  <button onClick={() => setCastingMode("selftape")} style={{ padding: "8px 20px", borderRadius: 8, fontSize: 13, fontWeight: 600, fontFamily: "inherit", border: "none", cursor: "pointer", background: "rgba(255,255,255,0.03)", color: "#666" }}>📹 Casting selftape</button>
+                </div>
+
                 {/* Selection summary bar (director & realisateur) */}
                 {(viewMode === "director" || viewMode === "realisateur") && (() => {
                   const total = currentProfiles.length;
@@ -7692,12 +7695,6 @@ function CastingAppInner({ authUser }) {
                     </div>
                   );
                 })()}
-
-                {/* Mode toggle — physique (shown at top of casting) */}
-                <div style={{ display: "flex", gap: 6, marginBottom: 16 }}>
-                  <button style={{ padding: "8px 20px", borderRadius: 8, fontSize: 13, fontWeight: 700, fontFamily: "inherit", border: "none", cursor: "pointer", background: "rgba(251,146,60,0.12)", color: "#fb923c" }}>🎬 Casting physique</button>
-                  <button onClick={() => setCastingMode("selftape")} style={{ padding: "8px 20px", borderRadius: 8, fontSize: 13, fontWeight: 600, fontFamily: "inherit", border: "none", cursor: "pointer", background: "rgba(255,255,255,0.03)", color: "#666" }}>📹 Casting selftape</button>
-                </div>
 
                 {/* Global feedback from réal */}
                 {state._guestGlobalFeedback && (
