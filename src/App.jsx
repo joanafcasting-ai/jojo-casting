@@ -2203,11 +2203,11 @@ function CastingAppInner({ authUser }) {
     gmailTokenClient.current.requestAccessToken({ prompt });
   };
 
-  // Auto-connect Gmail silently when opening Candidatures tab
+  // No auto-connect — user clicks "Connecter Gmail" manually
   useEffect(() => {
-    if (activeTab === "candidatures" && !gmailToken && window.google?.accounts?.oauth2) {
-      // Try silent reconnect (no popup if already authorized)
-      setTimeout(() => connectGmail("none"), 500);
+    // Just refresh emails if already connected
+    if (activeTab === "candidatures" && gmailToken) {
+      fetchGmailEmails(gmailToken);
     }
   }, [activeTab]);
 
