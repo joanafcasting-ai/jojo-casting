@@ -2263,14 +2263,21 @@ function CastingAppInner({ authUser }) {
     return { text, mimeType, attachments };
   };
 
-  const fetchGmailEmails = async (token) => {
+  const [gmailNextPage, setGmailNextPage] = useState(null);
+  const [gmailSearchQuery, setGmailSearchQuery] = useState("");
+
+  const fetchGmailEmails = async (token, query, pageToken, append) => {
     setGmailLoading(true);
     try {
-      const listRes = await fetch("https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=30&q=in:inbox", { headers: { Authorization: `Bearer ${token}` } });
+      const q = query || gmailSearchQuery || "in:inbox";
+      let url = `https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=20&q=${encodeURIComponent(q)}`;
+      if (pageToken) url += `&pageToken=${pageToken}`;
+      const listRes = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
       const listData = await listRes.json();
-      if (!listData.messages) { setGmailEmails([]); setGmailLoading(false); return; }
+      setGmailNextPage(listData.nextPageToken || null);
+      if (!listData.messages) { if (!append) setGmailEmails([]); setGmailLoading(false); return; }
       const emails = [];
-      for (const msg of listData.messages.slice(0, 25)) {
+      for (const msg of listData.messages) {
         try {
           const msgRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${msg.id}?format=full`, { headers: { Authorization: `Bearer ${token}` } });
           const msgData = await msgRes.json();
@@ -2296,7 +2303,8 @@ function CastingAppInner({ authUser }) {
           emails.push({ id: msg.id, msgId: msg.id, from: getH("From"), subject: getH("Subject"), date: getH("Date"), bodyHtml: safeHtml, bodyText: plainText, snippet: msgData.snippet || "", unread: isUnread, attachments: extracted.attachments || [] });
         } catch(e) { /* skip */ }
       }
-      setGmailEmails(emails);
+      if (append) setGmailEmails(prev => [...prev, ...emails]);
+      else setGmailEmails(emails);
     } catch(e) { setGmailError("Erreur de chargement: " + e.message); }
     setGmailLoading(false);
   };
@@ -5563,7 +5571,14 @@ function CastingAppInner({ authUser }) {
                 {/* Gmail emails */}
                 {gmailToken && !gmailOpenEmail && (
                   <div style={{ marginBottom: 24 }}>
-                    <div style={{ fontSize: 13, color: "#EA4335", fontWeight: 700, textTransform: "uppercase", marginBottom: 10 }}>📧 Boîte de réception ({gmailEmails.length})</div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
+                      <div style={{ fontSize: 13, color: "#EA4335", fontWeight: 700, textTransform: "uppercase" }}>📧 Boîte de réception ({gmailEmails.length})</div>
+                      <div style={{ flex: 1 }} />
+                      <form onSubmit={e => { e.preventDefault(); fetchGmailEmails(gmailToken, gmailSearchQuery || "in:inbox"); }} style={{ display: "flex", gap: 6 }}>
+                        <input value={gmailSearchQuery} onChange={e => setGmailSearchQuery(e.target.value)} placeholder="Rechercher (ex: casting, nom...)" style={{ padding: "6px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "inherit", outline: "none", width: 220 }} />
+                        <button type="submit" style={{ padding: "6px 14px", background: "rgba(234,67,53,0.08)", border: "1px solid rgba(234,67,53,0.2)", borderRadius: 8, color: "#EA4335", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>🔍</button>
+                      </form>
+                    </div>
                     <div style={{ background: "#111114", borderRadius: 14, border: "1px solid #1e1e22", overflow: "hidden" }}>
                       {gmailLoading && <div style={{ padding: "30px", textAlign: "center", color: "#888", fontSize: 14 }}>⏳ Chargement...</div>}
                       {!gmailLoading && gmailEmails.length === 0 && <div style={{ padding: "30px", textAlign: "center", color: "#555" }}>Aucun email</div>}
@@ -5594,6 +5609,15 @@ function CastingAppInner({ authUser }) {
                           </div>
                         );
                       })}
+                      {/* Load more */}
+                      {gmailNextPage && (
+                        <div style={{ padding: "14px", textAlign: "center", borderTop: "1px solid #1e1e22" }}>
+                          <button onClick={() => fetchGmailEmails(gmailToken, null, gmailNextPage, true)} disabled={gmailLoading}
+                            style={{ padding: "8px 24px", background: "rgba(234,67,53,0.08)", border: "1px solid rgba(234,67,53,0.2)", borderRadius: 8, color: "#EA4335", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+                            {gmailLoading ? "⏳ Chargement..." : "📩 Charger plus d'emails"}
+                          </button>
+                        </div>
+                      )}
                     </div>
                   </div>
                 )}
