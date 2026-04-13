@@ -2232,6 +2232,7 @@ function CastingAppInner({ authUser }) {
   const extractGmailBody = (payload) => {
     let textBody = "", htmlBody = "";
     const attachments = [];
+    const pendingBodyParts = []; // parts with size but no inline data
     const extractParts = (parts) => {
       if (!parts) return;
       for (const part of parts) {
@@ -2241,11 +2242,15 @@ function CastingAppInner({ authUser }) {
         // Text/HTML body parts (no filename = inline body, not attachment)
         if (mime === "text/plain" && hasData && !hasFilename) { if (!textBody) textBody = b64decode(part.body.data); }
         else if (mime === "text/html" && hasData && !hasFilename) { htmlBody = b64decode(part.body.data); }
+        // Body parts with size but no data — need separate fetch
+        else if ((mime === "text/plain" || mime === "text/html") && !hasData && !hasFilename && part.body?.size > 0 && part.body?.attachmentId) {
+          pendingBodyParts.push({ mime, attachmentId: part.body.attachmentId });
+        }
         // Attachments (have filename)
         else if (hasFilename && part.body) {
           attachments.push({ filename: part.filename, mimeType: mime, attachmentId: part.body.attachmentId, size: part.body.size || 0 });
         }
-        // Recurse into sub-parts (multipart/alternative, multipart/mixed, multipart/related)
+        // Recurse into sub-parts
         if (part.parts) extractParts(part.parts);
       }
     };
@@ -2261,7 +2266,7 @@ function CastingAppInner({ authUser }) {
     if (payload.parts) extractParts(payload.parts);
     const text = htmlBody || textBody;
     const mimeType = htmlBody ? "text/html" : "text/plain";
-    return { text, mimeType, attachments };
+    return { text, mimeType, attachments, pendingBodyParts };
   };
 
   const [gmailNextPage, setGmailNextPage] = useState(null);
@@ -2285,6 +2290,20 @@ function CastingAppInner({ authUser }) {
           const hdr = msgData.payload?.headers || [];
           const getH = (n) => hdr.find(h => h.name.toLowerCase() === n.toLowerCase())?.value || "";
           const extracted = extractGmailBody(msgData.payload || {});
+          // Fetch pending body parts (body with size but no inline data)
+          if ((!extracted.text || extracted.text.trim().length < 5) && extracted.pendingBodyParts?.length > 0) {
+            for (const pending of extracted.pendingBodyParts) {
+              try {
+                const partRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${msg.id}/attachments/${pending.attachmentId}`, { headers: { Authorization: `Bearer ${token}` } });
+                const partData = await partRes.json();
+                if (partData.data) {
+                  const decoded = b64decode(partData.data);
+                  if (pending.mime === "text/html") { extracted.text = decoded; extracted.mimeType = "text/html"; }
+                  else if (!extracted.text) { extracted.text = decoded; extracted.mimeType = "text/plain"; }
+                }
+              } catch(e2) { /* skip */ }
+            }
+          }
           const isUnread = (msgData.labelIds || []).includes("UNREAD");
           let plainText = extracted.text;
           if (extracted.mimeType === "text/html") plainText = extracted.text.replace(/<br\s*\/?>/gi, "\n").replace(/<\/p>/gi, "\n\n").replace(/<\/div>/gi, "\n").replace(/<\/li>/gi, "\n").replace(/<li[^>]*>/gi, "• ").replace(/<[^>]+>/g, "").replace(/&nbsp;/g, " ").replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&#39;/g, "'").replace(/&quot;/g, '"').replace(/\n{3,}/g, "\n\n").trim();
