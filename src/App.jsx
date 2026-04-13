@@ -3067,12 +3067,13 @@ function CastingAppInner({ authUser }) {
     input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.9); cursor: pointer; font-size: 16px; }
     input[type="time"]::-webkit-calendar-picker-indicator { display: none; }
     input[type="time"] { -webkit-appearance: none; }
-    .email-body-render { all: initial; font-family: 'DM Sans', sans-serif; font-size: 14px; color: #e0e0e0; line-height: 1.7; }
+    .email-body-render { all: initial; font-family: 'DM Sans', sans-serif; font-size: 14px; color: #ffffff !important; line-height: 1.7; background: transparent !important; }
     .email-body-render * { max-width: 100% !important; box-sizing: border-box; }
     .email-body-render img { max-width: 100% !important; height: auto !important; border-radius: 4px; margin: 4px 0; }
     .email-body-render a { color: #60a5fa !important; text-decoration: underline; }
     .email-body-render table { border-collapse: collapse; width: 100%; margin: 8px 0; }
     .email-body-render td, .email-body-render th { padding: 6px 10px; border: 1px solid #2a2a2e; }
+    .email-body-render p, .email-body-render span, .email-body-render div, .email-body-render li, .email-body-render td { color: #ffffff !important; }
     .email-body-render p { margin: 0 0 8px 0; }
     .email-body-render blockquote { border-left: 3px solid #333; padding-left: 12px; margin: 8px 0; color: #888; }
     .email-body-render h1, .email-body-render h2, .email-body-render h3 { color: #f0f0f0; margin: 12px 0 6px; }
@@ -5732,11 +5733,17 @@ function CastingAppInner({ authUser }) {
                               {/* Left: original email — full HTML or text */}
                               <div>
                                 <label style={{ display: "block", fontSize: 10, color: "#f472b6", fontWeight: 600, textTransform: "uppercase", marginBottom: 6 }}>Email original</label>
-                                <div style={{ width: "100%", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 10, maxHeight: 500, overflowY: "auto", boxSizing: "border-box" }}>
+                                <div style={{ width: "100%", background: "#0a0a0a", border: "1px solid #2a2a2e", borderRadius: 10, maxHeight: 600, overflowY: "auto", boxSizing: "border-box" }}>
+                                  {/* Email header */}
+                                  <div style={{ padding: "14px 18px", borderBottom: "1px solid #1e1e22" }}>
+                                    <div style={{ fontSize: 11, color: "#888", marginBottom: 4 }}>De: <span style={{ color: "#fff", fontWeight: 600 }}>{c.email || "—"}</span></div>
+                                    {c.rawEmail?.match(/Objet:\s*(.+)/)?.[1] && <div style={{ fontSize: 15, color: "#fff", fontWeight: 700 }}>{c.rawEmail.match(/Objet:\s*(.+)/)[1]}</div>}
+                                  </div>
+                                  {/* Email body */}
                                   {c.rawHtml ? (
-                                    <div className="email-body-render" dangerouslySetInnerHTML={{ __html: c.rawHtml }} style={{ padding: "16px 18px", fontSize: 14, color: "#e0e0e0", lineHeight: 1.7, wordBreak: "break-word" }} />
+                                    <div className="email-body-render" dangerouslySetInnerHTML={{ __html: c.rawHtml }} style={{ padding: "16px 18px", fontSize: 14, color: "#fff", lineHeight: 1.7, wordBreak: "break-word" }} />
                                   ) : (
-                                    <div style={{ padding: "16px 18px", color: "#ccc", fontSize: 13, lineHeight: 1.7, whiteSpace: "pre-wrap" }}>{decodeHtmlEntities(c.rawEmail || "")}</div>
+                                    <div style={{ padding: "16px 18px", color: "#fff", fontSize: 14, lineHeight: 1.7, whiteSpace: "pre-wrap" }}>{decodeHtmlEntities(c.rawEmail || "")}</div>
                                   )}
                                 </div>
                                 {/* Email attachments from Gmail */}
