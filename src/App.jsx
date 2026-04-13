@@ -2212,7 +2212,7 @@ function CastingAppInner({ authUser }) {
     if (!gmailTokenClient.current) {
       gmailTokenClient.current = window.google.accounts.oauth2.initTokenClient({
         client_id: GMAIL_CLIENT_ID,
-        scope: "https://www.googleapis.com/auth/gmail.readonly",
+        scope: "https://www.googleapis.com/auth/gmail.readonly https://www.googleapis.com/auth/drive.file",
         callback: (response) => {
           if (response.access_token) { setGmailToken(response.access_token); setGmailError(null); fetchGmailEmails(response.access_token); }
           else setGmailError("Connexion échouée");
@@ -5612,6 +5612,16 @@ function CastingAppInner({ authUser }) {
                   </div>
                 </div>
 
+                {/* Google Drive link */}
+                <div style={{ marginBottom: 16, padding: "14px 18px", background: "#111114", borderRadius: 10, border: "1px solid #1e1e22", display: "flex", alignItems: "center", gap: 12 }}>
+                  <span style={{ fontSize: 14 }}>📁</span>
+                  <div style={{ flex: 1 }}>
+                    <label style={{ display: "block", fontSize: 10, color: "#4285F4", fontWeight: 600, textTransform: "uppercase", marginBottom: 4 }}>Dossier Google Drive — Candidatures</label>
+                    <input value={state._candidaturesDriveLink || ""} onChange={e => setState(p => ({ ...p, _candidaturesDriveLink: e.target.value }))} placeholder="https://drive.google.com/drive/folders/..." style={{ width: "100%", padding: "6px 10px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 6, color: "#e0e0e0", fontSize: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
+                  </div>
+                  {state._candidaturesDriveLink && <a href={state._candidaturesDriveLink} target="_blank" rel="noreferrer" style={{ padding: "6px 14px", background: "rgba(66,133,244,0.1)", border: "1px solid rgba(66,133,244,0.25)", borderRadius: 6, color: "#4285F4", fontSize: 11, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>📂 Ouvrir Drive</a>}
+                </div>
+
                 {gmailError && <div style={{ padding: "10px 16px", background: "rgba(239,68,68,0.08)", borderRadius: 8, color: "#ef4444", fontSize: 12, marginBottom: 14 }}>⚠ {gmailError}</div>}
 
                 {/* Gmail emails */}
@@ -5760,6 +5770,45 @@ function CastingAppInner({ authUser }) {
                                       }} style={{ padding: "4px 10px", background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.2)", borderRadius: 6, color: "#22c55e", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
                                         {att._uploading ? "⏳ Upload..." : "📤 Sauvegarder → URL"}
                                       </button>
+                                    )}
+                                    {/* Upload to Google Drive */}
+                                    {(att.mimeType?.startsWith("video/") || att.mimeType?.startsWith("image/")) && gmailToken && !att._driveUrl && (
+                                      <button onClick={async () => {
+                                        try {
+                                          att._driveUploading = true; setGmailOpenEmail({ ...em });
+                                          // Fetch attachment data
+                                          const res = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${em.id}/attachments/${att.attachmentId}`, { headers: { Authorization: `Bearer ${gmailToken}` } });
+                                          const data = await res.json();
+                                          if (!data.data) throw new Error("No data");
+                                          const binary = atob(data.data.replace(/-/g, "+").replace(/_/g, "/"));
+                                          const bytes = new Uint8Array(binary.length); for (let k = 0; k < binary.length; k++) bytes[k] = binary.charCodeAt(k);
+                                          const blob = new Blob([bytes], { type: att.mimeType });
+                                          // Get sender name for folder
+                                          const senderName = (em.from?.match(/^"?([^"<]+)"?\s*</) || [])[1]?.trim() || "Candidat";
+                                          // Create folder
+                                          const folderRes = await fetch("https://www.googleapis.com/drive/v3/files", { method: "POST", headers: { Authorization: `Bearer ${gmailToken}`, "Content-Type": "application/json" }, body: JSON.stringify({ name: senderName + " — Casting", mimeType: "application/vnd.google-apps.folder" }) });
+                                          const folder = await folderRes.json();
+                                          if (!folder.id) throw new Error("Folder creation failed");
+                                          // Upload file to folder
+                                          const metadata = { name: att.filename || "video.mp4", parents: [folder.id] };
+                                          const form = new FormData();
+                                          form.append("metadata", new Blob([JSON.stringify(metadata)], { type: "application/json" }));
+                                          form.append("file", blob);
+                                          const uploadRes = await fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,webViewLink", { method: "POST", headers: { Authorization: `Bearer ${gmailToken}` }, body: form });
+                                          const uploaded = await uploadRes.json();
+                                          att._driveUrl = uploaded.webViewLink || `https://drive.google.com/file/d/${uploaded.id}/view`;
+                                          att._driveUploading = false;
+                                          setGmailOpenEmail({ ...em });
+                                        } catch(e) { console.error("Drive upload failed:", e); att._driveUploading = false; setGmailOpenEmail({ ...em }); }
+                                      }} style={{ padding: "4px 10px", background: "rgba(66,133,244,0.08)", border: "1px solid rgba(66,133,244,0.2)", borderRadius: 6, color: "#4285F4", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+                                        {att._driveUploading ? "⏳ Drive..." : "📂 → Google Drive"}
+                                      </button>
+                                    )}
+                                    {att._driveUrl && (
+                                      <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                                        <a href={att._driveUrl} target="_blank" rel="noreferrer" style={{ padding: "3px 8px", background: "rgba(66,133,244,0.08)", border: "1px solid rgba(66,133,244,0.2)", borderRadius: 4, color: "#4285F4", fontSize: 9, fontWeight: 600, textDecoration: "none" }}>📂 Voir sur Drive</a>
+                                        <button onClick={() => { navigator.clipboard?.writeText(att._driveUrl); }} style={{ background: "none", border: "none", color: "#4285F4", cursor: "pointer", fontSize: 10 }} title="Copier le lien">📋</button>
+                                      </div>
                                     )}
                                     {att._uploadedUrl && (
                                       <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
