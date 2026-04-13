@@ -6914,89 +6914,77 @@ function CastingAppInner({ authUser }) {
                         <button style={{ padding: "8px 20px", borderRadius: 8, fontSize: 13, fontWeight: 700, fontFamily: "inherit", border: "none", cursor: "pointer", background: "rgba(96,165,250,0.12)", color: "#60a5fa" }}>📹 Casting selftape</button>
                       </div>
 
-                      <div style={{ fontSize: 16, fontWeight: 700, color: "#60a5fa", marginBottom: 16 }}>📹 Casting Selftape — {currentRole}</div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: "#60a5fa", marginBottom: 14 }}>📹 Casting Selftape — {currentRole} ({selftapeProfiles.length})</div>
 
                       {selftapeProfiles.length === 0 && <div style={{ textAlign: "center", padding: 40, color: "#555" }}>Aucun profil pour ce rôle</div>}
 
-                      <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-                        {selftapeProfiles.map(profile => {
+                      {/* Compact table */}
+                      <div style={{ background: "#111114", borderRadius: 12, border: "1px solid #1e1e22", overflow: "hidden" }}>
+                        {selftapeProfiles.map((profile, pi) => {
                           const fullName = [profile.firstName, profile.name].filter(Boolean).join(" ") || "Sans nom";
                           const finalSel = state.finalSelections[profile.id];
                           const tapes = (profile.selftapeLinks || []).filter(l => l);
+                          const isOpen = castingDetailProfile?.id === profile.id;
                           return (
-                            <div key={profile.id} style={{ background: "#111114", borderRadius: 14, border: "1px solid #1e1e22", overflow: "hidden" }}>
-                              {/* Header */}
-                              <div style={{ display: "flex", gap: 14, padding: "16px 20px", alignItems: "center" }}>
-                                <div style={{ width: 56, height: 70, borderRadius: 10, overflow: "hidden", background: "#0c0c0e", flexShrink: 0 }}>
-                                  {profile.photos?.[0] ? <img src={profile.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 22 }}>◎</div>}
+                            <React.Fragment key={profile.id}>
+                              {/* Compact row */}
+                              <div onClick={() => setCastingDetailProfile(isOpen ? null : profile)} style={{ display: "flex", alignItems: "center", padding: "10px 16px", gap: 12, borderBottom: "1px solid #1a1a1e", cursor: "pointer", transition: "background 0.1s" }}
+                                onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.02)"}
+                                onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                                <div style={{ width: 40, height: 50, borderRadius: 6, overflow: "hidden", background: "#0c0c0e", flexShrink: 0 }}>
+                                  {profile.photos?.[0] ? <img src={profile.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 14 }}>◎</div>}
                                 </div>
-                                <div style={{ flex: 1 }}>
-                                  <div style={{ fontSize: 18, fontWeight: 800, color: "#f0f0f0", fontFamily: "'Playfair Display', serif" }}>{fullName}</div>
-                                  <div style={{ fontSize: 13, color: "#888", marginTop: 2 }}>
-                                    {[profile.age ? profile.age + " ans" : null, profile.agency ? "— " + profile.agency : null].filter(Boolean).join(" ")}
-                                  </div>
-                                  <div style={{ fontSize: 12, color: "#60a5fa", marginTop: 4 }}>{tapes.length} selftape{tapes.length !== 1 ? "s" : ""}</div>
+                                <div style={{ flex: 1, minWidth: 0 }}>
+                                  <div style={{ fontSize: 14, fontWeight: 700, color: "#f0f0f0" }}>{fullName}</div>
+                                  <div style={{ fontSize: 11, color: "#888" }}>{profile.age ? profile.age + " ans" : ""}{profile.agency ? " — " + profile.agency : ""}</div>
                                 </div>
-                                {finalSel?.selected === true && <span style={{ fontSize: 12, color: "#22c55e", background: "rgba(34,197,94,0.1)", padding: "4px 12px", borderRadius: 8, fontWeight: 700 }}>🏆 Retenu</span>}
-                                {finalSel?.selected === false && <span style={{ fontSize: 12, color: "#ef4444", background: "rgba(239,68,68,0.08)", padding: "4px 12px", borderRadius: 8, fontWeight: 700 }}>✕ Refusé</span>}
+                                <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
+                                  {tapes.map((link, li) => {
+                                    const nm = link.includes("youtu") ? "YT" : link.includes("vimeo") ? "Vi" : link.includes("drive") ? "Dr" : link.includes("dropbox") ? "Db" : (li + 1);
+                                    return <span key={li} style={{ fontSize: 9, padding: "2px 6px", background: "rgba(96,165,250,0.08)", borderRadius: 4, color: "#60a5fa", fontWeight: 600 }}>▶{nm}</span>;
+                                  })}
+                                  {tapes.length === 0 && <span style={{ fontSize: 10, color: "#444" }}>—</span>}
+                                </div>
+                                {finalSel?.selected === true && <span style={{ fontSize: 10, color: "#22c55e", fontWeight: 700 }}>🏆</span>}
+                                {finalSel?.selected === false && <span style={{ fontSize: 10, color: "#ef4444", fontWeight: 700 }}>✕</span>}
+                                {finalSel?.selected === "maybe" && <span style={{ fontSize: 10, color: "#f59e0b", fontWeight: 700 }}>?</span>}
+                                <span style={{ fontSize: 12, color: "#444", transform: isOpen ? "rotate(180deg)" : "rotate(0)", transition: "transform 0.2s" }}>▾</span>
                               </div>
 
-                              {/* Selftapes — all embedded */}
-                              {tapes.length > 0 && (
-                                <div style={{ padding: "0 20px 16px" }}>
-                                  {tapes.map((link, li) => {
+                              {/* Expanded — selftapes + vote */}
+                              {isOpen && (
+                                <div style={{ padding: "14px 16px", background: "rgba(96,165,250,0.02)", borderBottom: "2px solid #1e1e22" }}>
+                                  {/* Selftapes — compact embeds */}
+                                  {tapes.length > 0 && tapes.map((link, li) => {
                                     const linkName = link.includes("youtu") ? "YouTube" : link.includes("vimeo") ? "Vimeo" : link.includes("drive.google") ? "Google Drive" : link.includes("dropbox") ? "Dropbox" : `Selftape ${li + 1}`;
                                     return (
                                       <div key={li} style={{ marginBottom: 10 }}>
-                                        <div style={{ fontSize: 12, color: "#60a5fa", fontWeight: 600, marginBottom: 4 }}>▶ {linkName}</div>
-                                        {getEmbedUrl(link) ? <EmbedPlayer url={link} height={220} /> : <a href={link} target="_blank" rel="noreferrer" style={{ fontSize: 12, color: "#60a5fa", textDecoration: "underline" }}>{link}</a>}
+                                        <a href={link} target="_blank" rel="noreferrer" style={{ fontSize: 11, color: "#60a5fa", textDecoration: "none", fontWeight: 600 }}>▶ {linkName}</a>
+                                        {getEmbedUrl(link) && <div style={{ marginTop: 4 }}><EmbedPlayer url={link} height={160} /></div>}
                                       </div>
                                     );
                                   })}
-                                </div>
-                              )}
+                                  {tapes.length === 0 && <div style={{ color: "#555", fontSize: 12, fontStyle: "italic", marginBottom: 8 }}>Pas de selftape</div>}
 
-                              {tapes.length === 0 && <div style={{ padding: "0 20px 16px", color: "#555", fontSize: 13, fontStyle: "italic" }}>Pas encore de selftape — ajoutez un lien dans la fiche du profil</div>}
+                                  {/* Add link + notes */}
+                                  {isDirector && (
+                                    <div style={{ display: "flex", gap: 6, marginBottom: 8 }}>
+                                      <input id={`addtape_${profile.id}`} placeholder="+ Lien selftape..." style={{ flex: 1, padding: "5px 10px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 6, color: "#e0e0e0", fontSize: 11, fontFamily: "inherit", outline: "none" }} />
+                                      <button onClick={() => { const val = document.getElementById(`addtape_${profile.id}`)?.value?.trim(); if (!val) return; setState(prev => { const np = { ...prev.profiles }; for (const r of Object.keys(np)) np[r] = (np[r] || []).map(p => p.id === profile.id ? { ...p, selftapeLinks: [...(p.selftapeLinks || []), val] } : p); return { ...prev, profiles: np }; }); document.getElementById(`addtape_${profile.id}`).value = ""; }} style={{ padding: "5px 10px", background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.15)", borderRadius: 6, color: "#60a5fa", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>+</button>
+                                    </div>
+                                  )}
+                                  {isDirector && <textarea value={(state.castingSessions[profile.id]?.liveNotes) || ""} onChange={e => updateCastingSession(profile.id, { liveNotes: e.target.value })} placeholder="Notes..." rows={1} style={{ width: "100%", padding: "6px 10px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 6, color: "#e0e0e0", fontSize: 11, fontFamily: "inherit", outline: "none", resize: "vertical", boxSizing: "border-box", marginBottom: 8 }} />}
 
-                              {/* Add selftape link inline */}
-                              {isDirector && (
-                                <div style={{ padding: "0 20px 12px" }}>
-                                  <div style={{ display: "flex", gap: 8 }}>
-                                    <input id={`addtape_${profile.id}`} placeholder="Coller un lien selftape..." style={{ flex: 1, padding: "6px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "inherit", outline: "none" }} />
-                                    <button onClick={() => {
-                                      const val = document.getElementById(`addtape_${profile.id}`)?.value?.trim();
-                                      if (!val) return;
-                                      setState(prev => {
-                                        const newProfiles = { ...prev.profiles };
-                                        for (const role of Object.keys(newProfiles)) {
-                                          newProfiles[role] = (newProfiles[role] || []).map(p => p.id === profile.id ? { ...p, selftapeLinks: [...(p.selftapeLinks || []), val] } : p);
-                                        }
-                                        return { ...prev, profiles: newProfiles };
-                                      });
-                                      document.getElementById(`addtape_${profile.id}`).value = "";
-                                    }} style={{ padding: "6px 14px", background: "rgba(96,165,250,0.1)", border: "1px solid rgba(96,165,250,0.2)", borderRadius: 8, color: "#60a5fa", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>+ Ajouter</button>
+                                  {/* Vote */}
+                                  <div style={{ display: "flex", gap: 6 }}>
+                                    {[{ val: true, label: "✓ OUI", color: "#22c55e", bg: "rgba(34,197,94,0.1)" }, { val: "maybe", label: "? P-Ê", color: "#f59e0b", bg: "rgba(245,158,11,0.1)" }, { val: false, label: "✕ NON", color: "#ef4444", bg: "rgba(239,68,68,0.1)" }].map(opt => {
+                                      const isSel = opt.val === "maybe" ? finalSel?.selected === "maybe" : finalSel?.selected === opt.val;
+                                      return <button key={String(opt.val)} onClick={() => updateFinalSelection(profile.id, { selected: isSel ? null : opt.val })} style={{ flex: 1, padding: "8px 0", borderRadius: 8, cursor: "pointer", fontFamily: "inherit", fontSize: 12, fontWeight: 700, background: isSel ? opt.bg : "rgba(255,255,255,0.02)", border: isSel ? `1px solid ${opt.color}` : "1px solid #222", color: isSel ? opt.color : "#555" }}>{opt.label}</button>;
+                                    })}
                                   </div>
                                 </div>
                               )}
-
-                              {/* Director notes */}
-                              {isDirector && (
-                                <div style={{ padding: "0 20px 12px" }}>
-                                  <textarea value={(state.castingSessions[profile.id]?.liveNotes) || ""} onChange={e => updateCastingSession(profile.id, { liveNotes: e.target.value })} placeholder="Notes de casting..." rows={2} style={{ width: "100%", padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit", outline: "none", resize: "vertical", lineHeight: 1.5, boxSizing: "border-box" }} />
-                                </div>
-                              )}
-
-                              {/* Selection buttons */}
-                              <div style={{ padding: "14px 20px", borderTop: "1px solid #1e1e22", background: finalSel?.selected === true ? "rgba(34,197,94,0.03)" : finalSel?.selected === false ? "rgba(239,68,68,0.03)" : "transparent" }}>
-                                <div style={{ display: "flex", gap: 8, marginBottom: finalSel?.selected != null ? 8 : 0 }}>
-                                  {[{ val: true, label: "✓ OUI", color: "#22c55e", bg: "rgba(34,197,94,0.1)" }, { val: "maybe", label: "? PEUT-ÊTRE", color: "#f59e0b", bg: "rgba(245,158,11,0.1)" }, { val: false, label: "✕ NON", color: "#ef4444", bg: "rgba(239,68,68,0.1)" }].map(opt => {
-                                    const isSel = opt.val === "maybe" ? finalSel?.selected === "maybe" : finalSel?.selected === opt.val;
-                                    return <button key={String(opt.val)} onClick={() => updateFinalSelection(profile.id, { selected: isSel ? null : opt.val })} style={{ flex: 1, padding: "12px 0", borderRadius: 10, cursor: "pointer", fontFamily: "inherit", fontSize: 14, fontWeight: 800, background: isSel ? opt.bg : "rgba(255,255,255,0.02)", border: isSel ? `2px solid ${opt.color}` : "2px solid #222", color: isSel ? opt.color : "#555", transition: "all 0.15s" }}>{opt.label}</button>;
-                                  })}
-                                </div>
-                                {finalSel?.selected != null && <input value={finalSel?.comment || ""} onChange={e => updateFinalSelection(profile.id, { comment: e.target.value })} placeholder="Commentaire..." style={{ width: "100%", padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#ccc", fontSize: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />}
-                              </div>
-                            </div>
+                            </React.Fragment>
                           );
                         })}
                       </div>
