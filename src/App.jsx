@@ -2234,21 +2234,29 @@ function CastingAppInner({ authUser }) {
     const extractParts = (parts) => {
       if (!parts) return;
       for (const part of parts) {
-        const mime = part.mimeType || "";
-        if (mime === "text/plain" && part.body?.data && !textBody) textBody = b64decode(part.body.data);
-        else if (mime === "text/html" && part.body?.data) htmlBody = b64decode(part.body.data);
-        else if (mime.startsWith("image/") && part.filename) {
-          attachments.push({ filename: part.filename, mimeType: mime, attachmentId: part.body?.attachmentId, size: part.body?.size || 0 });
-        } else if (mime.startsWith("application/") && part.filename) {
-          attachments.push({ filename: part.filename, mimeType: mime, attachmentId: part.body?.attachmentId, size: part.body?.size || 0 });
+        const mime = (part.mimeType || "").toLowerCase();
+        const hasData = part.body?.data;
+        const hasFilename = part.filename && part.filename.length > 0;
+        // Text/HTML body parts (no filename = inline body, not attachment)
+        if (mime === "text/plain" && hasData && !hasFilename) { if (!textBody) textBody = b64decode(part.body.data); }
+        else if (mime === "text/html" && hasData && !hasFilename) { htmlBody = b64decode(part.body.data); }
+        // Attachments (have filename)
+        else if (hasFilename && part.body) {
+          attachments.push({ filename: part.filename, mimeType: mime, attachmentId: part.body.attachmentId, size: part.body.size || 0 });
         }
+        // Recurse into sub-parts (multipart/alternative, multipart/mixed, multipart/related)
         if (part.parts) extractParts(part.parts);
       }
     };
-    if (payload.body?.data) {
-      if (payload.mimeType === "text/html") htmlBody = b64decode(payload.body.data);
-      else textBody = b64decode(payload.body.data);
+    // Root level body
+    if (payload.body?.data && payload.body.data.length > 0) {
+      const decoded = b64decode(payload.body.data);
+      if (decoded.trim()) {
+        if ((payload.mimeType || "").includes("html")) htmlBody = decoded;
+        else textBody = decoded;
+      }
     }
+    // Parts (most emails)
     if (payload.parts) extractParts(payload.parts);
     const text = htmlBody || textBody;
     const mimeType = htmlBody ? "text/html" : "text/plain";
@@ -5612,11 +5620,15 @@ function CastingAppInner({ authUser }) {
                           </div>
                         </div>
                         {/* Email body - FULL with scoped CSS */}
-                        <div style={{ padding: "24px", minHeight: 200 }}>
-                          {em.bodyHtml ? (
+                        <div style={{ padding: "24px", minHeight: 100 }}>
+                          {em.bodyHtml && em.bodyHtml.trim().length > 10 ? (
                             <div className="email-body-render" dangerouslySetInnerHTML={{ __html: em.bodyHtml }} style={{ fontSize: 14, color: "#e0e0e0", lineHeight: 1.7, wordBreak: "break-word", overflowWrap: "break-word" }} />
+                          ) : em.bodyText && em.bodyText.trim().length > 0 ? (
+                            <div style={{ fontSize: 14, color: "#e0e0e0", lineHeight: 1.7, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{decodeHtmlEntities(em.bodyText)}</div>
+                          ) : em.snippet ? (
+                            <div style={{ fontSize: 14, color: "#aaa", lineHeight: 1.7, fontStyle: "italic" }}>{decodeHtmlEntities(em.snippet)}</div>
                           ) : (
-                            <div style={{ fontSize: 14, color: "#e0e0e0", lineHeight: 1.7, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{decodeHtmlEntities(em.bodyText || em.snippet || "")}</div>
+                            <div style={{ fontSize: 14, color: "#555", fontStyle: "italic" }}>Aucun contenu texte — voir les pièces jointes ci-dessous</div>
                           )}
                         </div>
                         {/* Attachments */}
