@@ -187,6 +187,20 @@ const parseEmailForCasting = (rawText) => {
       }
     }
   }
+  // Name from signatures (end of email: "Cordialement, Prénom Nom")
+  if (!result.firstName) {
+    const sigPatterns = [
+      /(?:cordialement|cdlt|bien\s+[àa]\s+vous|amicalement|sincèrement|regards)\s*,?\s*\n+\s*([A-ZÀ-Ÿ][a-zà-ÿ]+)\s+([A-ZÀ-Ÿ][A-ZÀ-Ÿa-zà-ÿ-]+)/im,
+      /(?:cordialement|cdlt|bien\s+[àa]\s+vous)\s*,?\s*\n+\s*([A-ZÀ-Ÿ][a-zà-ÿ]+)/im,
+    ];
+    for (const pat of sigPatterns) {
+      const m = text.match(pat);
+      if (m) { result.firstName = m[1]; if (m[2]) result.name = m[2]; break; }
+    }
+  }
+  // Hair color
+  const hairMatch = text.match(/(?:cheveux|hair)\s*:?\s*(blond[es]*|brun[es]*|châtain[es]*|roux|rousse|noir[es]*|auburn|gris)/i);
+  if (hairMatch) result.hairColor = hairMatch[1];
   // Sex
   if (text.match(/\b(actrice|comédienne)\b/i)) result.sex = "Femme";
   else if (text.match(/\b(acteur|comédien)\b/i)) result.sex = "Homme";
@@ -5627,13 +5641,16 @@ function CastingAppInner({ authUser }) {
                                           const bytes = new Uint8Array(binary.length); for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
                                           const blob = new Blob([bytes], { type: att.mimeType });
                                           const url = URL.createObjectURL(blob);
-                                          if (att.mimeType?.startsWith("image/")) window.open(url, "_blank");
+                                          if (att.mimeType?.startsWith("image/")) { att._blobUrl = url; setGmailOpenEmail({ ...em }); }
                                           else { const a = document.createElement("a"); a.href = url; a.download = att.filename; a.click(); }
                                         }
                                       } catch(e) { console.error("Attachment download failed:", e); }
                                     }} style={{ padding: "4px 10px", background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.2)", borderRadius: 6, color: "#60a5fa", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
-                                      {att.mimeType?.startsWith("image/") ? "👁 Voir" : "⬇ Télécharger"}
+                                      {att._blobUrl ? "✓ Chargé" : att.mimeType?.startsWith("image/") ? "👁 Charger" : "⬇ Télécharger"}
                                     </button>
+                                  )}
+                                  {att._blobUrl && att.mimeType?.startsWith("image/") && (
+                                    <img src={att._blobUrl} alt={att.filename} style={{ width: "100%", maxHeight: 300, objectFit: "contain", borderRadius: 8, marginTop: 8 }} />
                                   )}
                                 </div>
                               ))}
@@ -5705,32 +5722,64 @@ function CastingAppInner({ authUser }) {
                                 <label style={{ display: "block", fontSize: 10, color: "#f472b6", fontWeight: 600, textTransform: "uppercase", marginBottom: 6 }}>Email original</label>
                                 <div style={{ width: "100%", padding: "14px 16px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 10, color: "#ccc", fontSize: 13, fontFamily: "'DM Sans',sans-serif", lineHeight: 1.7, maxHeight: 400, overflowY: "auto", whiteSpace: "pre-wrap", boxSizing: "border-box" }}>{decodeHtmlEntities(c.rawEmail || "")}</div>
                               </div>
-                              {/* Right: editable form */}
+                              {/* Right: editable form — full profile fields */}
                               <div>
-                                <label style={{ display: "block", fontSize: 10, color: "#f472b6", fontWeight: 600, textTransform: "uppercase", marginBottom: 6 }}>Fiche candidat</label>
-                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 10 }}>
-                                  <input value={c.firstName || ""} onChange={e => { const arr = [...(state.candidatures || [])]; arr[ci] = { ...arr[ci], firstName: e.target.value }; setState(p => ({ ...p, candidatures: arr })); }} placeholder="Prénom" style={{ padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit", outline: "none" }} />
-                                  <input value={c.name || ""} onChange={e => { const arr = [...(state.candidatures || [])]; arr[ci] = { ...arr[ci], name: e.target.value }; setState(p => ({ ...p, candidatures: arr })); }} placeholder="Nom" style={{ padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit", outline: "none" }} />
-                                </div>
-                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 10 }}>
-                                  <input value={c.age || ""} onChange={e => { const arr = [...(state.candidatures || [])]; arr[ci] = { ...arr[ci], age: e.target.value }; setState(p => ({ ...p, candidatures: arr })); }} placeholder="Âge" style={{ padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit", outline: "none" }} />
-                                  <select value={c.sex || ""} onChange={e => { const arr = [...(state.candidatures || [])]; arr[ci] = { ...arr[ci], sex: e.target.value }; setState(p => ({ ...p, candidatures: arr })); }} style={{ padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit", outline: "none" }}><option value="">Sexe —</option><option>Homme</option><option>Femme</option><option>Non-binaire</option></select>
-                                  <input value={c.measurements || ""} onChange={e => { const arr = [...(state.candidatures || [])]; arr[ci] = { ...arr[ci], measurements: e.target.value }; setState(p => ({ ...p, candidatures: arr })); }} placeholder="Mensurations" style={{ padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit", outline: "none" }} />
-                                </div>
-                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 10 }}>
-                                  <input value={c.agency || ""} onChange={e => { const arr = [...(state.candidatures || [])]; arr[ci] = { ...arr[ci], agency: e.target.value }; setState(p => ({ ...p, candidatures: arr })); }} placeholder="Agence" style={{ padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit", outline: "none" }} />
-                                  <input value={c.email || ""} onChange={e => { const arr = [...(state.candidatures || [])]; arr[ci] = { ...arr[ci], email: e.target.value }; setState(p => ({ ...p, candidatures: arr })); }} placeholder="Email" style={{ padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit", outline: "none" }} />
-                                </div>
-                                <input value={c.phone || ""} onChange={e => { const arr = [...(state.candidatures || [])]; arr[ci] = { ...arr[ci], phone: e.target.value }; setState(p => ({ ...p, candidatures: arr })); }} placeholder="Téléphone" style={{ width: "100%", padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit", outline: "none", marginBottom: 10, boxSizing: "border-box" }} />
-                                {/* Links */}
-                                {(c.links || []).length > 0 && (
-                                  <div style={{ marginBottom: 10 }}>
-                                    <label style={{ display: "block", fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 4 }}>Liens extraits</label>
-                                    {c.links.map((link, li) => (
-                                      <div key={li} style={{ marginBottom: 4 }}><a href={link} target="_blank" rel="noreferrer" style={{ fontSize: 12, color: "#60a5fa", textDecoration: "none", wordBreak: "break-all" }}>🔗 {link.length > 60 ? link.slice(0, 60) + "..." : link}</a></div>
-                                    ))}
-                                  </div>
-                                )}
+                                {(() => {
+                                  const uC = (field, val) => { const arr = [...(state.candidatures || [])]; arr[ci] = { ...arr[ci], [field]: val }; setState(p => ({ ...p, candidatures: arr })); };
+                                  const sIn = { padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit", outline: "none", width: "100%", boxSizing: "border-box" };
+                                  return (
+                                    <>
+                                      <label style={{ display: "block", fontSize: 11, color: "#f472b6", fontWeight: 700, textTransform: "uppercase", marginBottom: 8 }}>Fiche candidat</label>
+                                      {/* Photos */}
+                                      <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 10 }}>
+                                        {(c.photos || []).map((ph, phi) => (
+                                          <div key={phi} style={{ position: "relative", width: 56, height: 70, borderRadius: 6, overflow: "hidden", border: "1px solid #f472b633" }}>
+                                            <img src={ph} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                                            <button onClick={() => uC("photos", (c.photos || []).filter((_, j) => j !== phi))} style={{ position: "absolute", top: 1, right: 1, background: "rgba(0,0,0,0.7)", color: "#fff", border: "none", borderRadius: "50%", width: 14, height: 14, cursor: "pointer", fontSize: 8, display: "flex", alignItems: "center", justifyContent: "center" }}>×</button>
+                                          </div>
+                                        ))}
+                                        <button onClick={() => { const inp = document.createElement("input"); inp.type = "file"; inp.accept = "image/*"; inp.multiple = true; inp.onchange = ev => { Array.from(ev.target.files || []).forEach(async (f) => { try { const { url } = await uploadPhoto(f, "default", "cand_" + c.id, (c.photos || []).length); uC("photos", [...(c.photos || []), url]); } catch(e2) { const r = new FileReader(); r.onload = async () => { const comp = await compressImage(r.result, 600, 0.7); uC("photos", [...(c.photos || []), comp]); }; r.readAsDataURL(f); } }); }; inp.click(); }} style={{ width: 56, height: 70, borderRadius: 6, border: "1px dashed #f472b644", background: "rgba(255,255,255,0.02)", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", color: "#555", fontSize: 9, fontFamily: "inherit", gap: 2 }}>
+                                          <span style={{ fontSize: 16 }}>+</span><span>Photo</span>
+                                        </button>
+                                      </div>
+                                      {/* Identity */}
+                                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 8 }}>
+                                        <input value={c.firstName || ""} onChange={e => uC("firstName", e.target.value)} placeholder="Prénom" style={sIn} />
+                                        <input value={c.name || ""} onChange={e => uC("name", e.target.value)} placeholder="Nom" style={sIn} />
+                                      </div>
+                                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 8, marginBottom: 8 }}>
+                                        <input value={c.age || ""} onChange={e => uC("age", e.target.value)} placeholder="Âge" style={sIn} />
+                                        <select value={c.sex || ""} onChange={e => uC("sex", e.target.value)} style={sIn}><option value="">Sexe —</option><option>Homme</option><option>Femme</option><option>Non-binaire</option></select>
+                                        <input value={c.height || ""} onChange={e => uC("height", e.target.value)} placeholder="Taille" style={sIn} />
+                                        <input value={c.hairColor || ""} onChange={e => uC("hairColor", e.target.value)} placeholder="Cheveux" style={sIn} />
+                                      </div>
+                                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 8 }}>
+                                        <input value={c.measurements || ""} onChange={e => uC("measurements", e.target.value)} placeholder="Mensurations (90-60-90)" style={sIn} />
+                                        <input value={c.agency || ""} onChange={e => uC("agency", e.target.value)} placeholder="Agence" style={sIn} />
+                                      </div>
+                                      {/* Contact */}
+                                      <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 8 }}>
+                                        <input value={c.email || ""} onChange={e => uC("email", e.target.value)} placeholder="Email" style={sIn} />
+                                        <input value={c.phone || ""} onChange={e => uC("phone", e.target.value)} placeholder="Téléphone" style={sIn} />
+                                        <input value={c.agencyEmail || ""} onChange={e => uC("agencyEmail", e.target.value)} placeholder="Email agence" style={sIn} />
+                                      </div>
+                                      {/* Links — editable + add */}
+                                      <div style={{ marginBottom: 8 }}>
+                                        <label style={{ display: "block", fontSize: 9, color: "#60a5fa", fontWeight: 600, textTransform: "uppercase", marginBottom: 4 }}>Liens (selftapes, photos, vidéos)</label>
+                                        {(c.links || []).map((link, li) => (
+                                          <div key={li} style={{ display: "flex", gap: 6, marginBottom: 4, alignItems: "center" }}>
+                                            <input value={link} onChange={e => { const arr = [...(c.links || [])]; arr[li] = e.target.value; uC("links", arr); }} style={{ ...sIn, fontSize: 12 }} />
+                                            {getEmbedUrl(link) && <span style={{ fontSize: 10, color: "#22c55e", flexShrink: 0 }}>▶</span>}
+                                            <button onClick={() => uC("links", (c.links || []).filter((_, j) => j !== li))} style={{ background: "none", border: "none", color: "#444", cursor: "pointer", fontSize: 14, flexShrink: 0 }}>×</button>
+                                          </div>
+                                        ))}
+                                        <button onClick={() => uC("links", [...(c.links || []), ""])} style={{ padding: "4px 12px", background: "transparent", border: "1px dashed #333", borderRadius: 6, color: "#666", fontSize: 11, cursor: "pointer", fontFamily: "inherit" }}>+ Ajouter un lien</button>
+                                      </div>
+                                      {/* Notes */}
+                                      <textarea value={c.notes || ""} onChange={e => uC("notes", e.target.value)} placeholder="Notes, observations..." rows={2} style={{ ...sIn, resize: "vertical" }} />
+                                    </>
+                                  );
+                                })()}
                               </div>
                             </div>
                             {/* Transfer to role */}
@@ -5742,7 +5791,7 @@ function CastingAppInner({ authUser }) {
                               <button onClick={() => {
                                 if (!c.role) return alert("Sélectionnez un rôle d'abord");
                                 const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 6);
-                                const newProfile = { id, firstName: c.firstName || "", name: c.name || "", age: c.age || "", agency: c.agency || "", email: c.email || "", phone: c.phone || "", measurements: c.measurements || "", availability: "pending", photos: [], selftapeLinks: c.links || [], selftapeVideos: [], source: "Candidature" };
+                                const newProfile = { id, firstName: c.firstName || "", name: c.name || "", age: c.age || "", height: c.height || "", hairColor: c.hairColor || "", measurements: c.measurements || "", agency: c.agency || "", agencyEmail: c.agencyEmail || "", email: c.email || "", phone: c.phone || "", photos: c.photos || [], selftapeLinks: (c.links || []).filter(l => l), selftapeVideos: [], notes: c.notes || "", availability: "pending", source: "Candidature", profileType: "", actingLevel: 0 };
                                 setState(prev => ({
                                   ...prev,
                                   profiles: { ...prev.profiles, [c.role]: [...(prev.profiles[c.role] || []), newProfile] },
