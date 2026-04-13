@@ -5697,10 +5697,18 @@ function CastingAppInner({ authUser }) {
                           {!em._loaded && <div style={{ textAlign: "center", padding: "30px", color: "#888" }}>⏳ Chargement du contenu...</div>}
                           {em._loaded && em.bodyHtml && em.bodyHtml.trim().length > 10 ? (
                             <div className="email-body-render" dangerouslySetInnerHTML={{ __html: em.bodyHtml }} style={{ fontSize: 14, color: "#e0e0e0", lineHeight: 1.7, wordBreak: "break-word", overflowWrap: "break-word" }} />
-                          ) : em.bodyText && em.bodyText.trim().length > 0 ? (
-                            <div style={{ fontSize: 14, color: "#e0e0e0", lineHeight: 1.7, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{decodeHtmlEntities(em.bodyText)}</div>
+                          ) : (em._loaded && em.bodyText && em.bodyText.trim().length > 0) || (!em._loaded && em.snippet) ? (
+                            <div style={{ fontSize: 14, color: "#fff", lineHeight: 1.8, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+                              {(decodeHtmlEntities(em._loaded ? em.bodyText : em.snippet) || "").split(/(https?:\/\/[^\s<>"']+)/g).map((part, pi) =>
+                                part.match(/^https?:\/\//) ? <a key={pi} href={part} target="_blank" rel="noreferrer" style={{ color: "#60a5fa", textDecoration: "underline" }}>{part}</a> : <React.Fragment key={pi}>{part}</React.Fragment>
+                              )}
+                            </div>
                           ) : em.snippet ? (
-                            <div style={{ fontSize: 14, color: "#aaa", lineHeight: 1.7, fontStyle: "italic" }}>{decodeHtmlEntities(em.snippet)}</div>
+                            <div style={{ fontSize: 14, color: "#ccc", lineHeight: 1.8, whiteSpace: "pre-wrap" }}>
+                              {decodeHtmlEntities(em.snippet).split(/(https?:\/\/[^\s<>"']+)/g).map((part, pi) =>
+                                part.match(/^https?:\/\//) ? <a key={pi} href={part} target="_blank" rel="noreferrer" style={{ color: "#60a5fa", textDecoration: "underline" }}>{part}</a> : <React.Fragment key={pi}>{part}</React.Fragment>
+                              )}
+                            </div>
                           ) : (
                             <div style={{ fontSize: 14, color: "#555", fontStyle: "italic" }}>Aucun contenu texte — voir les pièces jointes ci-dessous</div>
                           )}
