@@ -5679,7 +5679,7 @@ function CastingAppInner({ authUser }) {
                             parsed.firstName = (parsed.firstName || "").replace(/^["']|["']$/g, "").trim();
                             parsed.name = (parsed.name || "").replace(/^["']|["']$/g, "").trim();
                             if (!parsed.email) { const eM2 = em.from?.match(/<([^>]+)>/); if (eM2) parsed.email = eM2[1]; }
-                            const newC = { id: "cand_" + Date.now(), rawEmail: `De: ${fromName} <${fromEmail}>\nObjet: ${em.subject}\nDate: ${em.date}\n\n${em.bodyText || em.snippet || ""}`, ...parsed, role: "", status: "pending", createdAt: new Date().toISOString() };
+                            const newC = { id: "cand_" + Date.now(), rawEmail: `De: ${fromName} <${fromEmail}>\nObjet: ${em.subject}\nDate: ${em.date}\n\n${em.bodyText || em.snippet || ""}`, rawHtml: em.bodyHtml || null, ...parsed, role: "", status: "pending", createdAt: new Date().toISOString(), emailAttachments: em.attachments || [], gmailMsgId: em.id };
                             setState(prev => ({ ...prev, candidatures: [...(prev.candidatures || []), newC] }));
                             setGmailProcessedIds(prev => new Set([...prev, em.id]));
                             setGmailOpenEmail(null);
@@ -5729,10 +5729,46 @@ function CastingAppInner({ authUser }) {
                         {isOpen && (
                           <div style={{ padding: "20px", borderBottom: "2px solid #1e1e22", background: "rgba(244,114,182,0.02)" }}>
                             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
-                              {/* Left: original email */}
+                              {/* Left: original email — full HTML or text */}
                               <div>
                                 <label style={{ display: "block", fontSize: 10, color: "#f472b6", fontWeight: 600, textTransform: "uppercase", marginBottom: 6 }}>Email original</label>
-                                <div style={{ width: "100%", padding: "14px 16px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 10, color: "#ccc", fontSize: 13, fontFamily: "'DM Sans',sans-serif", lineHeight: 1.7, maxHeight: 400, overflowY: "auto", whiteSpace: "pre-wrap", boxSizing: "border-box" }}>{decodeHtmlEntities(c.rawEmail || "")}</div>
+                                <div style={{ width: "100%", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 10, maxHeight: 500, overflowY: "auto", boxSizing: "border-box" }}>
+                                  {c.rawHtml ? (
+                                    <div className="email-body-render" dangerouslySetInnerHTML={{ __html: c.rawHtml }} style={{ padding: "16px 18px", fontSize: 14, color: "#e0e0e0", lineHeight: 1.7, wordBreak: "break-word" }} />
+                                  ) : (
+                                    <div style={{ padding: "16px 18px", color: "#ccc", fontSize: 13, lineHeight: 1.7, whiteSpace: "pre-wrap" }}>{decodeHtmlEntities(c.rawEmail || "")}</div>
+                                  )}
+                                </div>
+                                {/* Email attachments from Gmail */}
+                                {(c.emailAttachments || []).length > 0 && (
+                                  <div style={{ marginTop: 8 }}>
+                                    <div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 4 }}>📎 Pièces jointes ({c.emailAttachments.length})</div>
+                                    <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
+                                      {c.emailAttachments.map((att, ai) => (
+                                        <div key={ai} style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 10px", background: "#111114", borderRadius: 6, border: "1px solid #2a2a2e" }}>
+                                          <span style={{ fontSize: 12 }}>{att.mimeType?.startsWith("image/") ? "🖼" : att.mimeType?.includes("pdf") ? "📄" : "📎"}</span>
+                                          <span style={{ fontSize: 11, color: "#ccc" }}>{att.filename}</span>
+                                          {att.attachmentId && gmailToken && att.mimeType?.startsWith("image/") && (
+                                            <button onClick={async () => {
+                                              try {
+                                                const res = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${c.gmailMsgId}/attachments/${att.attachmentId}`, { headers: { Authorization: `Bearer ${gmailToken}` } });
+                                                const data = await res.json();
+                                                if (data.data) {
+                                                  const binary = atob(data.data.replace(/-/g, "+").replace(/_/g, "/"));
+                                                  const bytes = new Uint8Array(binary.length); for (let k = 0; k < binary.length; k++) bytes[k] = binary.charCodeAt(k);
+                                                  const blob = new Blob([bytes], { type: att.mimeType });
+                                                  const url = URL.createObjectURL(blob);
+                                                  // Add to candidature photos
+                                                  const arr = [...(state.candidatures || [])]; arr[ci] = { ...arr[ci], photos: [...(arr[ci].photos || []), url] }; setState(p => ({ ...p, candidatures: arr }));
+                                                }
+                                              } catch(e) { console.error(e); }
+                                            }} style={{ padding: "3px 8px", background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.2)", borderRadius: 4, color: "#60a5fa", fontSize: 9, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>📥 Ajouter photo</button>
+                                          )}
+                                        </div>
+                                      ))}
+                                    </div>
+                                  </div>
+                                )}
                               </div>
                               {/* Right: editable form — full profile fields */}
                               <div>
