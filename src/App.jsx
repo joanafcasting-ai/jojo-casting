@@ -4994,6 +4994,17 @@ function CastingAppInner({ authUser }) {
               <div>
                 {activeTab === "casting" && !guestMode && (
                   <>
+                    {/* Casting mode selector */}
+                    <div style={{ padding: "0 12px", marginBottom: 14 }}>
+                      <div style={{ fontSize: 9, letterSpacing: "0.15em", textTransform: "uppercase", color: "#555", fontWeight: 600, marginBottom: 8 }}>Mode de casting</div>
+                      <div style={{ display: "flex", gap: 2, background: "#0c0c0e", borderRadius: 8, padding: 2 }}>
+                        <button onClick={() => setCastingMode("physique")} style={{ flex: 1, padding: "8px 0", borderRadius: 6, fontSize: 11, fontWeight: 700, fontFamily: "inherit", border: "none", cursor: "pointer", background: castingMode === "physique" ? "rgba(251,146,60,0.15)" : "transparent", color: castingMode === "physique" ? "#fb923c" : "#555", transition: "all 0.2s" }}>🎬 Physique</button>
+                        <button onClick={() => setCastingMode("selftape")} style={{ flex: 1, padding: "8px 0", borderRadius: 6, fontSize: 11, fontWeight: 700, fontFamily: "inherit", border: "none", cursor: "pointer", background: castingMode === "selftape" ? "rgba(96,165,250,0.15)" : "transparent", color: castingMode === "selftape" ? "#60a5fa" : "#555", transition: "all 0.2s" }}>📹 Selftape</button>
+                      </div>
+                    </div>
+
+                    {/* Planning days nav — only in physique mode */}
+                    {castingMode === "physique" && (<>
                     {/* Planning days nav */}
                     <div style={{ padding: "0 12px", marginBottom: 12 }}>
                       <div style={{ display: "flex", gap: 2, background: "#0c0c0e", borderRadius: 8, padding: 2 }}>
@@ -5034,6 +5045,7 @@ function CastingAppInner({ authUser }) {
                       );
                     })}
                     <div style={{ height: 1, background: "#1e1e22", margin: "10px 16px" }} />
+                  </>)}
                   </>
                 )}
 
@@ -7168,12 +7180,6 @@ function CastingAppInner({ authUser }) {
 
                 return (
                   <>
-                    {/* Casting mode toggle — TOP */}
-                    <div style={{ display: "flex", gap: 6, marginBottom: 16 }}>
-                      <button style={{ padding: "10px 22px", borderRadius: 10, fontSize: 14, fontWeight: 700, fontFamily: "inherit", border: "none", cursor: "pointer", background: "rgba(251,146,60,0.15)", color: "#fb923c" }}>🎬 Casting physique</button>
-                      <button onClick={() => setCastingMode("selftape")} style={{ padding: "10px 22px", borderRadius: 10, fontSize: 14, fontWeight: 600, fontFamily: "inherit", border: "none", cursor: "pointer", background: "rgba(255,255,255,0.03)", color: "#666" }}>📹 Casting selftape</button>
-                    </div>
-
                     {/* Header */}
                     <div style={{ marginBottom: 24 }}>
                       <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f0f0f0", fontFamily: "'Playfair Display', serif", marginBottom: 4 }}>
