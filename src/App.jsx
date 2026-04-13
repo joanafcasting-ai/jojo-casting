@@ -2203,7 +2203,7 @@ function CastingAppInner({ authUser }) {
   useEffect(() => { try { localStorage.setItem("gmail_read_ids", JSON.stringify([...gmailReadIds])); } catch(e) {} }, [gmailReadIds]);
   useEffect(() => { try { localStorage.setItem("gmail_processed_ids", JSON.stringify([...gmailProcessedIds])); } catch(e) {} }, [gmailProcessedIds]);
 
-  const GMAIL_CLIENT_ID = "564140044631-42vkp5roid29t80kcj7av6744ikq3bbe.apps.googleusercontent.com";
+  const GMAIL_CLIENT_ID = "564140044631-ib495vihg2nose2ck5i92ducbrujdvfb.apps.googleusercontent.com";
 
   const gmailTokenClient = useRef(null);
 
