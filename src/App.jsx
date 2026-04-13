@@ -7168,6 +7168,12 @@ function CastingAppInner({ authUser }) {
 
                 return (
                   <>
+                    {/* Casting mode toggle — TOP */}
+                    <div style={{ display: "flex", gap: 6, marginBottom: 16 }}>
+                      <button style={{ padding: "10px 22px", borderRadius: 10, fontSize: 14, fontWeight: 700, fontFamily: "inherit", border: "none", cursor: "pointer", background: "rgba(251,146,60,0.15)", color: "#fb923c" }}>🎬 Casting physique</button>
+                      <button onClick={() => setCastingMode("selftape")} style={{ padding: "10px 22px", borderRadius: 10, fontSize: 14, fontWeight: 600, fontFamily: "inherit", border: "none", cursor: "pointer", background: "rgba(255,255,255,0.03)", color: "#666" }}>📹 Casting selftape</button>
+                    </div>
+
                     {/* Header */}
                     <div style={{ marginBottom: 24 }}>
                       <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f0f0f0", fontFamily: "'Playfair Display', serif", marginBottom: 4 }}>
@@ -7667,12 +7673,6 @@ function CastingAppInner({ authUser }) {
               </div>
             ) : (
               <>
-                {/* Casting mode toggle */}
-                <div style={{ display: "flex", gap: 6, marginBottom: 16 }}>
-                  <button style={{ padding: "8px 20px", borderRadius: 8, fontSize: 13, fontWeight: 700, fontFamily: "inherit", border: "none", cursor: "pointer", background: "rgba(251,146,60,0.12)", color: "#fb923c" }}>🎬 Casting physique</button>
-                  <button onClick={() => setCastingMode("selftape")} style={{ padding: "8px 20px", borderRadius: 8, fontSize: 13, fontWeight: 600, fontFamily: "inherit", border: "none", cursor: "pointer", background: "rgba(255,255,255,0.03)", color: "#666" }}>📹 Casting selftape</button>
-                </div>
-
                 {/* Selection summary bar (director & realisateur) */}
                 {(viewMode === "director" || viewMode === "realisateur") && (() => {
                   const total = currentProfiles.length;
