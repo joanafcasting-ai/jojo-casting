@@ -8898,7 +8898,7 @@ function GuestView({ shareCode, project, password }) {
           transition: "all 0.3s", position: "relative", cursor: "pointer",
         }}>
           {/* Photo */}
-          <div onClick={() => { setSelectedProfile(profile); setSelectedPhotoIdx(0); }} style={{ width: "100%", aspectRatio: "3/4", background: "#0c0c0e", position: "relative", overflow: "hidden" }}>
+          <div onClick={() => { setSelectedProfile(profile); setSelectedPhotoIdx(0); }} style={{ width: "100%", aspectRatio: "4/5", background: "#0c0c0e", position: "relative", overflow: "hidden" }}>
             {profile.photos?.[0] ? (
               <img src={profile.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             ) : (
@@ -8934,19 +8934,20 @@ function GuestView({ shareCode, project, password }) {
             {profile.hairColor && <span>· {profile.hairColor}</span>}
           </div>
 
-          {/* Selftapes */}
+          {/* Selftapes — stacked with names */}
           {(profile.selftapeLinks?.filter(l => l).length > 0 || profile.selftapeVideos?.length > 0) && (
-            <div style={{ padding: "0 14px 8px" }}>
-              <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 4 }}>
-                {profile.selftapeLinks?.filter(l => l).map((link, i) => (
-                  <a key={i} href={link} target="_blank" rel="noreferrer" style={{ fontSize: 10, color: "#60a5fa", textDecoration: "none", padding: "3px 8px", background: "rgba(96,165,250,0.06)", borderRadius: 4 }}>▶ Tape {i + 1}</a>
-                ))}
-                {profile.selftapeVideos?.map((video, i) => (
-                  <button key={i} onClick={() => setPlayingVideo(video)} style={{ fontSize: 10, color: "#60a5fa", background: "rgba(96,165,250,0.06)", padding: "3px 8px", borderRadius: 4, border: "none", cursor: "pointer", fontFamily: "inherit" }}>▶ Video {i + 1}</button>
-                ))}
-              </div>
-              {profile.selftapeLinks?.filter(l => l && getEmbedUrl(l)).slice(0, 1).map((link, i) => (
-                <div key={i}><EmbedPlayer url={link} height={160} /></div>
+            <div style={{ padding: "0 14px 10px" }}>
+              {profile.selftapeLinks?.filter(l => l).map((link, i) => {
+                const linkName = link.includes("youtu") ? "YouTube" : link.includes("vimeo") ? "Vimeo" : link.includes("drive.google") ? "Google Drive" : link.includes("dropbox") ? "Dropbox" : `Selftape ${i + 1}`;
+                return (
+                  <div key={i} style={{ marginBottom: 6 }}>
+                    <a href={link} target="_blank" rel="noreferrer" style={{ fontSize: 11, color: "#60a5fa", textDecoration: "none", display: "block", marginBottom: 4 }}>▶ {linkName}</a>
+                    {getEmbedUrl(link) && <EmbedPlayer url={link} height={140} />}
+                  </div>
+                );
+              })}
+              {profile.selftapeVideos?.map((video, i) => (
+                <button key={i} onClick={() => setPlayingVideo(video)} style={{ display: "block", width: "100%", fontSize: 11, color: "#60a5fa", background: "rgba(96,165,250,0.06)", padding: "6px 10px", borderRadius: 6, border: "none", cursor: "pointer", fontFamily: "inherit", textAlign: "left", marginBottom: 4 }}>▶ Vidéo {i + 1} {video.name ? `— ${video.name}` : ""}</button>
               ))}
             </div>
           )}
@@ -9094,19 +9095,20 @@ function GuestView({ shareCode, project, password }) {
               {profile.city && <span>📍 {profile.city}</span>}
             </div>
 
-            {/* Selftapes */}
+            {/* Selftapes — stacked with names */}
             {(profile.selftapeLinks?.filter(l => l).length > 0 || profile.selftapeVideos?.length > 0) && (
               <div style={{ marginBottom: 10 }}>
-                <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 4 }}>
-                  {profile.selftapeLinks?.filter(l => l).map((link, i) => (
-                    <a key={i} href={link} target="_blank" rel="noreferrer" style={{ fontSize: 10, color: "#60a5fa", textDecoration: "none", padding: "4px 10px", background: "rgba(96,165,250,0.06)", borderRadius: 6 }}>▶ Tape {i + 1}</a>
-                  ))}
-                  {profile.selftapeVideos?.map((video, i) => (
-                    <button key={i} onClick={() => setPlayingVideo(video)} style={{ fontSize: 10, color: "#60a5fa", background: "rgba(96,165,250,0.06)", padding: "4px 10px", borderRadius: 6, border: "none", cursor: "pointer", fontFamily: "inherit" }}>▶ Video {i + 1}</button>
-                  ))}
-                </div>
-                {profile.selftapeLinks?.filter(l => l && getEmbedUrl(l)).slice(0, 1).map((link, i) => (
-                  <div key={i}><EmbedPlayer url={link} height={180} /></div>
+                {profile.selftapeLinks?.filter(l => l).map((link, i) => {
+                  const linkName = link.includes("youtu") ? "YouTube" : link.includes("vimeo") ? "Vimeo" : link.includes("drive.google") ? "Google Drive" : link.includes("dropbox") ? "Dropbox" : `Selftape ${i + 1}`;
+                  return (
+                    <div key={i} style={{ marginBottom: 8 }}>
+                      <a href={link} target="_blank" rel="noreferrer" style={{ fontSize: 12, color: "#60a5fa", textDecoration: "none", display: "block", marginBottom: 4 }}>▶ {linkName}</a>
+                      {getEmbedUrl(link) && <EmbedPlayer url={link} height={180} />}
+                    </div>
+                  );
+                })}
+                {profile.selftapeVideos?.map((video, i) => (
+                  <button key={i} onClick={() => setPlayingVideo(video)} style={{ display: "block", width: "100%", fontSize: 12, color: "#60a5fa", background: "rgba(96,165,250,0.06)", padding: "8px 12px", borderRadius: 6, border: "none", cursor: "pointer", fontFamily: "inherit", textAlign: "left", marginBottom: 4 }}>▶ Vidéo {i + 1} {video.name ? `— ${video.name}` : ""}</button>
                 ))}
               </div>
             )}
@@ -9287,7 +9289,7 @@ function GuestView({ shareCode, project, password }) {
                     </div>
                   </div>
                   {guestViewMode === "grid" ? (
-                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))", gap: 14 }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 12 }}>
                       {roleProfiles.map(p => renderProfileCard(p, false))}
                     </div>
                   ) : (
