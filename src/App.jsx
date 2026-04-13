@@ -7628,9 +7628,7 @@ function CastingAppInner({ authUser }) {
                                   R/P {state._guestVotes[profile.id].choice === "yes" ? "OUI" : state._guestVotes[profile.id].choice === "no" ? "NON" : "P-Ê"}
                                 </span>
                               )}
-                              {state._guestComments?.[profile.id]?.length > 0 && (
-                                <span onClick={e => { e.stopPropagation(); const allComments = state._guestComments[profile.id].map(c => `${c.text} (${new Date(c.at).toLocaleString("fr-FR", { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" })})`).join("\n\n"); alert("💬 Commentaires du réal :\n\n" + allComments); }} style={{ fontSize: 13, color: "#60a5fa", fontStyle: "italic", maxWidth: 250, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", cursor: "pointer", textDecoration: "underline dotted", textUnderlineOffset: 3 }} title="Cliquer pour lire tous les commentaires">💬 {state._guestComments[profile.id].slice(-1)[0].text}</span>
-                              )}
+                              {/* Guest comments hidden from role view */}
                             </div>
                           )}
 
