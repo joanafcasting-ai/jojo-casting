@@ -9577,46 +9577,66 @@ function GuestView({ shareCode, project, password }) {
                 const hasSelftapes = castingProfiles.some(p => (p.selftapeLinks || []).filter(l => l).length > 0);
                 return (
                 <div style={{ animation: "fadeIn 0.3s" }}>
-                  {/* Selftape casting view for real */}
+                  {/* Selftape casting view for real — compact list */}
                   {hasSelftapes && (
                     <div style={{ marginBottom: 20 }}>
-                      <div style={{ fontSize: 14, color: "#60a5fa", fontWeight: 700, textTransform: "uppercase", marginBottom: 12 }}>📹 Selftapes</div>
-                      {castingProfiles.filter(p => (p.selftapeLinks || []).filter(l => l).length > 0).map(profile => {
-                        const fullName = [profile.firstName, profile.name].filter(Boolean).join(" ") || "Sans nom";
-                        const tapes = (profile.selftapeLinks || []).filter(l => l);
-                        const cv = castingVotes[profile.id];
-                        return (
-                          <div key={profile.id + "_st"} style={{ background: "#111114", borderRadius: 14, border: "1px solid #1e1e22", marginBottom: 12, overflow: "hidden" }}>
-                            <div style={{ display: "flex", gap: 12, padding: "14px 18px", alignItems: "center" }}>
-                              <div style={{ width: 48, height: 60, borderRadius: 8, overflow: "hidden", background: "#0c0c0e", flexShrink: 0 }}>
-                                {profile.photos?.[0] ? <img src={profile.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 18 }}>◎</div>}
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
+                        <div style={{ fontSize: 14, color: "#60a5fa", fontWeight: 700, textTransform: "uppercase" }}>📹 Casting Selftape</div>
+                        <div style={{ display: "flex", gap: 8 }}>
+                          {[{ label: "Total", count: castingProfiles.filter(p => (p.selftapeLinks || []).some(l => l)).length, color: "#888" },
+                            { label: "OUI", count: castingProfiles.filter(p => (p.selftapeLinks || []).some(l => l) && castingVotes[p.id]?.choice === "yes").length, color: "#22c55e" },
+                            { label: "NON", count: castingProfiles.filter(p => (p.selftapeLinks || []).some(l => l) && castingVotes[p.id]?.choice === "no").length, color: "#ef4444" },
+                          ].map(s => <span key={s.label} style={{ fontSize: 11, color: s.color, fontWeight: 600 }}>{s.count} {s.label}</span>)}
+                        </div>
+                      </div>
+                      <div style={{ background: "#111114", borderRadius: 12, border: "1px solid #1e1e22", overflow: "hidden" }}>
+                        {castingProfiles.filter(p => (p.selftapeLinks || []).filter(l => l).length > 0).map(profile => {
+                          const fullName = [profile.firstName, profile.name].filter(Boolean).join(" ") || "Sans nom";
+                          const tapes = (profile.selftapeLinks || []).filter(l => l);
+                          const cv = castingVotes[profile.id];
+                          const isOpen = expandedProfile === profile.id + "_st";
+                          return (
+                            <React.Fragment key={profile.id + "_st"}>
+                              {/* Compact row */}
+                              <div onClick={() => setExpandedProfile(isOpen ? null : profile.id + "_st")} style={{ display: "flex", alignItems: "center", padding: "10px 16px", gap: 12, borderBottom: "1px solid #1a1a1e", cursor: "pointer", transition: "background 0.1s" }}
+                                onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.02)"}
+                                onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                                <div style={{ width: 40, height: 50, borderRadius: 6, overflow: "hidden", background: "#0c0c0e", flexShrink: 0 }}>
+                                  {profile.photos?.[0] ? <img src={profile.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 14 }}>◎</div>}
+                                </div>
+                                <div style={{ flex: 1, minWidth: 0 }}>
+                                  <div style={{ fontSize: 14, fontWeight: 700, color: "#f0f0f0" }}>{fullName}</div>
+                                  <div style={{ fontSize: 11, color: "#888" }}>{profile.age ? profile.age + " ans" : ""}{profile.agency ? " — " + profile.agency : ""}</div>
+                                </div>
+                                <span style={{ fontSize: 11, color: "#60a5fa", fontWeight: 600 }}>{tapes.length} tape{tapes.length > 1 ? "s" : ""}</span>
+                                {cv?.choice === "yes" && <span style={{ fontSize: 11, color: "#22c55e", fontWeight: 700, padding: "2px 8px", background: "rgba(34,197,94,0.1)", borderRadius: 4 }}>✓ OUI</span>}
+                                {cv?.choice === "no" && <span style={{ fontSize: 11, color: "#ef4444", fontWeight: 700, padding: "2px 8px", background: "rgba(239,68,68,0.08)", borderRadius: 4 }}>✕ NON</span>}
+                                <span style={{ fontSize: 12, color: "#444", transform: isOpen ? "rotate(180deg)" : "rotate(0)", transition: "transform 0.2s" }}>▾</span>
                               </div>
-                              <div style={{ flex: 1 }}>
-                                <div style={{ fontSize: 16, fontWeight: 700, color: "#f0f0f0" }}>{fullName}</div>
-                                <div style={{ fontSize: 12, color: "#888" }}>{profile.age ? profile.age + " ans" : ""}{profile.agency ? " — " + profile.agency : ""}</div>
-                              </div>
-                              {cv?.choice === "yes" && <span style={{ color: "#22c55e", fontWeight: 700, fontSize: 12 }}>✓ OUI</span>}
-                              {cv?.choice === "no" && <span style={{ color: "#ef4444", fontWeight: 700, fontSize: 12 }}>✕ NON</span>}
-                            </div>
-                            <div style={{ padding: "0 18px 12px" }}>
-                              {tapes.map((link, li) => {
-                                const linkName = link.includes("youtu") ? "YouTube" : link.includes("vimeo") ? "Vimeo" : link.includes("drive.google") ? "Google Drive" : link.includes("dropbox") ? "Dropbox" : `Selftape ${li + 1}`;
-                                return (
-                                  <div key={li} style={{ marginBottom: 8 }}>
-                                    <div style={{ fontSize: 11, color: "#60a5fa", fontWeight: 600, marginBottom: 4 }}>▶ {linkName}</div>
-                                    {getEmbedUrl(link) ? <EmbedPlayer url={link} height={200} /> : <a href={link} target="_blank" rel="noreferrer" style={{ fontSize: 12, color: "#60a5fa" }}>{link}</a>}
+                              {/* Expanded */}
+                              {isOpen && (
+                                <div style={{ padding: "12px 16px", background: "rgba(96,165,250,0.02)", borderBottom: "2px solid #1e1e22" }}>
+                                  {tapes.map((link, li) => {
+                                    const linkName = link.includes("youtu") ? "YouTube" : link.includes("vimeo") ? "Vimeo" : link.includes("drive.google") ? "Google Drive" : link.includes("dropbox") ? "Dropbox" : `Selftape ${li + 1}`;
+                                    return (
+                                      <div key={li} style={{ marginBottom: 8 }}>
+                                        <a href={link} target="_blank" rel="noreferrer" style={{ fontSize: 11, color: "#60a5fa", textDecoration: "none", fontWeight: 600 }}>▶ {linkName}</a>
+                                        {getEmbedUrl(link) && <div style={{ marginTop: 4 }}><EmbedPlayer url={link} height={160} /></div>}
+                                      </div>
+                                    );
+                                  })}
+                                  {/* Vote OUI / PEUT-ETRE / NON */}
+                                  <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
+                                    {[{ choice: "yes", label: "✓ OUI", color: "#22c55e" }, { choice: "maybe", label: "? PEUT-ÊTRE", color: "#f59e0b" }, { choice: "no", label: "✕ NON", color: "#ef4444" }].map(opt => (
+                                      <button key={opt.choice} onClick={() => castingVote(profile.id, opt.choice)} style={{ flex: 1, padding: "10px 0", borderRadius: 8, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 700, background: cv?.choice === opt.choice ? `${opt.color}18` : "rgba(255,255,255,0.02)", color: cv?.choice === opt.choice ? opt.color : "#444", fontFamily: "inherit" }}>{opt.label}</button>
+                                    ))}
                                   </div>
-                                );
-                              })}
-                            </div>
-                            <div style={{ display: "flex", borderTop: "1px solid #1e1e22" }}>
-                              {[{ choice: "yes", label: "✓ OUI", color: "#22c55e" }, { choice: "no", label: "✕ NON", color: "#ef4444" }].map(opt => (
-                                <button key={opt.choice} onClick={() => castingVote(profile.id, opt.choice)} style={{ flex: 1, padding: "12px 0", border: "none", cursor: "pointer", fontSize: 14, fontWeight: 800, background: cv?.choice === opt.choice ? `${opt.color}18` : "transparent", color: cv?.choice === opt.choice ? opt.color : "#444", borderRight: opt.choice === "yes" ? "1px solid #1e1e22" : "none", fontFamily: "inherit" }}>{opt.label}</button>
-                              ))}
-                            </div>
-                          </div>
-                        );
-                      })}
+                                </div>
+                              )}
+                            </React.Fragment>
+                          );
+                        })}
+                      </div>
                       <div style={{ height: 1, background: "#2a2a2e", margin: "20px 0" }} />
                     </div>
                   )}
