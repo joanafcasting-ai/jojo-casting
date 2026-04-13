@@ -5764,9 +5764,15 @@ function CastingAppInner({ authUser }) {
                                                   const binary = atob(data.data.replace(/-/g, "+").replace(/_/g, "/"));
                                                   const bytes = new Uint8Array(binary.length); for (let k = 0; k < binary.length; k++) bytes[k] = binary.charCodeAt(k);
                                                   const blob = new Blob([bytes], { type: att.mimeType });
-                                                  const url = URL.createObjectURL(blob);
-                                                  // Add to candidature photos
-                                                  const arr = [...(state.candidatures || [])]; arr[ci] = { ...arr[ci], photos: [...(arr[ci].photos || []), url] }; setState(p => ({ ...p, candidatures: arr }));
+                                                  const file = new File([blob], att.filename || "photo.jpg", { type: att.mimeType });
+                                                  // Upload to Supabase Storage for permanent URL
+                                                  try {
+                                                    const { url } = await uploadPhoto(file, "default", "cand_" + c.id, (c.photos || []).length);
+                                                    const arr = [...(state.candidatures || [])]; arr[ci] = { ...arr[ci], photos: [...(arr[ci].photos || []), url] }; setState(p => ({ ...p, candidatures: arr }));
+                                                  } catch(uploadErr) {
+                                                    // Fallback: base64
+                                                    const reader = new FileReader(); reader.onload = async () => { const comp = await compressImage(reader.result, 600, 0.7); const arr = [...(state.candidatures || [])]; arr[ci] = { ...arr[ci], photos: [...(arr[ci].photos || []), comp] }; setState(p => ({ ...p, candidatures: arr })); }; reader.readAsDataURL(file);
+                                                  }
                                                 }
                                               } catch(e) { console.error(e); }
                                             }} style={{ padding: "3px 8px", background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.2)", borderRadius: 4, color: "#60a5fa", fontSize: 9, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>📥 Ajouter photo</button>
