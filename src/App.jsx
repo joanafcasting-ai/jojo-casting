@@ -2269,8 +2269,8 @@ function CastingAppInner({ authUser }) {
   const fetchGmailEmails = async (token, query, pageToken, append) => {
     setGmailLoading(true);
     try {
-      const q = query || gmailSearchQuery || "in:inbox";
-      let url = `https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=20&q=${encodeURIComponent(q)}`;
+      const q = query || gmailSearchQuery || "";
+      let url = `https://gmail.googleapis.com/gmail/v1/users/me/messages?maxResults=50&q=${encodeURIComponent(q)}`;
       if (pageToken) url += `&pageToken=${pageToken}`;
       const listRes = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
       const listData = await listRes.json();
@@ -5554,7 +5554,12 @@ function CastingAppInner({ authUser }) {
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
                   <div>
                     <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f0f0f0", fontFamily: "'Playfair Display', serif", marginBottom: 4 }}>📩 Candidatures</h2>
-                    <div style={{ fontSize: 13, color: "#888" }}>{(state.candidatures || []).length} candidature{(state.candidatures || []).length !== 1 ? "s" : ""}</div>
+                    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                      <span style={{ fontSize: 13, color: "#888" }}>{(state.candidatures || []).length} candidature{(state.candidatures || []).length !== 1 ? "s" : ""}</span>
+                      {(state.candidatures || []).length > 0 && (
+                        <button onClick={() => { if (window.confirm("Supprimer TOUTES les " + (state.candidatures || []).length + " candidatures ?")) setState(p => ({ ...p, candidatures: [] })); }} style={{ padding: "3px 10px", background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.15)", borderRadius: 6, color: "#ef4444", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>🗑 Tout supprimer</button>
+                      )}
+                    </div>
                   </div>
                   <div style={{ display: "flex", gap: 10 }}>
                     <button onClick={() => setCandidatureModal(true)} style={{ padding: "10px 20px", background: "rgba(255,255,255,0.03)", border: "1px solid #2a2a2e", borderRadius: 10, color: "#888", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>📋 Coller un email</button>
@@ -5574,7 +5579,7 @@ function CastingAppInner({ authUser }) {
                     <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 10 }}>
                       <div style={{ fontSize: 13, color: "#EA4335", fontWeight: 700, textTransform: "uppercase" }}>📧 Boîte de réception ({gmailEmails.length})</div>
                       <div style={{ flex: 1 }} />
-                      <form onSubmit={e => { e.preventDefault(); fetchGmailEmails(gmailToken, gmailSearchQuery || "in:inbox"); }} style={{ display: "flex", gap: 6 }}>
+                      <form onSubmit={e => { e.preventDefault(); fetchGmailEmails(gmailToken, gmailSearchQuery || ""); }} style={{ display: "flex", gap: 6 }}>
                         <input value={gmailSearchQuery} onChange={e => setGmailSearchQuery(e.target.value)} placeholder="Rechercher (ex: casting, nom...)" style={{ padding: "6px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "inherit", outline: "none", width: 220 }} />
                         <button type="submit" style={{ padding: "6px 14px", background: "rgba(234,67,53,0.08)", border: "1px solid rgba(234,67,53,0.2)", borderRadius: 8, color: "#EA4335", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>🔍</button>
                       </form>
