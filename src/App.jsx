@@ -5726,6 +5726,7 @@ function CastingAppInner({ authUser }) {
                                     <div style={{ fontSize: 10, color: "#555" }}>{att.size ? Math.round(att.size / 1024) + " Ko" : ""}</div>
                                   </div>
                                   {att.attachmentId && gmailToken && (
+                                    <>
                                     <button onClick={async () => {
                                       try {
                                         const res = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${em.id}/attachments/${att.attachmentId}`, { headers: { Authorization: `Bearer ${gmailToken}` } });
@@ -5734,14 +5735,39 @@ function CastingAppInner({ authUser }) {
                                           const binary = atob(data.data.replace(/-/g, "+").replace(/_/g, "/"));
                                           const bytes = new Uint8Array(binary.length); for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
                                           const blob = new Blob([bytes], { type: att.mimeType });
-                                          const url = URL.createObjectURL(blob);
-                                          if (att.mimeType?.startsWith("image/")) { att._blobUrl = url; setGmailOpenEmail({ ...em }); }
-                                          else { const a = document.createElement("a"); a.href = url; a.download = att.filename; a.click(); }
+                                          if (att.mimeType?.startsWith("image/")) { att._blobUrl = URL.createObjectURL(blob); setGmailOpenEmail({ ...em }); }
+                                          else { const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = att.filename; a.click(); }
                                         }
                                       } catch(e) { console.error("Attachment download failed:", e); }
                                     }} style={{ padding: "4px 10px", background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.2)", borderRadius: 6, color: "#60a5fa", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
                                       {att._blobUrl ? "✓ Chargé" : att.mimeType?.startsWith("image/") ? "👁 Charger" : "⬇ Télécharger"}
                                     </button>
+                                    {/* Upload video/file to Supabase → get permanent URL */}
+                                    {(att.mimeType?.startsWith("video/") || att.mimeType?.startsWith("audio/")) && !att._uploadedUrl && (
+                                      <button onClick={async () => {
+                                        try {
+                                          att._uploading = true; setGmailOpenEmail({ ...em });
+                                          const res = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${em.id}/attachments/${att.attachmentId}`, { headers: { Authorization: `Bearer ${gmailToken}` } });
+                                          const data = await res.json();
+                                          if (data.data) {
+                                            const binary = atob(data.data.replace(/-/g, "+").replace(/_/g, "/"));
+                                            const bytes = new Uint8Array(binary.length); for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+                                            const file = new File([bytes], att.filename || "video.mp4", { type: att.mimeType });
+                                            const result = await uploadVideo(file, "default", "email_" + em.id);
+                                            att._uploadedUrl = result.url; att._uploading = false; setGmailOpenEmail({ ...em });
+                                          }
+                                        } catch(e) { console.error(e); att._uploading = false; setGmailOpenEmail({ ...em }); }
+                                      }} style={{ padding: "4px 10px", background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.2)", borderRadius: 6, color: "#22c55e", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+                                        {att._uploading ? "⏳ Upload..." : "📤 Sauvegarder → URL"}
+                                      </button>
+                                    )}
+                                    {att._uploadedUrl && (
+                                      <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
+                                        <input value={att._uploadedUrl} readOnly style={{ padding: "3px 6px", background: "#0c0c0e", border: "1px solid #22c55e44", borderRadius: 4, color: "#22c55e", fontSize: 9, fontFamily: "inherit", outline: "none", width: 140 }} onClick={e => { e.target.select(); navigator.clipboard?.writeText(att._uploadedUrl); }} />
+                                        <span style={{ fontSize: 9, color: "#22c55e" }}>✓</span>
+                                      </div>
+                                    )}
+                                    </>
                                   )}
                                   {att._blobUrl && att.mimeType?.startsWith("image/") && (
                                     <img src={att._blobUrl} alt={att.filename} style={{ width: "100%", maxHeight: 300, objectFit: "contain", borderRadius: 8, marginTop: 8 }} />
