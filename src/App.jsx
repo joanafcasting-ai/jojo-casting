@@ -2309,7 +2309,8 @@ function CastingAppInner({ authUser }) {
   // STEP 2: Full fetch — when user OPENS an email
   const fetchGmailFullEmail = async (emailMeta) => {
     if (emailMeta._loaded) { setGmailOpenEmail(emailMeta); return; }
-    setGmailLoading(true);
+    // Show email immediately with loading state, then fetch body
+    setGmailOpenEmail({ ...emailMeta, _loaded: false });
     try {
       const msgRes = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${emailMeta.id}?format=full`, { headers: { Authorization: `Bearer ${gmailToken}` } });
       const msgData = await msgRes.json();
@@ -5631,29 +5632,28 @@ function CastingAppInner({ authUser }) {
                       {gmailLoading && !gmailEmails.length && <div style={{ padding: "30px", textAlign: "center", color: "#888", fontSize: 14 }}>⏳ Chargement...</div>}
                       {!gmailLoading && gmailEmails.length === 0 && <div style={{ padding: "30px", textAlign: "center", color: "#555" }}>Aucun email</div>}
                       {gmailEmails.map(em => {
-                        const fromName = em.from?.match(/^"?([^"<]+)"?\s*</) ? em.from.match(/^"?([^"<]+)"?\s*</)[1].replace(/^["']|["']$/g, "").trim() : em.from?.split("@")[0] || "—";
+                        const fromName = em.from ? (em.from.match(/^"?([^"<]+)"?\s*</) || [])[1]?.replace(/^["']|["']$/g, "").trim() || em.from.replace(/<.*>/, "").trim() || em.from.split("@")[0] : "—";
                         const isRead = gmailReadIds.has(em.id) || !em.unread;
                         const isProcessed = gmailProcessedIds.has(em.id);
+                        let dateStr = "";
+                        try { const d = new Date(em.date); if (!isNaN(d)) dateStr = d.toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }); } catch(e) {}
                         return (
                           <div key={em.id} onClick={() => { fetchGmailFullEmail(em); setGmailReadIds(prev => new Set([...prev, em.id])); }}
-                            style={{ display: "flex", alignItems: "center", padding: "14px 18px", borderBottom: "1px solid #1a1a1e", cursor: "pointer", gap: 12, background: isProcessed ? "rgba(34,197,94,0.02)" : "transparent" }}
-                            onMouseEnter={e => e.currentTarget.style.background = isProcessed ? "rgba(34,197,94,0.04)" : "rgba(255,255,255,0.02)"}
+                            style={{ display: "grid", gridTemplateColumns: "20px 8px 1fr auto", alignItems: "center", padding: "0 18px", height: 56, borderBottom: "1px solid #1a1a1e", cursor: "pointer", gap: 10, transition: "background 0.1s", background: isProcessed ? "rgba(34,197,94,0.02)" : "transparent" }}
+                            onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.025)"}
                             onMouseLeave={e => e.currentTarget.style.background = isProcessed ? "rgba(34,197,94,0.02)" : "transparent"}>
-                            {/* Processed check */}
-                            <div style={{ width: 20, flexShrink: 0, textAlign: "center" }}>
-                              {isProcessed ? <span style={{ color: "#22c55e", fontSize: 14 }}>✓</span> : <span style={{ color: "#333", fontSize: 10 }}>○</span>}
-                            </div>
+                            {/* Status */}
+                            <div style={{ textAlign: "center" }}>{isProcessed ? <span style={{ color: "#22c55e", fontSize: 13 }}>✓</span> : <span style={{ color: "#333", fontSize: 8 }}>●</span>}</div>
                             {/* Unread dot */}
-                            <div style={{ width: 8, height: 8, borderRadius: "50%", background: !isRead ? "#EA4335" : "transparent", flexShrink: 0 }} />
-                            {/* Content */}
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-                                <span style={{ fontSize: 14, fontWeight: isRead ? 400 : 700, color: isRead ? "#aaa" : "#f0f0f0" }}>{fromName}</span>
-                                <span style={{ fontSize: 10, color: "#666", flexShrink: 0 }}>{em.date ? new Date(em.date).toLocaleDateString("fr-FR", { day: "numeric", month: "short" }) : ""}</span>
-                              </div>
-                              <div style={{ fontSize: 13, fontWeight: isRead ? 400 : 600, color: isRead ? "#888" : "#ccc", marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{decodeHtmlEntities(em.subject) || "(Sans objet)"}</div>
-                              <div style={{ fontSize: 12, color: "#555", marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{decodeHtmlEntities(em.snippet || "")}</div>
+                            <div style={{ width: 8, height: 8, borderRadius: "50%", background: !isRead ? "#EA4335" : "transparent" }} />
+                            {/* Content — Gmail-like: from | subject - snippet */}
+                            <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
+                              <span style={{ fontSize: 13, fontWeight: isRead ? 400 : 700, color: isRead ? "#aaa" : "#f0f0f0", minWidth: 140, maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flexShrink: 0 }}>{fromName}</span>
+                              <span style={{ fontSize: 13, fontWeight: isRead ? 400 : 600, color: isRead ? "#777" : "#ccc", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>{decodeHtmlEntities(em.subject) || "(Sans objet)"}</span>
+                              <span style={{ fontSize: 12, color: "#444", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1, maxWidth: 300 }}>— {em.snippet?.slice(0, 80)}</span>
                             </div>
+                            {/* Date */}
+                            <span style={{ fontSize: 11, color: "#666", whiteSpace: "nowrap", flexShrink: 0 }}>{dateStr}</span>
                           </div>
                         );
                       })}
@@ -5689,12 +5689,13 @@ function CastingAppInner({ authUser }) {
                               <div style={{ fontSize: 15, fontWeight: 700, color: "#f0f0f0" }}>{fromName}</div>
                               <div style={{ fontSize: 12, color: "#888" }}>{fromEmail}</div>
                             </div>
-                            <div style={{ marginLeft: "auto", fontSize: 12, color: "#666" }}>{em.date ? new Date(em.date).toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }) : ""}</div>
+                            <div style={{ marginLeft: "auto", fontSize: 12, color: "#666" }}>{em.date ? (() => { try { return new Date(em.date).toLocaleString("fr-FR", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }); } catch(e) { return em.date; } })() : ""}</div>
                           </div>
                         </div>
                         {/* Email body - FULL with scoped CSS */}
                         <div style={{ padding: "24px", minHeight: 100 }}>
-                          {em.bodyHtml && em.bodyHtml.trim().length > 10 ? (
+                          {!em._loaded && <div style={{ textAlign: "center", padding: "30px", color: "#888" }}>⏳ Chargement du contenu...</div>}
+                          {em._loaded && em.bodyHtml && em.bodyHtml.trim().length > 10 ? (
                             <div className="email-body-render" dangerouslySetInnerHTML={{ __html: em.bodyHtml }} style={{ fontSize: 14, color: "#e0e0e0", lineHeight: 1.7, wordBreak: "break-word", overflowWrap: "break-word" }} />
                           ) : em.bodyText && em.bodyText.trim().length > 0 ? (
                             <div style={{ fontSize: 14, color: "#e0e0e0", lineHeight: 1.7, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>{decodeHtmlEntities(em.bodyText)}</div>
