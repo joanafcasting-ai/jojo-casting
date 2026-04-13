@@ -5528,7 +5528,7 @@ function CastingAppInner({ authUser }) {
                   <div style={{ display: "flex", gap: 10 }}>
                     <button onClick={() => setCandidatureModal(true)} style={{ padding: "10px 20px", background: "rgba(255,255,255,0.03)", border: "1px solid #2a2a2e", borderRadius: 10, color: "#888", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>📋 Coller un email</button>
                     {!gmailToken ? (
-                      <button onClick={connectGmail} style={{ padding: "10px 20px", background: "linear-gradient(135deg, #EA4335, #c5221f)", border: "none", borderRadius: 10, color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>📧 Connecter Gmail</button>
+                      <button onClick={() => connectGmail("consent")} style={{ padding: "10px 20px", background: "linear-gradient(135deg, #EA4335, #c5221f)", border: "none", borderRadius: 10, color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>📧 Connecter Gmail</button>
                     ) : (
                       <button onClick={() => fetchGmailEmails(gmailToken)} style={{ padding: "10px 20px", background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.25)", borderRadius: 10, color: "#22c55e", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>🔄 Actualiser</button>
                     )}
