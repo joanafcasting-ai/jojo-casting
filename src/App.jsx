@@ -2245,6 +2245,7 @@ function CastingAppInner({ authUser }) {
   const [candidatureModal, setCandidatureModal] = useState(false);
   const [expandedCandidature, setExpandedCandidature] = useState(null);
   const [selectedCandidatures, setSelectedCandidatures] = useState(new Set());
+  const [candidatureFilter, setCandidatureFilter] = useState("all"); // all | new | todecide | transferred | rejected
   const [applyLinkCopied, setApplyLinkCopied] = useState(false);
   const [applyFetching, setApplyFetching] = useState(false);
   const [applyLastFetch, setApplyLastFetch] = useState(null);
@@ -4840,7 +4841,7 @@ function CastingAppInner({ authUser }) {
             <div style={{ padding: "0 8px", marginBottom: 20, display: "flex", flexDirection: "column", gap: 2 }}>
               {[
                 { key: "projet", icon: "doc", label: "Projet", color: "#e879f9", show: true },
-                { key: "candidatures", icon: "inbox", label: "Candidatures", color: "#f472b6", show: true, badge: (state.candidatures || []).length },
+                { key: "candidatures", icon: "inbox", label: "Candidatures", color: "#f472b6", show: true, badge: (state.candidatures || []).filter(c => !c.seen && c.status !== "transferred" && c.status !== "rejected").length },
                 { key: "roles", icon: "users", label: "Rôles", color: "#d4af61", show: true },
                 { key: "contacts", icon: "book", label: "Contacts", color: "#0a84ff", show: true, badge: (() => { const all = Object.values(state.profiles).flat(); return all.filter(p => getChoice(p.id)).length; })() },
                 { key: "planning", icon: "calendar", label: "Planning", color: "#bf5af2", show: true, badge: state.castingDays.length },
@@ -5865,7 +5866,17 @@ function CastingAppInner({ authUser }) {
                   <div>
                     <h2 style={{ fontSize: 26, fontWeight: 800, color: "#f5f5f7", fontFamily: "inherit", marginBottom: 4, letterSpacing: "-0.022em", display: "flex", alignItems: "center", gap: 12 }}><Icon name="inbox" size={24} color="#f472b6" strokeWidth={1.9} /> Candidatures</h2>
                     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
-                      <span style={{ fontSize: 13, color: "#888" }}>{(state.candidatures || []).length} candidature{(state.candidatures || []).length !== 1 ? "s" : ""}</span>
+                      <span style={{ fontSize: 13, color: "#888" }}>
+                        {(state.candidatures || []).length} candidature{(state.candidatures || []).length !== 1 ? "s" : ""}
+                        {(() => {
+                          const new_ = (state.candidatures || []).filter(c => !c.seen && c.status !== "transferred" && c.status !== "rejected").length;
+                          const todecide = (state.candidatures || []).filter(c => c.seen && c.status !== "transferred" && c.status !== "rejected").length;
+                          return <>
+                            {new_ > 0 && <span style={{ color: "#f472b6", fontWeight: 600 }}> · {new_} nouvelle{new_ > 1 ? "s" : ""}</span>}
+                            {todecide > 0 && <span style={{ color: "#ffd60a" }}> · {todecide} à décider</span>}
+                          </>;
+                        })()}
+                      </span>
                       {selectedCandidatures.size > 0 && (
                         <button onClick={() => { if (window.confirm(`Supprimer ${selectedCandidatures.size} candidature${selectedCandidatures.size > 1 ? "s" : ""} ?`)) { setState(p => ({ ...p, candidatures: (p.candidatures || []).filter(c => !selectedCandidatures.has(c.id)) })); setSelectedCandidatures(new Set()); } }} style={{ padding: "4px 12px", background: "rgba(255,69,58,0.12)", border: "1px solid rgba(255,69,58,0.25)", borderRadius: 10, color: "#ff453a", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>🗑 Supprimer ({selectedCandidatures.size})</button>
                       )}
@@ -5927,6 +5938,43 @@ function CastingAppInner({ authUser }) {
                   )}
                 </div>
 
+                {/* Filtres vu / non vu / statut */}
+                {(state.candidatures || []).length > 0 && (() => {
+                  const all = state.candidatures || [];
+                  const counts = {
+                    all: all.length,
+                    new: all.filter(c => !c.seen && c.status !== "transferred" && c.status !== "rejected").length,
+                    todecide: all.filter(c => c.seen && c.status !== "transferred" && c.status !== "rejected").length,
+                    transferred: all.filter(c => c.status === "transferred").length,
+                    rejected: all.filter(c => c.status === "rejected").length,
+                  };
+                  return (
+                    <div style={{ display: "inline-flex", gap: 2, marginBottom: 14, padding: 3, background: "#1c1c1f", borderRadius: 12, border: "0.5px solid rgba(255,255,255,0.06)", flexWrap: "wrap" }}>
+                      {[
+                        { key: "all", label: "Toutes" },
+                        { key: "new", label: "Nouvelles", dot: "#f472b6" },
+                        { key: "todecide", label: "À décider", dot: "#ffd60a" },
+                        { key: "transferred", label: "Présélectionnées", dot: "#30d158" },
+                        { key: "rejected", label: "Refusées", dot: "#ff453a" },
+                      ].map(f => (
+                        <button key={f.key} onClick={() => setCandidatureFilter(f.key)} style={{
+                          padding: "8px 16px", borderRadius: 9, fontSize: 13, fontWeight: 600,
+                          fontFamily: "inherit", border: "none", cursor: "pointer",
+                          display: "inline-flex", alignItems: "center", gap: 7,
+                          background: candidatureFilter === f.key ? "#3a3a40" : "transparent",
+                          color: candidatureFilter === f.key ? "#fff" : "#98989d",
+                          boxShadow: candidatureFilter === f.key ? "0 1px 4px rgba(0,0,0,0.4)" : "none",
+                          transition: "all 0.2s",
+                        }}>
+                          {f.dot && counts[f.key] > 0 && <span style={{ width: 7, height: 7, borderRadius: "50%", background: f.dot }} />}
+                          {f.label}
+                          <span style={{ opacity: 0.55, fontSize: 12 }}>{counts[f.key]}</span>
+                        </button>
+                      ))}
+                    </div>
+                  );
+                })()}
+
                 {/* Candidatures list */}
                 <div style={{ background: "#1c1c1f", borderRadius: 18, border: "1px solid #2e2e34", overflow: "hidden" }}>
                   {/* Header */}
@@ -5941,26 +5989,49 @@ function CastingAppInner({ authUser }) {
                       <div style={{ fontSize: 13, color: "#98989d", lineHeight: 1.6 }}>Activez le lien public ci-dessus et partagez-le sur vos réseaux —<br />les fiches arriveront ici toutes seules. Ou collez un email reçu.</div>
                     </div>
                   )}
-                  {(state.candidatures || []).map((c, ci) => {
+                  {(() => {
+                    const isNew = c => !c.seen && c.status !== "transferred" && c.status !== "rejected";
+                    const filtered = (state.candidatures || []).filter(c =>
+                      candidatureFilter === "all" ? true :
+                      candidatureFilter === "new" ? isNew(c) :
+                      candidatureFilter === "todecide" ? (c.seen && c.status !== "transferred" && c.status !== "rejected") :
+                      c.status === candidatureFilter
+                    );
+                    if ((state.candidatures || []).length > 0 && filtered.length === 0) {
+                      return <div style={{ padding: "36px 24px", textAlign: "center", fontSize: 13, color: "#98989d" }}>
+                        {candidatureFilter === "new" ? "Aucune nouvelle candidature — tout est vu ✓" : "Aucune candidature dans cette catégorie."}
+                      </div>;
+                    }
+                    return filtered.map((c) => {
+                    const ci = (state.candidatures || []).findIndex(x => x.id === c.id);
                     const isOpen = expandedCandidature === c.id;
+                    const unseen = isNew(c);
                     return (
                       <React.Fragment key={c.id}>
-                        <div onClick={() => setExpandedCandidature(isOpen ? null : c.id)} style={{ display: "grid", gridTemplateColumns: "28px 44px 1fr 1fr 50px 110px 100px 90px 32px", padding: "10px 18px", alignItems: "center", gap: 8, borderBottom: "1px solid #2a2a30", cursor: "pointer", background: isOpen ? "rgba(244,114,182,0.03)" : "transparent" }}
+                        <div onClick={() => {
+                          setExpandedCandidature(isOpen ? null : c.id);
+                          if (!isOpen && !c.seen) {
+                            setState(p => ({ ...p, candidatures: (p.candidatures || []).map(x => x.id === c.id ? { ...x, seen: true, seenAt: new Date().toISOString() } : x) }));
+                          }
+                        }} style={{ display: "grid", gridTemplateColumns: "28px 44px 1fr 1fr 50px 110px 100px 90px 32px", padding: "10px 18px", alignItems: "center", gap: 8, borderBottom: "1px solid #2a2a30", cursor: "pointer", background: isOpen ? "rgba(244,114,182,0.03)" : unseen ? "rgba(244,114,182,0.025)" : "transparent" }}
                           onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.015)"}
-                          onMouseLeave={e => e.currentTarget.style.background = isOpen ? "rgba(244,114,182,0.03)" : "transparent"}>
-                          <div onClick={e => e.stopPropagation()} style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          onMouseLeave={e => e.currentTarget.style.background = isOpen ? "rgba(244,114,182,0.03)" : unseen ? "rgba(244,114,182,0.025)" : "transparent"}>
+                          <div onClick={e => e.stopPropagation()} style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}>
                             <input type="checkbox" checked={selectedCandidatures.has(c.id)} onChange={() => setSelectedCandidatures(prev => { const s = new Set(prev); if (s.has(c.id)) s.delete(c.id); else s.add(c.id); return s; })} style={{ width: 16, height: 16, cursor: "pointer", accentColor: "#f472b6" }} />
                           </div>
-                          <div style={{ width: 38, height: 48, borderRadius: 8, overflow: "hidden", background: "#101013", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                            {(c.photos || [])[0] ? <img src={c.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <span style={{ color: "#333", fontSize: 13 }}>◎</span>}
+                          <div style={{ position: "relative", width: 38, height: 48, borderRadius: 8, overflow: "visible", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            <div style={{ width: 38, height: 48, borderRadius: 8, overflow: "hidden", background: "#101013", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                              {(c.photos || [])[0] ? <img src={c.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <span style={{ color: "#333", fontSize: 13 }}>◎</span>}
+                            </div>
+                            {unseen && <span title="Non vue" style={{ position: "absolute", top: -3, left: -3, width: 10, height: 10, borderRadius: "50%", background: "#f472b6", border: "2px solid #1c1c1f" }} />}
                           </div>
-                          <span style={{ fontSize: 14, fontWeight: 600, color: "#f5f5f7" }}>{c.firstName || "—"}{c.source === "form" && <span title="Reçue via le lien public" style={{ marginLeft: 6, fontSize: 9, padding: "1px 6px", borderRadius: 100, background: "rgba(212,175,97,0.12)", color: "#d4af61", fontWeight: 700, verticalAlign: "middle" }}>LIEN</span>}{c.videoFile?.url && <span title="Vidéo jointe" style={{ marginLeft: 5, fontSize: 9, padding: "1px 6px", borderRadius: 100, background: "rgba(10,132,255,0.12)", color: "#0a84ff", fontWeight: 700, verticalAlign: "middle" }}>▶ VIDÉO</span>}</span>
-                          <span style={{ fontSize: 14, fontWeight: 700, color: "#f5f5f7" }}>{(c.name || "—").toUpperCase()}</span>
+                          <span style={{ fontSize: 14, fontWeight: unseen ? 800 : 600, color: unseen ? "#fff" : "#f5f5f7" }}>{c.firstName || "—"}{c.source === "form" && <span title="Reçue via le lien public" style={{ marginLeft: 6, fontSize: 9, padding: "1px 6px", borderRadius: 100, background: "rgba(212,175,97,0.12)", color: "#d4af61", fontWeight: 700, verticalAlign: "middle" }}>LIEN</span>}{c.videoFile?.url && <span title="Vidéo jointe" style={{ marginLeft: 5, fontSize: 9, padding: "1px 6px", borderRadius: 100, background: "rgba(10,132,255,0.12)", color: "#0a84ff", fontWeight: 700, verticalAlign: "middle" }}>▶ VIDÉO</span>}</span>
+                          <span style={{ fontSize: 14, fontWeight: unseen ? 800 : 700, color: unseen ? "#fff" : "#f5f5f7" }}>{(c.name || "—").toUpperCase()}</span>
                           <span style={{ fontSize: 13, color: "#ccc" }}>{c.age || "—"}</span>
                           <span style={{ fontSize: 12, color: "#d4af61" }}>{c.agency || "—"}</span>
                           <span style={{ fontSize: 12, color: "#bf5af2" }}>{c.role || "—"}</span>
-                          <span style={{ fontSize: 11, padding: "3px 8px", borderRadius: 10, fontWeight: 600, background: c.status === "transferred" ? "rgba(48,209,88,0.1)" : c.status === "rejected" ? "rgba(255,69,58,0.08)" : "rgba(255,214,10,0.08)", color: c.status === "transferred" ? "#30d158" : c.status === "rejected" ? "#ff453a" : "#ffd60a" }}>
-                            {c.status === "transferred" ? "✓ Transféré" : c.status === "rejected" ? "✕ Refusé" : "En attente"}
+                          <span style={{ fontSize: 11, padding: "3px 8px", borderRadius: 10, fontWeight: 600, background: c.status === "transferred" ? "rgba(48,209,88,0.1)" : c.status === "rejected" ? "rgba(255,69,58,0.08)" : unseen ? "rgba(244,114,182,0.1)" : "rgba(255,214,10,0.08)", color: c.status === "transferred" ? "#30d158" : c.status === "rejected" ? "#ff453a" : unseen ? "#f472b6" : "#ffd60a" }}>
+                            {c.status === "transferred" ? "✓ Transféré" : c.status === "rejected" ? "✕ Refusé" : unseen ? "● Nouvelle" : "À décider"}
                           </span>
                           <span style={{ fontSize: 14, color: "#555", transform: isOpen ? "rotate(180deg)" : "rotate(0)", transition: "transform 0.2s" }}>▾</span>
                         </div>
@@ -6138,6 +6209,10 @@ function CastingAppInner({ authUser }) {
                                 const arr = [...(state.candidatures || [])]; arr[ci] = { ...arr[ci], status: "rejected" }; setState(p => ({ ...p, candidatures: arr }));
                               }} style={{ padding: "8px 16px", background: "rgba(255,69,58,0.08)", border: "1px solid rgba(255,69,58,0.2)", borderRadius: 12, color: "#ff453a", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>✕ Refuser</button>
                               <button onClick={() => {
+                                setState(p => ({ ...p, candidatures: (p.candidatures || []).map(x => x.id === c.id ? { ...x, seen: false, seenAt: null } : x) }));
+                                setExpandedCandidature(null);
+                              }} style={{ padding: "8px 16px", background: "transparent", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 12, color: "#98989d", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }} title="La remettre dans les nouvelles pour y revenir plus tard">↩ Marquer non vue</button>
+                              <button onClick={() => {
                                 if (window.confirm("Supprimer cette candidature ?")) setState(p => ({ ...p, candidatures: (p.candidatures || []).filter((_, xi) => xi !== ci) }));
                               }} style={{ marginLeft: "auto", background: "none", border: "none", color: "#333", cursor: "pointer", fontSize: 16 }}>🗑</button>
                             </div>
@@ -6145,7 +6220,8 @@ function CastingAppInner({ authUser }) {
                         )}
                       </React.Fragment>
                     );
-                  })}
+                  });
+                  })()}
                 </div>
 
                 {/* Paste email modal */}
@@ -6160,7 +6236,7 @@ function CastingAppInner({ authUser }) {
                           const text = document.getElementById("candidatureEmailInput")?.value?.trim();
                           if (!text) return;
                           const parsed = parseEmailForCasting(text);
-                          const newCandidature = { id: "cand_" + Date.now(), rawEmail: text, ...parsed, role: "", status: "pending", createdAt: new Date().toISOString() };
+                          const newCandidature = { id: "cand_" + Date.now(), rawEmail: text, ...parsed, role: "", status: "pending", seen: true, seenAt: new Date().toISOString(), createdAt: new Date().toISOString() };
                           setState(prev => ({ ...prev, candidatures: [...(prev.candidatures || []), newCandidature] }));
                           setCandidatureModal(false);
                         }} style={{ padding: "10px 24px", background: "linear-gradient(135deg, #f472b6, #db2777)", border: "none", borderRadius: 12, color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>🔍 Analyser & Ajouter</button>
