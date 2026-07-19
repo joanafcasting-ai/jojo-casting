@@ -1727,7 +1727,7 @@ function ContactModal({ profile, contact, projectName, onUpdate, onClose }) {
               transition: "all 0.3s",
             }}
           >
-            {copied === "all" ? "✓ Mail complet copié !" : "📋 Copier le mail complet"}
+            {copied === "all" ? "Mail complet copié" : "Copier le mail complet"}
           </button>
         </div>
       )}
@@ -6077,7 +6077,7 @@ function CastingAppInner({ authUser }) {
                         })()}
                       </span>
                       {selectedCandidatures.size > 0 && (
-                        <button onClick={() => { if (window.confirm(`Supprimer ${selectedCandidatures.size} candidature${selectedCandidatures.size > 1 ? "s" : ""} ?`)) { setState(p => ({ ...p, candidatures: (p.candidatures || []).filter(c => !selectedCandidatures.has(c.id)) })); setSelectedCandidatures(new Set()); } }} style={{ padding: "4px 12px", background: "rgba(158,107,96,0.12)", border: "1px solid rgba(158,107,96,0.25)", borderRadius: 6, color: "#9E6B60", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>🗑 Supprimer ({selectedCandidatures.size})</button>
+                        <button onClick={() => { if (window.confirm(`Supprimer ${selectedCandidatures.size} candidature${selectedCandidatures.size > 1 ? "s" : ""} ?`)) { setState(p => ({ ...p, candidatures: (p.candidatures || []).filter(c => !selectedCandidatures.has(c.id)) })); setSelectedCandidatures(new Set()); } }} style={{ padding: "4px 12px", background: "rgba(158,107,96,0.12)", border: "1px solid rgba(158,107,96,0.25)", borderRadius: 6, color: "#9E6B60", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Supprimer ({selectedCandidatures.size})</button>
                       )}
                       {(state.candidatures || []).length > 0 && (
                         <button onClick={() => { if (selectedCandidatures.size === (state.candidatures || []).length) setSelectedCandidatures(new Set()); else setSelectedCandidatures(new Set((state.candidatures || []).map(c => c.id))); }} style={{ padding: "3px 10px", background: "rgba(255,255,255,0.03)", border: "1px solid #2E2A24", borderRadius: 6, color: "#989184", fontSize: 10, fontWeight: 500, cursor: "pointer", fontFamily: "inherit" }}>{selectedCandidatures.size === (state.candidatures || []).length ? "Tout désélectionner" : "Tout sélectionner"}</button>
@@ -6224,7 +6224,7 @@ function CastingAppInner({ authUser }) {
                             </div>
                             {unseen && <span title="Non vue" style={{ position: "absolute", top: -3, left: -3, width: 10, height: 10, borderRadius: "50%", background: "#989184", border: "2px solid #1E1B17" }} />}
                           </div>
-                          <span style={{ fontSize: 14, fontWeight: unseen ? 800 : 600, color: unseen ? "#fff" : "#F1EDE5" }}>{c.firstName || "—"}{c.source === "form" && <span title="Reçue via le lien public" style={{ marginLeft: 6, fontSize: 9, padding: "1px 6px", borderRadius: 6, background: "rgba(198,165,103,0.12)", color: "#C6A567", fontWeight: 700, verticalAlign: "middle" }}>LIEN</span>}{c.videoFile?.url && <span title="Vidéo jointe" style={{ marginLeft: 5, fontSize: 9, padding: "1px 6px", borderRadius: 6, background: "rgba(241,237,229,0.12)", color: "#F1EDE5", fontWeight: 700, verticalAlign: "middle" }}>▶ VIDÉO</span>}</span>
+                          <span style={{ fontSize: 14, fontWeight: unseen ? 800 : 600, color: unseen ? "#fff" : "#F1EDE5" }}>{c.firstName || "—"}{c.source === "form" && <span title="Reçue via le lien public" style={{ marginLeft: 6, fontSize: 9, padding: "1px 6px", borderRadius: 6, background: "rgba(198,165,103,0.12)", color: "#C6A567", fontWeight: 700, verticalAlign: "middle" }}>LIEN</span>}{c.videoFile?.url && <span title="Vidéo jointe" style={{ marginLeft: 5, fontSize: 9, padding: "1px 6px", borderRadius: 6, background: "rgba(241,237,229,0.12)", color: "#F1EDE5", fontWeight: 700, verticalAlign: "middle" }}>VIDÉO</span>}</span>
                           <span style={{ fontSize: 14, fontWeight: unseen ? 800 : 700, color: unseen ? "#fff" : "#F1EDE5" }}>{(c.name || "—").toUpperCase()}</span>
                           <span style={{ fontSize: 13, color: "#C9C3B8" }}>{c.age || "—"}</span>
                           <span style={{ fontSize: 12, color: "#C6A567" }}>{c.agency || "—"}</span>
@@ -6318,7 +6318,7 @@ function CastingAppInner({ authUser }) {
                                                   }
                                                 }
                                               } catch(e) { console.error(e); }
-                                            }} style={{ padding: "3px 8px", background: "rgba(241,237,229,0.08)", border: "1px solid rgba(241,237,229,0.2)", borderRadius: 4, color: "#F1EDE5", fontSize: 9, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>📥 Ajouter photo</button>
+                                            }} style={{ padding: "3px 8px", background: "rgba(241,237,229,0.08)", border: "1px solid rgba(241,237,229,0.2)", borderRadius: 4, color: "#F1EDE5", fontSize: 9, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>Ajouter la photo</button>
                                           )}
                                         </div>
                                       ))}
@@ -8296,7 +8296,7 @@ function CastingAppInner({ authUser }) {
                   <div style={{ display: "flex", gap: 6 }}>
                     <button onClick={() => window.open("https://mail.google.com/mail/#inbox", "_blank")}
                       style={{ padding: "6px 12px", background: "rgba(152,145,132,0.08)", border: "1px solid rgba(152,145,132,0.15)", borderRadius: 6, color: "#989184", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
-                      📬 Boîte de réception
+                      Boîte de réception
                     </button>
                     {state.gmailLabel && (
                       <button onClick={() => window.open(`https://mail.google.com/mail/#label/${encodeURIComponent(state.gmailLabel)}`, "_blank")}
@@ -8309,7 +8309,7 @@ function CastingAppInner({ authUser }) {
                       window.open(`https://mail.google.com/mail/?view=cm&su=${encodeURIComponent(subject)}`, "_blank");
                     }}
                       style={{ padding: "6px 12px", background: "rgba(124,158,130,0.08)", border: "1px solid rgba(124,158,130,0.15)", borderRadius: 6, color: "#7C9E82", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
-                      ✏ Nouveau mail
+                      Nouveau mail
                     </button>
                   </div>
                 </div>
@@ -9851,7 +9851,7 @@ function ApplyView({ code }) {
                 <input value={videoLink} onChange={e => setVideoLink(e.target.value)} style={inputStyle} type="url"
                   placeholder="Lien Google Drive, WeTransfer, Swiss Transfer…" autoFocus={showVideoLink} />
                 <div style={{ marginTop: 6, fontSize: 12, color: "#989184", lineHeight: 1.5 }}>
-                  💡 Sur Google Drive : clic droit sur la vidéo → Partager → « <span style={{ color: "#F1EDE5" }}>Tous les utilisateurs disposant du lien</span> » — sinon la direction de casting ne pourra pas l'ouvrir.
+                  Sur Google Drive : clic droit sur la vidéo → Partager → « <span style={{ color: "#F1EDE5" }}>Tous les utilisateurs disposant du lien</span> » — sinon la direction de casting ne pourra pas l'ouvrir.
                 </div>
               </div>
             )
