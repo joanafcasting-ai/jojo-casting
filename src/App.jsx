@@ -5079,9 +5079,9 @@ function CastingAppInner({ authUser }) {
                     {/* Casting mode selector */}
                     <div style={{ padding: "0 12px", marginBottom: 14 }}>
                       <div style={{ fontSize: 9, letterSpacing: "0.15em", textTransform: "uppercase", color: "#555", fontWeight: 600, marginBottom: 8 }}>Mode de casting</div>
-                      <div style={{ display: "flex", gap: 2, background: "#101013", borderRadius: 12, padding: 2 }}>
-                        <button onClick={() => setCastingMode("physique")} style={{ flex: 1, padding: "8px 0", borderRadius: 10, fontSize: 11, fontWeight: 700, fontFamily: "inherit", border: "none", cursor: "pointer", background: castingMode === "physique" ? "rgba(255,159,10,0.15)" : "transparent", color: castingMode === "physique" ? "#ff9f0a" : "#555", transition: "all 0.2s" }}>🎬 Physique</button>
-                        <button onClick={() => setCastingMode("selftape")} style={{ flex: 1, padding: "8px 0", borderRadius: 10, fontSize: 11, fontWeight: 700, fontFamily: "inherit", border: "none", cursor: "pointer", background: castingMode === "selftape" ? "rgba(10,132,255,0.15)" : "transparent", color: castingMode === "selftape" ? "#0a84ff" : "#555", transition: "all 0.2s" }}>📹 Selftape</button>
+                      <div style={{ display: "flex", gap: 2, background: "#101013", borderRadius: 12, padding: 3 }}>
+                        <button onClick={() => setCastingMode("physique")} style={{ flex: 1, padding: "8px 0", borderRadius: 9, fontSize: 12, fontWeight: 600, fontFamily: "inherit", border: "none", cursor: "pointer", background: castingMode === "physique" ? "#3a3a40" : "transparent", color: castingMode === "physique" ? "#fff" : "#98989d", boxShadow: castingMode === "physique" ? "0 1px 4px rgba(0,0,0,0.4)" : "none", transition: "all 0.2s" }}>Physique</button>
+                        <button onClick={() => setCastingMode("selftape")} style={{ flex: 1, padding: "8px 0", borderRadius: 9, fontSize: 12, fontWeight: 600, fontFamily: "inherit", border: "none", cursor: "pointer", background: castingMode === "selftape" ? "#3a3a40" : "transparent", color: castingMode === "selftape" ? "#fff" : "#98989d", boxShadow: castingMode === "selftape" ? "0 1px 4px rgba(0,0,0,0.4)" : "none", transition: "all 0.2s" }}>Selftape</button>
                       </div>
                     </div>
 
@@ -5176,7 +5176,7 @@ function CastingAppInner({ authUser }) {
           </nav>
 
           {/* Main Content */}
-          <main style={{ flex: 1, padding: "28px 36px" }}>
+          <main key={activeTab} style={{ flex: 1, padding: "28px 36px", animation: "slideUp 0.35s cubic-bezier(0.32,0.72,0,1) both" }}>
 
 
             {/* ===== PROJET VIEW ===== */}
@@ -5686,7 +5686,7 @@ function CastingAppInner({ authUser }) {
               <div style={{ maxWidth: 1000 }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
                   <div>
-                    <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f5f5f7", fontFamily: "inherit", marginBottom: 4 }}>📩 Candidatures</h2>
+                    <h2 style={{ fontSize: 26, fontWeight: 800, color: "#f5f5f7", fontFamily: "inherit", marginBottom: 4, letterSpacing: "-0.022em", display: "flex", alignItems: "center", gap: 12 }}><Icon name="inbox" size={24} color="#f472b6" strokeWidth={1.9} /> Candidatures</h2>
                     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                       <span style={{ fontSize: 13, color: "#888" }}>{(state.candidatures || []).length} candidature{(state.candidatures || []).length !== 1 ? "s" : ""}</span>
                       {selectedCandidatures.size > 0 && (
@@ -6176,14 +6176,21 @@ function CastingAppInner({ authUser }) {
                     return (
                       <div style={{
                         display: "flex", flexDirection: "column", alignItems: "center",
-                        justifyContent: "center", minHeight: 400, color: "#444",
+                        justifyContent: "center", minHeight: 400,
                       }}>
-                        <div style={{ fontSize: 48, marginBottom: 16, opacity: 0.4 }}>{isFinal ? "🏆" : "✉"}</div>
-                        <div style={{ fontSize: 14 }}>
+                        <div style={{
+                          width: 68, height: 68, marginBottom: 18, borderRadius: 18,
+                          background: "linear-gradient(145deg, rgba(10,132,255,0.16), rgba(10,132,255,0.04))",
+                          border: "0.5px solid rgba(10,132,255,0.22)",
+                          display: "flex", alignItems: "center", justifyContent: "center",
+                        }}>
+                          <Icon name={isFinal ? "trophy" : "mail"} size={30} color="#0a84ff" strokeWidth={1.5} />
+                        </div>
+                        <div style={{ fontSize: 16, fontWeight: 600, color: "#ebebf0", marginBottom: 6 }}>
                           {isFinal ? "Aucune décision de casting définitif" : "Aucun profil évalué"}
                         </div>
-                        <div style={{ fontSize: 12, color: "#555", marginTop: 6 }}>
-                          {isFinal ? "Faites vos choix dans l'onglet Casting" : "Évaluez des profils dans l'onglet Casting"}
+                        <div style={{ fontSize: 13, color: "#98989d" }}>
+                          {isFinal ? "Faites vos choix dans l'onglet Casting." : "Évaluez des profils dans l'onglet Casting."}
                         </div>
                       </div>
                     );
@@ -6463,18 +6470,20 @@ function CastingAppInner({ authUser }) {
                 if (!day) {
                   return (
                     <div>
-                      <div style={{ fontSize: 14, color: "#d4af61", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 20 }}>📋 Journées de casting</div>
+                      <h2 style={{ fontSize: 26, color: "#f5f5f7", fontWeight: 800, letterSpacing: "-0.022em", marginBottom: 24, display: "flex", alignItems: "center", gap: 12 }}>
+                        <Icon name="calendar" size={24} color="#bf5af2" strokeWidth={1.9} /> Journées de casting
+                      </h2>
                       {state.castingDays.length > 0 ? (
                         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 14 }}>
                           {state.castingDays.map(d => {
                             const realSlots = d.slots.filter(s => !s._isPause);
                             const confirmed = realSlots.filter(s => s.availability === "dispo").length;
                             return (
-                              <div key={d.id} onClick={() => setActiveCastingDay(d.id)} style={{ background: "#1c1c1f", borderRadius: 18, border: "1px solid #2e2e34", padding: "20px 24px", cursor: "pointer", transition: "all 0.2s" }}
-                                onMouseEnter={e => { e.currentTarget.style.borderColor = "#bf5af2"; e.currentTarget.style.background = "#141418"; }}
-                                onMouseLeave={e => { e.currentTarget.style.borderColor = "#2e2e34"; e.currentTarget.style.background = "#1c1c1f"; }}>
-                                <div style={{ fontSize: 20, fontWeight: 800, color: "#f5f5f7", fontFamily: "inherit", marginBottom: 6 }}>
-                                  {d.date ? new Date(d.date + "T00:00").toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" }) : "Date à définir"}
+                              <div key={d.id} onClick={() => setActiveCastingDay(d.id)} style={{ background: "#1c1c1f", borderRadius: 18, border: "0.5px solid rgba(255,255,255,0.08)", boxShadow: "0 2px 12px rgba(0,0,0,0.25)", padding: "20px 24px", cursor: "pointer", transition: "all 0.25s cubic-bezier(0.32,0.72,0,1)" }}
+                                onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.45)"; e.currentTarget.style.background = "#232327"; }}
+                                onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 2px 12px rgba(0,0,0,0.25)"; e.currentTarget.style.background = "#1c1c1f"; }}>
+                                <div style={{ fontSize: 19, fontWeight: 700, color: "#f5f5f7", fontFamily: "inherit", marginBottom: 6, letterSpacing: "-0.015em" }}>
+                                  {d.date ? (s => s.charAt(0).toUpperCase() + s.slice(1))(new Date(d.date + "T00:00").toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" })) : "Date à définir"}
                                 </div>
                                 {d.location && <div style={{ fontSize: 13, color: "#888", marginBottom: 8 }}>📍 {d.location}</div>}
                                 <div style={{ display: "flex", gap: 12, fontSize: 12 }}>
@@ -6487,19 +6496,28 @@ function CastingAppInner({ authUser }) {
                           })}
                         </div>
                       ) : (
-                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: 300, color: "#444" }}>
-                          <div style={{ fontSize: 48, marginBottom: 16, opacity: 0.4 }}>📋</div>
-                          <div style={{ fontSize: 14, marginBottom: 8 }}>Aucune journée de casting créée</div>
+                        <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: 300 }}>
+                          <div style={{
+                            width: 68, height: 68, marginBottom: 18, borderRadius: 18,
+                            background: "linear-gradient(145deg, rgba(191,90,242,0.16), rgba(191,90,242,0.04))",
+                            border: "0.5px solid rgba(191,90,242,0.22)",
+                            display: "flex", alignItems: "center", justifyContent: "center",
+                          }}>
+                            <Icon name="calendar" size={30} color="#bf5af2" strokeWidth={1.5} />
+                          </div>
+                          <div style={{ fontSize: 16, fontWeight: 600, color: "#ebebf0", marginBottom: 6 }}>Aucune journée de casting</div>
+                          <div style={{ fontSize: 13, color: "#98989d" }}>Planifiez les passages de vos comédiens.</div>
                         </div>
                       )}
                       <div style={{ marginTop: 20, textAlign: "center" }}>
                         <button
                           onClick={() => setShowAddDay(true)}
                           style={{
-                            padding: "12px 28px", background: "rgba(191,90,242,0.1)",
-                            color: "#bf5af2", border: "1px solid rgba(191,90,242,0.3)",
-                            borderRadius: 14, cursor: "pointer", fontSize: 14,
+                            padding: "12px 28px", background: "#bf5af2",
+                            color: "#fff", border: "none",
+                            borderRadius: 100, cursor: "pointer", fontSize: 14,
                             fontWeight: 600, fontFamily: "inherit",
+                            boxShadow: "0 4px 16px rgba(191,90,242,0.3)",
                           }}
                         >
                           + Créer une journée
@@ -6974,10 +6992,17 @@ function CastingAppInner({ authUser }) {
 
                 if (allCasting.length === 0) {
                   return (
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: 400, color: "#444" }}>
-                      <div style={{ fontSize: 48, marginBottom: 16, opacity: 0.4 }}>🎬</div>
-                      <div style={{ fontSize: 14 }}>Aucun profil sélectionné pour le casting</div>
-                      <div style={{ fontSize: 12, color: "#555", marginTop: 6 }}>Faites d'abord des sélections dans l'onglet Casting</div>
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: 400 }}>
+                      <div style={{
+                        width: 68, height: 68, marginBottom: 18, borderRadius: 18,
+                        background: "linear-gradient(145deg, rgba(255,159,10,0.16), rgba(255,159,10,0.04))",
+                        border: "0.5px solid rgba(255,159,10,0.22)",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                      }}>
+                        <Icon name="clapper" size={30} color="#ff9f0a" strokeWidth={1.5} />
+                      </div>
+                      <div style={{ fontSize: 16, fontWeight: 600, color: "#ebebf0", marginBottom: 6 }}>Aucun profil sélectionné pour le casting</div>
+                      <div style={{ fontSize: 13, color: "#98989d" }}>Faites d'abord des sélections dans l'onglet Rôles.</div>
                     </div>
                   );
                 }
@@ -6990,13 +7015,13 @@ function CastingAppInner({ authUser }) {
                   const selftapeProfiles = allCasting.filter(p => p._role === currentRole);
                   return (
                     <>
-                      {/* Mode toggle */}
-                      <div style={{ display: "flex", gap: 6, marginBottom: 20 }}>
-                        <button onClick={() => setCastingMode("physique")} style={{ padding: "8px 20px", borderRadius: 12, fontSize: 13, fontWeight: 600, fontFamily: "inherit", border: "none", cursor: "pointer", background: "rgba(255,255,255,0.03)", color: "#666" }}>🎬 Casting physique</button>
-                        <button style={{ padding: "8px 20px", borderRadius: 12, fontSize: 13, fontWeight: 700, fontFamily: "inherit", border: "none", cursor: "pointer", background: "rgba(10,132,255,0.12)", color: "#0a84ff" }}>📹 Casting selftape</button>
+                      {/* Mode toggle — iOS segmented */}
+                      <div style={{ display: "inline-flex", gap: 2, marginBottom: 20, padding: 3, background: "#1c1c1f", borderRadius: 12 }}>
+                        <button onClick={() => setCastingMode("physique")} style={{ padding: "8px 20px", borderRadius: 9, fontSize: 13, fontWeight: 600, fontFamily: "inherit", border: "none", cursor: "pointer", background: "transparent", color: "#98989d" }}>Casting physique</button>
+                        <button style={{ padding: "8px 20px", borderRadius: 9, fontSize: 13, fontWeight: 600, fontFamily: "inherit", border: "none", cursor: "pointer", background: "#3a3a40", color: "#fff", boxShadow: "0 1px 4px rgba(0,0,0,0.4)" }}>Casting selftape</button>
                       </div>
 
-                      <div style={{ fontSize: 14, fontWeight: 700, color: "#0a84ff", marginBottom: 14 }}>📹 Casting Selftape — {currentRole} ({selftapeProfiles.length})</div>
+                      <div style={{ fontSize: 15, fontWeight: 700, color: "#0a84ff", marginBottom: 14 }}>Selftape — {currentRole} ({selftapeProfiles.length})</div>
 
                       {selftapeProfiles.length === 0 && <div style={{ textAlign: "center", padding: 40, color: "#555" }}>Aucun profil pour ce rôle</div>}
 
@@ -7312,10 +7337,17 @@ function CastingAppInner({ authUser }) {
 
                 if (allEvaluated.length === 0) {
                   return (
-                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: 400, color: "#444" }}>
-                      <div style={{ fontSize: 48, marginBottom: 16, opacity: 0.4 }}>🏆</div>
-                      <div style={{ fontSize: 14 }}>Aucune décision de casting</div>
-                      <div style={{ fontSize: 12, color: "#555", marginTop: 6 }}>Faites votre sélection dans l'onglet Casting</div>
+                    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: 400 }}>
+                      <div style={{
+                        width: 68, height: 68, marginBottom: 18, borderRadius: 18,
+                        background: "linear-gradient(145deg, rgba(48,209,88,0.16), rgba(48,209,88,0.04))",
+                        border: "0.5px solid rgba(48,209,88,0.22)",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                      }}>
+                        <Icon name="trophy" size={30} color="#30d158" strokeWidth={1.5} />
+                      </div>
+                      <div style={{ fontSize: 16, fontWeight: 600, color: "#ebebf0", marginBottom: 6 }}>Aucune décision de casting</div>
+                      <div style={{ fontSize: 13, color: "#98989d" }}>Faites votre sélection dans l'onglet Casting.</div>
                     </div>
                   );
                 }
