@@ -535,7 +535,7 @@ function ProfileSheet({ profile, choice, onVote, guestVote, rating, onRate, cont
   ) : null;
   const copyLine = (icon, value) => value ? (
     <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 0", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-      <span style={{ fontSize: 13, width: 18, textAlign: "center", flexShrink: 0 }}>{icon}</span>
+      <span style={{ fontSize: 11, width: 72, color: "#5F594F", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", flexShrink: 0 }}>{icon}</span>
       <span style={{ fontSize: 14, color: "#F1EDE5", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{value}</span>
       <button onClick={() => { try { navigator.clipboard.writeText(value); } catch (e) {} }}
         style={{ padding: "4px 12px", background: "rgba(255,255,255,0.06)", border: "none", borderRadius: 6, color: "#989184", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", flexShrink: 0 }}>Copier</button>
@@ -587,18 +587,18 @@ function ProfileSheet({ profile, choice, onVote, guestVote, rating, onRate, cont
           {/* Header */}
           <div style={{ padding: "26px 30px 0", position: "relative" }}>
             <button onClick={onClose} style={{ position: "absolute", top: 20, right: 20, width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.07)", border: "none", color: "#989184", fontSize: 15, cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center" }}>✕</button>
-            <div style={{ fontSize: 28, fontWeight: 800, color: "#F1EDE5", letterSpacing: "-0.025em", lineHeight: 1.15, paddingRight: 44 }}>
+            <div style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontSize: 26, fontWeight: 400, color: "#F1EDE5", lineHeight: 1.2, paddingRight: 44 }}>
               {[profile.firstName, profile.name].filter(Boolean).join(" ") || "Sans nom"}
             </div>
             <div style={{ fontSize: 15, color: "#989184", marginTop: 6 }}>
               {[profile.age ? profile.age + " ans" : null, profile.height, profile.hairColor].filter(Boolean).join(" · ") || "—"}
             </div>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
-              {profile.agency && <span style={{ fontSize: 13, fontWeight: 700, color: "#C6A567" }}>— {profile.agency}</span>}
+              {profile.agency && <span style={{ fontSize: 13, color: "#C6A567" }}>{profile.agency}</span>}
               {profile.profileType && <span style={{ fontSize: 10, padding: "3px 10px", background: "rgba(152,145,132,0.12)", borderRadius: 6, color: "#989184", fontWeight: 700, textTransform: "uppercase" }}>{profile.profileType}</span>}
               {guestVote && <span style={{ fontSize: 10, padding: "3px 10px", borderRadius: 6, fontWeight: 800,
                 background: guestVote === "yes" ? "rgba(124,158,130,0.12)" : guestVote === "no" ? "rgba(158,107,96,0.12)" : "rgba(168,141,85,0.12)",
-                color: guestVote === "yes" ? "#7C9E82" : guestVote === "no" ? "#9E6B60" : "#A88D55" }}>RÉAL/PROD : {guestVote === "yes" ? "OUI" : guestVote === "no" ? "NON" : "PEUT-ÊTRE"}</span>}
+                color: guestVote === "yes" ? "#7C9E82" : guestVote === "no" ? "#9E6B60" : "#A88D55" }}>Réal/prod : {guestVote === "yes" ? "OUI" : guestVote === "no" ? "NON" : "PEUT-ÊTRE"}</span>}
             </div>
             {/* Vote */}
             <div style={{ display: "flex", gap: 2, padding: 3, background: "#161411", borderRadius: 6, marginTop: 18 }}>
@@ -642,9 +642,9 @@ function ProfileSheet({ profile, choice, onVote, guestVote, rating, onRate, cont
             {(profile.email || profile.phone || profile.agencyEmail) && (
               <div>
                 <div style={sectionLabel}>Contact</div>
-                {copyLine("✉", profile.email)}
-                {copyLine("☎", profile.phone)}
-                {copyLine("🏢", profile.agencyEmail)}
+                {copyLine("Email", profile.email)}
+                {copyLine("Téléphone", profile.phone)}
+                {copyLine("Agence", profile.agencyEmail)}
               </div>
             )}
 
@@ -658,7 +658,7 @@ function ProfileSheet({ profile, choice, onVote, guestVote, rating, onRate, cont
                 <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                   {links.map((l, i) => (
                     <a key={i} href={l} target="_blank" rel="noreferrer" style={{ padding: "8px 16px", background: "rgba(241,237,229,0.1)", borderRadius: 6, color: "#F1EDE5", fontSize: 13, fontWeight: 600, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6 }}>
-                      ▶ Selftape {links.length > 1 ? i + 1 : ""}
+                      Selftape {links.length > 1 ? i + 1 : ""}
                     </a>
                   ))}
                 </div>
@@ -7995,7 +7995,7 @@ function CastingAppInner({ authUser }) {
                         display: "flex", alignItems: "center", gap: 6, whiteSpace: "nowrap",
                       }}
                     >
-                      + Ajouter
+                      Ajouter un profil
                     </button>
                     {actorDatabase.length > 0 && (
                       <button
@@ -8110,85 +8110,78 @@ function CastingAppInner({ authUser }) {
                   );
                 })()}
 
-                {/* ===== PLANCHE CASTING — grille photo ===== */}
+                {/* ===== PLANCHE — le nom en Georgia sous la photo (DESIGN.md) ===== */}
                 {profileGridMode === "grid" ? (
-                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(190px, 1fr))", gap: 14 }}>
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))", gap: 20 }}>
                   {filteredProfiles.map((profile, i) => {
                     const choice = getChoice(profile.id);
                     const choiceColor = choice === "yes" ? "#7C9E82" : choice === "maybe" ? "#A88D55" : choice === "no" ? "#9E6B60" : null;
                     const guestVote = state._guestVotes?.[profile.id]?.choice;
                     const tapes = (profile.selftapeLinks || []).filter(l => l).length + (profile.selftapeVideos || []).length;
+                    const initials = [profile.firstName, profile.name].filter(Boolean).map(s => s[0]).join("").toUpperCase() || "·";
                     return (
                       <div key={profile.id}
                         onClick={() => setProfileSheetId(profile.id)}
-                        onMouseEnter={e => { const q = e.currentTarget.querySelector(".qv"); if (q) q.style.opacity = 1; e.currentTarget.style.transform = "translateY(-3px) scale(1.01)"; }}
-                        onMouseLeave={e => { const q = e.currentTarget.querySelector(".qv"); if (q) q.style.opacity = 0; e.currentTarget.style.transform = "none"; }}
-                        style={{
-                          position: "relative", aspectRatio: "3/4", borderRadius: 6, overflow: "hidden", cursor: "pointer",
+                        onMouseEnter={e => { const q = e.currentTarget.querySelector(".qv"); if (q) q.style.opacity = 1; const ph = e.currentTarget.querySelector(".ph"); if (ph) ph.style.opacity = 1; }}
+                        onMouseLeave={e => { const q = e.currentTarget.querySelector(".qv"); if (q) q.style.opacity = 0; const ph = e.currentTarget.querySelector(".ph"); if (ph) ph.style.opacity = 0.92; }}
+                        style={{ cursor: "pointer", opacity: choice === "no" ? 0.45 : 1, animation: "fadeIn 160ms cubic-bezier(0.25,0.1,0.25,1) both" }}>
+                        {/* Photo */}
+                        <div style={{
+                          position: "relative", aspectRatio: "3/4", borderRadius: 4, overflow: "hidden",
                           background: "#1E1B17",
-                          boxShadow: choiceColor ? `0 0 0 1.5px ` : "0 0 0 1px #2E2A24",
-                          opacity: choice === "no" ? 0.4 : 1,
-                          animation: `slideUp 0.4s cubic-bezier(0.32,0.72,0,1) ${Math.min(i * 0.03, 0.4)}s both`,
-                          transition: "transform 0.25s cubic-bezier(0.32,0.72,0,1), box-shadow 0.25s, opacity 0.25s",
+                          boxShadow: choiceColor ? `0 0 0 1.5px ${choiceColor}` : "0 0 0 1px #2E2A24",
+                          transition: "box-shadow 160ms cubic-bezier(0.25,0.1,0.25,1)",
                         }}>
-                        {(profile.photos || [])[0] ? (
-                          <img src={profile.photos[0]} alt="" loading="lazy" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
-                        ) : (
-                          <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "#5F594F", fontSize: 36, background: "#1E1B17" }}>◎</div>
-                        )}
-                        {/* Nom + méta sur dégradé */}
-                        <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: "44px 13px 11px", background: "linear-gradient(transparent, rgba(0,0,0,0.55) 40%, rgba(0,0,0,0.88))", pointerEvents: "none" }}>
-                          <div style={{ fontSize: 15.5, fontWeight: 700, color: "#fff", letterSpacing: "-0.015em", lineHeight: 1.2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                            {[profile.firstName, profile.name].filter(Boolean).join(" ") || "Sans nom"}
-                          </div>
-                          <div style={{ fontSize: 12, color: "rgba(255,255,255,0.72)", marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
-                            {[profile.age ? profile.age + " ans" : null, profile.height, profile.agency].filter(Boolean).join(" · ") || "—"}
+                          {(profile.photos || [])[0] ? (
+                            <img className="ph" src={profile.photos[0]} alt="" loading="lazy" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover", opacity: 0.92, transition: "opacity 160ms cubic-bezier(0.25,0.1,0.25,1)" }} />
+                          ) : (
+                            <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "#5F594F", fontSize: 34, fontFamily: "Georgia, serif", background: "#1E1B17" }}>{initials}</div>
+                          )}
+                          {/* Compare */}
+                          {compareMode && (
+                            <div onClick={e => { e.stopPropagation(); setCompareSelection(prev => prev.includes(profile.id) ? prev.filter(x => x !== profile.id) : prev.length < 3 ? [...prev, profile.id] : prev); }}
+                              style={{ position: "absolute", top: 8, left: 8, zIndex: 10, width: 24, height: 24, borderRadius: "50%", cursor: "pointer",
+                                background: compareSelection.includes(profile.id) ? "#C6A567" : "rgba(14,13,11,0.7)",
+                                border: compareSelection.includes(profile.id) ? "none" : "1px solid #2E2A24",
+                                display: "flex", alignItems: "center", justifyContent: "center", color: compareSelection.includes(profile.id) ? "#0E0D0B" : "#989184", fontSize: 12, fontWeight: 600,
+                              }}>{compareSelection.includes(profile.id) ? compareSelection.indexOf(profile.id) + 1 : ""}</div>
+                          )}
+                          {/* Vote au survol */}
+                          <div className="qv" onClick={e => e.stopPropagation()} style={{ position: "absolute", top: 8, right: 8, display: "flex", flexDirection: "column", gap: 5, opacity: 0, transition: "opacity 160ms cubic-bezier(0.25,0.1,0.25,1)" }}>
+                            {[
+                              { c: "yes", sym: "✓", col: "#7C9E82" },
+                              { c: "maybe", sym: "?", col: "#A88D55" },
+                              { c: "no", sym: "✕", col: "#9E6B60" },
+                            ].map(v => (
+                              <button key={v.c} onClick={() => setSelection(profile.id, choice === v.c ? null : v.c)}
+                                title={v.c === "yes" ? "Oui" : v.c === "maybe" ? "Peut-être" : "Non"}
+                                style={{
+                                  width: 30, height: 30, borderRadius: "50%", cursor: "pointer",
+                                  fontSize: 13, fontWeight: 600, fontFamily: "inherit",
+                                  border: choice === v.c ? "none" : "1px solid #2E2A24",
+                                  background: choice === v.c ? v.col : "rgba(14,13,11,0.78)",
+                                  color: choice === v.c ? "#0E0D0B" : v.col,
+                                }}>{v.sym}</button>
+                            ))}
                           </div>
                         </div>
-                        {/* Badge sélection (haut gauche) */}
-                        {choice && !compareMode && (
-                          <div style={{ position: "absolute", top: 9, left: 9, width: 26, height: 26, borderRadius: "50%", background: choiceColor, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: choice === "maybe" ? "#0E0D0B" : "#fff", boxShadow: "none" }}>
-                            {choice === "yes" ? "✓" : choice === "maybe" ? "?" : "✕"}
+                        {/* Nom en Georgia sous la photo */}
+                        <div style={{ padding: "10px 2px 0" }}>
+                          <div style={{ display: "flex", alignItems: "baseline", gap: 7 }}>
+                            {choiceColor && <span style={{ width: 6, height: 6, borderRadius: "50%", background: choiceColor, flexShrink: 0, alignSelf: "center" }} />}
+                            <span style={{ fontFamily: "Georgia, 'Times New Roman', serif", fontSize: 19, fontWeight: 400, color: "#F1EDE5", lineHeight: 1.25, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                              {[profile.firstName, profile.name].filter(Boolean).join(" ") || "Sans nom"}
+                            </span>
                           </div>
-                        )}
-                        {/* Compare checkbox */}
-                        {compareMode && (
-                          <div onClick={e => { e.stopPropagation(); setCompareSelection(prev => prev.includes(profile.id) ? prev.filter(x => x !== profile.id) : prev.length < 3 ? [...prev, profile.id] : prev); }}
-                            style={{ position: "absolute", top: 9, left: 9, zIndex: 10, width: 26, height: 26, borderRadius: "50%", cursor: "pointer",
-                              background: compareSelection.includes(profile.id) ? "#F1EDE5" : "rgba(0,0,0,0.6)",
-                              border: compareSelection.includes(profile.id) ? "2px solid #F1EDE5" : "2px solid rgba(255,255,255,0.4)",
-                              display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 13, fontWeight: 700,
-                            }}>{compareSelection.includes(profile.id) ? compareSelection.indexOf(profile.id) + 1 : ""}</div>
-                        )}
-                        {/* Vote réal/prod (haut droite, sous quick-vote) */}
-                        {guestVote && (
-                          <div style={{ position: "absolute", top: 9, right: 9, fontSize: 9, padding: "3px 8px", borderRadius: 6, fontWeight: 800, letterSpacing: "0.04em",
-                            background: "rgba(0,0,0,0.65)", 
-                            color: guestVote === "yes" ? "#7C9E82" : guestVote === "no" ? "#9E6B60" : "#A88D55",
-                          }}>R/P {guestVote === "yes" ? "OUI" : guestVote === "no" ? "NON" : "P-Ê"}</div>
-                        )}
-                        {/* Selftapes */}
-                        {tapes > 0 && (
-                          <div style={{ position: "absolute", bottom: 52, right: 10, fontSize: 10, padding: "3px 9px", borderRadius: 6, fontWeight: 700, background: "rgba(0,0,0,0.65)",  color: "#F1EDE5" }}>▶ {tapes}</div>
-                        )}
-                        {/* Quick vote au survol */}
-                        <div className="qv" onClick={e => e.stopPropagation()} style={{ position: "absolute", top: guestVote ? 40 : 9, right: 9, display: "flex", flexDirection: "column", gap: 6, opacity: 0, transition: "opacity 0.2s" }}>
-                          {[
-                            { c: "yes", sym: "✓", col: "#7C9E82" },
-                            { c: "maybe", sym: "?", col: "#A88D55" },
-                            { c: "no", sym: "✕", col: "#9E6B60" },
-                          ].map(v => (
-                            <button key={v.c} onClick={() => setSelection(profile.id, choice === v.c ? null : v.c)}
-                              title={v.c === "yes" ? "Oui" : v.c === "maybe" ? "Peut-être" : "Non"}
-                              style={{
-                                width: 32, height: 32, borderRadius: "50%", border: "none", cursor: "pointer",
-                                fontSize: 14, fontWeight: 800, fontFamily: "inherit",
-                                background: choice === v.c ? v.col : "rgba(0,0,0,0.65)",
-                                color: choice === v.c ? (v.c === "maybe" ? "#0E0D0B" : "#fff") : v.col,
-                                
-                                boxShadow: "none",
-                              }}>{v.sym}</button>
-                          ))}
+                          <div style={{ fontSize: 13, color: "#989184", marginTop: 3, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                            {[profile.age ? profile.age + " ans" : null, profile.height, profile.agency].filter(Boolean).join(" · ") || "—"}
+                            {tapes > 0 && <span style={{ color: "#5F594F" }}> · {tapes} selftape{tapes > 1 ? "s" : ""}</span>}
+                          </div>
+                          {guestVote && (
+                            <div style={{ fontSize: 11, marginTop: 3, fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase",
+                              color: guestVote === "yes" ? "#7C9E82" : guestVote === "no" ? "#9E6B60" : "#A88D55",
+                            }}>Réal : {guestVote === "yes" ? "oui" : guestVote === "no" ? "non" : "peut-être"}</div>
+                          )}
                         </div>
                       </div>
                     );
@@ -8215,13 +8208,13 @@ function CastingAppInner({ authUser }) {
                               display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 11, fontWeight: 700,
                             }}>{compareSelection.includes(profile.id) ? compareSelection.indexOf(profile.id) + 1 : ""}</div>
                         )}
-                        <div style={{ width: 44, height: 56, borderRadius: 6, overflow: "hidden", background: "#161411", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                        <div style={{ width: 56, height: 72, borderRadius: 4, overflow: "hidden", background: "#1E1B17", border: "1px solid #2E2A24", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
                           {(profile.photos || [])[0] ? <img src={profile.photos[0]} alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <span style={{ color: "#5F594F" }}>◎</span>}
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                            <span style={{ fontSize: 14.5, fontWeight: 650, color: "#F1EDE5", letterSpacing: "-0.01em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{[profile.firstName, profile.name].filter(Boolean).join(" ") || "Sans nom"}</span>
-                            {profile.profileType && <span style={{ fontSize: 9, padding: "2px 7px", background: "rgba(152,145,132,0.12)", borderRadius: 6, color: "#989184", fontWeight: 700, textTransform: "uppercase", flexShrink: 0 }}>{profile.profileType}</span>}
+                            <span style={{ fontFamily: "Georgia, serif", fontSize: 19, fontWeight: 400, color: "#F1EDE5", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{[profile.firstName, profile.name].filter(Boolean).join(" ") || "Sans nom"}</span>
+                            {profile.profileType && <span style={{ fontSize: 11, color: "#989184", letterSpacing: "0.1em", textTransform: "uppercase", flexShrink: 0 }}>{profile.profileType}</span>}
                             {guestVote && <span style={{ fontSize: 9, padding: "2px 7px", borderRadius: 6, fontWeight: 800, flexShrink: 0,
                               background: guestVote === "yes" ? "rgba(124,158,130,0.1)" : guestVote === "no" ? "rgba(158,107,96,0.1)" : "rgba(168,141,85,0.1)",
                               color: guestVote === "yes" ? "#7C9E82" : guestVote === "no" ? "#9E6B60" : "#A88D55" }}>R/P {guestVote === "yes" ? "OUI" : guestVote === "no" ? "NON" : "P-Ê"}</span>}
@@ -8229,7 +8222,7 @@ function CastingAppInner({ authUser }) {
                           <div style={{ fontSize: 12, color: "#989184", marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                             {[profile.age ? profile.age + " ans" : null, profile.height, profile.hairColor].filter(Boolean).join(" · ")}
                             {profile.agency && <span style={{ color: "#C6A567" }}>{([profile.age, profile.height, profile.hairColor].some(Boolean) ? "  ·  " : "")}{profile.agency}</span>}
-                            {tapes > 0 && <span style={{ color: "#F1EDE5" }}>  ·  ▶ {tapes}</span>}
+                            {tapes > 0 && <span style={{ color: "#F1EDE5" }}>  ·  {tapes} selftape{tapes > 1 ? "s" : ""}</span>}
                           </div>
                         </div>
                         {/* Étoiles */}
