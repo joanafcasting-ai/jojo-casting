@@ -302,26 +302,27 @@ function Modal({ open, onClose, title, children, width = 600 }) {
     <div
       onClick={onClose}
       style={{
-        position: "fixed", inset: 0, background: "rgba(0,0,0,0.75)", zIndex: 1000,
+        position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)", zIndex: 1000,
         display: "flex", alignItems: "center", justifyContent: "center",
-        backdropFilter: "blur(6px)", animation: "fadeIn 0.2s ease",
+        backdropFilter: "blur(24px) saturate(140%)", WebkitBackdropFilter: "blur(24px) saturate(140%)",
+        animation: "fadeIn 0.25s cubic-bezier(0.32,0.72,0,1)",
       }}
     >
       <div
         onClick={e => e.stopPropagation()}
         style={{
-          background: "#2a2a30", borderRadius: 20, padding: "32px 36px",
+          background: "rgba(36,36,40,0.96)", borderRadius: 24, padding: "32px 36px",
           width: "90%", maxWidth: width, maxHeight: "85vh", overflowY: "auto",
-          border: "1px solid #3a3a40", boxShadow: "0 24px 80px rgba(0,0,0,0.6)",
+          border: "0.5px solid rgba(255,255,255,0.12)", boxShadow: "0 32px 100px rgba(0,0,0,0.7)",
         }}
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 28 }}>
-          <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: "#f5f5f7", letterSpacing: "-0.01em" }}>{title}</h2>
+          <h2 style={{ margin: 0, fontSize: 21, fontWeight: 700, color: "#f5f5f7", letterSpacing: "-0.022em" }}>{title}</h2>
           <button
             onClick={onClose}
-            style={{ background: "none", border: "none", color: "#666", fontSize: 24, cursor: "pointer", fontFamily: "inherit" }}
+            style={{ background: "rgba(255,255,255,0.08)", border: "none", borderRadius: 100, width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center", color: "#98989d", fontSize: 17, cursor: "pointer", fontFamily: "inherit" }}
           >
-            ×
+            ✕
           </button>
         </div>
         {children}
@@ -396,28 +397,29 @@ function ProfileCard({ profile, onEdit, onStatusChange, viewMode }) {
       onClick={onEdit}
       style={{
         cursor: "pointer", display: "grid", gridTemplateColumns: "160px 1fr",
-        background: "#101013", borderRadius: 10, overflow: "hidden",
-        border: "1px solid #2a2a30", transition: "all 0.3s", minHeight: 210,
+        background: "#1c1c1f", borderRadius: 18, overflow: "hidden",
+        border: "0.5px solid rgba(255,255,255,0.08)", boxShadow: "0 1px 8px rgba(0,0,0,0.2)",
+        transition: "all 0.25s cubic-bezier(0.32,0.72,0,1)", minHeight: 210,
       }}
-      onMouseEnter={e => { e.currentTarget.style.borderColor = "#d4af6133"; e.currentTarget.style.boxShadow = "0 8px 32px rgba(0,0,0,0.4)"; }}
-      onMouseLeave={e => { e.currentTarget.style.borderColor = "#2a2a30"; e.currentTarget.style.boxShadow = ""; }}
+      onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px)"; e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.45)"; e.currentTarget.style.background = "#232327"; }}
+      onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 1px 8px rgba(0,0,0,0.2)"; e.currentTarget.style.background = "#1c1c1f"; }}
     >
       {/* Photo */}
       <div style={{ position: "relative", overflow: "hidden" }}>
         {mainPhoto ? (
           <img src={mainPhoto} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
         ) : (
-          <div style={{ width: "100%", height: "100%", background: "#1c1c1f", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 32 }}>◎</div>
+          <div style={{ width: "100%", height: "100%", background: "#232327", display: "flex", alignItems: "center", justifyContent: "center", color: "#48484d", fontSize: 32 }}>◎</div>
         )}
-        <div style={{ position: "absolute", bottom: 6, left: 6 }} onClick={e => e.stopPropagation()}>
-          <button onClick={() => onStatusChange(nextStatus())} style={{ padding: "4px 10px", background: "rgba(0,0,0,0.7)", borderRadius: 4, border: "none", fontSize: 11, color: av.color, fontWeight: 700, letterSpacing: "0.1em", backdropFilter: "blur(4px)", cursor: "pointer", fontFamily: "inherit" }}>● {av.label.toUpperCase()}</button>
+        <div style={{ position: "absolute", bottom: 8, left: 8 }} onClick={e => e.stopPropagation()}>
+          <button onClick={() => onStatusChange(nextStatus())} style={{ padding: "5px 11px", background: "rgba(0,0,0,0.6)", borderRadius: 100, border: "0.5px solid rgba(255,255,255,0.12)", fontSize: 11, color: av.color, fontWeight: 600, letterSpacing: "0.04em", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", cursor: "pointer", fontFamily: "inherit" }}>● {av.label}</button>
         </div>
       </div>
       {/* Info */}
-      <div style={{ padding: "16px 20px", display: "flex", flexDirection: "column", justifyContent: "center", overflow: "hidden" }}>
+      <div style={{ padding: "18px 22px", display: "flex", flexDirection: "column", justifyContent: "center", overflow: "hidden" }}>
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, marginBottom: 5 }}>
           <div style={{ minWidth: 0 }}>
-            <div style={{ fontSize: 24, fontWeight: 900, color: "#fff", fontFamily: "inherit", letterSpacing: "0.03em", lineHeight: 1.1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+            <div style={{ fontSize: 21, fontWeight: 700, color: "#f5f5f7", fontFamily: "inherit", letterSpacing: "-0.02em", lineHeight: 1.15, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
               {[profile.firstName, profile.name].filter(Boolean).join(" ") || "Sans nom"}
             </div>
             <div style={{ fontSize: 15, color: "#777", marginTop: 5, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
@@ -4529,23 +4531,21 @@ function CastingAppInner({ authUser }) {
       <div className={lightTheme ? "light-wrapper" : ""} style={{ minHeight: "100vh", background: "#000000" }}>
         {/* Header */}
         <header style={{
-          padding: "18px 32px", borderBottom: "1px solid #2a2a30",
+          padding: "14px 28px", borderBottom: "0.5px solid rgba(255,255,255,0.1)",
           display: "flex", alignItems: "center", justifyContent: "space-between",
-          background: "rgba(0,0,0,0.9)", backdropFilter: "blur(12px)",
+          background: "rgba(10,10,12,0.72)",
           position: "sticky", top: 0, zIndex: 100,
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
             <button
               onClick={backToDashboard}
               style={{
-                padding: "5px 10px", background: "rgba(255,255,255,0.03)",
-                border: "1px solid #3a3a40", borderRadius: 10, cursor: "pointer",
-                fontSize: 11, fontFamily: "inherit", color: "#888", transition: "color 0.2s",
+                padding: "7px 14px", background: "rgba(255,255,255,0.07)",
+                border: "none", borderRadius: 100, cursor: "pointer",
+                fontSize: 13, fontWeight: 500, fontFamily: "inherit", color: "#d4af61",
               }}
-              onMouseEnter={e => e.currentTarget.style.color = "#d4af61"}
-              onMouseLeave={e => e.currentTarget.style.color = "#888"}
             >
-              {"← Projets"}
+              {"‹ Projets"}
             </button>
             {/* Brand */}
               <div style={{ fontSize: 10, letterSpacing: "0.25em", textTransform: "uppercase", color: "#d4af61", fontWeight: 600 }}>
@@ -7738,8 +7738,8 @@ function CastingAppInner({ authUser }) {
                             onStatusChange={(newStatus) => changeStatus(profile.id, newStatus)}
                             viewMode={viewMode}
                           />
-                          {/* Selection bar — Cinéma style */}
-                          <div style={{ marginTop: 4, display: "flex", borderRadius: 3, overflow: "hidden", border: "1px solid #2a2a30" }}>
+                          {/* Selection bar — iOS segmented */}
+                          <div style={{ marginTop: 6, display: "flex", gap: 2, padding: 3, borderRadius: 12, background: "#1c1c1f", border: "0.5px solid rgba(255,255,255,0.06)" }}>
                             {[
                               { choice: "yes", label: "OUI", color: "#30d158" },
                               { choice: "maybe", label: "PEUT-ÊTRE", color: "#ffd60a" },
@@ -7751,11 +7751,11 @@ function CastingAppInner({ authUser }) {
                                 <button key={opt.choice}
                                   onClick={(e) => { e.stopPropagation(); setSelection(profile.id, isActive ? null : opt.choice); }}
                                   style={{
-                                    flex: 1, padding: "7px 0", border: "none", cursor: "pointer",
-                                    borderRight: i < 2 ? "1px solid #2a2a30" : "none",
-                                    fontFamily: "inherit", fontSize: 11, fontWeight: 700, letterSpacing: "0.08em",
-                                    background: isActive ? `${opt.color}15` : "transparent",
-                                    color: isActive ? opt.color : "#333",
+                                    flex: 1, padding: "8px 0", border: "none", cursor: "pointer", borderRadius: 9,
+                                    fontFamily: "inherit", fontSize: 12, fontWeight: 600, letterSpacing: "0.02em",
+                                    background: isActive ? `${opt.color}1e` : "transparent",
+                                    color: isActive ? opt.color : "#666",
+                                    boxShadow: isActive ? `inset 0 0 0 1px ${opt.color}44` : "none",
                                     transition: "all 0.15s",
                                   }}>
                                   {isActive ? (opt.choice === "yes" ? "✓ " : opt.choice === "no" ? "✕ " : "~ ") : ""}{opt.label}
