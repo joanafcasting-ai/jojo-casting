@@ -5,7 +5,7 @@ class ErrorBoundary extends React.Component {
   constructor(props) { super(props); this.state = { error: null }; }
   static getDerivedStateFromError(error) { return { error }; }
   render() {
-    if (this.state.error) return React.createElement("div", { style: { padding: 40, color: "#ef4444", background: "#0a0a0c", minHeight: "100vh", fontFamily: "monospace" } },
+    if (this.state.error) return React.createElement("div", { style: { padding: 40, color: "#ff453a", background: "#000000", minHeight: "100vh", fontFamily: "monospace" } },
       React.createElement("h2", null, "Erreur:"),
       React.createElement("pre", { style: { whiteSpace: "pre-wrap", fontSize: 13 } }, this.state.error.toString()),
       React.createElement("pre", { style: { whiteSpace: "pre-wrap", fontSize: 11, color: "#888", marginTop: 10 } }, this.state.error.stack)
@@ -15,9 +15,9 @@ class ErrorBoundary extends React.Component {
 }
 
 const AVAILABILITY = {
-  available: { label: "Dispo", color: "#22c55e", bg: "rgba(34,197,94,0.12)" },
-  pending: { label: "En attente", color: "#f59e0b", bg: "rgba(245,158,11,0.12)" },
-  unavailable: { label: "Indispo", color: "#ef4444", bg: "rgba(239,68,68,0.12)" },
+  available: { label: "Dispo", color: "#30d158", bg: "rgba(48,209,88,0.12)" },
+  pending: { label: "En attente", color: "#ffd60a", bg: "rgba(255,214,10,0.12)" },
+  unavailable: { label: "Indispo", color: "#ff453a", bg: "rgba(255,69,58,0.12)" },
 };
 
 const SOURCES = ["Agence", "Contact perso", "Instagram"];
@@ -27,16 +27,16 @@ const HAIR_COLORS = ["Noir", "Brun", "Châtain", "Blond", "Roux", "Gris", "Blanc
 const PROFILE_TYPES = ["Acteur", "Modèle", "Figurant"];
 
 const SELECTION = {
-  yes: { label: "Oui", color: "#22c55e", bg: "rgba(34,197,94,0.12)", icon: "✓" },
-  maybe: { label: "Peut-être", color: "#f59e0b", bg: "rgba(245,158,11,0.12)", icon: "?" },
-  no: { label: "Non", color: "#ef4444", bg: "rgba(239,68,68,0.12)", icon: "✕" },
+  yes: { label: "Oui", color: "#30d158", bg: "rgba(48,209,88,0.12)", icon: "✓" },
+  maybe: { label: "Peut-être", color: "#ffd60a", bg: "rgba(255,214,10,0.12)", icon: "?" },
+  no: { label: "Non", color: "#ff453a", bg: "rgba(255,69,58,0.12)", icon: "✕" },
 };
 
 const CONTACT_STATUS = {
   not_contacted: { label: "Non contacté", color: "#666", bg: "rgba(255,255,255,0.03)", icon: "○" },
-  contacted: { label: "Contacté", color: "#60a5fa", bg: "rgba(59,130,246,0.12)", icon: "✉" },
-  waiting: { label: "En attente", color: "#f59e0b", bg: "rgba(245,158,11,0.12)", icon: "⏳" },
-  confirmed: { label: "Confirmé", color: "#22c55e", bg: "rgba(34,197,94,0.12)", icon: "✓" },
+  contacted: { label: "Contacté", color: "#0a84ff", bg: "rgba(59,130,246,0.12)", icon: "✉" },
+  waiting: { label: "En attente", color: "#ffd60a", bg: "rgba(255,214,10,0.12)", icon: "⏳" },
+  confirmed: { label: "Confirmé", color: "#30d158", bg: "rgba(48,209,88,0.12)", icon: "✓" },
 };
 
 const CONTACT_METHODS = {
@@ -47,18 +47,18 @@ const CONTACT_METHODS = {
 
 const SLOT_AVAILABILITY = {
   pending: { label: "En attente", color: "#666", bg: "rgba(255,255,255,0.03)", icon: "⏳" },
-  invited: { label: "Convoqué", color: "#f59e0b", bg: "rgba(245,158,11,0.1)", icon: "📨" },
-  dispo: { label: "Confirmé", color: "#22c55e", bg: "rgba(34,197,94,0.1)", icon: "✓" },
-  not_dispo: { label: "Indisponible", color: "#ef4444", bg: "rgba(239,68,68,0.1)", icon: "✕" },
+  invited: { label: "Convoqué", color: "#ffd60a", bg: "rgba(255,214,10,0.1)", icon: "📨" },
+  dispo: { label: "Confirmé", color: "#30d158", bg: "rgba(48,209,88,0.1)", icon: "✓" },
+  not_dispo: { label: "Indisponible", color: "#ff453a", bg: "rgba(255,69,58,0.1)", icon: "✕" },
 };
 
 const ROLE_COLORS = [
-  { color: "#c9a44a", bg: "rgba(201,164,74,0.08)", border: "rgba(201,164,74,0.4)" },
-  { color: "#60a5fa", bg: "rgba(96,165,250,0.08)", border: "rgba(96,165,250,0.4)" },
-  { color: "#a855f7", bg: "rgba(168,85,247,0.08)", border: "rgba(168,85,247,0.4)" },
+  { color: "#d4af61", bg: "rgba(212,175,97,0.08)", border: "rgba(212,175,97,0.4)" },
+  { color: "#0a84ff", bg: "rgba(10,132,255,0.08)", border: "rgba(10,132,255,0.4)" },
+  { color: "#bf5af2", bg: "rgba(191,90,242,0.08)", border: "rgba(191,90,242,0.4)" },
   { color: "#f472b6", bg: "rgba(244,114,182,0.08)", border: "rgba(244,114,182,0.4)" },
   { color: "#34d399", bg: "rgba(52,211,153,0.08)", border: "rgba(52,211,153,0.4)" },
-  { color: "#fb923c", bg: "rgba(251,146,60,0.08)", border: "rgba(251,146,60,0.4)" },
+  { color: "#ff9f0a", bg: "rgba(255,159,10,0.08)", border: "rgba(255,159,10,0.4)" },
   { color: "#f87171", bg: "rgba(248,113,113,0.08)", border: "rgba(248,113,113,0.4)" },
   { color: "#38bdf8", bg: "rgba(56,189,248,0.08)", border: "rgba(56,189,248,0.4)" },
   { color: "#a3e635", bg: "rgba(163,230,53,0.08)", border: "rgba(163,230,53,0.4)" },
@@ -68,9 +68,9 @@ const ROLE_COLORS = [
 const DEFAULT_ROLES = ["Rôle principal", "Second rôle"];
 
 const CASTING_PASS_STATUS = {
-  not_yet: { label: "Pas encore", color: "#f59e0b", bg: "rgba(245,158,11,0.1)", icon: "⏳" },
-  passed: { label: "Passé", color: "#22c55e", bg: "rgba(34,197,94,0.1)", icon: "✓" },
-  absent: { label: "Absent", color: "#ef4444", bg: "rgba(239,68,68,0.1)", icon: "✕" },
+  not_yet: { label: "Pas encore", color: "#ffd60a", bg: "rgba(255,214,10,0.1)", icon: "⏳" },
+  passed: { label: "Passé", color: "#30d158", bg: "rgba(48,209,88,0.1)", icon: "✓" },
+  absent: { label: "Absent", color: "#ff453a", bg: "rgba(255,69,58,0.1)", icon: "✕" },
 };
 
 const PROJET_SEX_OPTS = ["Homme", "Femme", "Non-binaire"];
@@ -120,8 +120,8 @@ const getEmbedUrl = (url) => {
 
 const EmbedPlayer = ({ url, height = 180 }) => {
   const embedUrl = getEmbedUrl(url);
-  if (!embedUrl) return <a href={url} target="_blank" rel="noopener noreferrer" style={{ color: "#60a5fa", fontSize: 12, textDecoration: "none" }}>▶ {url.length > 40 ? url.slice(0, 40) + "..." : url}</a>;
-  return <iframe src={embedUrl} style={{ width: "100%", height, borderRadius: 8, border: "1px solid #2a2a2e", background: "#000" }} allow="autoplay; encrypted-media" allowFullScreen frameBorder="0" />;
+  if (!embedUrl) return <a href={url} target="_blank" rel="noopener noreferrer" style={{ color: "#0a84ff", fontSize: 12, textDecoration: "none" }}>▶ {url.length > 40 ? url.slice(0, 40) + "..." : url}</a>;
+  return <iframe src={embedUrl} style={{ width: "100%", height, borderRadius: 8, border: "1px solid #3a3a40", background: "#000" }} allow="autoplay; encrypted-media" allowFullScreen frameBorder="0" />;
 };
 
 const decodeHtmlEntities = (str) => {
@@ -310,13 +310,13 @@ function Modal({ open, onClose, title, children, width = 600 }) {
       <div
         onClick={e => e.stopPropagation()}
         style={{
-          background: "#1a1a1e", borderRadius: 16, padding: "32px 36px",
+          background: "#2a2a30", borderRadius: 16, padding: "32px 36px",
           width: "90%", maxWidth: width, maxHeight: "85vh", overflowY: "auto",
-          border: "1px solid #2a2a2e", boxShadow: "0 24px 80px rgba(0,0,0,0.6)",
+          border: "1px solid #3a3a40", boxShadow: "0 24px 80px rgba(0,0,0,0.6)",
         }}
       >
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 28 }}>
-          <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: "#f0f0f0", letterSpacing: "-0.01em" }}>{title}</h2>
+          <h2 style={{ margin: 0, fontSize: 20, fontWeight: 700, color: "#f5f5f7", letterSpacing: "-0.01em" }}>{title}</h2>
           <button
             onClick={onClose}
             style={{ background: "none", border: "none", color: "#666", fontSize: 24, cursor: "pointer", fontFamily: "inherit" }}
@@ -337,13 +337,13 @@ function InputField({ label, value, onChange, placeholder, type = "text", textar
     placeholder,
     type,
     style: {
-      width: "100%", padding: "10px 14px", background: "#111114", border: "1px solid #2a2a2e",
-      borderRadius: 10, color: "#e0e0e0", fontSize: 14, fontFamily: "'DM Sans', sans-serif",
+      width: "100%", padding: "10px 14px", background: "#1c1c1f", border: "1px solid #3a3a40",
+      borderRadius: 10, color: "#ebebf0", fontSize: 14, fontFamily: "inherit",
       outline: "none", resize: textarea ? "vertical" : "none",
       transition: "border-color 0.2s",
     },
-    onFocus: e => e.target.style.borderColor = "#c9a44a",
-    onBlur: e => e.target.style.borderColor = "#2a2a2e",
+    onFocus: e => e.target.style.borderColor = "#d4af61",
+    onBlur: e => e.target.style.borderColor = "#3a3a40",
   };
   return (
     <div style={{ marginBottom: 16 }}>
@@ -365,8 +365,8 @@ function SelectField({ label, value, onChange, options }) {
         value={value || ""}
         onChange={e => onChange(e.target.value)}
         style={{
-          width: "100%", padding: "10px 14px", background: "#111114", border: "1px solid #2a2a2e",
-          borderRadius: 10, color: "#e0e0e0", fontSize: 14, fontFamily: "'DM Sans', sans-serif",
+          width: "100%", padding: "10px 14px", background: "#1c1c1f", border: "1px solid #3a3a40",
+          borderRadius: 10, color: "#ebebf0", fontSize: 14, fontFamily: "inherit",
           outline: "none", appearance: "none", cursor: "pointer",
         }}
       >
@@ -396,18 +396,18 @@ function ProfileCard({ profile, onEdit, onStatusChange, viewMode }) {
       onClick={onEdit}
       style={{
         cursor: "pointer", display: "grid", gridTemplateColumns: "160px 1fr",
-        background: "#0c0c0e", borderRadius: 6, overflow: "hidden",
-        border: "1px solid #1a1a1e", transition: "all 0.3s", minHeight: 210,
+        background: "#101013", borderRadius: 6, overflow: "hidden",
+        border: "1px solid #2a2a30", transition: "all 0.3s", minHeight: 210,
       }}
-      onMouseEnter={e => { e.currentTarget.style.borderColor = "#c9a44a33"; e.currentTarget.style.boxShadow = "0 8px 32px rgba(0,0,0,0.4)"; }}
-      onMouseLeave={e => { e.currentTarget.style.borderColor = "#1a1a1e"; e.currentTarget.style.boxShadow = ""; }}
+      onMouseEnter={e => { e.currentTarget.style.borderColor = "#d4af6133"; e.currentTarget.style.boxShadow = "0 8px 32px rgba(0,0,0,0.4)"; }}
+      onMouseLeave={e => { e.currentTarget.style.borderColor = "#2a2a30"; e.currentTarget.style.boxShadow = ""; }}
     >
       {/* Photo */}
       <div style={{ position: "relative", overflow: "hidden" }}>
         {mainPhoto ? (
           <img src={mainPhoto} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
         ) : (
-          <div style={{ width: "100%", height: "100%", background: "#111114", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 32 }}>◎</div>
+          <div style={{ width: "100%", height: "100%", background: "#1c1c1f", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 32 }}>◎</div>
         )}
         <div style={{ position: "absolute", bottom: 6, left: 6 }} onClick={e => e.stopPropagation()}>
           <button onClick={() => onStatusChange(nextStatus())} style={{ padding: "4px 10px", background: "rgba(0,0,0,0.7)", borderRadius: 4, border: "none", fontSize: 11, color: av.color, fontWeight: 700, letterSpacing: "0.1em", backdropFilter: "blur(4px)", cursor: "pointer", fontFamily: "inherit" }}>● {av.label.toUpperCase()}</button>
@@ -417,7 +417,7 @@ function ProfileCard({ profile, onEdit, onStatusChange, viewMode }) {
       <div style={{ padding: "16px 20px", display: "flex", flexDirection: "column", justifyContent: "center", overflow: "hidden" }}>
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, marginBottom: 5 }}>
           <div style={{ minWidth: 0 }}>
-            <div style={{ fontSize: 24, fontWeight: 900, color: "#fff", fontFamily: "'Bebas Neue','DM Sans',sans-serif", letterSpacing: "0.03em", lineHeight: 1.1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+            <div style={{ fontSize: 24, fontWeight: 900, color: "#fff", fontFamily: "inherit", letterSpacing: "0.03em", lineHeight: 1.1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
               {[profile.firstName, profile.name].filter(Boolean).join(" ") || "Sans nom"}
             </div>
             <div style={{ fontSize: 15, color: "#777", marginTop: 5, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
@@ -425,25 +425,25 @@ function ProfileCard({ profile, onEdit, onStatusChange, viewMode }) {
             </div>
           </div>
           <div style={{ display: "flex", gap: 4, flexShrink: 0, alignItems: "center" }}>
-            {profile.saveToCastingFile && <span style={{ fontSize: 14, color: "#a855f7" }} title="Fichier casting">📁</span>}
-            {profile.shareContacts && <span style={{ fontSize: 14, color: "#22c55e" }} title="Contacts partagés">🔓</span>}
+            {profile.saveToCastingFile && <span style={{ fontSize: 14, color: "#bf5af2" }} title="Fichier casting">📁</span>}
+            {profile.shareContacts && <span style={{ fontSize: 14, color: "#30d158" }} title="Contacts partagés">🔓</span>}
           </div>
         </div>
         {/* Agency */}
         {profile.agency && (
-          <div style={{ fontSize: 16, color: "#c9a44a", fontWeight: 700, marginBottom: 6, display: "flex", alignItems: "center", gap: 6 }}>
-            <div style={{ width: 10, height: 1, background: "#c9a44a", flexShrink: 0 }} />{profile.agency}
+          <div style={{ fontSize: 16, color: "#d4af61", fontWeight: 700, marginBottom: 6, display: "flex", alignItems: "center", gap: 6 }}>
+            <div style={{ width: 10, height: 1, background: "#d4af61", flexShrink: 0 }} />{profile.agency}
           </div>
         )}
         {/* Type + level + source */}
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 6 }}>
-          {profile.profileType && <span style={{ fontSize: 12, padding: "4px 10px", background: "rgba(168,85,247,0.1)", borderRadius: 4, color: "#a855f7", fontWeight: 700, textTransform: "uppercase" }}>{profile.profileType}</span>}
-          {profile.actingLevel > 0 && <div style={{ display: "flex", gap: 3 }}>{[1,2,3,4,5].map(n => <div key={n} style={{ width: 14, height: 3, background: n <= profile.actingLevel ? "#c9a44a" : "#222" }} />)}</div>}
+          {profile.profileType && <span style={{ fontSize: 12, padding: "4px 10px", background: "rgba(191,90,242,0.1)", borderRadius: 4, color: "#bf5af2", fontWeight: 700, textTransform: "uppercase" }}>{profile.profileType}</span>}
+          {profile.actingLevel > 0 && <div style={{ display: "flex", gap: 3 }}>{[1,2,3,4,5].map(n => <div key={n} style={{ width: 14, height: 3, background: n <= profile.actingLevel ? "#d4af61" : "#222" }} />)}</div>}
           <span style={{ fontSize: 11, color: "#444", fontWeight: 600, marginLeft: "auto" }}>{profile.source || "—"}</span>
         </div>
         {/* Bottom row */}
-        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", paddingTop: 6, borderTop: "1px solid #1a1a1e", alignItems: "center" }}>
-          {tapes > 0 && <span style={{ fontSize: 12, color: "#60a5fa", fontWeight: 600 }}>▶ {tapes} selftape{tapes > 1 ? "s" : ""}</span>}
+        <div style={{ display: "flex", gap: 8, flexWrap: "wrap", paddingTop: 6, borderTop: "1px solid #2a2a30", alignItems: "center" }}>
+          {tapes > 0 && <span style={{ fontSize: 12, color: "#0a84ff", fontWeight: 600 }}>▶ {tapes} selftape{tapes > 1 ? "s" : ""}</span>}
           {hasContacts && showContacts && (
             <>
               {profile.email && <span style={{ fontSize: 12, color: "#888", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: 180 }}>✉ {profile.email}</span>}
@@ -465,8 +465,8 @@ function VideoThumbnail({ video, onRemove, index }) {
   return (
     <div style={{
       position: "relative", width: 140, height: 90, borderRadius: 8,
-      overflow: "hidden", flexShrink: 0, background: "#0c0c0e",
-      border: "1px solid #2a2a2e",
+      overflow: "hidden", flexShrink: 0, background: "#101013",
+      border: "1px solid #3a3a40",
     }}>
       <video
         ref={vidRef}
@@ -526,7 +526,7 @@ function VideoPlayer({ video, onClose }) {
       <div onClick={e => e.stopPropagation()} style={{ maxWidth: "90%", maxHeight: "85vh", position: "relative" }}>
         {error ? (
           <div style={{
-            padding: "40px 60px", background: "#1a1a1e", borderRadius: 12,
+            padding: "40px 60px", background: "#2a2a30", borderRadius: 12,
             color: "#888", textAlign: "center",
           }}>
             <div style={{ fontSize: 36, marginBottom: 12, opacity: 0.5 }}>⚠</div>
@@ -675,7 +675,7 @@ function ProfileForm({ profile, onSave, onDelete, onClose }) {
         {/* Photo URL import */}
         <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
           <input placeholder="📎 Coller une URL d'image..."
-            style={{ flex: 1, padding: "6px 10px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 6, color: "#e0e0e0", fontSize: 10, fontFamily: "'DM Sans',sans-serif", outline: "none" }}
+            style={{ flex: 1, padding: "6px 10px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 6, color: "#ebebf0", fontSize: 10, fontFamily: "inherit", outline: "none" }}
             onKeyDown={e => {
               if (e.key === "Enter" && e.target.value.trim()) {
                 update("photos", [...(form.photos || []), e.target.value.trim()].slice(0, 3));
@@ -686,7 +686,7 @@ function ProfileForm({ profile, onSave, onDelete, onClose }) {
             const inp = e.target.previousSibling;
             if (inp?.value?.trim()) { update("photos", [...(form.photos || []), inp.value.trim()].slice(0, 3)); inp.value = ""; }
           }}
-            style={{ padding: "6px 10px", background: "rgba(168,85,247,0.08)", border: "1px solid rgba(168,85,247,0.2)", borderRadius: 6, color: "#a855f7", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap" }}>
+            style={{ padding: "6px 10px", background: "rgba(191,90,242,0.08)", border: "1px solid rgba(191,90,242,0.2)", borderRadius: 6, color: "#bf5af2", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap" }}>
             + URL
           </button>
         </div>
@@ -719,8 +719,8 @@ function ProfileForm({ profile, onSave, onDelete, onClose }) {
               style={{
                 width: 36, height: 36, borderRadius: 8, border: "none", cursor: "pointer",
                 fontSize: 18, fontFamily: "inherit", transition: "all 0.2s",
-                background: n <= (form.actingLevel || 0) ? "rgba(201,164,74,0.15)" : "rgba(255,255,255,0.02)",
-                color: n <= (form.actingLevel || 0) ? "#c9a44a" : "#333",
+                background: n <= (form.actingLevel || 0) ? "rgba(212,175,97,0.15)" : "rgba(255,255,255,0.02)",
+                color: n <= (form.actingLevel || 0) ? "#d4af61" : "#333",
               }}
             >
               ★
@@ -735,7 +735,7 @@ function ProfileForm({ profile, onSave, onDelete, onClose }) {
       {/* Selftape Links section */}
       <div style={{
         margin: "16px 0", padding: "16px 20px", background: "rgba(255,255,255,0.02)",
-        borderRadius: 12, border: "1px solid #1e1e22",
+        borderRadius: 12, border: "1px solid #2e2e34",
       }}>
         <label style={{ display: "block", fontSize: 12, color: "#888", marginBottom: 12, fontWeight: 500, letterSpacing: "0.04em", textTransform: "uppercase" }}>
           Selftapes — Liens ({(form.selftapeLinks || []).length})
@@ -743,7 +743,7 @@ function ProfileForm({ profile, onSave, onDelete, onClose }) {
         {(form.selftapeLinks || []).map((link, i) => (
           <React.Fragment key={i}>
             <div style={{ display: "flex", gap: 8, marginBottom: 8, alignItems: "center" }}>
-              <span style={{ fontSize: 11, color: "#c9a44a", fontWeight: 600, minWidth: 52 }}>Essai {i + 1}</span>
+              <span style={{ fontSize: 11, color: "#d4af61", fontWeight: 600, minWidth: 52 }}>Essai {i + 1}</span>
               <input
                 value={link}
                 onChange={e => {
@@ -753,12 +753,12 @@ function ProfileForm({ profile, onSave, onDelete, onClose }) {
                 }}
                 placeholder="https://drive.google.com/... ou https://youtube.com/..."
                 style={{
-                  flex: 1, padding: "8px 12px", background: "#111114", border: "1px solid #2a2a2e",
-                  borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "'DM Sans', sans-serif",
+                  flex: 1, padding: "8px 12px", background: "#1c1c1f", border: "1px solid #3a3a40",
+                  borderRadius: 8, color: "#ebebf0", fontSize: 13, fontFamily: "inherit",
                   outline: "none",
                 }}
-                onFocus={e => e.target.style.borderColor = "#c9a44a"}
-                onBlur={e => e.target.style.borderColor = "#2a2a2e"}
+                onFocus={e => e.target.style.borderColor = "#d4af61"}
+                onBlur={e => e.target.style.borderColor = "#3a3a40"}
               />
               <button
                 onClick={() => {
@@ -789,7 +789,7 @@ function ProfileForm({ profile, onSave, onDelete, onClose }) {
             color: "#888", cursor: "pointer", fontSize: 12, fontFamily: "inherit",
             fontWeight: 500, transition: "all 0.2s", marginTop: 4,
           }}
-          onMouseEnter={e => { e.currentTarget.style.borderColor = "#c9a44a"; e.currentTarget.style.color = "#c9a44a"; }}
+          onMouseEnter={e => { e.currentTarget.style.borderColor = "#d4af61"; e.currentTarget.style.color = "#d4af61"; }}
           onMouseLeave={e => { e.currentTarget.style.borderColor = "#333"; e.currentTarget.style.color = "#888"; }}
         >
           + Ajouter un lien selftape
@@ -799,7 +799,7 @@ function ProfileForm({ profile, onSave, onDelete, onClose }) {
       {/* Contact info section */}
       <div style={{
         margin: "20px 0 16px", padding: "20px", background: "rgba(255,255,255,0.02)",
-        borderRadius: 12, border: "1px solid #1e1e22",
+        borderRadius: 12, border: "1px solid #2e2e34",
       }}>
         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
           <label style={{ fontSize: 12, color: "#888", fontWeight: 500, letterSpacing: "0.04em", textTransform: "uppercase", display: "flex", alignItems: "center", gap: 8 }}>
@@ -807,14 +807,14 @@ function ProfileForm({ profile, onSave, onDelete, onClose }) {
           </label>
           <label style={{
             display: "flex", alignItems: "center", gap: 8, cursor: "pointer",
-            fontSize: 12, color: form.shareContacts ? "#22c55e" : "#555", fontWeight: 500,
+            fontSize: 12, color: form.shareContacts ? "#30d158" : "#555", fontWeight: 500,
             transition: "color 0.2s",
           }}>
             <div
               onClick={() => update("shareContacts", !form.shareContacts)}
               style={{
                 width: 36, height: 20, borderRadius: 10, padding: 2,
-                background: form.shareContacts ? "#22c55e" : "#333",
+                background: form.shareContacts ? "#30d158" : "#333",
                 cursor: "pointer", transition: "background 0.2s",
                 display: "flex", alignItems: "center",
               }}
@@ -859,7 +859,7 @@ function ProfileForm({ profile, onSave, onDelete, onClose }) {
               color: "#555", fontSize: 13, fontFamily: "inherit", gap: 4,
               transition: "border-color 0.2s",
             }}
-            onMouseEnter={e => e.currentTarget.style.borderColor = "#c9a44a"}
+            onMouseEnter={e => e.currentTarget.style.borderColor = "#d4af61"}
             onMouseLeave={e => e.currentTarget.style.borderColor = "#444"}
           >
             <span style={{ fontSize: 22 }}>{videoUploading ? "⏳" : "+"}</span>
@@ -877,21 +877,21 @@ function ProfileForm({ profile, onSave, onDelete, onClose }) {
         onClick={() => update("saveToCastingFile", !form.saveToCastingFile)}
         style={{
           display: "flex", alignItems: "center", gap: 10, padding: "12px 16px",
-          background: form.saveToCastingFile ? "rgba(201,164,74,0.06)" : "rgba(255,255,255,0.02)",
-          border: form.saveToCastingFile ? "1px solid rgba(201,164,74,0.3)" : "1px solid #1e1e22",
+          background: form.saveToCastingFile ? "rgba(212,175,97,0.06)" : "rgba(255,255,255,0.02)",
+          border: form.saveToCastingFile ? "1px solid rgba(212,175,97,0.3)" : "1px solid #2e2e34",
           borderRadius: 12, cursor: "pointer", marginTop: 16, transition: "all 0.2s",
         }}
       >
         <div style={{
           width: 20, height: 20, borderRadius: 6, display: "flex", alignItems: "center",
           justifyContent: "center", fontSize: 12, fontWeight: 700,
-          background: form.saveToCastingFile ? "#c9a44a" : "transparent",
+          background: form.saveToCastingFile ? "#d4af61" : "transparent",
           border: form.saveToCastingFile ? "none" : "2px solid #444",
           color: form.saveToCastingFile ? "#000" : "transparent",
           transition: "all 0.2s",
         }}>✓</div>
         <div>
-          <div style={{ fontSize: 13, fontWeight: 600, color: form.saveToCastingFile ? "#c9a44a" : "#999" }}>
+          <div style={{ fontSize: 13, fontWeight: 600, color: form.saveToCastingFile ? "#d4af61" : "#999" }}>
             📁 Enregistrer dans mon fichier casting
           </div>
           <div style={{ fontSize: 10, color: "#555" }}>
@@ -906,8 +906,8 @@ function ProfileForm({ profile, onSave, onDelete, onClose }) {
             <button
               onClick={onDelete}
               style={{
-                padding: "10px 20px", background: "rgba(239,68,68,0.1)", color: "#ef4444",
-                border: "1px solid rgba(239,68,68,0.2)", borderRadius: 10, cursor: "pointer",
+                padding: "10px 20px", background: "rgba(255,69,58,0.1)", color: "#ff453a",
+                border: "1px solid rgba(255,69,58,0.2)", borderRadius: 10, cursor: "pointer",
                 fontSize: 13, fontWeight: 600, fontFamily: "inherit",
               }}
             >
@@ -929,7 +929,7 @@ function ProfileForm({ profile, onSave, onDelete, onClose }) {
           <button
             onClick={() => onSave(form)}
             style={{
-              padding: "10px 28px", background: "linear-gradient(135deg, #c9a44a, #a67c2e)",
+              padding: "10px 28px", background: "linear-gradient(135deg, #d4af61, #b08a3e)",
               color: "#000", border: "none", borderRadius: 10, cursor: "pointer",
               fontSize: 13, fontWeight: 700, fontFamily: "inherit", letterSpacing: "0.02em",
             }}
@@ -963,18 +963,18 @@ function StartScreen({ onStart }) {
   return (
     <div style={{
       minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center",
-      background: "#0a0a0c",
+      background: "#000000",
     }}>
       <div style={{
         width: "90%", maxWidth: 520, padding: "48px 44px",
-        background: "#111114", borderRadius: 20, border: "1px solid #1e1e22",
+        background: "#1c1c1f", borderRadius: 20, border: "1px solid #2e2e34",
         boxShadow: "0 32px 100px rgba(0,0,0,0.5)",
       }}>
         <div style={{ textAlign: "center", marginBottom: 40 }}>
-          <div style={{ fontSize: 11, letterSpacing: "0.25em", textTransform: "uppercase", color: "#c9a44a", fontWeight: 600, marginBottom: 12 }}>
+          <div style={{ fontSize: 11, letterSpacing: "0.25em", textTransform: "uppercase", color: "#d4af61", fontWeight: 600, marginBottom: 12 }}>
             Casting Director
           </div>
-          <h1 style={{ margin: 0, fontSize: 28, fontWeight: 800, color: "#f0f0f0", letterSpacing: "-0.02em" }}>
+          <h1 style={{ margin: 0, fontSize: 28, fontWeight: 800, color: "#f5f5f7", letterSpacing: "-0.02em" }}>
             Nouveau Projet
           </h1>
         </div>
@@ -989,14 +989,14 @@ function StartScreen({ onStart }) {
             {roles.map((role, i) => (
               <span key={i} style={{
                 display: "inline-flex", alignItems: "center", gap: 8,
-                background: "rgba(201,164,74,0.08)", color: "#c9a44a",
-                border: "1px solid rgba(201,164,74,0.2)", borderRadius: 8,
+                background: "rgba(212,175,97,0.08)", color: "#d4af61",
+                border: "1px solid rgba(212,175,97,0.2)", borderRadius: 8,
                 padding: "6px 14px", fontSize: 13, fontWeight: 500,
               }}>
                 {role}
                 <button
                   onClick={() => removeRole(i)}
-                  style={{ background: "none", border: "none", color: "#c9a44a88", cursor: "pointer", fontSize: 16, padding: 0, fontFamily: "inherit" }}
+                  style={{ background: "none", border: "none", color: "#d4af6188", cursor: "pointer", fontSize: 16, padding: 0, fontFamily: "inherit" }}
                 >
                   ×
                 </button>
@@ -1010,14 +1010,14 @@ function StartScreen({ onStart }) {
               onKeyDown={e => e.key === "Enter" && addRole()}
               placeholder="Ajouter un rôle..."
               style={{
-                flex: 1, padding: "10px 14px", background: "#0a0a0c", border: "1px solid #2a2a2e",
-                borderRadius: 10, color: "#e0e0e0", fontSize: 14, fontFamily: "'DM Sans', sans-serif", outline: "none",
+                flex: 1, padding: "10px 14px", background: "#000000", border: "1px solid #3a3a40",
+                borderRadius: 10, color: "#ebebf0", fontSize: 14, fontFamily: "inherit", outline: "none",
               }}
             />
             <button
               onClick={addRole}
               style={{
-                padding: "10px 18px", background: "#1e1e22", color: "#ccc",
+                padding: "10px 18px", background: "#2e2e34", color: "#ccc",
                 border: "1px solid #333", borderRadius: 10, cursor: "pointer",
                 fontSize: 13, fontWeight: 600, fontFamily: "inherit",
               }}
@@ -1033,7 +1033,7 @@ function StartScreen({ onStart }) {
           style={{
             width: "100%", padding: "14px", marginTop: 24,
             background: projectName.trim() && roles.length > 0
-              ? "linear-gradient(135deg, #c9a44a, #a67c2e)"
+              ? "linear-gradient(135deg, #d4af61, #b08a3e)"
               : "#222",
             color: projectName.trim() && roles.length > 0 ? "#000" : "#555",
             border: "none", borderRadius: 12, cursor: projectName.trim() && roles.length > 0 ? "pointer" : "not-allowed",
@@ -1079,8 +1079,8 @@ function RealisateurProfileCard({ profile, selection, onSelect, onComment }) {
 
   return (
     <div style={{
-      background: "#0c0c0e", borderRadius: 3, overflow: "hidden",
-      border: sel ? `1px solid ${sel.color}20` : "1px solid #1a1a1e",
+      background: "#101013", borderRadius: 3, overflow: "hidden",
+      border: sel ? `1px solid ${sel.color}20` : "1px solid #2a2a30",
       transition: "all 0.3s", display: "grid", gridTemplateColumns: "130px 1fr",
       minHeight: 200,
     }}>
@@ -1089,7 +1089,7 @@ function RealisateurProfileCard({ profile, selection, onSelect, onComment }) {
         {mainPhoto ? (
           <img src={mainPhoto} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
         ) : (
-          <div style={{ width: "100%", height: "100%", background: "#111114", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 32 }}>◎</div>
+          <div style={{ width: "100%", height: "100%", background: "#1c1c1f", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 32 }}>◎</div>
         )}
         {sel && <div style={{ position: "absolute", top: 0, left: 0, right: 0, height: 3, background: sel.color }} />}
         <div style={{ position: "absolute", bottom: 6, left: 6, padding: "2px 6px", background: "rgba(0,0,0,0.7)", borderRadius: 2, fontSize: 8, color: av.color, fontWeight: 700, letterSpacing: "0.1em", backdropFilter: "blur(4px)" }}>● {av.label.substring(0, 5).toUpperCase()}</div>
@@ -1099,7 +1099,7 @@ function RealisateurProfileCard({ profile, selection, onSelect, onComment }) {
       <div style={{ padding: "10px 14px", display: "flex", flexDirection: "column" }}>
         <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: 8, marginBottom: 2 }}>
           <div style={{ minWidth: 0 }}>
-            <div style={{ fontSize: 17, fontWeight: 900, color: "#fff", fontFamily: "'Bebas Neue','DM Sans',sans-serif", letterSpacing: "0.03em", lineHeight: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
+            <div style={{ fontSize: 17, fontWeight: 900, color: "#fff", fontFamily: "inherit", letterSpacing: "0.03em", lineHeight: 1, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>
               {[profile.firstName, profile.name].filter(Boolean).join(" ") || "Sans nom"}
             </div>
             <div style={{ fontSize: 11, color: "#777", marginTop: 3 }}>
@@ -1108,24 +1108,24 @@ function RealisateurProfileCard({ profile, selection, onSelect, onComment }) {
           </div>
         </div>
         {profile.agency && (
-          <div style={{ fontSize: 11, color: "#c9a44a", fontWeight: 700, marginBottom: 4, display: "flex", alignItems: "center", gap: 5 }}>
-            <div style={{ width: 8, height: 1, background: "#c9a44a", flexShrink: 0 }} />{profile.agency}
+          <div style={{ fontSize: 11, color: "#d4af61", fontWeight: 700, marginBottom: 4, display: "flex", alignItems: "center", gap: 5 }}>
+            <div style={{ width: 8, height: 1, background: "#d4af61", flexShrink: 0 }} />{profile.agency}
           </div>
         )}
         {profile.measurements && <div style={{ fontSize: 10, color: "#555", marginBottom: 4 }}>{profile.measurements}</div>}
         <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-          {profile.profileType && <span style={{ fontSize: 9, padding: "2px 7px", background: "rgba(168,85,247,0.1)", borderRadius: 3, color: "#a855f7", fontWeight: 700, textTransform: "uppercase" }}>{profile.profileType}</span>}
-          {profile.actingLevel > 0 && <div style={{ display: "flex", gap: 2 }}>{[1,2,3,4,5].map(n => <div key={n} style={{ width: 12, height: 2, background: n <= profile.actingLevel ? "#c9a44a" : "#222" }} />)}</div>}
+          {profile.profileType && <span style={{ fontSize: 9, padding: "2px 7px", background: "rgba(191,90,242,0.1)", borderRadius: 3, color: "#bf5af2", fontWeight: 700, textTransform: "uppercase" }}>{profile.profileType}</span>}
+          {profile.actingLevel > 0 && <div style={{ display: "flex", gap: 2 }}>{[1,2,3,4,5].map(n => <div key={n} style={{ width: 12, height: 2, background: n <= profile.actingLevel ? "#d4af61" : "#222" }} />)}</div>}
         </div>
         {/* Selftapes */}
         {hasSelftapes && (
           <div style={{ marginBottom: 4 }}>
             <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 4 }}>
               {(profile.selftapeLinks || []).filter(l => l).map((link, i) => (
-                <a key={i} href={link} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ fontSize: 10, color: "#60a5fa", padding: "3px 8px", background: "rgba(96,165,250,0.08)", borderRadius: 3, textDecoration: "none", fontWeight: 600 }}>▶ Tape {i + 1}</a>
+                <a key={i} href={link} target="_blank" rel="noopener noreferrer" onClick={e => e.stopPropagation()} style={{ fontSize: 10, color: "#0a84ff", padding: "3px 8px", background: "rgba(10,132,255,0.08)", borderRadius: 3, textDecoration: "none", fontWeight: 600 }}>▶ Tape {i + 1}</a>
               ))}
               {(profile.selftapeVideos || []).map((v, i) => (
-                <button key={i} onClick={() => setPlayingVideo(v)} style={{ fontSize: 10, color: "#c9a44a", padding: "3px 8px", background: "rgba(201,164,74,0.08)", borderRadius: 3, border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>⬆ {i + 1}</button>
+                <button key={i} onClick={() => setPlayingVideo(v)} style={{ fontSize: 10, color: "#d4af61", padding: "3px 8px", background: "rgba(212,175,97,0.08)", borderRadius: 3, border: "none", cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>⬆ {i + 1}</button>
               ))}
             </div>
             {(profile.selftapeLinks || []).filter(l => l && getEmbedUrl(l)).slice(0, 1).map((link, i) => (
@@ -1143,13 +1143,13 @@ function RealisateurProfileCard({ profile, selection, onSelect, onComment }) {
           </div>
         )}
         {/* Vote buttons */}
-        <div style={{ display: "flex", gap: 4, marginTop: "auto", paddingTop: 6, borderTop: "1px solid #1a1a1e" }}>
+        <div style={{ display: "flex", gap: 4, marginTop: "auto", paddingTop: 6, borderTop: "1px solid #2a2a30" }}>
           {Object.entries(SELECTION).map(([key, s]) => (
             <button key={key} onClick={() => onSelect(key)} style={{
               flex: 1, padding: "6px 0", borderRadius: 3, fontSize: 10, fontWeight: 800,
-              fontFamily: "'Bebas Neue','DM Sans',sans-serif", letterSpacing: "0.08em",
+              fontFamily: "inherit", letterSpacing: "0.08em",
               cursor: "pointer", border: "none", transition: "all 0.2s",
-              background: selection?.choice === key ? s.color : "#141416",
+              background: selection?.choice === key ? s.color : "#232327",
               color: selection?.choice === key ? "#000" : "#444",
             }}>{s.icon} {s.label}</button>
           ))}
@@ -1159,7 +1159,7 @@ function RealisateurProfileCard({ profile, selection, onSelect, onComment }) {
           {!showComment && !selection?.comment ? (
             <button onClick={() => setShowComment(true)} style={{ background: "none", border: "none", color: "#444", cursor: "pointer", fontSize: 10, fontFamily: "inherit", padding: 0 }}>+ Commentaire</button>
           ) : (
-            <textarea value={selection?.comment || ""} onChange={e => onComment(e.target.value)} autoFocus={showComment && !selection?.comment} placeholder="Commentaire..." rows={2} style={{ width: "100%", padding: "6px 8px", background: "#111114", border: "1px solid #2a2a2e", borderRadius: 4, color: "#ccc", fontSize: 11, fontFamily: "'DM Sans',sans-serif", outline: "none", resize: "vertical", boxSizing: "border-box" }} />
+            <textarea value={selection?.comment || ""} onChange={e => onComment(e.target.value)} autoFocus={showComment && !selection?.comment} placeholder="Commentaire..." rows={2} style={{ width: "100%", padding: "6px 8px", background: "#1c1c1f", border: "1px solid #3a3a40", borderRadius: 4, color: "#ccc", fontSize: 11, fontFamily: "inherit", outline: "none", resize: "vertical", boxSizing: "border-box" }} />
           )}
         </div>
       </div>
@@ -1248,15 +1248,15 @@ function ContactModal({ profile, contact, projectName, onUpdate, onClose }) {
       {/* Profile summary header */}
       <div style={{
         display: "flex", gap: 16, marginBottom: 24, padding: "16px",
-        background: "#111114", borderRadius: 12, border: "1px solid #1e1e22",
+        background: "#1c1c1f", borderRadius: 12, border: "1px solid #2e2e34",
       }}>
         {profile.photos?.[0] ? (
           <img src={profile.photos[0]} alt="" style={{ width: 56, height: 70, objectFit: "cover", borderRadius: 8 }} />
         ) : (
-          <div style={{ width: 56, height: 70, background: "#0c0c0e", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 24 }}>◎</div>
+          <div style={{ width: 56, height: 70, background: "#101013", borderRadius: 8, display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 24 }}>◎</div>
         )}
         <div style={{ flex: 1 }}>
-          <div style={{ fontSize: 16, fontWeight: 700, color: "#f0f0f0", marginBottom: 4 }}>{[profile.firstName, profile.name].filter(Boolean).join(" ") || "Sans nom"}</div>
+          <div style={{ fontSize: 16, fontWeight: 700, color: "#f5f5f7", marginBottom: 4 }}>{[profile.firstName, profile.name].filter(Boolean).join(" ") || "Sans nom"}</div>
           <div style={{ fontSize: 12, color: "#777", marginBottom: 4 }}>
             {[profile.age ? `${profile.age} ans` : null, profile.agency].filter(Boolean).join(" · ")}
           </div>
@@ -1283,9 +1283,9 @@ function ContactModal({ profile, contact, projectName, onUpdate, onClose }) {
               style={{
                 flex: 1, padding: "10px 12px", borderRadius: 10, cursor: "pointer",
                 fontSize: 12, fontWeight: 600, fontFamily: "inherit",
-                border: method === key ? "1.5px solid #c9a44a" : "1.5px solid #2a2a2e",
-                background: method === key ? "rgba(201,164,74,0.08)" : "transparent",
-                color: method === key ? "#c9a44a" : "#666",
+                border: method === key ? "1.5px solid #d4af61" : "1.5px solid #3a3a40",
+                background: method === key ? "rgba(212,175,97,0.08)" : "transparent",
+                color: method === key ? "#d4af61" : "#666",
                 transition: "all 0.2s",
                 opacity: (key === "email_actor" && !profile.email) || (key === "email_agency" && !profile.agencyEmail) ? 0.35 : 1,
               }}
@@ -1296,7 +1296,7 @@ function ContactModal({ profile, contact, projectName, onUpdate, onClose }) {
           ))}
         </div>
         {method && !recipientEmail && method !== "phone" && (
-          <div style={{ marginTop: 8, fontSize: 11, color: "#ef4444", fontStyle: "italic" }}>
+          <div style={{ marginTop: 8, fontSize: 11, color: "#ff453a", fontStyle: "italic" }}>
             ⚠ Email non renseigné pour ce contact
           </div>
         )}
@@ -1315,7 +1315,7 @@ function ContactModal({ profile, contact, projectName, onUpdate, onClose }) {
               style={{
                 flex: 1, padding: "8px 8px", borderRadius: 8, cursor: "pointer",
                 fontSize: 11, fontWeight: 600, fontFamily: "inherit",
-                border: status === key ? `1.5px solid ${s.color}` : "1.5px solid #2a2a2e",
+                border: status === key ? `1.5px solid ${s.color}` : "1.5px solid #3a3a40",
                 background: status === key ? s.bg : "transparent",
                 color: status === key ? s.color : "#555",
                 transition: "all 0.2s",
@@ -1330,14 +1330,14 @@ function ContactModal({ profile, contact, projectName, onUpdate, onClose }) {
       {/* Mail editor (only for email methods) */}
       {(method === "email_actor" || method === "email_agency") && (
         <div style={{
-          padding: "20px", background: "#0c0c0e", borderRadius: 12,
-          border: "1px solid #1e1e22", marginBottom: 20,
+          padding: "20px", background: "#101013", borderRadius: 12,
+          border: "1px solid #2e2e34", marginBottom: 20,
         }}>
           <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 16 }}>
             <label style={{ fontSize: 12, color: "#888", fontWeight: 500, letterSpacing: "0.04em", textTransform: "uppercase" }}>
               Rédaction mail
             </label>
-            <span style={{ fontSize: 11, color: "#c9a44a" }}>
+            <span style={{ fontSize: 11, color: "#d4af61" }}>
               → {recipientLabel} {recipientEmail ? `(${recipientEmail})` : ""}
             </span>
           </div>
@@ -1349,7 +1349,7 @@ function ContactModal({ profile, contact, projectName, onUpdate, onClose }) {
               <button
                 onClick={() => copyToClipboard(mailSubject, "subject")}
                 style={{
-                  background: "none", border: "none", color: copied === "subject" ? "#22c55e" : "#555",
+                  background: "none", border: "none", color: copied === "subject" ? "#30d158" : "#555",
                   cursor: "pointer", fontSize: 10, fontFamily: "inherit", fontWeight: 500,
                 }}
               >
@@ -1360,23 +1360,23 @@ function ContactModal({ profile, contact, projectName, onUpdate, onClose }) {
               value={mailSubject}
               onChange={e => setMailSubject(e.target.value)}
               style={{
-                width: "100%", padding: "10px 14px", background: "#111114", border: "1px solid #2a2a2e",
-                borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "'DM Sans', sans-serif",
+                width: "100%", padding: "10px 14px", background: "#1c1c1f", border: "1px solid #3a3a40",
+                borderRadius: 8, color: "#ebebf0", fontSize: 13, fontFamily: "inherit",
                 outline: "none",
               }}
-              onFocus={e => e.target.style.borderColor = "#c9a44a"}
-              onBlur={e => e.target.style.borderColor = "#2a2a2e"}
+              onFocus={e => e.target.style.borderColor = "#d4af61"}
+              onBlur={e => e.target.style.borderColor = "#3a3a40"}
             />
           </div>
 
           {/* AI Writing Assistant */}
           <div style={{
             marginBottom: 16, padding: "14px 16px", background: "#0f0f12",
-            borderRadius: 10, border: "1px solid #c9a44a22",
+            borderRadius: 10, border: "1px solid #d4af6122",
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 10 }}>
               <span style={{ fontSize: 14 }}>✨</span>
-              <label style={{ fontSize: 11, color: "#c9a44a", fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase" }}>
+              <label style={{ fontSize: 11, color: "#d4af61", fontWeight: 600, letterSpacing: "0.04em", textTransform: "uppercase" }}>
                 Assistant de rédaction
               </label>
             </div>
@@ -1386,12 +1386,12 @@ function ContactModal({ profile, contact, projectName, onUpdate, onClose }) {
               placeholder={"Ex: Dire qu'il est sélectionné pour le rôle principal, féliciter, préciser que la prod va le contacter pour les détails contractuels, tourrage en mars à Paris..."}
               rows={3}
               style={{
-                width: "100%", padding: "10px 12px", background: "#111114", border: "1px solid #2a2a2e",
-                borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "'DM Sans', sans-serif",
+                width: "100%", padding: "10px 12px", background: "#1c1c1f", border: "1px solid #3a3a40",
+                borderRadius: 8, color: "#ebebf0", fontSize: 12, fontFamily: "inherit",
                 outline: "none", resize: "vertical", lineHeight: 1.5,
               }}
-              onFocus={e => e.target.style.borderColor = "#c9a44a55"}
-              onBlur={e => e.target.style.borderColor = "#2a2a2e"}
+              onFocus={e => e.target.style.borderColor = "#d4af6155"}
+              onBlur={e => e.target.style.borderColor = "#3a3a40"}
             />
             <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 10 }}>
               <button
@@ -1401,7 +1401,7 @@ function ContactModal({ profile, contact, projectName, onUpdate, onClose }) {
                   padding: "8px 18px", borderRadius: 8, cursor: aiGenerating || !aiPrompt.trim() ? "not-allowed" : "pointer",
                   fontSize: 12, fontWeight: 700, fontFamily: "inherit",
                   border: "none",
-                  background: aiGenerating ? "#333" : !aiPrompt.trim() ? "#222" : "linear-gradient(135deg, #c9a44a, #a67c2e)",
+                  background: aiGenerating ? "#333" : !aiPrompt.trim() ? "#222" : "linear-gradient(135deg, #d4af61, #b08a3e)",
                   color: aiGenerating || !aiPrompt.trim() ? "#666" : "#000",
                   transition: "all 0.3s",
                   display: "flex", alignItems: "center", gap: 6,
@@ -1422,7 +1422,7 @@ function ContactModal({ profile, contact, projectName, onUpdate, onClose }) {
                 </span>
               )}
               {aiError && (
-                <span style={{ fontSize: 11, color: "#ef4444" }}>⚠ {aiError}</span>
+                <span style={{ fontSize: 11, color: "#ff453a" }}>⚠ {aiError}</span>
               )}
             </div>
           </div>
@@ -1434,7 +1434,7 @@ function ContactModal({ profile, contact, projectName, onUpdate, onClose }) {
               <button
                 onClick={() => copyToClipboard(mailDraft, "body")}
                 style={{
-                  background: "none", border: "none", color: copied === "body" ? "#22c55e" : "#555",
+                  background: "none", border: "none", color: copied === "body" ? "#30d158" : "#555",
                   cursor: "pointer", fontSize: 10, fontFamily: "inherit", fontWeight: 500,
                 }}
               >
@@ -1447,12 +1447,12 @@ function ContactModal({ profile, contact, projectName, onUpdate, onClose }) {
               placeholder={`Bonjour${method === "email_agency" && profile.agency ? ` ${profile.agency}` : ""},\n\nJe reviens vers vous concernant le casting pour ${projectName}...\n\n`}
               rows={8}
               style={{
-                width: "100%", padding: "12px 14px", background: "#111114", border: "1px solid #2a2a2e",
-                borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "'DM Sans', sans-serif",
+                width: "100%", padding: "12px 14px", background: "#1c1c1f", border: "1px solid #3a3a40",
+                borderRadius: 8, color: "#ebebf0", fontSize: 13, fontFamily: "inherit",
                 outline: "none", resize: "vertical", lineHeight: 1.6,
               }}
-              onFocus={e => e.target.style.borderColor = "#c9a44a"}
-              onBlur={e => e.target.style.borderColor = "#2a2a2e"}
+              onFocus={e => e.target.style.borderColor = "#d4af61"}
+              onBlur={e => e.target.style.borderColor = "#3a3a40"}
             />
           </div>
 
@@ -1462,9 +1462,9 @@ function ContactModal({ profile, contact, projectName, onUpdate, onClose }) {
             style={{
               width: "100%", padding: "10px", borderRadius: 8, cursor: "pointer",
               fontSize: 12, fontWeight: 600, fontFamily: "inherit",
-              border: "1px solid #c9a44a44",
-              background: copied === "all" ? "rgba(34,197,94,0.12)" : "rgba(201,164,74,0.08)",
-              color: copied === "all" ? "#22c55e" : "#c9a44a",
+              border: "1px solid #d4af6144",
+              background: copied === "all" ? "rgba(48,209,88,0.12)" : "rgba(212,175,97,0.08)",
+              color: copied === "all" ? "#30d158" : "#d4af61",
               transition: "all 0.3s",
             }}
           >
@@ -1476,8 +1476,8 @@ function ContactModal({ profile, contact, projectName, onUpdate, onClose }) {
       {/* Phone note */}
       {method === "phone" && (
         <div style={{
-          padding: "16px 20px", background: "#0c0c0e", borderRadius: 12,
-          border: "1px solid #1e1e22", marginBottom: 20,
+          padding: "16px 20px", background: "#101013", borderRadius: 12,
+          border: "1px solid #2e2e34", marginBottom: 20,
           fontSize: 13, color: "#999", lineHeight: 1.5,
         }}>
           📞 Contact par téléphone — mettez à jour le statut après l'appel.
@@ -1486,8 +1486,8 @@ function ContactModal({ profile, contact, projectName, onUpdate, onClose }) {
               <button
                 onClick={() => copyToClipboard(profile.phone, "body")}
                 style={{
-                  background: "rgba(201,164,74,0.08)", border: "1px solid #c9a44a44",
-                  borderRadius: 8, padding: "6px 14px", color: "#c9a44a",
+                  background: "rgba(212,175,97,0.08)", border: "1px solid #d4af6144",
+                  borderRadius: 8, padding: "6px 14px", color: "#d4af61",
                   cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: "inherit",
                 }}
               >
@@ -1513,7 +1513,7 @@ function ContactModal({ profile, contact, projectName, onUpdate, onClose }) {
         <button
           onClick={handleSave}
           style={{
-            padding: "10px 28px", background: "linear-gradient(135deg, #c9a44a, #a67c2e)",
+            padding: "10px 28px", background: "linear-gradient(135deg, #d4af61, #b08a3e)",
             color: "#000", border: "none", borderRadius: 10, cursor: "pointer",
             fontSize: 13, fontWeight: 700, fontFamily: "inherit", letterSpacing: "0.02em",
           }}
@@ -1585,13 +1585,13 @@ function CastingAppInner({ authUser }) {
   const T = lightTheme ? {
     bg: "#f5f5f7", bgCard: "#ffffff", bgInput: "#f0f0f2", bgHover: "#fafafa",
     border: "#e0e0e2", borderLight: "#eaeaec", text: "#111", textSec: "#555", textMuted: "#999",
-    headerBg: "rgba(255,255,255,0.95)", accent: "#c9a44a",
+    headerBg: "rgba(255,255,255,0.95)", accent: "#d4af61",
   } : {
-    bg: "#0a0a0c", bgCard: "#111114", bgInput: "#0c0c0e", bgHover: "#141417",
-    border: "#1e1e22", borderLight: "#2a2a2e", text: "#f0f0f0", textSec: "#888", textMuted: "#555",
-    headerBg: "rgba(10,10,12,0.9)", accent: "#c9a44a",
+    bg: "#000000", bgCard: "#1c1c1f", bgInput: "#101013", bgHover: "#141417",
+    border: "#2e2e34", borderLight: "#3a3a40", text: "#f5f5f7", textSec: "#888", textMuted: "#555",
+    headerBg: "rgba(0,0,0,0.9)", accent: "#d4af61",
   };
-  const PROJECT_STATUSES = { en_cours: { label: "En cours", color: "#22c55e", bg: "rgba(34,197,94,0.08)", border: "rgba(34,197,94,0.2)" }, en_pause: { label: "En pause", color: "#f59e0b", bg: "rgba(245,158,11,0.08)", border: "rgba(245,158,11,0.2)" }, termine: { label: "Terminé", color: "#60a5fa", bg: "rgba(96,165,250,0.08)", border: "rgba(96,165,250,0.2)" }, archive: { label: "Archivé", color: "#888", bg: "rgba(255,255,255,0.03)", border: "rgba(255,255,255,0.08)" } };
+  const PROJECT_STATUSES = { en_cours: { label: "En cours", color: "#30d158", bg: "rgba(48,209,88,0.08)", border: "rgba(48,209,88,0.2)" }, en_pause: { label: "En pause", color: "#ffd60a", bg: "rgba(255,214,10,0.08)", border: "rgba(255,214,10,0.2)" }, termine: { label: "Terminé", color: "#0a84ff", bg: "rgba(10,132,255,0.08)", border: "rgba(10,132,255,0.2)" }, archive: { label: "Archivé", color: "#888", bg: "rgba(255,255,255,0.03)", border: "rgba(255,255,255,0.08)" } };
 
   // Load project list on mount
   useEffect(() => {
@@ -2368,9 +2368,9 @@ function CastingAppInner({ authUser }) {
   // === Comptabilité helpers ===
   const COMPTA_STATUS = {
     draft: { label: "Brouillon", color: "#888", bg: "rgba(255,255,255,0.04)", icon: "📝" },
-    sent: { label: "Envoyée", color: "#60a5fa", bg: "rgba(96,165,250,0.08)", icon: "📨" },
-    paid: { label: "Payée", color: "#22c55e", bg: "rgba(34,197,94,0.08)", icon: "✅" },
-    overdue: { label: "En retard", color: "#ef4444", bg: "rgba(239,68,68,0.08)", icon: "⚠️" },
+    sent: { label: "Envoyée", color: "#0a84ff", bg: "rgba(10,132,255,0.08)", icon: "📨" },
+    paid: { label: "Payée", color: "#30d158", bg: "rgba(48,209,88,0.08)", icon: "✅" },
+    overdue: { label: "En retard", color: "#ff453a", bg: "rgba(255,69,58,0.08)", icon: "⚠️" },
     cancelled: { label: "Annulée", color: "#666", bg: "rgba(255,255,255,0.02)", icon: "✕" },
   };
 
@@ -2541,7 +2541,7 @@ function CastingAppInner({ authUser }) {
   const cycleViewMode = () => {}; // Disabled — single user mode
 
   const VIEW_MODES = {
-    director: { label: "Casting Director", color: "#c9a44a", icon: "🎬" },
+    director: { label: "Casting Director", color: "#d4af61", icon: "🎬" },
   };
 
   // Refresh storage usage
@@ -3099,34 +3099,53 @@ function CastingAppInner({ authUser }) {
   };
 
   const globalStyles = `
-    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Bebas+Neue&family=Playfair+Display:wght@700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'DM Sans', sans-serif; background: #0a0a0c; color: #e0e0e0; }
-    ::-webkit-scrollbar { width: 6px; }
+    html { -webkit-text-size-adjust: 100%; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Segoe UI', Roboto, sans-serif;
+      background: #000000; color: #ebebf0;
+      -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale;
+      text-rendering: optimizeLegibility; letter-spacing: -0.011em;
+    }
+    h1, h2, h3 { letter-spacing: -0.022em; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter', sans-serif; }
+    ::-webkit-scrollbar { width: 9px; height: 9px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.16); border-radius: 9px; border: 2.5px solid transparent; background-clip: padding-box; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); border: 2.5px solid transparent; background-clip: padding-box; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px) scale(0.995); } to { opacity: 1; transform: none; } }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-    ::selection { background: #c9a44a44; color: #fff; }
+    ::selection { background: rgba(212,175,97,0.32); color: #fff; }
+    button {
+      transition: transform 0.16s cubic-bezier(0.32,0.72,0,1), background 0.18s ease, color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, opacity 0.18s ease;
+      -webkit-tap-highlight-color: transparent;
+    }
+    button:active { transform: scale(0.96); }
+    input, textarea, select { transition: border-color 0.18s ease, background 0.18s ease, box-shadow 0.18s ease; }
+    input:focus, textarea:focus { outline: none; box-shadow: 0 0 0 3.5px rgba(212,175,97,0.16); }
+    select:focus { outline: none; }
+    input[type="checkbox"] { accent-color: #d4af61; }
+    header { backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; } }
     .light-wrapper { filter: invert(1) hue-rotate(180deg); }
     .light-wrapper img, .light-wrapper video { filter: invert(1) hue-rotate(180deg); }
-    input[type="date"] { background: #1a1a1e !important; border: 1px solid #3a3a3e !important; color: #e0e0e0 !important; border-radius: 8px; padding: 9px 12px; font-size: 13px; cursor: pointer; }
+    input[type="date"] { background: #2a2a30 !important; border: 1px solid #3a3a40 !important; color: #ebebf0 !important; border-radius: 10px; padding: 9px 12px; font-size: 13px; cursor: pointer; font-family: inherit; }
     input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(0.9); cursor: pointer; font-size: 16px; }
     input[type="time"]::-webkit-calendar-picker-indicator { display: none; }
-    input[type="time"] { -webkit-appearance: none; }
-    .email-body-render { all: initial; font-family: 'DM Sans', sans-serif; font-size: 14px; color: #ffffff !important; line-height: 1.7; background: transparent !important; }
+    input[type="time"] { -webkit-appearance: none; font-family: inherit; }
+    .email-body-render { all: initial; font-family: inherit; font-size: 14px; color: #ffffff !important; line-height: 1.7; background: transparent !important; }
     .email-body-render * { max-width: 100% !important; box-sizing: border-box; }
     .email-body-render img { max-width: 100% !important; height: auto !important; border-radius: 4px; margin: 4px 0; }
-    .email-body-render a { color: #60a5fa !important; text-decoration: underline; }
+    .email-body-render a { color: #0a84ff !important; text-decoration: underline; }
     .email-body-render table { border-collapse: collapse; width: 100%; margin: 8px 0; }
-    .email-body-render td, .email-body-render th { padding: 6px 10px; border: 1px solid #2a2a2e; }
+    .email-body-render td, .email-body-render th { padding: 6px 10px; border: 1px solid #3a3a40; }
     .email-body-render p, .email-body-render span, .email-body-render div, .email-body-render li, .email-body-render td { color: #ffffff !important; }
     .email-body-render p { margin: 0 0 8px 0; }
     .email-body-render blockquote { border-left: 3px solid #333; padding-left: 12px; margin: 8px 0; color: #888; }
-    .email-body-render h1, .email-body-render h2, .email-body-render h3 { color: #f0f0f0; margin: 12px 0 6px; }
+    .email-body-render h1, .email-body-render h2, .email-body-render h3 { color: #f5f5f7; margin: 12px 0 6px; }
     .email-body-render ul, .email-body-render ol { padding-left: 20px; margin: 6px 0; }
-    input[type="date"]:hover { border-color: #c9a44a !important; }
-    input[type="date"]:focus { border-color: #c9a44a !important; outline: none; }
+    input[type="date"]:hover { border-color: #d4af61 !important; }
+    input[type="date"]:focus { border-color: #d4af61 !important; outline: none; }
   `;
 
   // ===== LOADING =====
@@ -3134,7 +3153,7 @@ function CastingAppInner({ authUser }) {
     return (
       <>
         <style>{globalStyles}</style>
-        <div style={{ minHeight: "100vh", background: "#0a0a0c", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ minHeight: "100vh", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center" }}>
           <div style={{ textAlign: "center" }}>
             <div style={{ fontSize: 40, marginBottom: 16, animation: "pulse 1s infinite" }}>🎬</div>
             <div style={{ fontSize: 14, color: "#888", animation: "pulse 1.5s infinite" }}>Chargement du projet...</div>
@@ -3149,41 +3168,41 @@ function CastingAppInner({ authUser }) {
     return (
       <>
         <style>{globalStyles}</style>
-        <div className={lightTheme ? "light-wrapper" : ""} style={{ minHeight: "100vh", background: "#0a0a0c" }}>
+        <div className={lightTheme ? "light-wrapper" : ""} style={{ minHeight: "100vh", background: "#000000" }}>
           <header style={{
-            padding: "18px 32px", borderBottom: "1px solid #1a1a1e",
+            padding: "18px 32px", borderBottom: "1px solid #2a2a30",
             display: "flex", alignItems: "center", justifyContent: "space-between",
-            background: "rgba(10,10,12,0.9)", position: "relative",
+            background: "rgba(0,0,0,0.9)", position: "relative",
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
-              <div style={{ fontSize: 10, letterSpacing: "0.25em", textTransform: "uppercase", color: "#c9a44a", fontWeight: 600 }}>
+              <div style={{ fontSize: 10, letterSpacing: "0.25em", textTransform: "uppercase", color: "#d4af61", fontWeight: 600 }}>
                 Casting Director
               </div>
-              <div style={{ width: 1, height: 20, background: "#2a2a2e" }} />
+              <div style={{ width: 1, height: 20, background: "#3a3a40" }} />
               <div style={{ display: "flex", gap: 4 }}>
                 <button onClick={() => { setCastingFileView(false); setComptaView(false); }} style={{
                   padding: "6px 16px", borderRadius: 6, fontSize: 11, fontWeight: 600,
                   fontFamily: "inherit", border: "none", cursor: "pointer",
-                  background: !castingFileView && !comptaView ? "rgba(201,164,74,0.12)" : "transparent",
-                  color: !castingFileView && !comptaView ? "#c9a44a" : "#555", transition: "all 0.2s",
+                  background: !castingFileView && !comptaView ? "rgba(212,175,97,0.12)" : "transparent",
+                  color: !castingFileView && !comptaView ? "#d4af61" : "#555", transition: "all 0.2s",
                 }}>🎬 Projets</button>
                 <button onClick={() => { setCastingFileView(true); setComptaView(false); }} style={{
                   padding: "6px 16px", borderRadius: 6, fontSize: 11, fontWeight: 600,
                   fontFamily: "inherit", border: "none", cursor: "pointer",
-                  background: castingFileView && !comptaView ? "rgba(168,85,247,0.12)" : "transparent",
-                  color: castingFileView && !comptaView ? "#a855f7" : "#555", transition: "all 0.2s",
+                  background: castingFileView && !comptaView ? "rgba(191,90,242,0.12)" : "transparent",
+                  color: castingFileView && !comptaView ? "#bf5af2" : "#555", transition: "all 0.2s",
                   position: "relative",
                 }}>
                   📁 Fichier Casting
                   {actorDatabase.length > 0 && (
-                    <span style={{ position: "absolute", top: -2, right: -4, fontSize: 9, fontWeight: 700, background: "#a855f7", color: "#000", borderRadius: 10, padding: "1px 5px", minWidth: 14, textAlign: "center" }}>{actorDatabase.length}</span>
+                    <span style={{ position: "absolute", top: -2, right: -4, fontSize: 9, fontWeight: 700, background: "#bf5af2", color: "#000", borderRadius: 10, padding: "1px 5px", minWidth: 14, textAlign: "center" }}>{actorDatabase.length}</span>
                   )}
                 </button>
                 <button onClick={() => { setComptaView(true); setCastingFileView(false); }} style={{
                   padding: "6px 16px", borderRadius: 6, fontSize: 11, fontWeight: 600,
                   fontFamily: "inherit", border: "none", cursor: "pointer",
-                  background: comptaView ? "rgba(34,197,94,0.12)" : "transparent",
-                  color: comptaView ? "#22c55e" : "#555", transition: "all 0.2s",
+                  background: comptaView ? "rgba(48,209,88,0.12)" : "transparent",
+                  color: comptaView ? "#30d158" : "#555", transition: "all 0.2s",
                 }}>
                   💰 Comptabilité
                 </button>
@@ -3193,13 +3212,13 @@ function CastingAppInner({ authUser }) {
             <div style={{ position: "relative" }}>
               <input value={globalSearch} onChange={e => { setGlobalSearch(e.target.value); setGlobalSearchOpen(true); }}
                 placeholder="🔍 Recherche globale..."
-                style={{ padding: "8px 14px", background: "#111114", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "'DM Sans',sans-serif", outline: "none", width: 240 }}
-                onFocus={e => { if (globalSearch.length >= 2) setGlobalSearchOpen(true); e.target.style.borderColor="#c9a44a"; }} onBlur={e => { setTimeout(() => setGlobalSearchOpen(false), 200); e.target.style.borderColor="#2a2a2e"; }} />
+                style={{ padding: "8px 14px", background: "#1c1c1f", border: "1px solid #3a3a40", borderRadius: 8, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none", width: 240 }}
+                onFocus={e => { if (globalSearch.length >= 2) setGlobalSearchOpen(true); e.target.style.borderColor="#d4af61"; }} onBlur={e => { setTimeout(() => setGlobalSearchOpen(false), 200); e.target.style.borderColor="#3a3a40"; }} />
               {globalSearchOpen && globalSearch.length >= 2 && (() => {
                 const res = getGlobalSearchResults(globalSearch);
-                if (res.projects.length === 0 && res.actors.length === 0) return <div style={{ position: "absolute", top: "100%", right: 0, marginTop: 6, width: 320, background: "#141416", border: "1px solid #2a2a2e", borderRadius: 12, padding: "16px", zIndex: 999, fontSize: 12, color: "#555" }}>Aucun résultat</div>;
+                if (res.projects.length === 0 && res.actors.length === 0) return <div style={{ position: "absolute", top: "100%", right: 0, marginTop: 6, width: 320, background: "#232327", border: "1px solid #3a3a40", borderRadius: 12, padding: "16px", zIndex: 999, fontSize: 12, color: "#555" }}>Aucun résultat</div>;
                 return (
-                  <div style={{ position: "absolute", top: "100%", right: 0, marginTop: 6, width: 360, background: "#141416", border: "1px solid #2a2a2e", borderRadius: 12, padding: "8px", zIndex: 999, maxHeight: 400, overflow: "auto" }}>
+                  <div style={{ position: "absolute", top: "100%", right: 0, marginTop: 6, width: 360, background: "#232327", border: "1px solid #3a3a40", borderRadius: 12, padding: "8px", zIndex: 999, maxHeight: 400, overflow: "auto" }}>
                     {res.projects.length > 0 && (
                       <>
                         <div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", padding: "6px 10px" }}>Projets</div>
@@ -3208,7 +3227,7 @@ function CastingAppInner({ authUser }) {
                             style={{ padding: "8px 10px", borderRadius: 8, cursor: "pointer", display: "flex", alignItems: "center", gap: 8, fontSize: 12 }}
                             onMouseEnter={e => e.currentTarget.style.background="rgba(255,255,255,0.03)"}
                             onMouseLeave={e => e.currentTarget.style.background="transparent"}>
-                            <span>🎬</span><span style={{ fontWeight: 600, color: "#f0f0f0" }}>{p.name || "Sans titre"}</span>
+                            <span>🎬</span><span style={{ fontWeight: 600, color: "#f5f5f7" }}>{p.name || "Sans titre"}</span>
                             <span style={{ fontSize: 9, color: "#555", marginLeft: "auto" }}>{p.rolesCount} rôles</span>
                           </div>
                         ))}
@@ -3222,10 +3241,10 @@ function CastingAppInner({ authUser }) {
                             style={{ padding: "8px 10px", borderRadius: 8, cursor: "pointer", display: "flex", alignItems: "center", gap: 8, fontSize: 12 }}
                             onMouseEnter={e => e.currentTarget.style.background="rgba(255,255,255,0.03)"}
                             onMouseLeave={e => e.currentTarget.style.background="transparent"}>
-                            <div style={{ width: 26, height: 26, borderRadius: 5, overflow: "hidden", background: "#0c0c0e", flexShrink: 0 }}>
+                            <div style={{ width: 26, height: 26, borderRadius: 5, overflow: "hidden", background: "#101013", flexShrink: 0 }}>
                               {a.photos?.[0] ? <img src={a.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 10 }}>◎</div>}
                             </div>
-                            <span style={{ fontWeight: 600, color: "#f0f0f0" }}>{[a.firstName, a.name].filter(Boolean).join(" ")}</span>
+                            <span style={{ fontWeight: 600, color: "#f5f5f7" }}>{[a.firstName, a.name].filter(Boolean).join(" ")}</span>
                             {a.agency && <span style={{ fontSize: 9, color: "#8a7740", marginLeft: "auto" }}>{a.agency}</span>}
                           </div>
                         ))}
@@ -3237,7 +3256,7 @@ function CastingAppInner({ authUser }) {
             </div>
             {/* Theme toggle */}
             <button onClick={() => setLightTheme(!lightTheme)}
-              style={{ padding: "6px 10px", background: "none", border: "1px solid #2a2a2e", borderRadius: 6, cursor: "pointer", fontSize: 14, lineHeight: 1 }}
+              style={{ padding: "6px 10px", background: "none", border: "1px solid #3a3a40", borderRadius: 6, cursor: "pointer", fontSize: 14, lineHeight: 1 }}
               title={lightTheme ? "Mode sombre" : "Mode clair"}>
               {lightTheme ? "🌙" : "☀️"}
             </button>
@@ -3267,11 +3286,11 @@ function CastingAppInner({ authUser }) {
                 <button onClick={() => setComptaDetail(null)} style={{ display: "flex", alignItems: "center", gap: 6, background: "none", border: "none", color: "#888", cursor: "pointer", fontSize: 12, fontFamily: "inherit", marginBottom: 20, padding: 0 }}>← Retour</button>
 
                 {/* Invoice header */}
-                <div style={{ background: "#141416", borderRadius: 16, border: "1px solid #222226", padding: "28px 32px", marginBottom: 20 }}>
+                <div style={{ background: "#232327", borderRadius: 16, border: "1px solid #33333a", padding: "28px 32px", marginBottom: 20 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 20 }}>
                     <div>
-                      <div style={{ fontSize: 10, color: "#c9a44a", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 6 }}>Facture / Devis</div>
-                      <h2 style={{ fontSize: 24, fontWeight: 800, color: "#f0f0f0", margin: 0 }}>{inv.projectName}</h2>
+                      <div style={{ fontSize: 10, color: "#d4af61", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 6 }}>Facture / Devis</div>
+                      <h2 style={{ fontSize: 24, fontWeight: 800, color: "#f5f5f7", margin: 0 }}>{inv.projectName}</h2>
                       {inv.devisNumber && <div style={{ fontSize: 13, color: "#888", marginTop: 4 }}>N° {inv.devisNumber}</div>}
                     </div>
                     <div style={{ padding: "8px 18px", background: stInfo.bg, border: `1px solid ${stInfo.color}33`, borderRadius: 10 }}>
@@ -3281,34 +3300,34 @@ function CastingAppInner({ authUser }) {
                   </div>
 
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "16px 24px", marginBottom: 20 }}>
-                    <div><div style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 4 }}>Client</div><div style={{ fontSize: 14, color: "#e0e0e0" }}>{inv.clientName || "—"}</div></div>
-                    <div><div style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 4 }}>Date devis</div><div style={{ fontSize: 14, color: "#e0e0e0" }}>{inv.devisDate ? fmtDateFR(inv.devisDate) : "—"}</div></div>
-                    <div><div style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 4 }}>Tournage</div><div style={{ fontSize: 14, color: "#e0e0e0" }}>{inv.dateTournage ? fmtDateFR(inv.dateTournage) : "—"}</div></div>
-                    <div><div style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 4 }}>Ma rémunération</div><div style={{ fontSize: 14, color: "#c9a44a", fontWeight: 700 }}>{inv.salary?.amount ? inv.salary.amount + " € (" + (inv.salary.type === "facture" ? "Facture" : "Fiche de paie") + ")" : "—"}</div></div>
-                    {inv.totalTTC > 0 && <div><div style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 4 }}>Total TTC devis</div><div style={{ fontSize: 14, color: "#22c55e", fontWeight: 700 }}>{fmtMoney(inv.totalTTC)}</div></div>}
+                    <div><div style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 4 }}>Client</div><div style={{ fontSize: 14, color: "#ebebf0" }}>{inv.clientName || "—"}</div></div>
+                    <div><div style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 4 }}>Date devis</div><div style={{ fontSize: 14, color: "#ebebf0" }}>{inv.devisDate ? fmtDateFR(inv.devisDate) : "—"}</div></div>
+                    <div><div style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 4 }}>Tournage</div><div style={{ fontSize: 14, color: "#ebebf0" }}>{inv.dateTournage ? fmtDateFR(inv.dateTournage) : "—"}</div></div>
+                    <div><div style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 4 }}>Ma rémunération</div><div style={{ fontSize: 14, color: "#d4af61", fontWeight: 700 }}>{inv.salary?.amount ? inv.salary.amount + " € (" + (inv.salary.type === "facture" ? "Facture" : "Fiche de paie") + ")" : "—"}</div></div>
+                    {inv.totalTTC > 0 && <div><div style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 4 }}>Total TTC devis</div><div style={{ fontSize: 14, color: "#30d158", fontWeight: 700 }}>{fmtMoney(inv.totalTTC)}</div></div>}
                   </div>
 
                   {/* Lines detail */}
                   {inv.lines.length > 0 && (
-                    <div style={{ borderTop: "1px solid #1e1e22", paddingTop: 16, marginBottom: 16 }}>
-                      <div style={{ fontSize: 10, color: "#60a5fa", fontWeight: 600, textTransform: "uppercase", marginBottom: 10 }}>Lignes de prestation</div>
+                    <div style={{ borderTop: "1px solid #2e2e34", paddingTop: 16, marginBottom: 16 }}>
+                      <div style={{ fontSize: 10, color: "#0a84ff", fontWeight: 600, textTransform: "uppercase", marginBottom: 10 }}>Lignes de prestation</div>
                       <div style={{ display: "grid", gridTemplateColumns: "2fr 60px 80px 90px 70px", gap: 6, marginBottom: 6 }}>
                         {["Description", "Qté", "Unité", "Prix HT", "Total"].map(h => <div key={h} style={{ fontSize: 9, color: "#555", fontWeight: 700, textTransform: "uppercase" }}>{h}</div>)}
                       </div>
                       {inv.lines.map((l, i) => (
-                        <div key={i} style={{ display: "grid", gridTemplateColumns: "2fr 60px 80px 90px 70px", gap: 6, padding: "6px 0", borderBottom: "1px solid #1a1a1e", fontSize: 13 }}>
-                          <div style={{ color: "#e0e0e0" }}>{l.description || "—"}</div>
+                        <div key={i} style={{ display: "grid", gridTemplateColumns: "2fr 60px 80px 90px 70px", gap: 6, padding: "6px 0", borderBottom: "1px solid #2a2a30", fontSize: 13 }}>
+                          <div style={{ color: "#ebebf0" }}>{l.description || "—"}</div>
                           <div style={{ color: "#aaa", textAlign: "center" }}>{l.qty}</div>
                           <div style={{ color: "#aaa" }}>{l.unit}</div>
                           <div style={{ color: "#aaa", textAlign: "right" }}>{parseFloat(l.unitPrice || 0).toFixed(2)} €</div>
-                          <div style={{ color: "#e0e0e0", textAlign: "right", fontWeight: 600 }}>{((parseFloat(l.unitPrice) || 0) * (parseFloat(l.qty) || 0)).toFixed(2)} €</div>
+                          <div style={{ color: "#ebebf0", textAlign: "right", fontWeight: 600 }}>{((parseFloat(l.unitPrice) || 0) * (parseFloat(l.qty) || 0)).toFixed(2)} €</div>
                         </div>
                       ))}
                       <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 12 }}>
                         <div style={{ textAlign: "right" }}>
-                          <div style={{ fontSize: 13, color: "#888", marginBottom: 4 }}>HT: <span style={{ color: "#e0e0e0", fontWeight: 600 }}>{fmtMoney(inv.totalHT)}</span></div>
-                          <div style={{ fontSize: 13, color: "#888", marginBottom: 4 }}>TVA: <span style={{ color: "#e0e0e0" }}>{fmtMoney(inv.totalTVA)}</span></div>
-                          <div style={{ fontSize: 16, color: "#c9a44a", fontWeight: 700 }}>TTC: {fmtMoney(inv.totalTTC)}</div>
+                          <div style={{ fontSize: 13, color: "#888", marginBottom: 4 }}>HT: <span style={{ color: "#ebebf0", fontWeight: 600 }}>{fmtMoney(inv.totalHT)}</span></div>
+                          <div style={{ fontSize: 13, color: "#888", marginBottom: 4 }}>TVA: <span style={{ color: "#ebebf0" }}>{fmtMoney(inv.totalTVA)}</span></div>
+                          <div style={{ fontSize: 16, color: "#d4af61", fontWeight: 700 }}>TTC: {fmtMoney(inv.totalTTC)}</div>
                         </div>
                       </div>
                     </div>
@@ -3316,7 +3335,7 @@ function CastingAppInner({ authUser }) {
                 </div>
 
                 {/* Status management */}
-                <div style={{ background: "#141416", borderRadius: 16, border: "1px solid #222226", padding: "24px 28px", marginBottom: 20 }}>
+                <div style={{ background: "#232327", borderRadius: 16, border: "1px solid #33333a", padding: "24px 28px", marginBottom: 20 }}>
                   <div style={{ fontSize: 11, color: "#e879f9", fontWeight: 600, textTransform: "uppercase", marginBottom: 16 }}>📊 Suivi de facturation</div>
 
                   {/* Status buttons */}
@@ -3327,7 +3346,7 @@ function CastingAppInner({ authUser }) {
                         fontFamily: "inherit", cursor: "pointer", border: "2px solid",
                         background: st === key ? val.bg : "transparent",
                         color: st === key ? val.color : "#555",
-                        borderColor: st === key ? val.color + "55" : "#2a2a2e",
+                        borderColor: st === key ? val.color + "55" : "#3a3a40",
                         transition: "all 0.2s",
                       }}>
                         {val.icon} {val.label}
@@ -3339,34 +3358,34 @@ function CastingAppInner({ authUser }) {
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 14, marginBottom: 16 }}>
                     <div>
                       <label style={{ display: "block", fontSize: 10, color: "#888", fontWeight: 600, textTransform: "uppercase", marginBottom: 6 }}>Date d'envoi</label>
-                      <input type="date" value={cs.sentDate || ""} onChange={e => saveComptaStatus(inv.projectId, { sentDate: e.target.value })} style={{ width: "100%", padding: "9px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "'DM Sans',sans-serif", outline: "none", cursor: "pointer", boxSizing: "border-box" }} />
+                      <input type="date" value={cs.sentDate || ""} onChange={e => saveComptaStatus(inv.projectId, { sentDate: e.target.value })} style={{ width: "100%", padding: "9px 12px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 8, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none", cursor: "pointer", boxSizing: "border-box" }} />
                     </div>
                     <div>
                       <label style={{ display: "block", fontSize: 10, color: "#888", fontWeight: 600, textTransform: "uppercase", marginBottom: 6 }}>Date de paiement</label>
-                      <input type="date" value={cs.paidDate || ""} onChange={e => saveComptaStatus(inv.projectId, { paidDate: e.target.value })} style={{ width: "100%", padding: "9px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "'DM Sans',sans-serif", outline: "none", cursor: "pointer", boxSizing: "border-box" }} />
+                      <input type="date" value={cs.paidDate || ""} onChange={e => saveComptaStatus(inv.projectId, { paidDate: e.target.value })} style={{ width: "100%", padding: "9px 12px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 8, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none", cursor: "pointer", boxSizing: "border-box" }} />
                     </div>
                     <div>
                       <label style={{ display: "block", fontSize: 10, color: "#888", fontWeight: 600, textTransform: "uppercase", marginBottom: 6 }}>Nb de relances</label>
-                      <input type="number" min="0" value={cs.relanceCount || 0} onChange={e => saveComptaStatus(inv.projectId, { relanceCount: parseInt(e.target.value) || 0 })} style={{ width: "100%", padding: "9px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "'DM Sans',sans-serif", outline: "none", boxSizing: "border-box" }} />
+                      <input type="number" min="0" value={cs.relanceCount || 0} onChange={e => saveComptaStatus(inv.projectId, { relanceCount: parseInt(e.target.value) || 0 })} style={{ width: "100%", padding: "9px 12px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 8, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
                     </div>
                   </div>
 
                   {/* Notes */}
                   <div>
                     <label style={{ display: "block", fontSize: 10, color: "#888", fontWeight: 600, textTransform: "uppercase", marginBottom: 6 }}>Notes comptabilité</label>
-                    <textarea value={cs.notes || ""} onChange={e => saveComptaStatus(inv.projectId, { notes: e.target.value })} placeholder="Notes, relances, infos de paiement..." rows={3} style={{ width: "100%", padding: "10px 14px", background: "#111114", border: "1px solid #2a2a2e", borderRadius: 10, color: "#e0e0e0", fontSize: 13, fontFamily: "'DM Sans',sans-serif", outline: "none", resize: "vertical", boxSizing: "border-box" }} />
+                    <textarea value={cs.notes || ""} onChange={e => saveComptaStatus(inv.projectId, { notes: e.target.value })} placeholder="Notes, relances, infos de paiement..." rows={3} style={{ width: "100%", padding: "10px 14px", background: "#1c1c1f", border: "1px solid #3a3a40", borderRadius: 10, color: "#ebebf0", fontSize: 13, fontFamily: "inherit", outline: "none", resize: "vertical", boxSizing: "border-box" }} />
                   </div>
                 </div>
 
                 {/* Timeline */}
                 {(cs.sentDate || cs.paidDate || cs.relanceCount > 0) && (
-                  <div style={{ background: "#141416", borderRadius: 16, border: "1px solid #222226", padding: "24px 28px" }}>
-                    <div style={{ fontSize: 11, color: "#c9a44a", fontWeight: 600, textTransform: "uppercase", marginBottom: 16 }}>📋 Historique</div>
+                  <div style={{ background: "#232327", borderRadius: 16, border: "1px solid #33333a", padding: "24px 28px" }}>
+                    <div style={{ fontSize: 11, color: "#d4af61", fontWeight: 600, textTransform: "uppercase", marginBottom: 16 }}>📋 Historique</div>
                     <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
                       {inv.devisDate && <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 13 }}><div style={{ width: 8, height: 8, borderRadius: "50%", background: "#888" }} /><span style={{ color: "#888" }}>Devis créé</span><span style={{ color: "#555", marginLeft: "auto" }}>{fmtDateFR(inv.devisDate)}</span></div>}
-                      {cs.sentDate && <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 13 }}><div style={{ width: 8, height: 8, borderRadius: "50%", background: "#60a5fa" }} /><span style={{ color: "#60a5fa" }}>Facture envoyée</span><span style={{ color: "#555", marginLeft: "auto" }}>{fmtDateFR(cs.sentDate)}</span></div>}
-                      {cs.relanceCount > 0 && <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 13 }}><div style={{ width: 8, height: 8, borderRadius: "50%", background: "#f59e0b" }} /><span style={{ color: "#f59e0b" }}>{cs.relanceCount} relance{cs.relanceCount > 1 ? "s" : ""}</span></div>}
-                      {cs.paidDate && <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 13 }}><div style={{ width: 8, height: 8, borderRadius: "50%", background: "#22c55e" }} /><span style={{ color: "#22c55e" }}>Payée</span><span style={{ color: "#555", marginLeft: "auto" }}>{fmtDateFR(cs.paidDate)}</span></div>}
+                      {cs.sentDate && <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 13 }}><div style={{ width: 8, height: 8, borderRadius: "50%", background: "#0a84ff" }} /><span style={{ color: "#0a84ff" }}>Facture envoyée</span><span style={{ color: "#555", marginLeft: "auto" }}>{fmtDateFR(cs.sentDate)}</span></div>}
+                      {cs.relanceCount > 0 && <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 13 }}><div style={{ width: 8, height: 8, borderRadius: "50%", background: "#ffd60a" }} /><span style={{ color: "#ffd60a" }}>{cs.relanceCount} relance{cs.relanceCount > 1 ? "s" : ""}</span></div>}
+                      {cs.paidDate && <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 13 }}><div style={{ width: 8, height: 8, borderRadius: "50%", background: "#30d158" }} /><span style={{ color: "#30d158" }}>Payée</span><span style={{ color: "#555", marginLeft: "auto" }}>{fmtDateFR(cs.paidDate)}</span></div>}
                     </div>
                   </div>
                 )}
@@ -3378,10 +3397,10 @@ function CastingAppInner({ authUser }) {
             <div style={{ maxWidth: 1000, margin: "0 auto", padding: "40px 24px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 28 }}>
                 <div>
-                  <h1 style={{ fontSize: 28, fontWeight: 800, color: "#f0f0f0", fontFamily: "'Playfair Display', serif", marginBottom: 4 }}>💰 Comptabilité</h1>
+                  <h1 style={{ fontSize: 28, fontWeight: 800, color: "#f5f5f7", fontFamily: "inherit", marginBottom: 4 }}>💰 Comptabilité</h1>
                   <p style={{ fontSize: 13, color: "#666" }}>Suivi financier — {comptaInvoices.length} projet{comptaInvoices.length !== 1 ? "s" : ""}</p>
                 </div>
-                <button onClick={() => { setComptaLoaded(false); loadComptaData(); }} style={{ padding: "8px 16px", background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.2)", borderRadius: 8, cursor: "pointer", fontSize: 11, fontWeight: 600, fontFamily: "inherit", color: "#60a5fa" }}>🔄 Actualiser</button>
+                <button onClick={() => { setComptaLoaded(false); loadComptaData(); }} style={{ padding: "8px 16px", background: "rgba(10,132,255,0.08)", border: "1px solid rgba(10,132,255,0.2)", borderRadius: 8, cursor: "pointer", fontSize: 11, fontWeight: 600, fontFamily: "inherit", color: "#0a84ff" }}>🔄 Actualiser</button>
               </div>
 
               {!comptaLoaded ? (
@@ -3391,17 +3410,17 @@ function CastingAppInner({ authUser }) {
                   {/* KPI Cards */}
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: 14, marginBottom: 28 }}>
                     {[
-                      { label: "Total facturé", value: fmtMoney(stats.totalFacture), color: "#e0e0e0", sub: comptaInvoices.length + " projets", icon: "📊" },
-                      { label: "Payé", value: fmtMoney(stats.totalPaye), color: "#22c55e", sub: stats.nbPaid + " facture" + (stats.nbPaid > 1 ? "s" : ""), icon: "✅" },
-                      { label: "En attente", value: fmtMoney(stats.totalEnAttente), color: "#60a5fa", sub: stats.nbSent + " envoyée" + (stats.nbSent > 1 ? "s" : ""), icon: "📨" },
-                      { label: "En retard", value: fmtMoney(stats.totalEnRetard), color: stats.totalEnRetard > 0 ? "#ef4444" : "#666", sub: stats.nbOverdue + " facture" + (stats.nbOverdue > 1 ? "s" : ""), icon: "⚠️" },
+                      { label: "Total facturé", value: fmtMoney(stats.totalFacture), color: "#ebebf0", sub: comptaInvoices.length + " projets", icon: "📊" },
+                      { label: "Payé", value: fmtMoney(stats.totalPaye), color: "#30d158", sub: stats.nbPaid + " facture" + (stats.nbPaid > 1 ? "s" : ""), icon: "✅" },
+                      { label: "En attente", value: fmtMoney(stats.totalEnAttente), color: "#0a84ff", sub: stats.nbSent + " envoyée" + (stats.nbSent > 1 ? "s" : ""), icon: "📨" },
+                      { label: "En retard", value: fmtMoney(stats.totalEnRetard), color: stats.totalEnRetard > 0 ? "#ff453a" : "#666", sub: stats.nbOverdue + " facture" + (stats.nbOverdue > 1 ? "s" : ""), icon: "⚠️" },
                     ].map(kpi => (
-                      <div key={kpi.label} style={{ background: "#141416", borderRadius: 14, border: "1px solid #222226", padding: "20px 22px" }}>
+                      <div key={kpi.label} style={{ background: "#232327", borderRadius: 14, border: "1px solid #33333a", padding: "20px 22px" }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 10 }}>
                           <span style={{ fontSize: 10, color: "#888", fontWeight: 600, textTransform: "uppercase" }}>{kpi.label}</span>
                           <span style={{ fontSize: 16 }}>{kpi.icon}</span>
                         </div>
-                        <div style={{ fontSize: 22, fontWeight: 800, color: kpi.color, fontFamily: "'Playfair Display',serif", marginBottom: 4 }}>{kpi.value}</div>
+                        <div style={{ fontSize: 22, fontWeight: 800, color: kpi.color, fontFamily: "inherit", marginBottom: 4 }}>{kpi.value}</div>
                         <div style={{ fontSize: 11, color: "#555" }}>{kpi.sub}</div>
                       </div>
                     ))}
@@ -3409,18 +3428,18 @@ function CastingAppInner({ authUser }) {
 
                   {/* Profit bar */}
                   {stats.totalFacture > 0 && (
-                    <div style={{ background: "#141416", borderRadius: 14, border: "1px solid #222226", padding: "16px 22px", marginBottom: 24 }}>
+                    <div style={{ background: "#232327", borderRadius: 14, border: "1px solid #33333a", padding: "16px 22px", marginBottom: 24 }}>
                       <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 8 }}>
                         <span style={{ fontSize: 11, color: "#888", fontWeight: 600 }}>Taux de recouvrement</span>
-                        <span style={{ fontSize: 13, fontWeight: 700, color: "#c9a44a" }}>{(stats.totalPaye / stats.totalFacture * 100).toFixed(0)}%</span>
+                        <span style={{ fontSize: 13, fontWeight: 700, color: "#d4af61" }}>{(stats.totalPaye / stats.totalFacture * 100).toFixed(0)}%</span>
                       </div>
-                      <div style={{ height: 8, background: "#2a2a2e", borderRadius: 8, overflow: "hidden", display: "flex" }}>
-                        <div style={{ height: "100%", width: `${(stats.totalPaye / stats.totalFacture * 100)}%`, background: "#22c55e", borderRadius: 8, transition: "width 0.5s" }} />
-                        <div style={{ height: "100%", width: `${(stats.totalEnAttente / stats.totalFacture * 100)}%`, background: "#60a5fa", transition: "width 0.5s" }} />
-                        <div style={{ height: "100%", width: `${(stats.totalEnRetard / stats.totalFacture * 100)}%`, background: "#ef4444", transition: "width 0.5s" }} />
+                      <div style={{ height: 8, background: "#3a3a40", borderRadius: 8, overflow: "hidden", display: "flex" }}>
+                        <div style={{ height: "100%", width: `${(stats.totalPaye / stats.totalFacture * 100)}%`, background: "#30d158", borderRadius: 8, transition: "width 0.5s" }} />
+                        <div style={{ height: "100%", width: `${(stats.totalEnAttente / stats.totalFacture * 100)}%`, background: "#0a84ff", transition: "width 0.5s" }} />
+                        <div style={{ height: "100%", width: `${(stats.totalEnRetard / stats.totalFacture * 100)}%`, background: "#ff453a", transition: "width 0.5s" }} />
                       </div>
                       <div style={{ display: "flex", gap: 16, marginTop: 8 }}>
-                        {[{ l: "Payé", c: "#22c55e" }, { l: "En attente", c: "#60a5fa" }, { l: "En retard", c: "#ef4444" }, { l: "Brouillon", c: "#555" }].map(x => (
+                        {[{ l: "Payé", c: "#30d158" }, { l: "En attente", c: "#0a84ff" }, { l: "En retard", c: "#ff453a" }, { l: "Brouillon", c: "#555" }].map(x => (
                           <div key={x.l} style={{ display: "flex", alignItems: "center", gap: 5, fontSize: 10, color: "#888" }}>
                             <div style={{ width: 8, height: 8, borderRadius: 2, background: x.c }} />{x.l}
                           </div>
@@ -3432,7 +3451,7 @@ function CastingAppInner({ authUser }) {
                   {/* Filter + Search */}
                   <div style={{ display: "flex", gap: 12, marginBottom: 20, alignItems: "center", flexWrap: "wrap" }}>
                     <div style={{ display: "flex", gap: 4 }}>
-                      {[{ k: "all", l: "Toutes", n: comptaInvoices.length }, { k: "draft", l: "Brouillon", n: stats.nbDraft, c: "#888" }, { k: "sent", l: "Envoyées", n: stats.nbSent, c: "#60a5fa" }, { k: "overdue", l: "En retard", n: stats.nbOverdue, c: "#ef4444" }, { k: "paid", l: "Payées", n: stats.nbPaid, c: "#22c55e" }].map(f => (
+                      {[{ k: "all", l: "Toutes", n: comptaInvoices.length }, { k: "draft", l: "Brouillon", n: stats.nbDraft, c: "#888" }, { k: "sent", l: "Envoyées", n: stats.nbSent, c: "#0a84ff" }, { k: "overdue", l: "En retard", n: stats.nbOverdue, c: "#ff453a" }, { k: "paid", l: "Payées", n: stats.nbPaid, c: "#30d158" }].map(f => (
                         <button key={f.k} onClick={() => setComptaFilter(f.k)} style={{
                           padding: "7px 14px", borderRadius: 8, fontSize: 11, fontWeight: 600,
                           fontFamily: "inherit", border: "none", cursor: "pointer",
@@ -3444,7 +3463,7 @@ function CastingAppInner({ authUser }) {
                       ))}
                     </div>
                     <input value={comptaSearch} onChange={e => setComptaSearch(e.target.value)} placeholder="🔍 Rechercher projet, client..."
-                      style={{ marginLeft: "auto", padding: "8px 14px", background: "#111114", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "'DM Sans',sans-serif", outline: "none", width: 220 }} />
+                      style={{ marginLeft: "auto", padding: "8px 14px", background: "#1c1c1f", border: "1px solid #3a3a40", borderRadius: 8, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none", width: 220 }} />
                     <button onClick={() => {
                       const headers = ["Projet","N° Devis","Client","Date Devis","Date Tournage","Rémunération","Type","Total HT","Total TVA","Total TTC","Statut","Date Envoi","Date Paiement","Relances","Notes"];
                       const rows = filtered.map(inv => {
@@ -3476,16 +3495,16 @@ function CastingAppInner({ authUser }) {
                       a.download = `comptabilite-export-${new Date().toISOString().slice(0, 10)}.csv`;
                       a.click();
                     }} style={{
-                      padding: "8px 16px", background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.2)",
-                      borderRadius: 8, color: "#22c55e", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
+                      padding: "8px 16px", background: "rgba(48,209,88,0.08)", border: "1px solid rgba(48,209,88,0.2)",
+                      borderRadius: 8, color: "#30d158", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
                       whiteSpace: "nowrap"
                     }}>📊 Exporter CSV</button>
                   </div>
 
                   {/* Table */}
-                  <div style={{ background: "#141416", borderRadius: 14, border: "1px solid #222226", overflow: "hidden" }}>
+                  <div style={{ background: "#232327", borderRadius: 14, border: "1px solid #33333a", overflow: "hidden" }}>
                     {/* Table header */}
-                    <div style={{ display: "grid", gridTemplateColumns: "2fr 1.2fr 100px 100px 90px 90px", gap: 10, padding: "12px 22px", borderBottom: "1px solid #222226", background: "rgba(255,255,255,0.015)" }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "2fr 1.2fr 100px 100px 90px 90px", gap: 10, padding: "12px 22px", borderBottom: "1px solid #33333a", background: "rgba(255,255,255,0.015)" }}>
                       {["Projet", "Client", "Montant", "Statut", "Envoyé", "Payé"].map(h => (
                         <div key={h} style={{ fontSize: 9, color: "#555", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>{h}</div>
                       ))}
@@ -3504,15 +3523,15 @@ function CastingAppInner({ authUser }) {
                       const amount = inv.totalTTC > 0 ? inv.totalTTC : (parseFloat(inv.salary?.amount) || 0);
                       return (
                         <div key={inv.projectId} onClick={() => setComptaDetail(inv)}
-                          style={{ display: "grid", gridTemplateColumns: "2fr 1.2fr 100px 100px 90px 90px", gap: 10, padding: "14px 22px", borderBottom: "1px solid #1a1a1e", cursor: "pointer", alignItems: "center", transition: "background 0.15s" }}
+                          style={{ display: "grid", gridTemplateColumns: "2fr 1.2fr 100px 100px 90px 90px", gap: 10, padding: "14px 22px", borderBottom: "1px solid #2a2a30", cursor: "pointer", alignItems: "center", transition: "background 0.15s" }}
                           onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.02)"}
                           onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
                           <div>
-                            <div style={{ fontSize: 13, fontWeight: 600, color: "#f0f0f0", marginBottom: 2 }}>{inv.projectName}</div>
+                            <div style={{ fontSize: 13, fontWeight: 600, color: "#f5f5f7", marginBottom: 2 }}>{inv.projectName}</div>
                             <div style={{ fontSize: 10, color: "#555" }}>{inv.devisNumber || "Sans n° devis"} · {inv.roles.length} rôle{inv.roles.length > 1 ? "s" : ""}</div>
                           </div>
                           <div style={{ fontSize: 12, color: "#aaa" }}>{inv.clientName || "—"}</div>
-                          <div style={{ fontSize: 13, fontWeight: 700, color: amount > 0 ? "#e0e0e0" : "#444" }}>
+                          <div style={{ fontSize: 13, fontWeight: 700, color: amount > 0 ? "#ebebf0" : "#444" }}>
                             {amount > 0 ? fmtMoney(amount) : "—"}
                           </div>
                           <div>
@@ -3520,10 +3539,10 @@ function CastingAppInner({ authUser }) {
                               {stInfo.icon} {stInfo.label}
                             </span>
                           </div>
-                          <div style={{ fontSize: 11, color: cs.sentDate ? "#60a5fa" : "#333" }}>
+                          <div style={{ fontSize: 11, color: cs.sentDate ? "#0a84ff" : "#333" }}>
                             {cs.sentDate ? fmtDateFR(cs.sentDate) : "—"}
                           </div>
-                          <div style={{ fontSize: 11, color: cs.paidDate ? "#22c55e" : "#333" }}>
+                          <div style={{ fontSize: 11, color: cs.paidDate ? "#30d158" : "#333" }}>
                             {cs.paidDate ? fmtDateFR(cs.paidDate) : "—"}
                           </div>
                         </div>
@@ -3534,7 +3553,7 @@ function CastingAppInner({ authUser }) {
                   {/* Quick summary footer */}
                   {filtered.length > 0 && (
                     <div style={{ display: "flex", justifyContent: "flex-end", gap: 24, marginTop: 14, padding: "0 10px" }}>
-                      <span style={{ fontSize: 12, color: "#888" }}>Total affiché: <span style={{ fontWeight: 700, color: "#e0e0e0" }}>{fmtMoney(filtered.reduce((s, inv) => s + (inv.totalTTC > 0 ? inv.totalTTC : (parseFloat(inv.salary?.amount) || 0)), 0))}</span></span>
+                      <span style={{ fontSize: 12, color: "#888" }}>Total affiché: <span style={{ fontWeight: 700, color: "#ebebf0" }}>{fmtMoney(filtered.reduce((s, inv) => s + (inv.totalTTC > 0 ? inv.totalTTC : (parseFloat(inv.salary?.amount) || 0)), 0))}</span></span>
                     </div>
                   )}
                 </>
@@ -3546,7 +3565,7 @@ function CastingAppInner({ authUser }) {
           <div style={{ maxWidth: 900, margin: "0 auto", padding: "40px 24px" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
               <div>
-                <h1 style={{ fontSize: 28, fontWeight: 800, color: "#f0f0f0", fontFamily: "'Playfair Display', serif", marginBottom: 4 }}>
+                <h1 style={{ fontSize: 28, fontWeight: 800, color: "#f5f5f7", fontFamily: "inherit", marginBottom: 4 }}>
                   {authUser?.firstName ? `Bonjour ${authUser.firstName} 👋` : "Mes Projets"}
                 </h1>
                 <p style={{ fontSize: 13, color: "#666" }}>
@@ -3556,10 +3575,10 @@ function CastingAppInner({ authUser }) {
               <button
                 onClick={createNewProject}
                 style={{
-                  padding: "12px 28px", background: "linear-gradient(135deg, #c9a44a, #b8963a)",
+                  padding: "12px 28px", background: "linear-gradient(135deg, #d4af61, #b8963a)",
                   border: "none", borderRadius: 12, cursor: "pointer", fontSize: 14,
                   fontWeight: 700, fontFamily: "inherit", color: "#000",
-                  boxShadow: "0 4px 20px rgba(201,164,74,0.3)", transition: "transform 0.2s",
+                  boxShadow: "0 4px 20px rgba(212,175,97,0.3)", transition: "transform 0.2s",
                 }}
                 onMouseEnter={e => e.currentTarget.style.transform = "translateY(-1px)"}
                 onMouseLeave={e => e.currentTarget.style.transform = ""}
@@ -3569,27 +3588,27 @@ function CastingAppInner({ authUser }) {
             </div>
 
             {/* Storage & Backup bar */}
-            <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 20, padding: "14px 18px", background: "#111114", borderRadius: 12, border: "1px solid #1e1e22" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 20, padding: "14px 18px", background: "#1c1c1f", borderRadius: 12, border: "1px solid #2e2e34" }}>
               <div style={{ flex: 1 }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
                   <span style={{ fontSize: 11, color: "#888", fontWeight: 600 }}>💾 Stockage vidéo</span>
                   <span style={{ fontSize: 10, color: "#666" }}>{storageInfo.usedMB} MB / {storageInfo.maxMB} MB</span>
                 </div>
-                <div style={{ height: 4, background: "#2a2a2e", borderRadius: 4, overflow: "hidden" }}>
-                  <div style={{ height: "100%", width: `${Math.min(storageInfo.percentage, 100)}%`, background: storageInfo.percentage > 80 ? "#ef4444" : storageInfo.percentage > 50 ? "#f59e0b" : "#22c55e", borderRadius: 4, transition: "width 0.5s" }} />
+                <div style={{ height: 4, background: "#3a3a40", borderRadius: 4, overflow: "hidden" }}>
+                  <div style={{ height: "100%", width: `${Math.min(storageInfo.percentage, 100)}%`, background: storageInfo.percentage > 80 ? "#ff453a" : storageInfo.percentage > 50 ? "#ffd60a" : "#30d158", borderRadius: 4, transition: "width 0.5s" }} />
                 </div>
               </div>
               <div style={{ display: "flex", gap: 6 }}>
                 <button onClick={handleImportBackup}
-                  style={{ padding: "8px 14px", background: "rgba(251,146,60,0.08)", border: "1px solid rgba(251,146,60,0.2)", borderRadius: 8, cursor: "pointer", fontSize: 11, fontWeight: 600, fontFamily: "inherit", color: "#fb923c", whiteSpace: "nowrap" }}>
+                  style={{ padding: "8px 14px", background: "rgba(255,159,10,0.08)", border: "1px solid rgba(255,159,10,0.2)", borderRadius: 8, cursor: "pointer", fontSize: 11, fontWeight: 600, fontFamily: "inherit", color: "#ff9f0a", whiteSpace: "nowrap" }}>
                   📤 Restaurer
                 </button>
                 <button onClick={handleExportBackup}
                   disabled={backupStatus === "exporting"}
                   style={{
-                    padding: "8px 14px", background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.2)",
+                    padding: "8px 14px", background: "rgba(10,132,255,0.08)", border: "1px solid rgba(10,132,255,0.2)",
                     borderRadius: 8, cursor: "pointer", fontSize: 11, fontWeight: 600, fontFamily: "inherit",
-                    color: backupStatus === "done" ? "#22c55e" : "#60a5fa", transition: "all 0.2s", whiteSpace: "nowrap",
+                    color: backupStatus === "done" ? "#30d158" : "#0a84ff", transition: "all 0.2s", whiteSpace: "nowrap",
                   }}>
                   {backupStatus === "exporting" ? "⏳ Export..." : backupStatus === "done" ? "✓ Sauvegardé !" : "💾 Sauvegarder tout"}
                 </button>
@@ -3617,7 +3636,7 @@ function CastingAppInner({ authUser }) {
                 <div style={{ fontSize: 14, animation: "pulse 1.5s infinite" }}>Chargement...</div>
               </div>
             ) : projectList.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "80px 24px", background: "#111114", borderRadius: 20, border: "1px solid #1e1e22" }}>
+              <div style={{ textAlign: "center", padding: "80px 24px", background: "#1c1c1f", borderRadius: 20, border: "1px solid #2e2e34" }}>
                 <div style={{ fontSize: 56, marginBottom: 16, opacity: 0.3 }}>🎬</div>
                 <div style={{ fontSize: 16, color: "#888", marginBottom: 8 }}>Aucun projet encore</div>
                 <div style={{ fontSize: 13, color: "#555" }}>Créez votre premier projet de casting</div>
@@ -3633,41 +3652,41 @@ function CastingAppInner({ authUser }) {
                     return (
                       <div key={proj.id} style={{
                         display: "flex", alignItems: "center", gap: 16, padding: "20px 24px",
-                        background: "#111114", borderRadius: 16, border: "1px solid #1e1e22",
+                        background: "#1c1c1f", borderRadius: 16, border: "1px solid #2e2e34",
                         cursor: "pointer", transition: "all 0.2s", animation: `fadeIn 0.3s ease ${i * 0.05}s both`,
                       }}
-                        onMouseEnter={e => { e.currentTarget.style.borderColor = "#c9a44a44"; e.currentTarget.style.background = "#141417"; }}
-                        onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e1e22"; e.currentTarget.style.background = "#111114"; }}
+                        onMouseEnter={e => { e.currentTarget.style.borderColor = "#d4af6144"; e.currentTarget.style.background = "#141417"; }}
+                        onMouseLeave={e => { e.currentTarget.style.borderColor = "#2e2e34"; e.currentTarget.style.background = "#1c1c1f"; }}
                         onClick={() => loadProject(proj.id)}
                       >
-                        <div style={{ width: 48, height: 48, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, background: "rgba(201,164,74,0.08)", flexShrink: 0 }}>🎬</div>
+                        <div style={{ width: 48, height: 48, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, background: "rgba(212,175,97,0.08)", flexShrink: 0 }}>🎬</div>
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                            <span style={{ fontSize: 15, fontWeight: 700, color: "#f0f0f0" }}>{proj.name || "Sans titre"}</span>
+                            <span style={{ fontSize: 15, fontWeight: 700, color: "#f5f5f7" }}>{proj.name || "Sans titre"}</span>
                             <span style={{ fontSize: 9, padding: "2px 8px", borderRadius: 4, fontWeight: 600, background: st.bg, color: st.color, border: `1px solid ${st.border}` }}>{st.label}</span>
                           </div>
                           <div style={{ display: "flex", gap: 12, fontSize: 11, color: "#666" }}>
                             <span>{proj.rolesCount} rôle{proj.rolesCount !== 1 ? "s" : ""}</span>
                             <span>{proj.profilesCount} profil{proj.profilesCount !== 1 ? "s" : ""}</span>
-                            {proj.finalCount > 0 && <span style={{ color: "#22c55e" }}>🏆 {proj.finalCount}</span>}
+                            {proj.finalCount > 0 && <span style={{ color: "#30d158" }}>🏆 {proj.finalCount}</span>}
                           </div>
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }} onClick={e => e.stopPropagation()}>
                           {proj.updatedAt && <span style={{ fontSize: 10, color: "#555", marginRight: 4 }}>{new Date(proj.updatedAt).toLocaleDateString("fr-FR", { day: "numeric", month: "short" })}</span>}
                           <select value={proj.status || "en_cours"} onChange={e => updateProjectStatus(proj.id, e.target.value)}
                             onClick={e => e.stopPropagation()}
-                            style={{ padding: "4px 6px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 5, color: "#999", fontSize: 9, fontFamily: "inherit", outline: "none", cursor: "pointer" }}>
+                            style={{ padding: "4px 6px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 5, color: "#999", fontSize: 9, fontFamily: "inherit", outline: "none", cursor: "pointer" }}>
                             {Object.entries(PROJECT_STATUSES).map(([k, v]) => <option key={k} value={k}>{v.label}</option>)}
                           </select>
                           <button onClick={e => { e.stopPropagation(); duplicateProject(proj.id); }}
                             title="Dupliquer"
-                            style={{ background: "none", border: "1px solid #2a2a2e", borderRadius: 5, color: "#666", fontSize: 11, cursor: "pointer", fontFamily: "inherit", padding: "3px 7px" }}
-                            onMouseEnter={e => e.currentTarget.style.color = "#c9a44a"}
+                            style={{ background: "none", border: "1px solid #3a3a40", borderRadius: 5, color: "#666", fontSize: 11, cursor: "pointer", fontFamily: "inherit", padding: "3px 7px" }}
+                            onMouseEnter={e => e.currentTarget.style.color = "#d4af61"}
                             onMouseLeave={e => e.currentTarget.style.color = "#666"}
                           >⊕</button>
                           <button onClick={e => { e.stopPropagation(); if (window.confirm(`Supprimer "${proj.name || "Sans titre"}" ?`)) deleteProject(proj.id); }}
-                            style={{ background: "none", border: "1px solid #2a2a2e", borderRadius: 5, color: "#444", fontSize: 11, cursor: "pointer", fontFamily: "inherit", padding: "3px 7px" }}
-                            onMouseEnter={e => e.currentTarget.style.color = "#ef4444"}
+                            style={{ background: "none", border: "1px solid #3a3a40", borderRadius: 5, color: "#444", fontSize: 11, cursor: "pointer", fontFamily: "inherit", padding: "3px 7px" }}
+                            onMouseEnter={e => e.currentTarget.style.color = "#ff453a"}
                             onMouseLeave={e => e.currentTarget.style.color = "#444"}
                           >✕</button>
                         </div>
@@ -3725,15 +3744,15 @@ function CastingAppInner({ authUser }) {
               <div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
                   <button onClick={() => { setActorDetail(null); setActorEditMode(false); }} style={{
-                    padding: "8px 16px", background: "rgba(255,255,255,0.03)", border: "1px solid #2a2a2e",
+                    padding: "8px 16px", background: "rgba(255,255,255,0.03)", border: "1px solid #3a3a40",
                     borderRadius: 8, cursor: "pointer", fontSize: 12, fontFamily: "inherit", color: "#888",
                   }}>← Retour au fichier</button>
                   <div style={{ display: "flex", gap: 8 }}>
                     <button onClick={() => toggleActorFavorite(actorDetail.id)} style={{
-                      padding: "8px 14px", background: actorDetail._favorite ? "rgba(245,158,11,0.1)" : "rgba(255,255,255,0.03)",
-                      border: actorDetail._favorite ? "1px solid rgba(245,158,11,0.3)" : "1px solid #2a2a2e",
+                      padding: "8px 14px", background: actorDetail._favorite ? "rgba(255,214,10,0.1)" : "rgba(255,255,255,0.03)",
+                      border: actorDetail._favorite ? "1px solid rgba(255,214,10,0.3)" : "1px solid #3a3a40",
                       borderRadius: 8, cursor: "pointer", fontSize: 14, fontFamily: "inherit",
-                      color: actorDetail._favorite ? "#f59e0b" : "#555",
+                      color: actorDetail._favorite ? "#ffd60a" : "#555",
                     }}>{actorDetail._favorite ? "★" : "☆"}</button>
                     <button onClick={() => {
                       if (actorEditMode) {
@@ -3744,10 +3763,10 @@ function CastingAppInner({ authUser }) {
                         setActorEditMode(true);
                       }
                     }} style={{
-                      padding: "8px 16px", background: actorEditMode ? "rgba(34,197,94,0.1)" : "rgba(168,85,247,0.08)",
-                      border: `1px solid ${actorEditMode ? "rgba(34,197,94,0.3)" : "rgba(168,85,247,0.2)"}`,
+                      padding: "8px 16px", background: actorEditMode ? "rgba(48,209,88,0.1)" : "rgba(191,90,242,0.08)",
+                      border: `1px solid ${actorEditMode ? "rgba(48,209,88,0.3)" : "rgba(191,90,242,0.2)"}`,
                       borderRadius: 8, cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: "inherit",
-                      color: actorEditMode ? "#22c55e" : "#a855f7",
+                      color: actorEditMode ? "#30d158" : "#bf5af2",
                     }}>{actorEditMode ? "✓ Sauvegarder" : "✏ Modifier"}</button>
                   </div>
                 </div>
@@ -3759,8 +3778,8 @@ function CastingAppInner({ authUser }) {
                       const src = (actorEditMode ? actorEditForm : actorDetail)?.photos?.[i];
                       return (
                         <div key={i} style={{
-                          width: 160, height: 200, borderRadius: 12, overflow: "hidden", background: "#111114",
-                          border: actorEditMode ? "1.5px dashed #444" : "1px solid #1e1e22",
+                          width: 160, height: 200, borderRadius: 12, overflow: "hidden", background: "#1c1c1f",
+                          border: actorEditMode ? "1.5px dashed #444" : "1px solid #2e2e34",
                           cursor: actorEditMode ? "pointer" : "default", position: "relative",
                         }} onClick={() => { if (actorEditMode) { setActorPhotoIdx(i); actorPhotoRef.current?.click(); } }}>
                           {src ? (
@@ -3768,7 +3787,7 @@ function CastingAppInner({ authUser }) {
                               <img src={src} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                               {actorEditMode && (
                                 <div onClick={e => { e.stopPropagation(); setActorEditForm(p => ({ ...p, photos: (p?.photos || []).filter((_, j) => j !== i) })); }}
-                                  style={{ position: "absolute", top: 6, right: 6, width: 22, height: 22, borderRadius: "50%", background: "rgba(239,68,68,0.9)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, cursor: "pointer" }}>✕</div>
+                                  style={{ position: "absolute", top: 6, right: 6, width: 22, height: 22, borderRadius: "50%", background: "rgba(255,69,58,0.9)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, cursor: "pointer" }}>✕</div>
                               )}
                             </>
                           ) : (
@@ -3783,14 +3802,14 @@ function CastingAppInner({ authUser }) {
                   {actorEditMode && (
                     <div style={{ display: "flex", gap: 6, marginTop: 6, maxWidth: 340 }}>
                       <input value={photoUrlInput} onChange={e => setPhotoUrlInput(e.target.value)} placeholder="📎 URL d'image..."
-                        style={{ flex: 1, padding: "5px 8px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 6, color: "#e0e0e0", fontSize: 10, fontFamily: "'DM Sans',sans-serif", outline: "none" }} />
+                        style={{ flex: 1, padding: "5px 8px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 6, color: "#ebebf0", fontSize: 10, fontFamily: "inherit", outline: "none" }} />
                       <button onClick={() => {
                         if (photoUrlInput.trim()) {
                           setActorEditForm(p => ({ ...p, photos: [...(p?.photos || []), photoUrlInput.trim()].slice(0, 3) }));
                           setPhotoUrlInput("");
                         }
                       }}
-                        style={{ padding: "5px 8px", background: "rgba(168,85,247,0.08)", border: "1px solid rgba(168,85,247,0.2)", borderRadius: 6, color: "#a855f7", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+                        style={{ padding: "5px 8px", background: "rgba(191,90,242,0.08)", border: "1px solid rgba(191,90,242,0.2)", borderRadius: 6, color: "#bf5af2", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
                         + URL
                       </button>
                     </div>
@@ -3815,13 +3834,13 @@ function CastingAppInner({ authUser }) {
                               <label style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", display: "block", marginBottom: 3 }}>{f.label}</label>
                               {f.type === "select" ? (
                                 <select value={actorEditForm[f.key] || ""} onChange={e => setActorEditForm(p => ({ ...p, [f.key]: e.target.value }))}
-                                  style={{ width: "100%", padding: "8px 10px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 6, color: "#e0e0e0", fontSize: 12, fontFamily: "inherit", outline: "none" }}>
+                                  style={{ width: "100%", padding: "8px 10px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 6, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none" }}>
                                   <option value="">—</option>
                                   {f.options.map(o => <option key={o} value={o}>{o}</option>)}
                                 </select>
                               ) : (
                                 <input value={actorEditForm[f.key] || ""} onChange={e => setActorEditForm(p => ({ ...p, [f.key]: e.target.value }))}
-                                  style={{ width: "100%", padding: "8px 10px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 6, color: "#e0e0e0", fontSize: 12, fontFamily: "'DM Sans', sans-serif", outline: "none" }} />
+                                  style={{ width: "100%", padding: "8px 10px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 6, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none" }} />
                               )}
                             </div>
                           ))}
@@ -3833,8 +3852,8 @@ function CastingAppInner({ authUser }) {
                             {[1,2,3,4,5].map(n => (
                               <button key={n} type="button" onClick={() => setActorEditForm(p => ({ ...p, actingLevel: p.actingLevel === n ? 0 : n }))}
                                 style={{ width: 32, height: 32, borderRadius: 6, border: "none", cursor: "pointer", fontSize: 16,
-                                  background: n <= (actorEditForm.actingLevel || 0) ? "rgba(201,164,74,0.15)" : "rgba(255,255,255,0.02)",
-                                  color: n <= (actorEditForm.actingLevel || 0) ? "#c9a44a" : "#333", fontFamily: "inherit",
+                                  background: n <= (actorEditForm.actingLevel || 0) ? "rgba(212,175,97,0.15)" : "rgba(255,255,255,0.02)",
+                                  color: n <= (actorEditForm.actingLevel || 0) ? "#d4af61" : "#333", fontFamily: "inherit",
                                 }}>★</button>
                             ))}
                           </div>
@@ -3842,24 +3861,24 @@ function CastingAppInner({ authUser }) {
                         <div>
                           <label style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", display: "block", marginBottom: 3 }}>Notes</label>
                           <textarea value={actorEditForm.notes || ""} onChange={e => setActorEditForm(p => ({ ...p, notes: e.target.value }))} rows={3}
-                            style={{ width: "100%", padding: "8px 10px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 6, color: "#e0e0e0", fontSize: 12, fontFamily: "'DM Sans', sans-serif", outline: "none", resize: "vertical" }} />
+                            style={{ width: "100%", padding: "8px 10px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 6, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none", resize: "vertical" }} />
                         </div>
                       </div>
                     ) : (
                       /* VIEW MODE */
                       <>
-                        <h2 style={{ fontSize: 26, fontWeight: 800, color: "#f0f0f0", fontFamily: "'Playfair Display', serif", marginBottom: 4 }}>
-                          {actorDetail._favorite && <span style={{ color: "#f59e0b", marginRight: 8 }}>★</span>}
+                        <h2 style={{ fontSize: 26, fontWeight: 800, color: "#f5f5f7", fontFamily: "inherit", marginBottom: 4 }}>
+                          {actorDetail._favorite && <span style={{ color: "#ffd60a", marginRight: 8 }}>★</span>}
                           {[actorDetail.firstName, actorDetail.name].filter(Boolean).join(" ") || "Sans nom"}
                         </h2>
                         {(actorDetail.profileType || actorDetail.actingLevel > 0) && (
                           <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 8 }}>
                             {actorDetail.profileType && (
-                              <span style={{ fontSize: 11, padding: "3px 10px", background: "rgba(168,85,247,0.08)", border: "1px solid rgba(168,85,247,0.2)", borderRadius: 6, color: "#a855f7", fontWeight: 600 }}>{actorDetail.profileType}</span>
+                              <span style={{ fontSize: 11, padding: "3px 10px", background: "rgba(191,90,242,0.08)", border: "1px solid rgba(191,90,242,0.2)", borderRadius: 6, color: "#bf5af2", fontWeight: 600 }}>{actorDetail.profileType}</span>
                             )}
                             {actorDetail.actingLevel > 0 && (
                               <div style={{ fontSize: 16 }}>
-                                {[1,2,3,4,5].map(n => <span key={n} style={{ color: n <= actorDetail.actingLevel ? "#c9a44a" : "#2a2a2e" }}>★</span>)}
+                                {[1,2,3,4,5].map(n => <span key={n} style={{ color: n <= actorDetail.actingLevel ? "#d4af61" : "#3a3a40" }}>★</span>)}
                                 <span style={{ fontSize: 11, color: "#666", marginLeft: 6 }}>{actorDetail.actingLevel}/5</span>
                               </div>
                             )}
@@ -3884,11 +3903,11 @@ function CastingAppInner({ authUser }) {
                         </div>
 
                         {/* Tags */}
-                        <div style={{ padding: "14px 16px", background: "#111114", borderRadius: 12, border: "1px solid #1e1e22", marginBottom: 12 }}>
+                        <div style={{ padding: "14px 16px", background: "#1c1c1f", borderRadius: 12, border: "1px solid #2e2e34", marginBottom: 12 }}>
                           <div style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>Tags</div>
                           <div style={{ display: "flex", gap: 6, flexWrap: "wrap", alignItems: "center" }}>
                             {(actorDetail.tags || []).map(tag => (
-                              <span key={tag} style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "4px 10px", background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.2)", borderRadius: 6, fontSize: 11, color: "#60a5fa", fontWeight: 500 }}>
+                              <span key={tag} style={{ display: "inline-flex", alignItems: "center", gap: 4, padding: "4px 10px", background: "rgba(10,132,255,0.08)", border: "1px solid rgba(10,132,255,0.2)", borderRadius: 6, fontSize: 11, color: "#0a84ff", fontWeight: 500 }}>
                                 {tag}
                                 <span onClick={() => removeActorTag(actorDetail.id, tag)} style={{ cursor: "pointer", opacity: 0.6 }}>✕</span>
                               </span>
@@ -3896,13 +3915,13 @@ function CastingAppInner({ authUser }) {
                             <form onSubmit={e => { e.preventDefault(); if (newTagInput.trim()) { addActorTag(actorDetail.id, newTagInput); setNewTagInput(""); } }} style={{ display: "flex", gap: 4 }}>
                               <input value={newTagInput} onChange={e => setNewTagInput(e.target.value)} placeholder="+ Ajouter un tag"
                                 style={{ padding: "4px 8px", background: "transparent", border: "1px dashed #333", borderRadius: 6, color: "#888", fontSize: 11, fontFamily: "inherit", outline: "none", width: 120 }}
-                                onFocus={e => e.target.style.borderColor = "#60a5fa"} onBlur={e => e.target.style.borderColor = "#333"} />
+                                onFocus={e => e.target.style.borderColor = "#0a84ff"} onBlur={e => e.target.style.borderColor = "#333"} />
                             </form>
                           </div>
                         </div>
 
                         {/* Contact */}
-                        <div style={{ padding: "14px 16px", background: "#111114", borderRadius: 12, border: "1px solid #1e1e22", marginBottom: 12 }}>
+                        <div style={{ padding: "14px 16px", background: "#1c1c1f", borderRadius: 12, border: "1px solid #2e2e34", marginBottom: 12 }}>
                           <div style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>Contact</div>
                           <div style={{ display: "flex", flexDirection: "column", gap: 6, fontSize: 13, color: "#bbb" }}>
                             {actorDetail.email && <div>✉ {actorDetail.email}</div>}
@@ -3914,11 +3933,11 @@ function CastingAppInner({ authUser }) {
 
                         {/* Projects */}
                         {actorDetail._projects?.length > 0 && (
-                          <div style={{ padding: "14px 16px", background: "#111114", borderRadius: 12, border: "1px solid #1e1e22", marginBottom: 12 }}>
+                          <div style={{ padding: "14px 16px", background: "#1c1c1f", borderRadius: 12, border: "1px solid #2e2e34", marginBottom: 12 }}>
                             <div style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>Projets</div>
                             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                               {actorDetail._projects.map((p, i) => (
-                                <span key={i} style={{ padding: "4px 10px", background: "rgba(201,164,74,0.08)", border: "1px solid rgba(201,164,74,0.2)", borderRadius: 6, fontSize: 11, color: "#c9a44a", fontWeight: 500 }}>{p}</span>
+                                <span key={i} style={{ padding: "4px 10px", background: "rgba(212,175,97,0.08)", border: "1px solid rgba(212,175,97,0.2)", borderRadius: 6, fontSize: 11, color: "#d4af61", fontWeight: 500 }}>{p}</span>
                               ))}
                             </div>
                           </div>
@@ -3926,13 +3945,13 @@ function CastingAppInner({ authUser }) {
 
                         {/* History */}
                         {actorDetail._history?.length > 0 && (
-                          <div style={{ padding: "14px 16px", background: "#111114", borderRadius: 12, border: "1px solid #1e1e22", marginBottom: 12 }}>
+                          <div style={{ padding: "14px 16px", background: "#1c1c1f", borderRadius: 12, border: "1px solid #2e2e34", marginBottom: 12 }}>
                             <div style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>Historique</div>
                             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
                               {[...actorDetail._history].reverse().map((h, i) => {
-                                const statusColors = { "ajouté": "#60a5fa", "sélectionné": "#22c55e", "refusé": "#ef4444", "peut-être": "#f59e0b", "castingDone": "#a855f7" };
+                                const statusColors = { "ajouté": "#0a84ff", "sélectionné": "#30d158", "refusé": "#ff453a", "peut-être": "#ffd60a", "castingDone": "#bf5af2" };
                                 return (
-                                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 0", borderBottom: i < actorDetail._history.length - 1 ? "1px solid #1a1a1e" : "none" }}>
+                                  <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "6px 0", borderBottom: i < actorDetail._history.length - 1 ? "1px solid #2a2a30" : "none" }}>
                                     <div style={{ width: 8, height: 8, borderRadius: "50%", background: statusColors[h.status] || "#555", flexShrink: 0 }} />
                                     <div style={{ flex: 1 }}>
                                       <span style={{ fontSize: 12, color: "#ddd", fontWeight: 600 }}>{h.project}</span>
@@ -3948,7 +3967,7 @@ function CastingAppInner({ authUser }) {
                         )}
 
                         {actorDetail.notes && (
-                          <div style={{ padding: "14px 16px", background: "#111114", borderRadius: 12, border: "1px solid #1e1e22", marginBottom: 12 }}>
+                          <div style={{ padding: "14px 16px", background: "#1c1c1f", borderRadius: 12, border: "1px solid #2e2e34", marginBottom: 12 }}>
                             <div style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 8 }}>Notes</div>
                             <div style={{ fontSize: 13, color: "#bbb", lineHeight: 1.6 }}>{actorDetail.notes}</div>
                           </div>
@@ -3956,11 +3975,11 @@ function CastingAppInner({ authUser }) {
 
                         <div style={{ display: "flex", gap: 10, flexWrap: "wrap" }}>
                           <button onClick={() => setActorImportToProject({ actor: actorDetail, step: "project" })}
-                            style={{ padding: "8px 16px", background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.2)", borderRadius: 8, color: "#22c55e", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+                            style={{ padding: "8px 16px", background: "rgba(48,209,88,0.08)", border: "1px solid rgba(48,209,88,0.2)", borderRadius: 8, color: "#30d158", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
                             📥 Ajouter à un projet
                           </button>
                           <button onClick={() => { if (window.confirm(`Supprimer ${[actorDetail.firstName, actorDetail.name].join(" ")} du fichier ?`)) deleteActor(actorDetail.id); }}
-                            style={{ padding: "8px 16px", background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 8, color: "#ef4444", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+                            style={{ padding: "8px 16px", background: "rgba(255,69,58,0.08)", border: "1px solid rgba(255,69,58,0.2)", borderRadius: 8, color: "#ff453a", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
                             Supprimer du fichier
                           </button>
                         </div>
@@ -3977,12 +3996,12 @@ function CastingAppInner({ authUser }) {
                   <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(120px, 1fr))", gap: 10, marginBottom: 24 }}>
                     {(() => {
                       const stats = [
-                        { label: "Total", value: actorDatabase.length, color: "#a855f7" },
-                        { label: "Favoris", value: actorDatabase.filter(a => a._favorite).length, color: "#f59e0b" },
-                        ...PROFILE_TYPES.map(t => ({ label: t + "s", value: actorDatabase.filter(a => a.profileType === t).length, color: "#60a5fa" })),
+                        { label: "Total", value: actorDatabase.length, color: "#bf5af2" },
+                        { label: "Favoris", value: actorDatabase.filter(a => a._favorite).length, color: "#ffd60a" },
+                        ...PROFILE_TYPES.map(t => ({ label: t + "s", value: actorDatabase.filter(a => a.profileType === t).length, color: "#0a84ff" })),
                       ].filter(s => s.value > 0);
                       return stats.map(s => (
-                        <div key={s.label} style={{ padding: "12px 14px", background: "#111114", borderRadius: 12, border: "1px solid #1e1e22", textAlign: "center" }}>
+                        <div key={s.label} style={{ padding: "12px 14px", background: "#1c1c1f", borderRadius: 12, border: "1px solid #2e2e34", textAlign: "center" }}>
                           <div style={{ fontSize: 22, fontWeight: 800, color: s.color }}>{s.value}</div>
                           <div style={{ fontSize: 9, color: "#666", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em" }}>{s.label}</div>
                         </div>
@@ -3994,7 +4013,7 @@ function CastingAppInner({ authUser }) {
                 {/* HEADER + TOOLBAR */}
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20, flexWrap: "wrap", gap: 12 }}>
                   <div>
-                    <h1 style={{ fontSize: 28, fontWeight: 800, color: "#f0f0f0", fontFamily: "'Playfair Display', serif", marginBottom: 4 }}>
+                    <h1 style={{ fontSize: 28, fontWeight: 800, color: "#f5f5f7", fontFamily: "inherit", marginBottom: 4 }}>
                       📁 Fichier Casting
                     </h1>
                     <p style={{ fontSize: 13, color: "#666" }}>
@@ -4004,7 +4023,7 @@ function CastingAppInner({ authUser }) {
                   <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                     {/* Add actor */}
                     <button onClick={() => { setActorEditForm({ firstName: "", name: "", age: "", height: "", measurements: "", hairColor: "", profileType: "", actingLevel: 0, agency: "", email: "", phone: "", agencyEmail: "", source: "", notes: "", photos: [], tags: [] }); setActorAddModal(true); }} style={{
-                      padding: "10px 18px", background: "linear-gradient(135deg, #a855f7, #9333ea)",
+                      padding: "10px 18px", background: "linear-gradient(135deg, #bf5af2, #9333ea)",
                       border: "none", borderRadius: 10, cursor: "pointer", fontSize: 12,
                       fontWeight: 700, fontFamily: "inherit", color: "#fff",
                     }}>+ Ajouter un acteur</button>
@@ -4016,13 +4035,13 @@ function CastingAppInner({ authUser }) {
                       const blob = new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"});
                       const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = "fichier-casting.csv"; a.click();
                     }} style={{
-                      padding: "10px 14px", background: "rgba(255,255,255,0.03)", border: "1px solid #2a2a2e",
+                      padding: "10px 14px", background: "rgba(255,255,255,0.03)", border: "1px solid #3a3a40",
                       borderRadius: 10, cursor: "pointer", fontSize: 11, fontWeight: 600, fontFamily: "inherit", color: "#888",
                     }}>⬇ Export CSV</button>
                     {/* Sort */}
                     <select value={actorSort} onChange={e => setActorSort(e.target.value)} style={{
-                      padding: "10px 12px", background: "#111114", border: "1px solid #2a2a2e",
-                      borderRadius: 10, color: "#e0e0e0", fontSize: 11, fontFamily: "inherit", outline: "none",
+                      padding: "10px 12px", background: "#1c1c1f", border: "1px solid #3a3a40",
+                      borderRadius: 10, color: "#ebebf0", fontSize: 11, fontFamily: "inherit", outline: "none",
                     }}>
                       <option value="name">Tri: Nom</option>
                       <option value="date">Tri: Récent</option>
@@ -4031,16 +4050,16 @@ function CastingAppInner({ authUser }) {
                       <option value="projects">Tri: Nb projets</option>
                     </select>
                     {/* View toggle */}
-                    <div style={{ display: "flex", gap: 2, background: "#0c0c0e", borderRadius: 8, padding: 2 }}>
+                    <div style={{ display: "flex", gap: 2, background: "#101013", borderRadius: 8, padding: 2 }}>
                       <button onClick={() => setActorViewMode("grid")} style={{
                         padding: "8px 10px", borderRadius: 6, border: "none", cursor: "pointer", fontSize: 13,
-                        background: actorViewMode === "grid" ? "rgba(168,85,247,0.12)" : "transparent",
-                        color: actorViewMode === "grid" ? "#a855f7" : "#555",
+                        background: actorViewMode === "grid" ? "rgba(191,90,242,0.12)" : "transparent",
+                        color: actorViewMode === "grid" ? "#bf5af2" : "#555",
                       }}>▦</button>
                       <button onClick={() => setActorViewMode("list")} style={{
                         padding: "8px 10px", borderRadius: 6, border: "none", cursor: "pointer", fontSize: 13,
-                        background: actorViewMode === "list" ? "rgba(168,85,247,0.12)" : "transparent",
-                        color: actorViewMode === "list" ? "#a855f7" : "#555",
+                        background: actorViewMode === "list" ? "rgba(191,90,242,0.12)" : "transparent",
+                        color: actorViewMode === "list" ? "#bf5af2" : "#555",
                       }}>☰</button>
                     </div>
                   </div>
@@ -4052,35 +4071,35 @@ function CastingAppInner({ authUser }) {
                   const allProjects = [...new Set(actorDatabase.flatMap(a => a._projects || []).filter(Boolean))].sort();
                   const allTags = [...new Set(actorDatabase.flatMap(a => a.tags || []).filter(Boolean))].sort();
                   const activeFilterCount = Object.entries(actorFilters).filter(([k, v]) => k === "favOnly" ? v : (v !== "all" && v !== "")).length;
-                  const fSel = { padding: "8px 12px", background: "#111114", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 11, fontFamily: "inherit", outline: "none" };
-                  const fSelA = (key) => actorFilters[key] !== "all" && actorFilters[key] !== "" ? { ...fSel, borderColor: "#a855f744", background: "rgba(168,85,247,0.04)" } : fSel;
-                  const fIn = { padding: "8px 10px", background: "#111114", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 11, fontFamily: "'DM Sans',sans-serif", outline: "none", width: 70 };
+                  const fSel = { padding: "8px 12px", background: "#1c1c1f", border: "1px solid #3a3a40", borderRadius: 8, color: "#ebebf0", fontSize: 11, fontFamily: "inherit", outline: "none" };
+                  const fSelA = (key) => actorFilters[key] !== "all" && actorFilters[key] !== "" ? { ...fSel, borderColor: "#bf5af244", background: "rgba(191,90,242,0.04)" } : fSel;
+                  const fIn = { padding: "8px 10px", background: "#1c1c1f", border: "1px solid #3a3a40", borderRadius: 8, color: "#ebebf0", fontSize: 11, fontFamily: "inherit", outline: "none", width: 70 };
                   const setF = (key, val) => setActorFilters(prev => ({ ...prev, [key]: val }));
 
                   return (
                     <div style={{ marginBottom: 16 }}>
                       <div style={{ display: "flex", gap: 8, marginBottom: 8 }}>
                         <input value={actorSearch} onChange={e => setActorSearch(e.target.value)} placeholder="🔍 Rechercher par nom, prénom, agence..."
-                          style={{ flex: 1, minWidth: 180, padding: "10px 16px", background: "#111114", border: "1px solid #2a2a2e", borderRadius: 10, color: "#e0e0e0", fontSize: 13, fontFamily: "'DM Sans',sans-serif", outline: "none" }}
-                          onFocus={e => e.target.style.borderColor="#a855f7"} onBlur={e => e.target.style.borderColor="#2a2a2e"} />
+                          style={{ flex: 1, minWidth: 180, padding: "10px 16px", background: "#1c1c1f", border: "1px solid #3a3a40", borderRadius: 10, color: "#ebebf0", fontSize: 13, fontFamily: "inherit", outline: "none" }}
+                          onFocus={e => e.target.style.borderColor="#bf5af2"} onBlur={e => e.target.style.borderColor="#3a3a40"} />
                         <button onClick={() => setF("favOnly", !actorFilters.favOnly)} style={{
                           padding: "10px 14px", borderRadius: 10, border: "none", cursor: "pointer", fontSize: 16,
-                          background: actorFilters.favOnly ? "rgba(245,158,11,0.1)" : "rgba(255,255,255,0.03)",
-                          color: actorFilters.favOnly ? "#f59e0b" : "#444",
+                          background: actorFilters.favOnly ? "rgba(255,214,10,0.1)" : "rgba(255,255,255,0.03)",
+                          color: actorFilters.favOnly ? "#ffd60a" : "#444",
                         }}>★</button>
                         <button onClick={() => setActorFiltersOpen(p => !p)} style={{
                           padding: "10px 16px", borderRadius: 10, fontSize: 12, fontWeight: 600, fontFamily: "inherit",
                           border: "none", cursor: "pointer", position: "relative",
-                          background: actorFiltersOpen || activeFilterCount > 0 ? "rgba(168,85,247,0.1)" : "rgba(255,255,255,0.03)",
-                          color: actorFiltersOpen || activeFilterCount > 0 ? "#a855f7" : "#888",
+                          background: actorFiltersOpen || activeFilterCount > 0 ? "rgba(191,90,242,0.1)" : "rgba(255,255,255,0.03)",
+                          color: actorFiltersOpen || activeFilterCount > 0 ? "#bf5af2" : "#888",
                         }}>
                           ⚙ Filtres
-                          {activeFilterCount > 0 && <span style={{ position: "absolute", top: -4, right: -4, fontSize: 9, fontWeight: 700, background: "#a855f7", color: "#000", borderRadius: 10, padding: "1px 5px", minWidth: 14, textAlign: "center" }}>{activeFilterCount}</span>}
+                          {activeFilterCount > 0 && <span style={{ position: "absolute", top: -4, right: -4, fontSize: 9, fontWeight: 700, background: "#bf5af2", color: "#000", borderRadius: 10, padding: "1px 5px", minWidth: 14, textAlign: "center" }}>{activeFilterCount}</span>}
                         </button>
                       </div>
 
                       {actorFiltersOpen && (
-                        <div style={{ padding: "14px 18px", background: "#111114", borderRadius: 12, border: "1px solid #1e1e22", marginBottom: 4, animation: "fadeIn 0.2s ease" }}>
+                        <div style={{ padding: "14px 18px", background: "#1c1c1f", borderRadius: 12, border: "1px solid #2e2e34", marginBottom: 4, animation: "fadeIn 0.2s ease" }}>
                           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(150px, 1fr))", gap: "10px 14px" }}>
                             <div>
                               <label style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", display: "block", marginBottom: 3 }}>Type</label>
@@ -4125,7 +4144,7 @@ function CastingAppInner({ authUser }) {
                           </div>
                           {activeFilterCount > 0 && (
                             <button onClick={() => setActorFilters({ hair: "all", type: "all", agency: "all", ageMin: "", ageMax: "", heightMin: "", heightMax: "", level: "all", project: "all", tag: "all", favOnly: false })}
-                              style={{ marginTop: 10, padding: "6px 14px", background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.15)", borderRadius: 8, color: "#ef4444", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+                              style={{ marginTop: 10, padding: "6px 14px", background: "rgba(255,69,58,0.06)", border: "1px solid rgba(255,69,58,0.15)", borderRadius: 8, color: "#ff453a", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
                               ✕ Réinitialiser
                             </button>
                           )}
@@ -4135,17 +4154,17 @@ function CastingAppInner({ authUser }) {
                       {/* Active pills */}
                       {activeFilterCount > 0 && !actorFiltersOpen && (
                         <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginTop: 4 }}>
-                          {actorFilters.favOnly && <span style={{ fontSize: 10, padding: "3px 8px", background: "rgba(245,158,11,0.06)", border: "1px solid rgba(245,158,11,0.15)", borderRadius: 6, color: "#f59e0b", cursor: "pointer" }} onClick={() => setF("favOnly", false)}>★ Favoris ✕</span>}
-                          {actorFilters.type !== "all" && <span style={{ fontSize: 10, padding: "3px 8px", background: "rgba(168,85,247,0.06)", border: "1px solid rgba(168,85,247,0.15)", borderRadius: 6, color: "#a855f7", cursor: "pointer" }} onClick={() => setF("type", "all")}>{actorFilters.type} ✕</span>}
-                          {actorFilters.hair !== "all" && <span style={{ fontSize: 10, padding: "3px 8px", background: "rgba(168,85,247,0.06)", border: "1px solid rgba(168,85,247,0.15)", borderRadius: 6, color: "#a855f7", cursor: "pointer" }} onClick={() => setF("hair", "all")}>💇 {actorFilters.hair} ✕</span>}
-                          {actorFilters.agency !== "all" && <span style={{ fontSize: 10, padding: "3px 8px", background: "rgba(168,85,247,0.06)", border: "1px solid rgba(168,85,247,0.15)", borderRadius: 6, color: "#a855f7", cursor: "pointer" }} onClick={() => setF("agency", "all")}>🏢 {actorFilters.agency} ✕</span>}
-                          {actorFilters.level !== "all" && <span style={{ fontSize: 10, padding: "3px 8px", background: "rgba(168,85,247,0.06)", border: "1px solid rgba(168,85,247,0.15)", borderRadius: 6, color: "#a855f7", cursor: "pointer" }} onClick={() => setF("level", "all")}>{"★".repeat(Number(actorFilters.level))}+ ✕</span>}
-                          {actorFilters.tag !== "all" && <span style={{ fontSize: 10, padding: "3px 8px", background: "rgba(96,165,250,0.06)", border: "1px solid rgba(96,165,250,0.15)", borderRadius: 6, color: "#60a5fa", cursor: "pointer" }} onClick={() => setF("tag", "all")}>🏷 {actorFilters.tag} ✕</span>}
-                          {actorFilters.project !== "all" && <span style={{ fontSize: 10, padding: "3px 8px", background: "rgba(201,164,74,0.06)", border: "1px solid rgba(201,164,74,0.15)", borderRadius: 6, color: "#c9a44a", cursor: "pointer" }} onClick={() => setF("project", "all")}>🎬 {actorFilters.project} ✕</span>}
-                          {actorFilters.ageMin && <span style={{ fontSize: 10, padding: "3px 8px", background: "rgba(168,85,247,0.06)", border: "1px solid rgba(168,85,247,0.15)", borderRadius: 6, color: "#a855f7", cursor: "pointer" }} onClick={() => setF("ageMin", "")}>≥{actorFilters.ageMin} ans ✕</span>}
-                          {actorFilters.ageMax && <span style={{ fontSize: 10, padding: "3px 8px", background: "rgba(168,85,247,0.06)", border: "1px solid rgba(168,85,247,0.15)", borderRadius: 6, color: "#a855f7", cursor: "pointer" }} onClick={() => setF("ageMax", "")}>≤{actorFilters.ageMax} ans ✕</span>}
-                          {actorFilters.heightMin && <span style={{ fontSize: 10, padding: "3px 8px", background: "rgba(168,85,247,0.06)", border: "1px solid rgba(168,85,247,0.15)", borderRadius: 6, color: "#a855f7", cursor: "pointer" }} onClick={() => setF("heightMin", "")}>≥{actorFilters.heightMin}cm ✕</span>}
-                          {actorFilters.heightMax && <span style={{ fontSize: 10, padding: "3px 8px", background: "rgba(168,85,247,0.06)", border: "1px solid rgba(168,85,247,0.15)", borderRadius: 6, color: "#a855f7", cursor: "pointer" }} onClick={() => setF("heightMax", "")}>≤{actorFilters.heightMax}cm ✕</span>}
+                          {actorFilters.favOnly && <span style={{ fontSize: 10, padding: "3px 8px", background: "rgba(255,214,10,0.06)", border: "1px solid rgba(255,214,10,0.15)", borderRadius: 6, color: "#ffd60a", cursor: "pointer" }} onClick={() => setF("favOnly", false)}>★ Favoris ✕</span>}
+                          {actorFilters.type !== "all" && <span style={{ fontSize: 10, padding: "3px 8px", background: "rgba(191,90,242,0.06)", border: "1px solid rgba(191,90,242,0.15)", borderRadius: 6, color: "#bf5af2", cursor: "pointer" }} onClick={() => setF("type", "all")}>{actorFilters.type} ✕</span>}
+                          {actorFilters.hair !== "all" && <span style={{ fontSize: 10, padding: "3px 8px", background: "rgba(191,90,242,0.06)", border: "1px solid rgba(191,90,242,0.15)", borderRadius: 6, color: "#bf5af2", cursor: "pointer" }} onClick={() => setF("hair", "all")}>💇 {actorFilters.hair} ✕</span>}
+                          {actorFilters.agency !== "all" && <span style={{ fontSize: 10, padding: "3px 8px", background: "rgba(191,90,242,0.06)", border: "1px solid rgba(191,90,242,0.15)", borderRadius: 6, color: "#bf5af2", cursor: "pointer" }} onClick={() => setF("agency", "all")}>🏢 {actorFilters.agency} ✕</span>}
+                          {actorFilters.level !== "all" && <span style={{ fontSize: 10, padding: "3px 8px", background: "rgba(191,90,242,0.06)", border: "1px solid rgba(191,90,242,0.15)", borderRadius: 6, color: "#bf5af2", cursor: "pointer" }} onClick={() => setF("level", "all")}>{"★".repeat(Number(actorFilters.level))}+ ✕</span>}
+                          {actorFilters.tag !== "all" && <span style={{ fontSize: 10, padding: "3px 8px", background: "rgba(10,132,255,0.06)", border: "1px solid rgba(10,132,255,0.15)", borderRadius: 6, color: "#0a84ff", cursor: "pointer" }} onClick={() => setF("tag", "all")}>🏷 {actorFilters.tag} ✕</span>}
+                          {actorFilters.project !== "all" && <span style={{ fontSize: 10, padding: "3px 8px", background: "rgba(212,175,97,0.06)", border: "1px solid rgba(212,175,97,0.15)", borderRadius: 6, color: "#d4af61", cursor: "pointer" }} onClick={() => setF("project", "all")}>🎬 {actorFilters.project} ✕</span>}
+                          {actorFilters.ageMin && <span style={{ fontSize: 10, padding: "3px 8px", background: "rgba(191,90,242,0.06)", border: "1px solid rgba(191,90,242,0.15)", borderRadius: 6, color: "#bf5af2", cursor: "pointer" }} onClick={() => setF("ageMin", "")}>≥{actorFilters.ageMin} ans ✕</span>}
+                          {actorFilters.ageMax && <span style={{ fontSize: 10, padding: "3px 8px", background: "rgba(191,90,242,0.06)", border: "1px solid rgba(191,90,242,0.15)", borderRadius: 6, color: "#bf5af2", cursor: "pointer" }} onClick={() => setF("ageMax", "")}>≤{actorFilters.ageMax} ans ✕</span>}
+                          {actorFilters.heightMin && <span style={{ fontSize: 10, padding: "3px 8px", background: "rgba(191,90,242,0.06)", border: "1px solid rgba(191,90,242,0.15)", borderRadius: 6, color: "#bf5af2", cursor: "pointer" }} onClick={() => setF("heightMin", "")}>≥{actorFilters.heightMin}cm ✕</span>}
+                          {actorFilters.heightMax && <span style={{ fontSize: 10, padding: "3px 8px", background: "rgba(191,90,242,0.06)", border: "1px solid rgba(191,90,242,0.15)", borderRadius: 6, color: "#bf5af2", cursor: "pointer" }} onClick={() => setF("heightMax", "")}>≤{actorFilters.heightMax}cm ✕</span>}
                         </div>
                       )}
                     </div>
@@ -4155,7 +4174,7 @@ function CastingAppInner({ authUser }) {
                 {!actorsLoaded ? (
                   <div style={{ textAlign: "center", padding: "60px 0", color: "#555", fontSize: 14, animation: "pulse 1.5s infinite" }}>Chargement...</div>
                 ) : actorDatabase.length === 0 ? (
-                  <div style={{ textAlign: "center", padding: "80px 24px", background: "#111114", borderRadius: 20, border: "1px solid #1e1e22" }}>
+                  <div style={{ textAlign: "center", padding: "80px 24px", background: "#1c1c1f", borderRadius: 20, border: "1px solid #2e2e34" }}>
                     <div style={{ fontSize: 56, marginBottom: 16, opacity: 0.3 }}>📁</div>
                     <div style={{ fontSize: 16, color: "#888", marginBottom: 8 }}>Fichier casting vide</div>
                     <div style={{ fontSize: 13, color: "#555" }}>Ajoutez des acteurs manuellement ou cochez "📁 Enregistrer" sur les profils de vos projets</div>
@@ -4190,26 +4209,26 @@ function CastingAppInner({ authUser }) {
 
                       {actorViewMode === "list" ? (
                         /* === LIST VIEW === */
-                        <div style={{ background: "#111114", borderRadius: 14, border: "1px solid #1e1e22", overflow: "hidden" }}>
-                          <div style={{ display: "grid", gridTemplateColumns: "40px 1.5fr 0.6fr 0.6fr 0.5fr 0.6fr 0.8fr 0.5fr", padding: "10px 16px", borderBottom: "1px solid #1e1e22", fontSize: 9, color: "#555", fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase" }}>
+                        <div style={{ background: "#1c1c1f", borderRadius: 14, border: "1px solid #2e2e34", overflow: "hidden" }}>
+                          <div style={{ display: "grid", gridTemplateColumns: "40px 1.5fr 0.6fr 0.6fr 0.5fr 0.6fr 0.8fr 0.5fr", padding: "10px 16px", borderBottom: "1px solid #2e2e34", fontSize: 9, color: "#555", fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase" }}>
                             <span></span><span>Nom</span><span>Type</span><span>Âge/Taille</span><span>Cheveux</span><span>Agence</span><span>Tags</span><span>Niveau</span>
                           </div>
                           {filtered.map((actor, i) => (
                             <div key={actor.id} onClick={() => setActorDetail(actor)} style={{
                               display: "grid", gridTemplateColumns: "40px 1.5fr 0.6fr 0.6fr 0.5fr 0.6fr 0.8fr 0.5fr",
                               padding: "10px 16px", alignItems: "center", cursor: "pointer",
-                              borderBottom: i < filtered.length - 1 ? "1px solid #1a1a1e" : "none",
+                              borderBottom: i < filtered.length - 1 ? "1px solid #2a2a30" : "none",
                               transition: "background 0.15s",
                             }}
                               onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.02)"}
                               onMouseLeave={e => e.currentTarget.style.background = "transparent"}
                             >
-                              <div style={{ width: 30, height: 38, borderRadius: 5, overflow: "hidden", background: "#0c0c0e" }}>
+                              <div style={{ width: 30, height: 38, borderRadius: 5, overflow: "hidden", background: "#101013" }}>
                                 {actor.photos?.[0] ? <img src={actor.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 12 }}>◎</div>}
                               </div>
                               <div>
-                                <div style={{ fontSize: 12, fontWeight: 600, color: "#f0f0f0" }}>
-                                  {actor._favorite && <span style={{ color: "#f59e0b", marginRight: 4 }}>★</span>}
+                                <div style={{ fontSize: 12, fontWeight: 600, color: "#f5f5f7" }}>
+                                  {actor._favorite && <span style={{ color: "#ffd60a", marginRight: 4 }}>★</span>}
                                   {[actor.firstName, actor.name].filter(Boolean).join(" ") || "Sans nom"}
                                 </div>
                               </div>
@@ -4218,10 +4237,10 @@ function CastingAppInner({ authUser }) {
                               <div style={{ fontSize: 10, color: "#888" }}>{actor.hairColor || "—"}</div>
                               <div style={{ fontSize: 10, color: "#8a7740" }}>{actor.agency || "—"}</div>
                               <div style={{ display: "flex", gap: 3, flexWrap: "wrap" }}>
-                                {(actor.tags || []).slice(0, 2).map(t => <span key={t} style={{ fontSize: 8, padding: "1px 5px", background: "rgba(96,165,250,0.06)", borderRadius: 3, color: "#60a5fa" }}>{t}</span>)}
+                                {(actor.tags || []).slice(0, 2).map(t => <span key={t} style={{ fontSize: 8, padding: "1px 5px", background: "rgba(10,132,255,0.06)", borderRadius: 3, color: "#0a84ff" }}>{t}</span>)}
                                 {(actor.tags || []).length > 2 && <span style={{ fontSize: 8, color: "#444" }}>+{actor.tags.length - 2}</span>}
                               </div>
-                              <div style={{ fontSize: 11 }}>{actor.actingLevel > 0 ? [1,2,3,4,5].map(n => <span key={n} style={{ color: n <= actor.actingLevel ? "#c9a44a" : "#2a2a2e" }}>★</span>) : <span style={{ color: "#333" }}>—</span>}</div>
+                              <div style={{ fontSize: 11 }}>{actor.actingLevel > 0 ? [1,2,3,4,5].map(n => <span key={n} style={{ color: n <= actor.actingLevel ? "#d4af61" : "#3a3a40" }}>★</span>) : <span style={{ color: "#333" }}>—</span>}</div>
                             </div>
                           ))}
                           {filtered.length === 0 && <div style={{ padding: "30px", textAlign: "center", color: "#555", fontSize: 12 }}>Aucun résultat</div>}
@@ -4231,18 +4250,18 @@ function CastingAppInner({ authUser }) {
                         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 14 }}>
                           {filtered.map((actor, i) => (
                             <div key={actor.id} onClick={() => setActorDetail(actor)} style={{
-                              background: "#111114", borderRadius: 14, border: "1px solid #1e1e22",
+                              background: "#1c1c1f", borderRadius: 14, border: "1px solid #2e2e34",
                               overflow: "hidden", cursor: "pointer", transition: "all 0.2s",
                               animation: `fadeIn 0.3s ease ${i * 0.02}s both`,
                             }}
-                              onMouseEnter={e => { e.currentTarget.style.borderColor = "#a855f744"; e.currentTarget.style.transform = "translateY(-2px)"; }}
-                              onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e1e22"; e.currentTarget.style.transform = ""; }}
+                              onMouseEnter={e => { e.currentTarget.style.borderColor = "#bf5af244"; e.currentTarget.style.transform = "translateY(-2px)"; }}
+                              onMouseLeave={e => { e.currentTarget.style.borderColor = "#2e2e34"; e.currentTarget.style.transform = ""; }}
                             >
-                              <div style={{ height: 170, overflow: "hidden", background: "#0c0c0e", position: "relative" }}>
+                              <div style={{ height: 170, overflow: "hidden", background: "#101013", position: "relative" }}>
                                 {actor.photos?.[0] ? <img src={actor.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 40 }}>◎</div>}
                                 <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, background: "linear-gradient(transparent, rgba(0,0,0,0.85))", padding: "28px 14px 10px" }}>
                                   <div style={{ fontSize: 14, fontWeight: 700, color: "#fff" }}>
-                                    {actor._favorite && <span style={{ color: "#f59e0b", marginRight: 4 }}>★</span>}
+                                    {actor._favorite && <span style={{ color: "#ffd60a", marginRight: 4 }}>★</span>}
                                     {[actor.firstName, actor.name].filter(Boolean).join(" ") || "Sans nom"}
                                   </div>
                                   {actor.profileType && <span style={{ fontSize: 9, padding: "2px 6px", background: "rgba(255,255,255,0.15)", borderRadius: 4, color: "#ddd", fontWeight: 600 }}>{actor.profileType}</span>}
@@ -4255,10 +4274,10 @@ function CastingAppInner({ authUser }) {
                                   {actor.height && <span>📏 {actor.height}</span>}
                                   {actor.hairColor && <span>💇 {actor.hairColor}</span>}
                                 </div>
-                                {actor.actingLevel > 0 && <div style={{ marginBottom: 4, fontSize: 12 }}>{[1,2,3,4,5].map(n => <span key={n} style={{ color: n <= actor.actingLevel ? "#c9a44a" : "#2a2a2e" }}>★</span>)}</div>}
+                                {actor.actingLevel > 0 && <div style={{ marginBottom: 4, fontSize: 12 }}>{[1,2,3,4,5].map(n => <span key={n} style={{ color: n <= actor.actingLevel ? "#d4af61" : "#3a3a40" }}>★</span>)}</div>}
                                 {actor.agency && <div style={{ fontSize: 10, color: "#8a7740", marginBottom: 4 }}>🏢 {actor.agency}</div>}
-                                {(actor.tags || []).length > 0 && <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 4 }}>{actor.tags.slice(0, 3).map(t => <span key={t} style={{ fontSize: 8, padding: "2px 6px", background: "rgba(96,165,250,0.06)", borderRadius: 4, color: "#60a5fa" }}>{t}</span>)}{actor.tags.length > 3 && <span style={{ fontSize: 8, color: "#444" }}>+{actor.tags.length - 3}</span>}</div>}
-                                {actor._projects?.length > 0 && <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>{actor._projects.slice(0, 2).map((p, j) => <span key={j} style={{ fontSize: 8, padding: "2px 5px", background: "rgba(201,164,74,0.06)", border: "1px solid rgba(201,164,74,0.12)", borderRadius: 3, color: "#c9a44a" }}>{p}</span>)}{actor._projects.length > 2 && <span style={{ fontSize: 8, color: "#555" }}>+{actor._projects.length - 2}</span>}</div>}
+                                {(actor.tags || []).length > 0 && <div style={{ display: "flex", gap: 4, flexWrap: "wrap", marginBottom: 4 }}>{actor.tags.slice(0, 3).map(t => <span key={t} style={{ fontSize: 8, padding: "2px 6px", background: "rgba(10,132,255,0.06)", borderRadius: 4, color: "#0a84ff" }}>{t}</span>)}{actor.tags.length > 3 && <span style={{ fontSize: 8, color: "#444" }}>+{actor.tags.length - 3}</span>}</div>}
+                                {actor._projects?.length > 0 && <div style={{ display: "flex", gap: 4, flexWrap: "wrap" }}>{actor._projects.slice(0, 2).map((p, j) => <span key={j} style={{ fontSize: 8, padding: "2px 5px", background: "rgba(212,175,97,0.06)", border: "1px solid rgba(212,175,97,0.12)", borderRadius: 3, color: "#d4af61" }}>{p}</span>)}{actor._projects.length > 2 && <span style={{ fontSize: 8, color: "#555" }}>+{actor._projects.length - 2}</span>}</div>}
                               </div>
                             </div>
                           ))}
@@ -4275,8 +4294,8 @@ function CastingAppInner({ authUser }) {
           {/* ADD ACTOR MODAL */}
           {actorAddModal && (
               <div onClick={() => { setActorAddModal(false); setActorEditForm(null); }} style={{ position: "fixed", inset: 0, zIndex: 9999, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                <div onClick={e => e.stopPropagation()} style={{ width: "90%", maxWidth: 600, maxHeight: "85vh", overflow: "auto", background: "#141416", borderRadius: 16, border: "1px solid #2a2a2e", padding: "24px" }}>
-                  <h3 style={{ fontSize: 18, fontWeight: 700, color: "#f0f0f0", marginBottom: 16, fontFamily: "'Playfair Display', serif" }}>+ Ajouter un acteur</h3>
+                <div onClick={e => e.stopPropagation()} style={{ width: "90%", maxWidth: 600, maxHeight: "85vh", overflow: "auto", background: "#232327", borderRadius: 16, border: "1px solid #3a3a40", padding: "24px" }}>
+                  <h3 style={{ fontSize: 18, fontWeight: 700, color: "#f5f5f7", marginBottom: 16, fontFamily: "inherit" }}>+ Ajouter un acteur</h3>
                   {/* Photos */}
                   <div style={{ marginBottom: 16 }}>
                     <label style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", display: "block", marginBottom: 6 }}>Photos (3 max)</label>
@@ -4286,13 +4305,13 @@ function CastingAppInner({ authUser }) {
                         return (
                           <div key={i} style={{
                             width: 100, height: 120, borderRadius: 10, overflow: "hidden",
-                            border: "1.5px dashed #444", cursor: "pointer", position: "relative", background: "#0c0c0e",
+                            border: "1.5px dashed #444", cursor: "pointer", position: "relative", background: "#101013",
                           }} onClick={() => { setActorPhotoIdx(i); actorPhotoRef.current?.click(); }}>
                             {src ? (
                               <>
                                 <img src={src} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                                 <div onClick={e => { e.stopPropagation(); setActorEditForm(p => ({ ...p, photos: (p?.photos || []).filter((_, j) => j !== i) })); }}
-                                  style={{ position: "absolute", top: 4, right: 4, width: 18, height: 18, borderRadius: "50%", background: "rgba(239,68,68,0.9)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, cursor: "pointer" }}>✕</div>
+                                  style={{ position: "absolute", top: 4, right: 4, width: 18, height: 18, borderRadius: "50%", background: "rgba(255,69,58,0.9)", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 10, cursor: "pointer" }}>✕</div>
                               </>
                             ) : (
                               <div style={{ width: "100%", height: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", color: "#555", fontSize: 11, gap: 2 }}>
@@ -4306,15 +4325,15 @@ function CastingAppInner({ authUser }) {
                     {/* Photo URL import */}
                     <div style={{ display: "flex", gap: 6, marginTop: 6 }}>
                       <input value={photoUrlInput} onChange={e => setPhotoUrlInput(e.target.value)} placeholder="📎 Coller une URL d'image..."
-                        style={{ flex: 1, padding: "6px 10px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 6, color: "#e0e0e0", fontSize: 10, fontFamily: "'DM Sans',sans-serif", outline: "none" }}
-                        onFocus={e => e.target.style.borderColor="#a855f7"} onBlur={e => e.target.style.borderColor="#2a2a2e"} />
+                        style={{ flex: 1, padding: "6px 10px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 6, color: "#ebebf0", fontSize: 10, fontFamily: "inherit", outline: "none" }}
+                        onFocus={e => e.target.style.borderColor="#bf5af2"} onBlur={e => e.target.style.borderColor="#3a3a40"} />
                       <button onClick={() => {
                         if (photoUrlInput.trim()) {
                           setActorEditForm(p => ({ ...(p || {}), photos: [...((p || {}).photos || []), photoUrlInput.trim()].slice(0, 3) }));
                           setPhotoUrlInput("");
                         }
                       }}
-                        style={{ padding: "6px 10px", background: "rgba(168,85,247,0.08)", border: "1px solid rgba(168,85,247,0.2)", borderRadius: 6, color: "#a855f7", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap" }}>
+                        style={{ padding: "6px 10px", background: "rgba(191,90,242,0.08)", border: "1px solid rgba(191,90,242,0.2)", borderRadius: 6, color: "#bf5af2", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap" }}>
                         + URL
                       </button>
                     </div>
@@ -4334,12 +4353,12 @@ function CastingAppInner({ authUser }) {
                         <label style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", display: "block", marginBottom: 3 }}>{f.label}</label>
                         {f.type === "select" ? (
                           <select value={(actorEditForm || {})[f.key] || ""} onChange={e => setActorEditForm(p => ({ ...(p || {}), [f.key]: e.target.value }))}
-                            style={{ width: "100%", padding: "8px 10px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 6, color: "#e0e0e0", fontSize: 12, fontFamily: "inherit", outline: "none" }}>
+                            style={{ width: "100%", padding: "8px 10px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 6, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none" }}>
                             <option value="">—</option>{f.options.map(o => <option key={o} value={o}>{o}</option>)}
                           </select>
                         ) : (
                           <input value={(actorEditForm || {})[f.key] || ""} onChange={e => setActorEditForm(p => ({ ...(p || {}), [f.key]: e.target.value }))} placeholder={f.ph}
-                            style={{ width: "100%", padding: "8px 10px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 6, color: "#e0e0e0", fontSize: 12, fontFamily: "'DM Sans',sans-serif", outline: "none" }} />
+                            style={{ width: "100%", padding: "8px 10px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 6, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none" }} />
                         )}
                       </div>
                     ))}
@@ -4350,19 +4369,19 @@ function CastingAppInner({ authUser }) {
                       {[1,2,3,4,5].map(n => (
                         <button key={n} type="button" onClick={() => setActorEditForm(p => ({ ...(p || {}), actingLevel: (p || {}).actingLevel === n ? 0 : n }))}
                           style={{ width: 32, height: 32, borderRadius: 6, border: "none", cursor: "pointer", fontSize: 16, fontFamily: "inherit",
-                            background: n <= ((actorEditForm || {}).actingLevel || 0) ? "rgba(201,164,74,0.15)" : "rgba(255,255,255,0.02)",
-                            color: n <= ((actorEditForm || {}).actingLevel || 0) ? "#c9a44a" : "#333",
+                            background: n <= ((actorEditForm || {}).actingLevel || 0) ? "rgba(212,175,97,0.15)" : "rgba(255,255,255,0.02)",
+                            color: n <= ((actorEditForm || {}).actingLevel || 0) ? "#d4af61" : "#333",
                           }}>★</button>
                       ))}
                     </div>
                   </div>
                   <textarea value={(actorEditForm || {}).notes || ""} onChange={e => setActorEditForm(p => ({ ...(p || {}), notes: e.target.value }))} placeholder="Notes..." rows={2}
-                    style={{ width: "100%", padding: "8px 10px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 6, color: "#e0e0e0", fontSize: 12, fontFamily: "'DM Sans',sans-serif", outline: "none", resize: "vertical", marginBottom: 16 }} />
+                    style={{ width: "100%", padding: "8px 10px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 6, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none", resize: "vertical", marginBottom: 16 }} />
                   <div style={{ display: "flex", gap: 10, justifyContent: "flex-end" }}>
                     <button onClick={() => { setActorAddModal(false); setActorEditForm(null); }}
                       style={{ padding: "10px 20px", background: "transparent", border: "1px solid #333", borderRadius: 10, color: "#888", fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Annuler</button>
                     <button onClick={() => { addActorManually(actorEditForm || {}); setActorEditForm(null); }}
-                      style={{ padding: "10px 24px", background: "linear-gradient(135deg, #a855f7, #9333ea)", border: "none", borderRadius: 10, color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Enregistrer</button>
+                      style={{ padding: "10px 24px", background: "linear-gradient(135deg, #bf5af2, #9333ea)", border: "none", borderRadius: 10, color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Enregistrer</button>
                   </div>
                 </div>
               </div>
@@ -4371,8 +4390,8 @@ function CastingAppInner({ authUser }) {
           {/* IMPORT ACTOR TO PROJECT MODAL */}
           {actorImportToProject && (
             <div onClick={() => setActorImportToProject(null)} style={{ position: "fixed", inset: 0, zIndex: 9999, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <div onClick={e => e.stopPropagation()} style={{ width: "90%", maxWidth: 480, maxHeight: "70vh", overflow: "auto", background: "#141416", borderRadius: 16, border: "1px solid #2a2a2e", padding: "24px" }}>
-                <h3 style={{ fontSize: 16, fontWeight: 700, color: "#f0f0f0", marginBottom: 4, fontFamily: "'Playfair Display', serif" }}>
+              <div onClick={e => e.stopPropagation()} style={{ width: "90%", maxWidth: 480, maxHeight: "70vh", overflow: "auto", background: "#232327", borderRadius: 16, border: "1px solid #3a3a40", padding: "24px" }}>
+                <h3 style={{ fontSize: 16, fontWeight: 700, color: "#f5f5f7", marginBottom: 4, fontFamily: "inherit" }}>
                   📥 Ajouter à un projet
                 </h3>
                 <div style={{ fontSize: 12, color: "#888", marginBottom: 20 }}>
@@ -4396,12 +4415,12 @@ function CastingAppInner({ authUser }) {
                               }
                             } catch (e) {}
                           }} style={{
-                            padding: "12px 16px", background: "#111114", border: "1px solid #1e1e22",
+                            padding: "12px 16px", background: "#1c1c1f", border: "1px solid #2e2e34",
                             borderRadius: 10, cursor: "pointer", textAlign: "left", fontFamily: "inherit",
-                            transition: "border-color 0.2s", color: "#f0f0f0", fontSize: 13, fontWeight: 600,
+                            transition: "border-color 0.2s", color: "#f5f5f7", fontSize: 13, fontWeight: 600,
                           }}
-                            onMouseEnter={e => e.currentTarget.style.borderColor = "#22c55e44"}
-                            onMouseLeave={e => e.currentTarget.style.borderColor = "#1e1e22"}
+                            onMouseEnter={e => e.currentTarget.style.borderColor = "#30d15844"}
+                            onMouseLeave={e => e.currentTarget.style.borderColor = "#2e2e34"}
                           >
                             🎬 {proj.name || "Sans titre"}
                             <span style={{ fontSize: 10, color: "#666", marginLeft: 8 }}>{proj.rolesCount} rôle{proj.rolesCount !== 1 ? "s" : ""}</span>
@@ -4413,7 +4432,7 @@ function CastingAppInner({ authUser }) {
                 ) : (
                   <>
                     <button onClick={() => setActorImportToProject(prev => ({ ...prev, step: "project" }))}
-                      style={{ padding: "4px 10px", background: "none", border: "1px solid #2a2a2e", borderRadius: 6, color: "#888", fontSize: 10, cursor: "pointer", fontFamily: "inherit", marginBottom: 12 }}>
+                      style={{ padding: "4px 10px", background: "none", border: "1px solid #3a3a40", borderRadius: 6, color: "#888", fontSize: 10, cursor: "pointer", fontFamily: "inherit", marginBottom: 12 }}>
                       ← {actorImportToProject.projectName}
                     </button>
                     <div style={{ fontSize: 11, color: "#555", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 10 }}>Choisir un rôle</div>
@@ -4424,12 +4443,12 @@ function CastingAppInner({ authUser }) {
                         {actorImportToProject.roles.map(role => (
                           <button key={role} onClick={() => importActorToStoredProject(actorImportToProject.actor, actorImportToProject.projectId, role)}
                             style={{
-                              padding: "12px 16px", background: "#111114", border: "1px solid #1e1e22",
+                              padding: "12px 16px", background: "#1c1c1f", border: "1px solid #2e2e34",
                               borderRadius: 10, cursor: "pointer", textAlign: "left", fontFamily: "inherit",
-                              transition: "border-color 0.2s", color: "#f0f0f0", fontSize: 13, fontWeight: 600,
+                              transition: "border-color 0.2s", color: "#f5f5f7", fontSize: 13, fontWeight: 600,
                             }}
-                            onMouseEnter={e => e.currentTarget.style.borderColor = "#22c55e44"}
-                            onMouseLeave={e => e.currentTarget.style.borderColor = "#1e1e22"}
+                            onMouseEnter={e => e.currentTarget.style.borderColor = "#30d15844"}
+                            onMouseLeave={e => e.currentTarget.style.borderColor = "#2e2e34"}
                           >
                             🎭 {role}
                           </button>
@@ -4464,7 +4483,7 @@ function CastingAppInner({ authUser }) {
             style={{
               position: "absolute", top: 16, left: 16, zIndex: 10,
               padding: "8px 16px", background: "rgba(255,255,255,0.03)",
-              border: "1px solid #2a2a2e", borderRadius: 8, cursor: "pointer",
+              border: "1px solid #3a3a40", borderRadius: 8, cursor: "pointer",
               fontSize: 12, fontFamily: "inherit", color: "#888",
             }}
           >
@@ -4505,12 +4524,12 @@ function CastingAppInner({ authUser }) {
     <>
       <style>{globalStyles}</style>
 
-      <div className={lightTheme ? "light-wrapper" : ""} style={{ minHeight: "100vh", background: "#0a0a0c" }}>
+      <div className={lightTheme ? "light-wrapper" : ""} style={{ minHeight: "100vh", background: "#000000" }}>
         {/* Header */}
         <header style={{
-          padding: "18px 32px", borderBottom: "1px solid #1a1a1e",
+          padding: "18px 32px", borderBottom: "1px solid #2a2a30",
           display: "flex", alignItems: "center", justifyContent: "space-between",
-          background: "rgba(10,10,12,0.9)", backdropFilter: "blur(12px)",
+          background: "rgba(0,0,0,0.9)", backdropFilter: "blur(12px)",
           position: "sticky", top: 0, zIndex: 100,
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
@@ -4518,27 +4537,27 @@ function CastingAppInner({ authUser }) {
               onClick={backToDashboard}
               style={{
                 padding: "5px 10px", background: "rgba(255,255,255,0.03)",
-                border: "1px solid #2a2a2e", borderRadius: 6, cursor: "pointer",
+                border: "1px solid #3a3a40", borderRadius: 6, cursor: "pointer",
                 fontSize: 11, fontFamily: "inherit", color: "#888", transition: "color 0.2s",
               }}
-              onMouseEnter={e => e.currentTarget.style.color = "#c9a44a"}
+              onMouseEnter={e => e.currentTarget.style.color = "#d4af61"}
               onMouseLeave={e => e.currentTarget.style.color = "#888"}
             >
               {"← Projets"}
             </button>
             {/* Brand */}
-              <div style={{ fontSize: 10, letterSpacing: "0.25em", textTransform: "uppercase", color: "#c9a44a", fontWeight: 600 }}>
+              <div style={{ fontSize: 10, letterSpacing: "0.25em", textTransform: "uppercase", color: "#d4af61", fontWeight: 600 }}>
                 Casting Director
               </div>
-            <div style={{ width: 1, height: 20, background: "#2a2a2e" }} />
+            <div style={{ width: 1, height: 20, background: "#3a3a40" }} />
             <h1 style={{
-              fontSize: 18, fontWeight: 700, color: "#f0f0f0", letterSpacing: "-0.01em",
-              fontFamily: "'Playfair Display', serif",
+              fontSize: 18, fontWeight: 700, color: "#f5f5f7", letterSpacing: "-0.01em",
+              fontFamily: "inherit",
             }}>
               {state.projectName}
             </h1>
             {savingIndicator && (
-              <span style={{ fontSize: 10, color: "#22c55e", fontWeight: 500, animation: "fadeIn 0.2s" }}>
+              <span style={{ fontSize: 10, color: "#30d158", fontWeight: 500, animation: "fadeIn 0.2s" }}>
                 ✓ Sauvegardé
               </span>
             )}
@@ -4547,7 +4566,7 @@ function CastingAppInner({ authUser }) {
                 <span style={{ fontSize: 12, color: "#666" }}>
                   {totalProfiles} profil{totalProfiles !== 1 ? "s" : ""} · {state.roles.length} rôle{state.roles.length !== 1 ? "s" : ""}
                 </span>
-                <div style={{ width: 1, height: 20, background: "#2a2a2e" }} />
+                <div style={{ width: 1, height: 20, background: "#3a3a40" }} />
                 {/* Share button */}
                 <button onClick={async () => {
                   if (state._shareCode) { setShareModalOpen(true); }
@@ -4556,17 +4575,17 @@ function CastingAppInner({ authUser }) {
                     if (result) { setState(prev => ({ ...prev, _shareCode: result.code, _sharePassword: result.password })); setShareModalOpen(true); }
                   }
                 }}
-                  style={{ padding: "5px 12px", background: state._shareCode ? "rgba(34,197,94,0.08)" : "rgba(168,85,247,0.08)", border: `1px solid ${state._shareCode ? "rgba(34,197,94,0.2)" : "rgba(168,85,247,0.2)"}`, borderRadius: 6, cursor: "pointer", fontSize: 10, fontWeight: 600, fontFamily: "inherit", color: state._shareCode ? "#22c55e" : "#a855f7" }}>
+                  style={{ padding: "5px 12px", background: state._shareCode ? "rgba(48,209,88,0.08)" : "rgba(191,90,242,0.08)", border: `1px solid ${state._shareCode ? "rgba(48,209,88,0.2)" : "rgba(191,90,242,0.2)"}`, borderRadius: 6, cursor: "pointer", fontSize: 10, fontWeight: 600, fontFamily: "inherit", color: state._shareCode ? "#30d158" : "#bf5af2" }}>
                   {state._shareCode ? "🔗 Partagé" : "🔗 Partager"}
                 </button>
                 {state._shareCode && state._guestVotes && Object.keys(state._guestVotes).length > 0 && (
-                  <span style={{ fontSize: 9, padding: "3px 8px", background: "rgba(96,165,250,0.1)", border: "1px solid rgba(96,165,250,0.2)", borderRadius: 6, color: "#60a5fa", fontWeight: 700 }}>
+                  <span style={{ fontSize: 9, padding: "3px 8px", background: "rgba(10,132,255,0.1)", border: "1px solid rgba(10,132,255,0.2)", borderRadius: 6, color: "#0a84ff", fontWeight: 700 }}>
                     {Object.keys(state._guestVotes).length} vote{Object.keys(state._guestVotes).length !== 1 ? "s" : ""} RÉAL/PROD
                   </span>
                 )}
-                <div style={{ width: 1, height: 20, background: "#2a2a2e" }} />
+                <div style={{ width: 1, height: 20, background: "#3a3a40" }} />
             <button onClick={() => setLightTheme(!lightTheme)}
-              style={{ padding: "5px 8px", background: "none", border: "1px solid #2a2a2e", borderRadius: 6, cursor: "pointer", fontSize: 14, lineHeight: 1 }}
+              style={{ padding: "5px 8px", background: "none", border: "1px solid #3a3a40", borderRadius: 6, cursor: "pointer", fontSize: 14, lineHeight: 1 }}
               title={lightTheme ? "Mode sombre" : "Mode clair"}>
               {lightTheme ? "🌙" : "☀️"}
             </button>
@@ -4576,7 +4595,7 @@ function CastingAppInner({ authUser }) {
         <div style={{ display: "flex", minHeight: "calc(100vh - 60px)" }}>
           {/* Sidebar — Roles */}
           <nav style={{
-            width: 240, borderRight: "1px solid #1a1a1e", padding: "24px 0",
+            width: 240, borderRight: "1px solid #2a2a30", padding: "24px 0",
             background: "#0d0d0f", flexShrink: 0, position: "sticky", top: 60,
             height: "calc(100vh - 60px)", overflowY: "auto",
           }}>
@@ -4585,11 +4604,11 @@ function CastingAppInner({ authUser }) {
               {[
                 { key: "projet", icon: "📄", label: "Projet", color: "#e879f9", show: true },
                 { key: "candidatures", icon: "📩", label: "Candidatures", color: "#f472b6", show: true, badge: (state.candidatures || []).length },
-                { key: "roles", icon: "🎭", label: "Rôles", color: "#c9a44a", show: true },
-                { key: "contacts", icon: "📇", label: "Contacts", color: "#60a5fa", show: true, badge: (() => { const all = Object.values(state.profiles).flat(); return all.filter(p => getChoice(p.id)).length; })() },
-                { key: "planning", icon: "📋", label: "Planning", color: "#a855f7", show: true, badge: state.castingDays.length },
-                { key: "casting", icon: "🎬", label: "Casting", color: "#fb923c", show: true },
-                { key: "final", icon: "🏆", label: "Final", color: "#22c55e", show: true, badge: Object.values(state.finalSelections).filter(f => f.selected === true).length },
+                { key: "roles", icon: "🎭", label: "Rôles", color: "#d4af61", show: true },
+                { key: "contacts", icon: "📇", label: "Contacts", color: "#0a84ff", show: true, badge: (() => { const all = Object.values(state.profiles).flat(); return all.filter(p => getChoice(p.id)).length; })() },
+                { key: "planning", icon: "📋", label: "Planning", color: "#bf5af2", show: true, badge: state.castingDays.length },
+                { key: "casting", icon: "🎬", label: "Casting", color: "#ff9f0a", show: true },
+                { key: "final", icon: "🏆", label: "Final", color: "#30d158", show: true, badge: Object.values(state.finalSelections).filter(f => f.selected === true).length },
                 { key: "mail", icon: "✉", label: "Gmail", color: "#EA4335", show: true, badge: (state.emailLog || []).length },
               ].filter(t => t.show).map(tab => (
                 <button key={tab.key} onClick={() => setActiveTab(tab.key)}
@@ -4674,9 +4693,9 @@ function CastingAppInner({ authUser }) {
                   style={{
                     display: "flex", alignItems: "center", justifyContent: "space-between",
                     width: "100%", padding: "10px 20px", border: "none",
-                    background: isActive ? "rgba(201,164,74,0.08)" : "transparent",
-                    borderLeft: isActive ? "2px solid #c9a44a" : "2px solid transparent",
-                    color: isActive ? "#f0f0f0" : "#777", cursor: "pointer",
+                    background: isActive ? "rgba(212,175,97,0.08)" : "transparent",
+                    borderLeft: isActive ? "2px solid #d4af61" : "2px solid transparent",
+                    color: isActive ? "#f5f5f7" : "#777", cursor: "pointer",
                     fontSize: 13, fontWeight: isActive ? 600 : 400, fontFamily: "inherit",
                     transition: "all 0.2s", textAlign: "left",
                   }}
@@ -4685,18 +4704,18 @@ function CastingAppInner({ authUser }) {
                   <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
                     {hasSelections && (viewMode === "director" || viewMode === "realisateur") && (
                       <div style={{ display: "flex", gap: 2 }}>
-                        {yesCount > 0 && <span style={{ fontSize: 9, color: "#22c55e", fontWeight: 700 }}>{yesCount}✓</span>}
-                        {maybeCount > 0 && <span style={{ fontSize: 9, color: "#f59e0b", fontWeight: 700 }}>{maybeCount}?</span>}
+                        {yesCount > 0 && <span style={{ fontSize: 9, color: "#30d158", fontWeight: 700 }}>{yesCount}✓</span>}
+                        {maybeCount > 0 && <span style={{ fontSize: 9, color: "#ffd60a", fontWeight: 700 }}>{maybeCount}?</span>}
                       </div>
                     )}
                     {viewMode === "director" && confirmedCount > 0 && (
-                      <span style={{ fontSize: 9, color: "#22c55e", fontWeight: 700, background: "rgba(34,197,94,0.1)", padding: "1px 4px", borderRadius: 3 }}>
+                      <span style={{ fontSize: 9, color: "#30d158", fontWeight: 700, background: "rgba(48,209,88,0.1)", padding: "1px 4px", borderRadius: 3 }}>
                         {confirmedCount}☑
                       </span>
                     )}
                     <span style={{
-                      fontSize: 11, color: isActive ? "#c9a44a" : "#444",
-                      background: isActive ? "rgba(201,164,74,0.12)" : "rgba(255,255,255,0.03)",
+                      fontSize: 11, color: isActive ? "#d4af61" : "#444",
+                      background: isActive ? "rgba(212,175,97,0.12)" : "rgba(255,255,255,0.03)",
                       padding: "2px 8px", borderRadius: 6, fontWeight: 600,
                     }}>
                       {count}
@@ -4720,13 +4739,13 @@ function CastingAppInner({ authUser }) {
                     autoFocus
                     placeholder="Nom du rôle"
                     style={{
-                      flex: 1, padding: "7px 10px", background: "#111114", border: "1px solid #c9a44a44",
-                      borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "inherit", outline: "none",
+                      flex: 1, padding: "7px 10px", background: "#1c1c1f", border: "1px solid #d4af6144",
+                      borderRadius: 8, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none",
                     }}
                   />
                   <button onClick={addNewRole} style={{
-                    padding: "7px 10px", background: "#c9a44a22", color: "#c9a44a",
-                    border: "1px solid #c9a44a44", borderRadius: 8, cursor: "pointer",
+                    padding: "7px 10px", background: "#d4af6122", color: "#d4af61",
+                    border: "1px solid #d4af6144", borderRadius: 8, cursor: "pointer",
                     fontSize: 12, fontFamily: "inherit", fontWeight: 600,
                   }}>
                     ✓
@@ -4776,14 +4795,14 @@ function CastingAppInner({ authUser }) {
                 <div>
                   {/* Sub-tab toggle */}
                   <div style={{ padding: "0 12px", marginBottom: 16 }}>
-                    <div style={{ display: "flex", gap: 2, background: "#0c0c0e", borderRadius: 8, padding: 2 }}>
+                    <div style={{ display: "flex", gap: 2, background: "#101013", borderRadius: 8, padding: 2 }}>
                       <button
                         onClick={() => { setContactSubTab("premier"); setContactActiveRole(null); }}
                         style={{
                           flex: 1, padding: "7px 0", borderRadius: 6, fontSize: 10, fontWeight: 600,
                           fontFamily: "inherit", border: "none", cursor: "pointer",
                           background: !isFinal ? "rgba(59,130,246,0.12)" : "transparent",
-                          color: !isFinal ? "#60a5fa" : "#555",
+                          color: !isFinal ? "#0a84ff" : "#555",
                           transition: "all 0.2s",
                         }}
                       >
@@ -4794,8 +4813,8 @@ function CastingAppInner({ authUser }) {
                         style={{
                           flex: 1, padding: "7px 0", borderRadius: 6, fontSize: 10, fontWeight: 600,
                           fontFamily: "inherit", border: "none", cursor: "pointer",
-                          background: isFinal ? "rgba(34,197,94,0.12)" : "transparent",
-                          color: isFinal ? "#22c55e" : "#555",
+                          background: isFinal ? "rgba(48,209,88,0.12)" : "transparent",
+                          color: isFinal ? "#30d158" : "#555",
                           transition: "all 0.2s",
                         }}
                       >
@@ -4841,7 +4860,7 @@ function CastingAppInner({ authUser }) {
 
                     if (totalEval === 0) return null;
                     const isActive = effectiveRole === role;
-                    const accentColor = isFinal ? "#22c55e" : "#60a5fa";
+                    const accentColor = isFinal ? "#30d158" : "#0a84ff";
 
                     return (
                       <button
@@ -4850,9 +4869,9 @@ function CastingAppInner({ authUser }) {
                         style={{
                           display: "flex", alignItems: "center", justifyContent: "space-between",
                           width: "100%", padding: "10px 20px", border: "none",
-                          background: isActive ? (isFinal ? "rgba(34,197,94,0.08)" : "rgba(59,130,246,0.08)") : "transparent",
+                          background: isActive ? (isFinal ? "rgba(48,209,88,0.08)" : "rgba(59,130,246,0.08)") : "transparent",
                           borderLeft: isActive ? `2px solid ${accentColor}` : "2px solid transparent",
-                          color: isActive ? "#f0f0f0" : "#777", cursor: "pointer",
+                          color: isActive ? "#f5f5f7" : "#777", cursor: "pointer",
                           fontSize: 13, fontWeight: isActive ? 600 : 400, fontFamily: "inherit",
                           transition: "all 0.2s", textAlign: "left",
                         }}
@@ -4861,8 +4880,8 @@ function CastingAppInner({ authUser }) {
                           {role}
                         </span>
                         <div style={{ display: "flex", alignItems: "center", gap: 4, flexShrink: 0 }}>
-                          {selCount > 0 && <span style={{ fontSize: 9, color: "#22c55e", fontWeight: 700 }}>{selCount}✓</span>}
-                          {noCount > 0 && <span style={{ fontSize: 9, color: "#ef4444", fontWeight: 700 }}>{noCount}✕</span>}
+                          {selCount > 0 && <span style={{ fontSize: 9, color: "#30d158", fontWeight: 700 }}>{selCount}✓</span>}
+                          {noCount > 0 && <span style={{ fontSize: 9, color: "#ff453a", fontWeight: 700 }}>{noCount}✕</span>}
                           {contactedCount > 0 && (
                             <span style={{
                               fontSize: 9, color: accentColor, fontWeight: 700,
@@ -4901,9 +4920,9 @@ function CastingAppInner({ authUser }) {
                       style={{
                         display: "flex", alignItems: "center", justifyContent: "space-between",
                         width: "100%", padding: "10px 20px", border: "none",
-                        background: isActive ? "rgba(168,85,247,0.08)" : "transparent",
-                        borderLeft: isActive ? "2px solid #a855f7" : "2px solid transparent",
-                        color: isActive ? "#f0f0f0" : "#777", cursor: "pointer",
+                        background: isActive ? "rgba(191,90,242,0.08)" : "transparent",
+                        borderLeft: isActive ? "2px solid #bf5af2" : "2px solid transparent",
+                        color: isActive ? "#f5f5f7" : "#777", cursor: "pointer",
                         fontSize: 13, fontWeight: isActive ? 600 : 400, fontFamily: "inherit",
                         transition: "all 0.2s", textAlign: "left",
                       }}
@@ -4915,8 +4934,8 @@ function CastingAppInner({ authUser }) {
                         {day.location && <div style={{ fontSize: 10, color: "#666", marginTop: 2 }}>{day.location}</div>}
                       </div>
                       <span style={{
-                        fontSize: 11, color: isActive ? "#a855f7" : "#444",
-                        background: isActive ? "rgba(168,85,247,0.12)" : "rgba(255,255,255,0.03)",
+                        fontSize: 11, color: isActive ? "#bf5af2" : "#444",
+                        background: isActive ? "rgba(191,90,242,0.12)" : "rgba(255,255,255,0.03)",
                         padding: "2px 8px", borderRadius: 6, fontWeight: 600,
                       }}>
                         {day.slots.length}
@@ -4930,8 +4949,8 @@ function CastingAppInner({ authUser }) {
                       type="date"
                       id="newDayDate"
                       style={{
-                        width: "100%", padding: "8px 10px", background: "#111114", border: "1px solid #2a2a2e",
-                        borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "inherit",
+                        width: "100%", padding: "8px 10px", background: "#1c1c1f", border: "1px solid #3a3a40",
+                        borderRadius: 8, color: "#ebebf0", fontSize: 12, fontFamily: "inherit",
                         outline: "none", marginBottom: 6,
                       }}
                     />
@@ -4939,8 +4958,8 @@ function CastingAppInner({ authUser }) {
                       id="newDayLocation"
                       placeholder="Lieu (optionnel)"
                       style={{
-                        width: "100%", padding: "8px 10px", background: "#111114", border: "1px solid #2a2a2e",
-                        borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "inherit",
+                        width: "100%", padding: "8px 10px", background: "#1c1c1f", border: "1px solid #3a3a40",
+                        borderRadius: 8, color: "#ebebf0", fontSize: 12, fontFamily: "inherit",
                         outline: "none", marginBottom: 6,
                       }}
                     />
@@ -4952,7 +4971,7 @@ function CastingAppInner({ authUser }) {
                           addCastingDay(date, loc);
                         }}
                         style={{
-                          flex: 1, padding: "8px", background: "#a855f7", color: "#000",
+                          flex: 1, padding: "8px", background: "#bf5af2", color: "#000",
                           border: "none", borderRadius: 8, cursor: "pointer",
                           fontSize: 12, fontFamily: "inherit", fontWeight: 600,
                         }}
@@ -4980,7 +4999,7 @@ function CastingAppInner({ authUser }) {
                       color: "#444", cursor: "pointer", fontSize: 12, fontFamily: "inherit",
                       transition: "color 0.2s",
                     }}
-                    onMouseEnter={e => e.currentTarget.style.color = "#a855f7"}
+                    onMouseEnter={e => e.currentTarget.style.color = "#bf5af2"}
                     onMouseLeave={e => e.currentTarget.style.color = "#444"}
                   >
                     + Nouvelle journée
@@ -4997,9 +5016,9 @@ function CastingAppInner({ authUser }) {
                     {/* Casting mode selector */}
                     <div style={{ padding: "0 12px", marginBottom: 14 }}>
                       <div style={{ fontSize: 9, letterSpacing: "0.15em", textTransform: "uppercase", color: "#555", fontWeight: 600, marginBottom: 8 }}>Mode de casting</div>
-                      <div style={{ display: "flex", gap: 2, background: "#0c0c0e", borderRadius: 8, padding: 2 }}>
-                        <button onClick={() => setCastingMode("physique")} style={{ flex: 1, padding: "8px 0", borderRadius: 6, fontSize: 11, fontWeight: 700, fontFamily: "inherit", border: "none", cursor: "pointer", background: castingMode === "physique" ? "rgba(251,146,60,0.15)" : "transparent", color: castingMode === "physique" ? "#fb923c" : "#555", transition: "all 0.2s" }}>🎬 Physique</button>
-                        <button onClick={() => setCastingMode("selftape")} style={{ flex: 1, padding: "8px 0", borderRadius: 6, fontSize: 11, fontWeight: 700, fontFamily: "inherit", border: "none", cursor: "pointer", background: castingMode === "selftape" ? "rgba(96,165,250,0.15)" : "transparent", color: castingMode === "selftape" ? "#60a5fa" : "#555", transition: "all 0.2s" }}>📹 Selftape</button>
+                      <div style={{ display: "flex", gap: 2, background: "#101013", borderRadius: 8, padding: 2 }}>
+                        <button onClick={() => setCastingMode("physique")} style={{ flex: 1, padding: "8px 0", borderRadius: 6, fontSize: 11, fontWeight: 700, fontFamily: "inherit", border: "none", cursor: "pointer", background: castingMode === "physique" ? "rgba(255,159,10,0.15)" : "transparent", color: castingMode === "physique" ? "#ff9f0a" : "#555", transition: "all 0.2s" }}>🎬 Physique</button>
+                        <button onClick={() => setCastingMode("selftape")} style={{ flex: 1, padding: "8px 0", borderRadius: 6, fontSize: 11, fontWeight: 700, fontFamily: "inherit", border: "none", cursor: "pointer", background: castingMode === "selftape" ? "rgba(10,132,255,0.15)" : "transparent", color: castingMode === "selftape" ? "#0a84ff" : "#555", transition: "all 0.2s" }}>📹 Selftape</button>
                       </div>
                     </div>
 
@@ -5007,13 +5026,13 @@ function CastingAppInner({ authUser }) {
                     {castingMode === "physique" && (<>
                     {/* Planning days nav */}
                     <div style={{ padding: "0 12px", marginBottom: 12 }}>
-                      <div style={{ display: "flex", gap: 2, background: "#0c0c0e", borderRadius: 8, padding: 2 }}>
+                      <div style={{ display: "flex", gap: 2, background: "#101013", borderRadius: 8, padding: 2 }}>
                         <button onClick={() => setCastingDayFilter("all")}
-                          style={{ flex: 1, padding: "7px 0", borderRadius: 6, fontSize: 10, fontWeight: 600, fontFamily: "inherit", border: "none", cursor: "pointer", background: castingDayFilter === "all" ? "rgba(251,146,60,0.12)" : "transparent", color: castingDayFilter === "all" ? "#fb923c" : "#555", transition: "all 0.2s" }}>
+                          style={{ flex: 1, padding: "7px 0", borderRadius: 6, fontSize: 10, fontWeight: 600, fontFamily: "inherit", border: "none", cursor: "pointer", background: castingDayFilter === "all" ? "rgba(255,159,10,0.12)" : "transparent", color: castingDayFilter === "all" ? "#ff9f0a" : "#555", transition: "all 0.2s" }}>
                           Tous
                         </button>
                         <button onClick={() => setCastingDayFilter("unplanned")}
-                          style={{ flex: 1, padding: "7px 0", borderRadius: 6, fontSize: 10, fontWeight: 600, fontFamily: "inherit", border: "none", cursor: "pointer", background: castingDayFilter === "unplanned" ? "rgba(245,158,11,0.12)" : "transparent", color: castingDayFilter === "unplanned" ? "#f59e0b" : "#555", transition: "all 0.2s" }}>
+                          style={{ flex: 1, padding: "7px 0", borderRadius: 6, fontSize: 10, fontWeight: 600, fontFamily: "inherit", border: "none", cursor: "pointer", background: castingDayFilter === "unplanned" ? "rgba(255,214,10,0.12)" : "transparent", color: castingDayFilter === "unplanned" ? "#ffd60a" : "#555", transition: "all 0.2s" }}>
                           Non planifiés
                         </button>
                       </div>
@@ -5030,9 +5049,9 @@ function CastingAppInner({ authUser }) {
                           style={{
                             display: "flex", alignItems: "center", justifyContent: "space-between",
                             width: "100%", padding: "10px 20px", border: "none",
-                            background: isActive ? "rgba(251,146,60,0.08)" : "transparent",
-                            borderLeft: isActive ? "2px solid #fb923c" : "2px solid transparent",
-                            color: isActive ? "#f0f0f0" : "#777", cursor: "pointer",
+                            background: isActive ? "rgba(255,159,10,0.08)" : "transparent",
+                            borderLeft: isActive ? "2px solid #ff9f0a" : "2px solid transparent",
+                            color: isActive ? "#f5f5f7" : "#777", cursor: "pointer",
                             fontSize: 12, fontWeight: isActive ? 600 : 400, fontFamily: "inherit",
                             transition: "all 0.2s", textAlign: "left",
                           }}>
@@ -5040,11 +5059,11 @@ function CastingAppInner({ authUser }) {
                             <div style={{ fontSize: 12, fontWeight: 600 }}>📅 {dateLabel}</div>
                             {day.location && <div style={{ fontSize: 9, color: "#555", marginTop: 2 }}>📍 {day.location}</div>}
                           </div>
-                          <span style={{ fontSize: 9, color: "#22c55e", fontWeight: 700 }}>{passed}/{count}</span>
+                          <span style={{ fontSize: 9, color: "#30d158", fontWeight: 700 }}>{passed}/{count}</span>
                         </button>
                       );
                     })}
-                    <div style={{ height: 1, background: "#1e1e22", margin: "10px 16px" }} />
+                    <div style={{ height: 1, background: "#2e2e34", margin: "10px 16px" }} />
                   </>)}
                   </>
                 )}
@@ -5077,14 +5096,14 @@ function CastingAppInner({ authUser }) {
                         width: "100%", padding: "9px 20px", border: "none",
                         background: isActive ? rc.bg : "transparent",
                         borderLeft: isActive ? `2px solid ${rc.color}` : "2px solid transparent",
-                        color: isActive ? "#f0f0f0" : "#777", cursor: "pointer",
+                        color: isActive ? "#f5f5f7" : "#777", cursor: "pointer",
                         fontSize: 13, fontWeight: isActive ? 600 : 400, fontFamily: "inherit",
                         transition: "all 0.2s", textAlign: "left",
                       }}>
                       <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>{role}</span>
                       <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }}>
-                        {activeTab === "casting" && <span style={{ fontSize: 9, color: "#22c55e", fontWeight: 700 }}>{passedCount}/{filtered.length}</span>}
-                        {activeTab === "final" && <span style={{ fontSize: 9, color: "#22c55e", fontWeight: 700 }}>{filtered.length}</span>}
+                        {activeTab === "casting" && <span style={{ fontSize: 9, color: "#30d158", fontWeight: 700 }}>{passedCount}/{filtered.length}</span>}
+                        {activeTab === "final" && <span style={{ fontSize: 9, color: "#30d158", fontWeight: 700 }}>{filtered.length}</span>}
                       </div>
                     </button>
                   );
@@ -5108,23 +5127,23 @@ function CastingAppInner({ authUser }) {
                   /* VALIDATED FICHE */
                   <div>
                     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 20 }}>
-                      <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f0f0f0" }}>Fiche projet</h2>
+                      <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f5f5f7" }}>Fiche projet</h2>
                       <button onClick={() => setProjetEditMode(true)} style={{ padding: "8px 18px", background: "rgba(232,121,249,0.08)", border: "1px solid rgba(232,121,249,0.2)", borderRadius: 8, color: "#e879f9", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>✏️ Modifier</button>
                     </div>
-                    <div style={{ background: "#141416", borderRadius: 16, border: "1px solid #222226", padding: "28px 32px", marginBottom: 20 }}>
-                      <h1 style={{ fontSize: 24, fontWeight: 800, color: "#f0f0f0", marginBottom: 16 }}>{state.projectName || "Sans titre"}</h1>
+                    <div style={{ background: "#232327", borderRadius: 16, border: "1px solid #33333a", padding: "28px 32px", marginBottom: 20 }}>
+                      <h1 style={{ fontSize: 24, fontWeight: 800, color: "#f5f5f7", marginBottom: 16 }}>{state.projectName || "Sans titre"}</h1>
                       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px 32px" }}>
                         {[{ l: "Production", v: pi.production }, { l: "Réalisateur·rice", v: pi.director }, { l: "Photographe", v: pi.photographer }, { l: "Jours de tournage", v: pi.shootingDays }, { l: "Rémunération", v: pi.salary?.amount ? `${pi.salary.amount} € (${pi.salary.type === "facture" ? "Facture" : "Fiche de paie"})` : null }].filter(x => x.v).map(x => (
-                          <div key={x.l} style={{ fontSize: 13 }}><span style={{ color: "#555", fontWeight: 600 }}>{x.l}: </span><span style={{ color: "#e0e0e0" }}>{x.v}</span></div>
+                          <div key={x.l} style={{ fontSize: 13 }}><span style={{ color: "#555", fontWeight: 600 }}>{x.l}: </span><span style={{ color: "#ebebf0" }}>{x.v}</span></div>
                         ))}
                       </div>
                       {projetDateChips.length > 0 && (
-                        <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid #1e1e22" }}>
-                          <div style={{ fontSize: 10, color: "#c9a44a", fontWeight: 600, textTransform: "uppercase", marginBottom: 10 }}>Planning</div>
+                        <div style={{ marginTop: 20, paddingTop: 16, borderTop: "1px solid #2e2e34" }}>
+                          <div style={{ fontSize: 10, color: "#d4af61", fontWeight: 600, textTransform: "uppercase", marginBottom: 10 }}>Planning</div>
                           <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                             {projetDateChips.map((x, i) => (
-                              <div key={i} style={{ padding: "7px 12px", background: "rgba(201,164,74,0.06)", border: "1px solid rgba(201,164,74,0.15)", borderRadius: 8, fontSize: 11 }}>
-                                {x.icon} <span style={{ color: "#888", fontWeight: 600 }}>{x.label}:</span> <span style={{ color: "#e0e0e0" }}>{x.value}</span>
+                              <div key={i} style={{ padding: "7px 12px", background: "rgba(212,175,97,0.06)", border: "1px solid rgba(212,175,97,0.15)", borderRadius: 8, fontSize: 11 }}>
+                                {x.icon} <span style={{ color: "#888", fontWeight: 600 }}>{x.label}:</span> <span style={{ color: "#ebebf0" }}>{x.value}</span>
                               </div>
                             ))}
                           </div>
@@ -5138,27 +5157,27 @@ function CastingAppInner({ authUser }) {
                       const tD = rd.profileType === "Autres" ? (rd.profileTypeCustom || "Autres") : rd.profileType;
                       const sD = rd.actingStyle === "Autres" ? (rd.actingStyleCustom || "Autres") : rd.actingStyle;
                       return (
-                        <div key={role} style={{ background: "#141416", borderRadius: 16, border: `1px solid ${rc.border}`, marginBottom: 14, overflow: "hidden" }}>
+                        <div key={role} style={{ background: "#232327", borderRadius: 16, border: `1px solid ${rc.border}`, marginBottom: 14, overflow: "hidden" }}>
                           <div style={{ padding: "14px 24px", background: rc.bg, display: "flex", alignItems: "center", gap: 12, borderBottom: `1px solid ${rc.border}` }}>
                             <div style={{ width: 10, height: 10, borderRadius: "50%", background: rc.color }} />
                             <span style={{ fontSize: 16, fontWeight: 700, color: rc.color, flex: 1 }}>{role}</span>
                             {rd.nbComediens && <span style={{ fontSize: 11, padding: "3px 10px", background: `${rc.color}15`, borderRadius: 8, color: rc.color, fontWeight: 600 }}>{rd.nbComediens} comédien{parseInt(rd.nbComediens) > 1 ? "s" : ""}</span>}
-                            {rd.nbJoursTournage && <span style={{ fontSize: 11, padding: "3px 10px", background: "rgba(201,164,74,0.08)", borderRadius: 8, color: "#c9a44a", fontWeight: 600 }}>{rd.nbJoursTournage}j / comédien</span>}
+                            {rd.nbJoursTournage && <span style={{ fontSize: 11, padding: "3px 10px", background: "rgba(212,175,97,0.08)", borderRadius: 8, color: "#d4af61", fontWeight: 600 }}>{rd.nbJoursTournage}j / comédien</span>}
                           </div>
                           <div style={{ padding: "18px 24px" }}>
                             {(rd.referencePhotos || []).length > 0 && <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>{rd.referencePhotos.map((p, i) => <div key={i} style={{ width: 56, height: 70, borderRadius: 8, overflow: "hidden", border: `1px solid ${rc.border}` }}><img src={p} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></div>)}</div>}
                             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px 20px" }}>
-                              {rd.sex && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Sexe</div><div style={{ fontSize: 13, color: "#e0e0e0" }}>{rd.sex}</div></div>}
-                              {rd.ageStyle && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Âge</div><div style={{ fontSize: 13, color: "#e0e0e0" }}>{rd.ageStyle}</div></div>}
-                              {(rd.ageMin || rd.ageMax) && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Tranche</div><div style={{ fontSize: 13, color: "#e0e0e0" }}>{rd.ageMin || "?"} — {rd.ageMax || "?"} ans</div></div>}
-                              {tD && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Type</div><div style={{ fontSize: 13, color: "#e0e0e0" }}>{tD}</div></div>}
-                              {sD && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Jeu</div><div style={{ fontSize: 13, color: "#e0e0e0" }}>{sD}</div></div>}
-                              {rd.cachet && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Rému</div><div style={{ fontSize: 14, color: (rd.cachetType === "ht" || rd.cachetType === "facture") ? "#e879f9" : "#c9a44a", fontWeight: 600 }}>{rd.cachet} € {(rd.cachetType === "ht" || rd.cachetType === "facture") ? "HT" : "BRUT"}</div></div>}
-                              {rd.droits && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Droits</div><div style={{ fontSize: 14, color: "#f59e0b", fontWeight: 600 }}>{rd.droits} €</div></div>}
+                              {rd.sex && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Sexe</div><div style={{ fontSize: 13, color: "#ebebf0" }}>{rd.sex}</div></div>}
+                              {rd.ageStyle && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Âge</div><div style={{ fontSize: 13, color: "#ebebf0" }}>{rd.ageStyle}</div></div>}
+                              {(rd.ageMin || rd.ageMax) && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Tranche</div><div style={{ fontSize: 13, color: "#ebebf0" }}>{rd.ageMin || "?"} — {rd.ageMax || "?"} ans</div></div>}
+                              {tD && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Type</div><div style={{ fontSize: 13, color: "#ebebf0" }}>{tD}</div></div>}
+                              {sD && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Jeu</div><div style={{ fontSize: 13, color: "#ebebf0" }}>{sD}</div></div>}
+                              {rd.cachet && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Rému</div><div style={{ fontSize: 14, color: (rd.cachetType === "ht" || rd.cachetType === "facture") ? "#e879f9" : "#d4af61", fontWeight: 600 }}>{rd.cachet} € {(rd.cachetType === "ht" || rd.cachetType === "facture") ? "HT" : "BRUT"}</div></div>}
+                              {rd.droits && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Droits</div><div style={{ fontSize: 14, color: "#ffd60a", fontWeight: 600 }}>{rd.droits} €</div></div>}
                             </div>
                             {(rd.ethnicities || []).length > 0 && <div style={{ marginTop: 10 }}>{rd.ethnicities.map(e => <span key={e} style={{ fontSize: 11, padding: "3px 10px", background: `${rc.color}18`, borderRadius: 12, color: rc.color, marginRight: 6 }}>{e}</span>)}</div>}
                             {rd.notes && <div style={{ marginTop: 10, padding: "10px 14px", background: "rgba(255,255,255,0.02)", borderRadius: 8, borderLeft: `3px solid ${rc.color}44`, fontSize: 13, color: "#aaa" }}>📝 {rd.notes}</div>}
-                            {rd.specificities && <div style={{ marginTop: 6, padding: "10px 14px", background: "rgba(255,255,255,0.02)", borderRadius: 8, borderLeft: "3px solid #f59e0b44", fontSize: 13, color: "#aaa" }}>⚡ {rd.specificities}</div>}
+                            {rd.specificities && <div style={{ marginTop: 6, padding: "10px 14px", background: "rgba(255,255,255,0.02)", borderRadius: 8, borderLeft: "3px solid #ffd60a44", fontSize: 13, color: "#aaa" }}>⚡ {rd.specificities}</div>}
                           </div>
                         </div>
                       );
@@ -5167,12 +5186,12 @@ function CastingAppInner({ authUser }) {
                 ) : (
                   /* EDIT MODE */
                   <div>
-                    <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f0f0f0", marginBottom: 6 }}>Informations du projet</h2>
+                    <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f5f5f7", marginBottom: 6 }}>Informations du projet</h2>
                     <p style={{ fontSize: 12, color: "#555", marginBottom: 24 }}>Renseignez les infos, ajoutez vos rôles puis validez.</p>
 
                     {/* Project info */}
-                    <div style={{ background: "#141416", borderRadius: 14, border: "1px solid #222226", padding: "22px 26px", marginBottom: 20 }}>
-                      <div style={{ fontSize: 11, color: "#c9a44a", fontWeight: 600, textTransform: "uppercase", marginBottom: 16 }}>🏢 Projet</div>
+                    <div style={{ background: "#232327", borderRadius: 14, border: "1px solid #33333a", padding: "22px 26px", marginBottom: 20 }}>
+                      <div style={{ fontSize: 11, color: "#d4af61", fontWeight: 600, textTransform: "uppercase", marginBottom: 16 }}>🏢 Projet</div>
                       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "0 14px" }}>
                         {[
                           { l: "Nom du projet", v: state.projectName, fn: v => setState(p => ({ ...p, projectName: v })), ph: "Ex: Pub Nike — Été 2026" },
@@ -5183,19 +5202,19 @@ function CastingAppInner({ authUser }) {
                         ].map(f => (
                           <div key={f.l} style={{ marginBottom: 12 }}>
                             <label style={{ display: "block", fontSize: 10, color: "#888", marginBottom: 6, fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase" }}>{f.l}</label>
-                            <input value={f.v || ""} onChange={e => f.fn(e.target.value)} placeholder={f.ph} style={{ width: "100%", padding: "10px 14px", background: "#111114", border: "1px solid #2a2a2e", borderRadius: 10, color: "#e0e0e0", fontSize: 13, fontFamily: "'DM Sans',sans-serif", outline: "none", boxSizing: "border-box" }} />
+                            <input value={f.v || ""} onChange={e => f.fn(e.target.value)} placeholder={f.ph} style={{ width: "100%", padding: "10px 14px", background: "#1c1c1f", border: "1px solid #3a3a40", borderRadius: 10, color: "#ebebf0", fontSize: 13, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
                           </div>
                         ))}
                       </div>
-                      <div style={{ marginTop: 8, paddingTop: 14, borderTop: "1px solid #1e1e22" }}>
+                      <div style={{ marginTop: 8, paddingTop: 14, borderTop: "1px solid #2e2e34" }}>
                         <div style={{ fontSize: 10, color: "#888", fontWeight: 600, textTransform: "uppercase", marginBottom: 10 }}>Ma rémunération</div>
                         <div style={{ display: "flex", gap: 12, alignItems: "flex-start" }}>
                           <div style={{ flex: 1 }}>
-                            <input value={pi.salary?.amount || ""} onChange={e => uPI("salary", { ...(pi.salary || {}), amount: e.target.value })} placeholder="Montant €" style={{ width: "100%", padding: "10px 14px", background: "#111114", border: "1px solid #2a2a2e", borderRadius: 10, color: "#e0e0e0", fontSize: 13, fontFamily: "'DM Sans',sans-serif", outline: "none", boxSizing: "border-box" }} />
+                            <input value={pi.salary?.amount || ""} onChange={e => uPI("salary", { ...(pi.salary || {}), amount: e.target.value })} placeholder="Montant €" style={{ width: "100%", padding: "10px 14px", background: "#1c1c1f", border: "1px solid #3a3a40", borderRadius: 10, color: "#ebebf0", fontSize: 13, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
                           </div>
                           <div style={{ display: "flex", gap: 4 }}>
                             {PROJET_SALARY_OPTS.map(o => (
-                              <button key={o.value} onClick={() => uPI("salary", { ...(pi.salary || {}), type: o.value })} style={{ padding: "10px 18px", borderRadius: 10, fontSize: 12, fontWeight: 600, fontFamily: "inherit", cursor: "pointer", border: "1px solid", background: (pi.salary?.type || "facture") === o.value ? "rgba(232,121,249,0.12)" : "rgba(255,255,255,0.02)", color: (pi.salary?.type || "facture") === o.value ? "#e879f9" : "#666", borderColor: (pi.salary?.type || "facture") === o.value ? "rgba(232,121,249,0.3)" : "#2a2a2e" }}>{o.label}</button>
+                              <button key={o.value} onClick={() => uPI("salary", { ...(pi.salary || {}), type: o.value })} style={{ padding: "10px 18px", borderRadius: 10, fontSize: 12, fontWeight: 600, fontFamily: "inherit", cursor: "pointer", border: "1px solid", background: (pi.salary?.type || "facture") === o.value ? "rgba(232,121,249,0.12)" : "rgba(255,255,255,0.02)", color: (pi.salary?.type || "facture") === o.value ? "#e879f9" : "#666", borderColor: (pi.salary?.type || "facture") === o.value ? "rgba(232,121,249,0.3)" : "#3a3a40" }}>{o.label}</button>
                             ))}
                           </div>
                         </div>
@@ -5203,49 +5222,49 @@ function CastingAppInner({ authUser }) {
                     </div>
 
                     {/* Dates */}
-                    <div style={{ background: "#141416", borderRadius: 14, border: "1px solid #222226", padding: "22px 26px", marginBottom: 24 }}>
-                      <div style={{ fontSize: 11, color: "#60a5fa", fontWeight: 600, textTransform: "uppercase", marginBottom: 16 }}>📅 Dates clés</div>
+                    <div style={{ background: "#232327", borderRadius: 14, border: "1px solid #33333a", padding: "22px 26px", marginBottom: 24 }}>
+                      <div style={{ fontSize: 11, color: "#0a84ff", fontWeight: 600, textTransform: "uppercase", marginBottom: 16 }}>📅 Dates clés</div>
                       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "12px 14px", marginBottom: 14 }}>
                         <div style={{ gridColumn: "1 / 3" }}>
                           <label style={{ display: "block", fontSize: 10, color: "#888", marginBottom: 6, fontWeight: 600, textTransform: "uppercase" }}>Date de tournage</label>
                           <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                            <input type="date" value={pi.dateTournageDe || pi.dateTournage || ""} onChange={e => uPI("dateTournageDe", e.target.value)} style={{ flex: 1, padding: "9px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "'DM Sans',sans-serif", outline: "none", cursor: "pointer", boxSizing: "border-box" }} />
+                            <input type="date" value={pi.dateTournageDe || pi.dateTournage || ""} onChange={e => uPI("dateTournageDe", e.target.value)} style={{ flex: 1, padding: "9px 12px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 8, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none", cursor: "pointer", boxSizing: "border-box" }} />
                             <span style={{ color: "#555", fontSize: 11, fontWeight: 600 }}>au</span>
-                            <input type="date" value={pi.dateTournageA || ""} onChange={e => uPI("dateTournageA", e.target.value)} placeholder="(optionnel)" style={{ flex: 1, padding: "9px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "'DM Sans',sans-serif", outline: "none", cursor: "pointer", boxSizing: "border-box" }} />
+                            <input type="date" value={pi.dateTournageA || ""} onChange={e => uPI("dateTournageA", e.target.value)} placeholder="(optionnel)" style={{ flex: 1, padding: "9px 12px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 8, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none", cursor: "pointer", boxSizing: "border-box" }} />
                           </div>
                         </div>
                         {[{ l: "Rendu 1ère salve profils", k: "dateRenduProfils" }, { l: "Date PPM", k: "datePPM" }, { l: "Date validation", k: "dateValidation" }].map(d => (
                           <div key={d.k}>
                             <label style={{ display: "block", fontSize: 10, color: "#888", marginBottom: 6, fontWeight: 600, textTransform: "uppercase" }}>{d.l}</label>
-                            <input type="date" value={pi[d.k] || ""} onChange={e => uPI(d.k, e.target.value)} style={{ width: "100%", padding: "9px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "'DM Sans',sans-serif", outline: "none", cursor: "pointer", boxSizing: "border-box" }} />
+                            <input type="date" value={pi[d.k] || ""} onChange={e => uPI(d.k, e.target.value)} style={{ width: "100%", padding: "9px 12px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 8, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none", cursor: "pointer", boxSizing: "border-box" }} />
                           </div>
                         ))}
                       </div>
                       {/* Custom dates */}
                       <div style={{ marginBottom: 14 }}>
                         <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-                          <label style={{ fontSize: 10, color: "#f59e0b", fontWeight: 600, textTransform: "uppercase" }}>📌 Dates supplémentaires</label>
-                          <button onClick={addCustomDate} style={{ padding: "4px 12px", background: "rgba(245,158,11,0.08)", border: "1px solid rgba(245,158,11,0.2)", borderRadius: 6, color: "#f59e0b", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>+ Ajouter</button>
+                          <label style={{ fontSize: 10, color: "#ffd60a", fontWeight: 600, textTransform: "uppercase" }}>📌 Dates supplémentaires</label>
+                          <button onClick={addCustomDate} style={{ padding: "4px 12px", background: "rgba(255,214,10,0.08)", border: "1px solid rgba(255,214,10,0.2)", borderRadius: 6, color: "#ffd60a", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>+ Ajouter</button>
                         </div>
                         {(pi.customDates || []).map((cd, i) => (
                           <div key={i} style={{ display: "flex", gap: 8, marginBottom: 6, alignItems: "center" }}>
-                            <input value={cd.label || ""} onChange={e => updateCustomDate(i, "label", e.target.value)} placeholder="Nature (ex: Essayage)" style={{ width: 160, padding: "8px 12px", background: "#0c0c0e", border: "1px solid rgba(245,158,11,0.25)", borderRadius: 8, color: "#f59e0b", fontSize: 12, fontFamily: "'DM Sans',sans-serif", outline: "none" }} />
-                            <input type="date" value={cd.date || ""} onChange={e => updateCustomDate(i, "date", e.target.value)} style={{ flex: 1, padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "'DM Sans',sans-serif", outline: "none", cursor: "pointer" }} />
+                            <input value={cd.label || ""} onChange={e => updateCustomDate(i, "label", e.target.value)} placeholder="Nature (ex: Essayage)" style={{ width: 160, padding: "8px 12px", background: "#101013", border: "1px solid rgba(255,214,10,0.25)", borderRadius: 8, color: "#ffd60a", fontSize: 12, fontFamily: "inherit", outline: "none" }} />
+                            <input type="date" value={cd.date || ""} onChange={e => updateCustomDate(i, "date", e.target.value)} style={{ flex: 1, padding: "8px 12px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 8, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none", cursor: "pointer" }} />
                             <button onClick={() => removeCustomDate(i)} style={{ background: "none", border: "none", color: "#44444488", cursor: "pointer", fontSize: 13 }}>×</button>
                           </div>
                         ))}
                       </div>
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
-                        <label style={{ fontSize: 10, color: "#60a5fa", fontWeight: 600, textTransform: "uppercase" }}>Dates de casting</label>
-                        <button onClick={addProjetCastingDate} style={{ padding: "4px 12px", background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.2)", borderRadius: 6, color: "#60a5fa", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>+ Ajouter</button>
+                        <label style={{ fontSize: 10, color: "#0a84ff", fontWeight: 600, textTransform: "uppercase" }}>Dates de casting</label>
+                        <button onClick={addProjetCastingDate} style={{ padding: "4px 12px", background: "rgba(10,132,255,0.08)", border: "1px solid rgba(10,132,255,0.2)", borderRadius: 6, color: "#0a84ff", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>+ Ajouter</button>
                       </div>
                       {(pi.castingDates || []).length === 0 && <div style={{ fontSize: 11, color: "#444", fontStyle: "italic" }}>Aucune date — cliquez "+ Ajouter"</div>}
                       <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
                         {(pi.castingDates || []).map((d, i) => (
                           <div key={i} style={{ display: "flex", alignItems: "center", gap: 6 }}>
                             <div style={{ position: "relative" }}>
-                              <span style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", fontSize: 9, color: "#60a5fa", fontWeight: 700, pointerEvents: "none", zIndex: 1 }}>{"#" + (i + 1)}</span>
-                              <input type="date" value={d || ""} onChange={e => updateProjetCastingDate(i, e.target.value)} style={{ padding: "8px 12px 8px 32px", background: "#111114", border: "1px solid rgba(96,165,250,0.25)", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "'DM Sans',sans-serif", outline: "none", cursor: "pointer" }} />
+                              <span style={{ position: "absolute", left: 10, top: "50%", transform: "translateY(-50%)", fontSize: 9, color: "#0a84ff", fontWeight: 700, pointerEvents: "none", zIndex: 1 }}>{"#" + (i + 1)}</span>
+                              <input type="date" value={d || ""} onChange={e => updateProjetCastingDate(i, e.target.value)} style={{ padding: "8px 12px 8px 32px", background: "#1c1c1f", border: "1px solid rgba(10,132,255,0.25)", borderRadius: 8, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none", cursor: "pointer" }} />
                             </div>
                             <button onClick={() => removeProjetCastingDate(i)} style={{ background: "none", border: "none", color: "#44444488", cursor: "pointer", fontSize: 13 }}>×</button>
                           </div>
@@ -5257,7 +5276,7 @@ function CastingAppInner({ authUser }) {
                     <div style={{ fontSize: 11, color: "#e879f9", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 14 }}>🎭 Rôles ({state.roles.length})</div>
 
                     {state.roles.length === 0 && !projetShowAddRole && (
-                      <div style={{ textAlign: "center", padding: "36px 20px", background: "#141416", borderRadius: 14, border: "1px dashed #2a2a2e", marginBottom: 14 }}>
+                      <div style={{ textAlign: "center", padding: "36px 20px", background: "#232327", borderRadius: 14, border: "1px dashed #3a3a40", marginBottom: 14 }}>
                         <div style={{ fontSize: 28, marginBottom: 10 }}>🎭</div>
                         <div style={{ fontSize: 13, color: "#666", marginBottom: 14 }}>Aucun rôle</div>
                         <button onClick={() => setProjetShowAddRole(true)} style={{ padding: "10px 22px", background: "rgba(232,121,249,0.12)", border: "1px solid rgba(232,121,249,0.3)", borderRadius: 10, color: "#e879f9", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>+ Ajouter mon premier rôle</button>
@@ -5270,9 +5289,9 @@ function CastingAppInner({ authUser }) {
                         const rc = ROLE_COLORS[ri % ROLE_COLORS.length];
                         const isOpen = projetExpanded[role] !== false;
                         const allEth = [...PROJET_ETH_OPTS, ...(pi.customEthnicities || [])];
-                        const sInput = { width: "100%", padding: "9px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "'DM Sans',sans-serif", outline: "none", cursor: "pointer", boxSizing: "border-box" };
+                        const sInput = { width: "100%", padding: "9px 12px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 8, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none", cursor: "pointer", boxSizing: "border-box" };
                         return (
-                          <div key={role} style={{ background: "#141416", borderRadius: 14, border: `1px solid ${rc.border}`, overflow: "hidden" }}>
+                          <div key={role} style={{ background: "#232327", borderRadius: 14, border: `1px solid ${rc.border}`, overflow: "hidden" }}>
                             <div onClick={() => setProjetExpanded(p => ({ ...p, [role]: !isOpen }))} style={{ padding: "12px 22px", background: rc.bg, display: "flex", alignItems: "center", gap: 10, borderBottom: isOpen ? `1px solid ${rc.border}` : "none", cursor: "pointer", userSelect: "none" }}>
                               <div style={{ width: 8, height: 8, borderRadius: "50%", background: rc.color }} />
                               <span style={{ fontSize: 15, fontWeight: 700, color: rc.color, flex: 1 }}>{role}</span>
@@ -5282,13 +5301,13 @@ function CastingAppInner({ authUser }) {
                             {isOpen && (
                               <div style={{ padding: "18px 22px" }}>
                                 {/* Nb comédiens + jours */}
-                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16, padding: "12px 16px", background: "rgba(201,164,74,0.04)", borderRadius: 8, border: "1px solid rgba(201,164,74,0.12)" }}>
+                                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12, marginBottom: 16, padding: "12px 16px", background: "rgba(212,175,97,0.04)", borderRadius: 8, border: "1px solid rgba(212,175,97,0.12)" }}>
                                   <div>
-                                    <label style={{ display: "block", fontSize: 10, color: "#c9a44a", marginBottom: 6, fontWeight: 600, textTransform: "uppercase" }}>Nombre de comédiens</label>
+                                    <label style={{ display: "block", fontSize: 10, color: "#d4af61", marginBottom: 6, fontWeight: 600, textTransform: "uppercase" }}>Nombre de comédiens</label>
                                     <input value={rd.nbComediens || ""} onChange={e => uRoleDetail(role, "nbComediens", e.target.value)} placeholder="Ex: 3" type="number" min="1" style={sInput} />
                                   </div>
                                   <div>
-                                    <label style={{ display: "block", fontSize: 10, color: "#c9a44a", marginBottom: 6, fontWeight: 600, textTransform: "uppercase" }}>Nb de jours de tournage</label>
+                                    <label style={{ display: "block", fontSize: 10, color: "#d4af61", marginBottom: 6, fontWeight: 600, textTransform: "uppercase" }}>Nb de jours de tournage</label>
                                     <input value={rd.nbJoursTournage || ""} onChange={e => uRoleDetail(role, "nbJoursTournage", e.target.value)} placeholder="Ex: 2" type="number" min="1" style={sInput} />
                                   </div>
                                 </div>
@@ -5356,28 +5375,28 @@ function CastingAppInner({ authUser }) {
                                           <div style={{ display: "flex", flexWrap: "wrap", gap: 4, marginBottom: 8 }}>
                                             {PROJET_ETH_OPTS.map(eth => {
                                               const active = (c.ethnicities || []).includes(eth);
-                                              return <button key={eth} onClick={() => { if (eth === "Toutes") updateComedian(ci, "ethnicities", active ? [] : ["Toutes"]); else { const cur = (c.ethnicities || []).filter(e => e !== "Toutes"); updateComedian(ci, "ethnicities", active ? cur.filter(e => e !== eth) : [...cur, eth]); } }} style={{ padding: "3px 10px", borderRadius: 14, fontSize: 9, fontWeight: 500, fontFamily: "inherit", cursor: "pointer", border: "1px solid", background: active ? "#e879f920" : "rgba(255,255,255,0.02)", color: active ? "#e879f9" : "#555", borderColor: active ? "#e879f955" : "#2a2a2e" }}>{active ? "✓ " : ""}{eth}</button>;
+                                              return <button key={eth} onClick={() => { if (eth === "Toutes") updateComedian(ci, "ethnicities", active ? [] : ["Toutes"]); else { const cur = (c.ethnicities || []).filter(e => e !== "Toutes"); updateComedian(ci, "ethnicities", active ? cur.filter(e => e !== eth) : [...cur, eth]); } }} style={{ padding: "3px 10px", borderRadius: 14, fontSize: 9, fontWeight: 500, fontFamily: "inherit", cursor: "pointer", border: "1px solid", background: active ? "#e879f920" : "rgba(255,255,255,0.02)", color: active ? "#e879f9" : "#555", borderColor: active ? "#e879f955" : "#3a3a40" }}>{active ? "✓ " : ""}{eth}</button>;
                                             })}
                                           </div>
                                           {/* Remuneration */}
                                           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8, marginBottom: 6 }}>
                                             <div>
                                               <div style={{ display: "flex", gap: 3, marginBottom: 4 }}>
-                                                {[{ k: "brut", l: "Brut", col: "#c9a44a" }, { k: "ht", l: "HT", col: "#e879f9" }].map(opt => {
+                                                {[{ k: "brut", l: "Brut", col: "#d4af61" }, { k: "ht", l: "HT", col: "#e879f9" }].map(opt => {
                                                   const ct = c.cachetType === "ht" ? "ht" : "brut";
-                                                  return <button key={opt.k} onClick={() => updateComedian(ci, "cachetType", opt.k)} style={{ flex: 1, padding: "5px 0", borderRadius: 5, fontSize: 9, fontWeight: 700, fontFamily: "inherit", border: "1px solid", cursor: "pointer", background: ct === opt.k ? opt.col + "20" : "rgba(255,255,255,0.02)", color: ct === opt.k ? opt.col : "#555", borderColor: ct === opt.k ? opt.col + "55" : "#2a2a2e" }}>{opt.l}</button>;
+                                                  return <button key={opt.k} onClick={() => updateComedian(ci, "cachetType", opt.k)} style={{ flex: 1, padding: "5px 0", borderRadius: 5, fontSize: 9, fontWeight: 700, fontFamily: "inherit", border: "1px solid", cursor: "pointer", background: ct === opt.k ? opt.col + "20" : "rgba(255,255,255,0.02)", color: ct === opt.k ? opt.col : "#555", borderColor: ct === opt.k ? opt.col + "55" : "#3a3a40" }}>{opt.l}</button>;
                                                 })}
                                               </div>
                                               <div style={{ position: "relative" }}>
                                                 <input value={c.cachet || ""} onChange={e => updateComedian(ci, "cachet", e.target.value)} placeholder="Montant" style={{ ...sInput, paddingRight: 45, fontSize: 11 }} />
-                                                <span style={{ position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)", fontSize: 9, fontWeight: 700, color: c.cachetType === "ht" ? "#e879f9" : "#c9a44a" }}>{c.cachetType === "ht" ? "€ HT" : "€ BRUT"}</span>
+                                                <span style={{ position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)", fontSize: 9, fontWeight: 700, color: c.cachetType === "ht" ? "#e879f9" : "#d4af61" }}>{c.cachetType === "ht" ? "€ HT" : "€ BRUT"}</span>
                                               </div>
                                             </div>
                                             <div>
-                                              <label style={{ display: "block", fontSize: 8, color: "#f59e0b", marginBottom: 4, fontWeight: 600, textTransform: "uppercase" }}>Droits</label>
+                                              <label style={{ display: "block", fontSize: 8, color: "#ffd60a", marginBottom: 4, fontWeight: 600, textTransform: "uppercase" }}>Droits</label>
                                               <div style={{ position: "relative" }}>
                                                 <input value={c.droits || ""} onChange={e => updateComedian(ci, "droits", e.target.value)} placeholder="Montant droits" style={{ ...sInput, paddingRight: 20, fontSize: 11 }} />
-                                                <span style={{ position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)", fontSize: 9, fontWeight: 700, color: "#f59e0b" }}>€</span>
+                                                <span style={{ position: "absolute", right: 8, top: "50%", transform: "translateY(-50%)", fontSize: 9, fontWeight: 700, color: "#ffd60a" }}>€</span>
                                               </div>
                                             </div>
                                           </div>
@@ -5422,16 +5441,16 @@ function CastingAppInner({ authUser }) {
                     {/* Add role */}
                     {projetShowAddRole ? (
                       <div style={{ display: "flex", gap: 8, marginTop: 12, marginBottom: 18 }}>
-                        <input value={projetNewRole} onChange={e => setProjetNewRole(e.target.value)} onKeyDown={e => { if (e.key === "Enter" && projetNewRole.trim()) { const n = projetNewRole.trim(); if (!state.roles.includes(n)) { setState(p => ({ ...p, roles: [...p.roles, n], profiles: { ...p.profiles, [n]: [] } })); setProjetExpanded(p => ({ ...p, [n]: true })); } setProjetNewRole(""); setProjetShowAddRole(false); } if (e.key === "Escape") { setProjetShowAddRole(false); setProjetNewRole(""); } }} autoFocus placeholder="Nom du rôle..." style={{ flex: 1, padding: "12px 16px", background: "#111114", border: "1px solid #e879f944", borderRadius: 10, color: "#e0e0e0", fontSize: 14, fontFamily: "'DM Sans',sans-serif", outline: "none" }} />
+                        <input value={projetNewRole} onChange={e => setProjetNewRole(e.target.value)} onKeyDown={e => { if (e.key === "Enter" && projetNewRole.trim()) { const n = projetNewRole.trim(); if (!state.roles.includes(n)) { setState(p => ({ ...p, roles: [...p.roles, n], profiles: { ...p.profiles, [n]: [] } })); setProjetExpanded(p => ({ ...p, [n]: true })); } setProjetNewRole(""); setProjetShowAddRole(false); } if (e.key === "Escape") { setProjetShowAddRole(false); setProjetNewRole(""); } }} autoFocus placeholder="Nom du rôle..." style={{ flex: 1, padding: "12px 16px", background: "#1c1c1f", border: "1px solid #e879f944", borderRadius: 10, color: "#ebebf0", fontSize: 14, fontFamily: "inherit", outline: "none" }} />
                         <button onClick={() => { const n = projetNewRole.trim(); if (n && !state.roles.includes(n)) { setState(p => ({ ...p, roles: [...p.roles, n], profiles: { ...p.profiles, [n]: [] } })); setProjetExpanded(p => ({ ...p, [n]: true })); } setProjetNewRole(""); setProjetShowAddRole(false); }} style={{ padding: "12px 20px", background: "rgba(232,121,249,0.12)", border: "1px solid rgba(232,121,249,0.3)", borderRadius: 10, color: "#e879f9", fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>✓</button>
-                        <button onClick={() => { setProjetShowAddRole(false); setProjetNewRole(""); }} style={{ padding: "12px 14px", background: "rgba(255,255,255,0.03)", border: "1px solid #2a2a2e", borderRadius: 10, color: "#666", fontSize: 14, cursor: "pointer", fontFamily: "inherit" }}>×</button>
+                        <button onClick={() => { setProjetShowAddRole(false); setProjetNewRole(""); }} style={{ padding: "12px 14px", background: "rgba(255,255,255,0.03)", border: "1px solid #3a3a40", borderRadius: 10, color: "#666", fontSize: 14, cursor: "pointer", fontFamily: "inherit" }}>×</button>
                       </div>
                     ) : state.roles.length > 0 && (
                       <button onClick={() => setProjetShowAddRole(true)} style={{ marginTop: 12, marginBottom: 18, padding: "10px 20px", background: "transparent", border: "1px dashed #333", borderRadius: 10, color: "#555", fontSize: 12, cursor: "pointer", fontFamily: "inherit", width: "100%" }}>+ Ajouter un rôle</button>
                     )}
 
                     {(state.projectName || state.roles.length > 0) && (
-                      <button onClick={() => { setProjetValidated(true); setProjetEditMode(false); }} style={{ width: "100%", padding: "16px", marginTop: 8, background: "linear-gradient(135deg,#c9a44a,#a67c2e)", border: "none", borderRadius: 14, cursor: "pointer", fontSize: 15, fontWeight: 700, fontFamily: "inherit", color: "#000", boxShadow: "0 4px 24px rgba(201,164,74,0.3)" }}>✓ Valider la fiche projet</button>
+                      <button onClick={() => { setProjetValidated(true); setProjetEditMode(false); }} style={{ width: "100%", padding: "16px", marginTop: 8, background: "linear-gradient(135deg,#d4af61,#b08a3e)", border: "none", borderRadius: 14, cursor: "pointer", fontSize: 15, fontWeight: 700, fontFamily: "inherit", color: "#000", boxShadow: "0 4px 24px rgba(212,175,97,0.3)" }}>✓ Valider la fiche projet</button>
                     )}
                   </div>
                 )}
@@ -5441,23 +5460,23 @@ function CastingAppInner({ authUser }) {
               {/* -- DOCUMENTS -- */}
               {projetSection === "documents" && (
                 <div style={{ maxWidth: 720 }}>
-                  <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f0f0f0", marginBottom: 6 }}>Documents</h2>
+                  <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f5f5f7", marginBottom: 6 }}>Documents</h2>
                   <p style={{ fontSize: 12, color: "#555", marginBottom: 24 }}>Dossier artistique, moodboard, scénario, casting sheets.</p>
                   <div style={{ marginBottom: 28 }}>
-                    <div style={{ fontSize: 11, color: "#c9a44a", fontWeight: 600, textTransform: "uppercase", marginBottom: 12 }}>📎 Documents</div>
-                    <label style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "24px", borderRadius: 14, border: "2px dashed #2a2a2e", cursor: "pointer", marginBottom: 12 }}>
+                    <div style={{ fontSize: 11, color: "#d4af61", fontWeight: 600, textTransform: "uppercase", marginBottom: 12 }}>📎 Documents</div>
+                    <label style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "24px", borderRadius: 14, border: "2px dashed #3a3a40", cursor: "pointer", marginBottom: 12 }}>
                       <span style={{ fontSize: 22, marginBottom: 4 }}>📎</span><span style={{ fontSize: 12, color: "#888" }}>Cliquer pour ajouter</span>
                       <input type="file" accept="image/*,.pdf" multiple hidden onChange={e => { Array.from(e.target.files || []).forEach(f => { const r = new FileReader(); r.onload = () => uPI("documents", [...(pi.documents || []), { id: "d" + Date.now() + Math.random(), name: f.name, dataUrl: r.result, type: f.type }]); r.readAsDataURL(f); }); e.target.value = ""; }} />
                     </label>
-                    {(pi.documents || []).map(d => <div key={d.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 16px", background: "#141416", borderRadius: 10, border: "1px solid #222226", marginBottom: 6 }}><span>{d.type && d.type.includes("pdf") ? "📕" : "🖼️"}</span><span style={{ flex: 1, fontSize: 13, fontWeight: 600, color: "#e0e0e0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{d.name}</span><button onClick={() => uPI("documents", (pi.documents || []).filter(x => x.id !== d.id))} style={{ background: "none", border: "none", color: "#555", cursor: "pointer", fontSize: 16 }}>×</button></div>)}
+                    {(pi.documents || []).map(d => <div key={d.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 16px", background: "#232327", borderRadius: 10, border: "1px solid #33333a", marginBottom: 6 }}><span>{d.type && d.type.includes("pdf") ? "📕" : "🖼️"}</span><span style={{ flex: 1, fontSize: 13, fontWeight: 600, color: "#ebebf0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{d.name}</span><button onClick={() => uPI("documents", (pi.documents || []).filter(x => x.id !== d.id))} style={{ background: "none", border: "none", color: "#555", cursor: "pointer", fontSize: 16 }}>×</button></div>)}
                   </div>
                   <div>
-                    <div style={{ fontSize: 11, color: "#60a5fa", fontWeight: 600, textTransform: "uppercase", marginBottom: 8 }}>📋 Casting Sheets</div>
-                    <label style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "24px", borderRadius: 14, border: "2px dashed #2a2a2e", cursor: "pointer", marginBottom: 12 }}>
+                    <div style={{ fontSize: 11, color: "#0a84ff", fontWeight: 600, textTransform: "uppercase", marginBottom: 8 }}>📋 Casting Sheets</div>
+                    <label style={{ display: "flex", flexDirection: "column", alignItems: "center", padding: "24px", borderRadius: 14, border: "2px dashed #3a3a40", cursor: "pointer", marginBottom: 12 }}>
                       <span style={{ fontSize: 18, marginBottom: 4 }}>📋</span><span style={{ fontSize: 12, color: "#888" }}>Importer</span>
                       <input type="file" accept=".pdf,image/*" multiple hidden onChange={e => { Array.from(e.target.files || []).forEach(f => { const r = new FileReader(); r.onload = () => uPI("castingSheets", [...(pi.castingSheets || []), { id: "cs" + Date.now(), name: f.name, dataUrl: r.result }]); r.readAsDataURL(f); }); e.target.value = ""; }} />
                     </label>
-                    {(pi.castingSheets || []).map(c => <div key={c.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 16px", background: "#141416", borderRadius: 10, border: "1px solid #222226", marginBottom: 6 }}><span>📋</span><span style={{ flex: 1, fontSize: 13, fontWeight: 600, color: "#e0e0e0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.name}</span><button onClick={() => uPI("castingSheets", (pi.castingSheets || []).filter(x => x.id !== c.id))} style={{ background: "none", border: "none", color: "#555", cursor: "pointer", fontSize: 16 }}>×</button></div>)}
+                    {(pi.castingSheets || []).map(c => <div key={c.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "10px 16px", background: "#232327", borderRadius: 10, border: "1px solid #33333a", marginBottom: 6 }}><span>📋</span><span style={{ flex: 1, fontSize: 13, fontWeight: 600, color: "#ebebf0", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{c.name}</span><button onClick={() => uPI("castingSheets", (pi.castingSheets || []).filter(x => x.id !== c.id))} style={{ background: "none", border: "none", color: "#555", cursor: "pointer", fontSize: 16 }}>×</button></div>)}
                   </div>
                 </div>
               )}
@@ -5466,30 +5485,30 @@ function CastingAppInner({ authUser }) {
               {projetSection === "devis" && (
                 <div style={{ maxWidth: 860 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 6 }}>
-                    <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f0f0f0" }}>Générateur de devis</h2>
-                    <button onClick={() => window.print()} style={{ padding: "8px 18px", background: "linear-gradient(135deg,#c9a44a,#a67c2e)", border: "none", borderRadius: 8, color: "#000", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>📄 Exporter PDF</button>
+                    <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f5f5f7" }}>Générateur de devis</h2>
+                    <button onClick={() => window.print()} style={{ padding: "8px 18px", background: "linear-gradient(135deg,#d4af61,#b08a3e)", border: "none", borderRadius: 8, color: "#000", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>📄 Exporter PDF</button>
                   </div>
                   <p style={{ fontSize: 12, color: "#555", marginBottom: 20 }}>Devis / bon de commande.</p>
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 16, marginBottom: 18 }}>
-                    <div style={{ background: "#141416", borderRadius: 14, border: "1px solid #222226", padding: "18px 22px" }}>
-                      <div style={{ fontSize: 11, color: "#c9a44a", fontWeight: 600, textTransform: "uppercase", marginBottom: 12 }}>Émetteur</div>
-                      {[{ l: "Nom", k: "emitterName", ph: "Joana Fontaine" }, { l: "Statut", k: "emitterStatus", ph: "Directrice de Casting" }, { l: "SIRET", k: "emitterSiret", ph: "000 000 000 00000" }, { l: "Adresse", k: "emitterAddress", ph: "Adresse" }].map(f => <div key={f.k} style={{ marginBottom: 12 }}><label style={{ display: "block", fontSize: 10, color: "#888", marginBottom: 6, fontWeight: 600, textTransform: "uppercase" }}>{f.l}</label><input value={pi.devis?.fields?.[f.k] || ""} onChange={e => uDevisField(f.k, e.target.value)} placeholder={f.ph} style={{ width: "100%", padding: "10px 14px", background: "#111114", border: "1px solid #2a2a2e", borderRadius: 10, color: "#e0e0e0", fontSize: 13, fontFamily: "'DM Sans',sans-serif", outline: "none", boxSizing: "border-box" }} /></div>)}
+                    <div style={{ background: "#232327", borderRadius: 14, border: "1px solid #33333a", padding: "18px 22px" }}>
+                      <div style={{ fontSize: 11, color: "#d4af61", fontWeight: 600, textTransform: "uppercase", marginBottom: 12 }}>Émetteur</div>
+                      {[{ l: "Nom", k: "emitterName", ph: "Joana Fontaine" }, { l: "Statut", k: "emitterStatus", ph: "Directrice de Casting" }, { l: "SIRET", k: "emitterSiret", ph: "000 000 000 00000" }, { l: "Adresse", k: "emitterAddress", ph: "Adresse" }].map(f => <div key={f.k} style={{ marginBottom: 12 }}><label style={{ display: "block", fontSize: 10, color: "#888", marginBottom: 6, fontWeight: 600, textTransform: "uppercase" }}>{f.l}</label><input value={pi.devis?.fields?.[f.k] || ""} onChange={e => uDevisField(f.k, e.target.value)} placeholder={f.ph} style={{ width: "100%", padding: "10px 14px", background: "#1c1c1f", border: "1px solid #3a3a40", borderRadius: 10, color: "#ebebf0", fontSize: 13, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} /></div>)}
                     </div>
-                    <div style={{ background: "#141416", borderRadius: 14, border: "1px solid #222226", padding: "18px 22px" }}>
+                    <div style={{ background: "#232327", borderRadius: 14, border: "1px solid #33333a", padding: "18px 22px" }}>
                       <div style={{ fontSize: 11, color: "#e879f9", fontWeight: 600, textTransform: "uppercase", marginBottom: 12 }}>Client</div>
-                      {[{ l: "Société", k: "clientName", ph: pi.production || "Production" }, { l: "SIRET", k: "clientSiret", ph: "000 000 000 00000" }, { l: "Adresse", k: "clientAddress", ph: "Adresse" }, { l: "Contact", k: "clientContact", ph: "Nom" }].map(f => <div key={f.k} style={{ marginBottom: 12 }}><label style={{ display: "block", fontSize: 10, color: "#888", marginBottom: 6, fontWeight: 600, textTransform: "uppercase" }}>{f.l}</label><input value={pi.devis?.fields?.[f.k] || ""} onChange={e => uDevisField(f.k, e.target.value)} placeholder={f.ph} style={{ width: "100%", padding: "10px 14px", background: "#111114", border: "1px solid #2a2a2e", borderRadius: 10, color: "#e0e0e0", fontSize: 13, fontFamily: "'DM Sans',sans-serif", outline: "none", boxSizing: "border-box" }} /></div>)}
+                      {[{ l: "Société", k: "clientName", ph: pi.production || "Production" }, { l: "SIRET", k: "clientSiret", ph: "000 000 000 00000" }, { l: "Adresse", k: "clientAddress", ph: "Adresse" }, { l: "Contact", k: "clientContact", ph: "Nom" }].map(f => <div key={f.k} style={{ marginBottom: 12 }}><label style={{ display: "block", fontSize: 10, color: "#888", marginBottom: 6, fontWeight: 600, textTransform: "uppercase" }}>{f.l}</label><input value={pi.devis?.fields?.[f.k] || ""} onChange={e => uDevisField(f.k, e.target.value)} placeholder={f.ph} style={{ width: "100%", padding: "10px 14px", background: "#1c1c1f", border: "1px solid #3a3a40", borderRadius: 10, color: "#ebebf0", fontSize: 13, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} /></div>)}
                     </div>
                   </div>
-                  <div style={{ background: "#141416", borderRadius: 14, border: "1px solid #222226", padding: "18px 22px", marginBottom: 18 }}>
-                    <div style={{ fontSize: 11, color: "#60a5fa", fontWeight: 600, textTransform: "uppercase", marginBottom: 12 }}>Infos devis</div>
+                  <div style={{ background: "#232327", borderRadius: 14, border: "1px solid #33333a", padding: "18px 22px", marginBottom: 18 }}>
+                    <div style={{ fontSize: 11, color: "#0a84ff", fontWeight: 600, textTransform: "uppercase", marginBottom: 12 }}>Infos devis</div>
                     <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr 1fr", gap: "0 12px" }}>
-                      {[{ l: "N° devis", k: "devisNumber", ph: "DC-2026-001" }, { l: "Date", k: "devisDate", ph: new Date().toLocaleDateString("fr-FR") }, { l: "Validité", k: "validityDays", ph: "30 jours" }, { l: "Projet", k: "projectTitle", ph: state.projectName || "Titre" }].map(f => <div key={f.k} style={{ marginBottom: 12 }}><label style={{ display: "block", fontSize: 10, color: "#888", marginBottom: 6, fontWeight: 600, textTransform: "uppercase" }}>{f.l}</label><input value={pi.devis?.fields?.[f.k] || ""} onChange={e => uDevisField(f.k, e.target.value)} placeholder={f.ph} style={{ width: "100%", padding: "10px 14px", background: "#111114", border: "1px solid #2a2a2e", borderRadius: 10, color: "#e0e0e0", fontSize: 13, fontFamily: "'DM Sans',sans-serif", outline: "none", boxSizing: "border-box" }} /></div>)}
+                      {[{ l: "N° devis", k: "devisNumber", ph: "DC-2026-001" }, { l: "Date", k: "devisDate", ph: new Date().toLocaleDateString("fr-FR") }, { l: "Validité", k: "validityDays", ph: "30 jours" }, { l: "Projet", k: "projectTitle", ph: state.projectName || "Titre" }].map(f => <div key={f.k} style={{ marginBottom: 12 }}><label style={{ display: "block", fontSize: 10, color: "#888", marginBottom: 6, fontWeight: 600, textTransform: "uppercase" }}>{f.l}</label><input value={pi.devis?.fields?.[f.k] || ""} onChange={e => uDevisField(f.k, e.target.value)} placeholder={f.ph} style={{ width: "100%", padding: "10px 14px", background: "#1c1c1f", border: "1px solid #3a3a40", borderRadius: 10, color: "#ebebf0", fontSize: 13, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} /></div>)}
                     </div>
                   </div>
-                  <div style={{ background: "#141416", borderRadius: 14, border: "1px solid #222226", padding: "18px 22px", marginBottom: 18 }}>
+                  <div style={{ background: "#232327", borderRadius: 14, border: "1px solid #33333a", padding: "18px 22px", marginBottom: 18 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 12 }}>
-                      <div style={{ fontSize: 11, color: "#22c55e", fontWeight: 600, textTransform: "uppercase" }}>Lignes de prestation</div>
-                      <button onClick={addDevisLine} style={{ padding: "6px 14px", background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.2)", borderRadius: 8, color: "#22c55e", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>+ Ligne</button>
+                      <div style={{ fontSize: 11, color: "#30d158", fontWeight: 600, textTransform: "uppercase" }}>Lignes de prestation</div>
+                      <button onClick={addDevisLine} style={{ padding: "6px 14px", background: "rgba(48,209,88,0.08)", border: "1px solid rgba(48,209,88,0.2)", borderRadius: 8, color: "#30d158", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>+ Ligne</button>
                     </div>
                     <div style={{ display: "grid", gridTemplateColumns: "2fr 60px 80px 90px 60px 40px", gap: 8, marginBottom: 8 }}>
                       {["Description", "Qté", "Unité", "Prix €", "TVA %", ""].map(h => <div key={h} style={{ fontSize: 9, color: "#555", fontWeight: 700, textTransform: "uppercase" }}>{h}</div>)}
@@ -5497,26 +5516,26 @@ function CastingAppInner({ authUser }) {
                     {devisLines.length === 0 && <div style={{ textAlign: "center", padding: 18, color: "#444", fontSize: 12 }}>Cliquez "+ Ligne"</div>}
                     {devisLines.map(l => (
                       <div key={l.id} style={{ display: "grid", gridTemplateColumns: "2fr 60px 80px 90px 60px 40px", gap: 8, marginBottom: 6, alignItems: "center" }}>
-                        <input value={l.description} onChange={e => updateDevisLine(l.id, "description", e.target.value)} placeholder="Direction casting" style={{ padding: "8px 10px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 6, color: "#e0e0e0", fontSize: 12, fontFamily: "'DM Sans',sans-serif", outline: "none" }} />
-                        <input value={l.qty} onChange={e => updateDevisLine(l.id, "qty", e.target.value)} style={{ padding: "8px 6px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 6, color: "#e0e0e0", fontSize: 12, fontFamily: "'DM Sans',sans-serif", outline: "none", textAlign: "center" }} />
-                        <select value={l.unit} onChange={e => updateDevisLine(l.id, "unit", e.target.value)} style={{ padding: "8px 6px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 6, color: "#e0e0e0", fontSize: 11, fontFamily: "'DM Sans',sans-serif", outline: "none", cursor: "pointer" }}><option value="forfait">Forfait</option><option value="jour">Jour</option><option value="heure">Heure</option><option value="unite">Unité</option></select>
-                        <input value={l.unitPrice} onChange={e => updateDevisLine(l.id, "unitPrice", e.target.value)} placeholder="0.00" style={{ padding: "8px 6px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 6, color: "#e0e0e0", fontSize: 12, fontFamily: "'DM Sans',sans-serif", outline: "none", textAlign: "right" }} />
-                        <input value={l.tva} onChange={e => updateDevisLine(l.id, "tva", e.target.value)} style={{ padding: "8px 6px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 6, color: "#e0e0e0", fontSize: 12, fontFamily: "'DM Sans',sans-serif", outline: "none", textAlign: "center" }} />
+                        <input value={l.description} onChange={e => updateDevisLine(l.id, "description", e.target.value)} placeholder="Direction casting" style={{ padding: "8px 10px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 6, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none" }} />
+                        <input value={l.qty} onChange={e => updateDevisLine(l.id, "qty", e.target.value)} style={{ padding: "8px 6px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 6, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none", textAlign: "center" }} />
+                        <select value={l.unit} onChange={e => updateDevisLine(l.id, "unit", e.target.value)} style={{ padding: "8px 6px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 6, color: "#ebebf0", fontSize: 11, fontFamily: "inherit", outline: "none", cursor: "pointer" }}><option value="forfait">Forfait</option><option value="jour">Jour</option><option value="heure">Heure</option><option value="unite">Unité</option></select>
+                        <input value={l.unitPrice} onChange={e => updateDevisLine(l.id, "unitPrice", e.target.value)} placeholder="0.00" style={{ padding: "8px 6px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 6, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none", textAlign: "right" }} />
+                        <input value={l.tva} onChange={e => updateDevisLine(l.id, "tva", e.target.value)} style={{ padding: "8px 6px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 6, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none", textAlign: "center" }} />
                         <button onClick={() => removeDevisLine(l.id)} style={{ background: "none", border: "none", color: "#44444488", cursor: "pointer", fontSize: 14 }}>🗑</button>
                       </div>
                     ))}
                     {devisLines.length > 0 && (
-                      <div style={{ borderTop: "1px solid #2a2a2e", marginTop: 12, paddingTop: 12, display: "flex", justifyContent: "flex-end" }}>
+                      <div style={{ borderTop: "1px solid #3a3a40", marginTop: 12, paddingTop: 12, display: "flex", justifyContent: "flex-end" }}>
                         <div style={{ textAlign: "right", fontSize: 13 }}>
-                          <div style={{ color: "#888", marginBottom: 4 }}>Total HT: <span style={{ color: "#e0e0e0", fontWeight: 700 }}>{devisTotalHT.toFixed(2)} €</span></div>
-                          <div style={{ color: "#888", marginBottom: 4 }}>TVA: <span style={{ color: "#e0e0e0" }}>{devisTotalTVA.toFixed(2)} €</span></div>
-                          <div style={{ color: "#c9a44a", fontWeight: 700, fontSize: 15 }}>Total TTC: {(devisTotalHT + devisTotalTVA).toFixed(2)} €</div>
+                          <div style={{ color: "#888", marginBottom: 4 }}>Total HT: <span style={{ color: "#ebebf0", fontWeight: 700 }}>{devisTotalHT.toFixed(2)} €</span></div>
+                          <div style={{ color: "#888", marginBottom: 4 }}>TVA: <span style={{ color: "#ebebf0" }}>{devisTotalTVA.toFixed(2)} €</span></div>
+                          <div style={{ color: "#d4af61", fontWeight: 700, fontSize: 15 }}>Total TTC: {(devisTotalHT + devisTotalTVA).toFixed(2)} €</div>
                         </div>
                       </div>
                     )}
                   </div>
-                  <div style={{ background: "#141416", borderRadius: 14, border: "1px solid #222226", padding: "18px 22px" }}>
-                    {[{ l: "Conditions", k: "conditions", ph: "Paiement à 30 jours..." }, { l: "Notes", k: "notes", ph: "Infos complémentaires..." }].map(f => <div key={f.k} style={{ marginBottom: 12 }}><label style={{ display: "block", fontSize: 10, color: "#888", marginBottom: 6, fontWeight: 600, textTransform: "uppercase" }}>{f.l}</label><textarea value={pi.devis?.fields?.[f.k] || ""} onChange={e => uDevisField(f.k, e.target.value)} placeholder={f.ph} rows={3} style={{ width: "100%", padding: "10px 14px", background: "#111114", border: "1px solid #2a2a2e", borderRadius: 10, color: "#e0e0e0", fontSize: 13, fontFamily: "'DM Sans',sans-serif", outline: "none", resize: "vertical", boxSizing: "border-box" }} /></div>)}
+                  <div style={{ background: "#232327", borderRadius: 14, border: "1px solid #33333a", padding: "18px 22px" }}>
+                    {[{ l: "Conditions", k: "conditions", ph: "Paiement à 30 jours..." }, { l: "Notes", k: "notes", ph: "Infos complémentaires..." }].map(f => <div key={f.k} style={{ marginBottom: 12 }}><label style={{ display: "block", fontSize: 10, color: "#888", marginBottom: 6, fontWeight: 600, textTransform: "uppercase" }}>{f.l}</label><textarea value={pi.devis?.fields?.[f.k] || ""} onChange={e => uDevisField(f.k, e.target.value)} placeholder={f.ph} rows={3} style={{ width: "100%", padding: "10px 14px", background: "#1c1c1f", border: "1px solid #3a3a40", borderRadius: 10, color: "#ebebf0", fontSize: 13, fontFamily: "inherit", outline: "none", resize: "vertical", boxSizing: "border-box" }} /></div>)}
                   </div>
                 </div>
               )}
@@ -5525,35 +5544,35 @@ function CastingAppInner({ authUser }) {
               {projetSection === "summary" && (
                 <div style={{ maxWidth: 800 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 24 }}>
-                    <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f0f0f0" }}>Fiche synthétique</h2>
-                    <button onClick={() => window.print()} style={{ padding: "8px 18px", background: "linear-gradient(135deg,#c9a44a,#a67c2e)", border: "none", borderRadius: 8, color: "#000", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>📄 Exporter PDF</button>
+                    <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f5f5f7" }}>Fiche synthétique</h2>
+                    <button onClick={() => window.print()} style={{ padding: "8px 18px", background: "linear-gradient(135deg,#d4af61,#b08a3e)", border: "none", borderRadius: 8, color: "#000", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>📄 Exporter PDF</button>
                   </div>
                   {!state.projectName && !pi.production && state.roles.length === 0 ? (
                     <div style={{ textAlign: "center", padding: 60, color: "#444" }}><div style={{ fontSize: 36, marginBottom: 14 }}>📋</div><div>Remplissez d'abord les infos.</div></div>
                   ) : (
                     <>
-                      <div style={{ background: "#141416", borderRadius: 16, border: "1px solid #222226", padding: "28px 32px", marginBottom: 20 }}>
+                      <div style={{ background: "#232327", borderRadius: 16, border: "1px solid #33333a", padding: "28px 32px", marginBottom: 20 }}>
                         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: 18 }}>
                           <div>
                             <div style={{ fontSize: 10, color: "#e879f9", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 8 }}>Fiche projet</div>
-                            <h1 style={{ fontSize: 26, fontWeight: 800, color: "#f0f0f0", margin: 0 }}>{state.projectName || "Sans titre"}</h1>
+                            <h1 style={{ fontSize: 26, fontWeight: 800, color: "#f5f5f7", margin: 0 }}>{state.projectName || "Sans titre"}</h1>
                           </div>
                           <div style={{ textAlign: "right", fontSize: 11, color: "#555", lineHeight: 1.8 }}>
-                            <div style={{ color: "#c9a44a", fontWeight: 700, fontSize: 12 }}>Joana Fontaine</div>
+                            <div style={{ color: "#d4af61", fontWeight: 700, fontSize: 12 }}>Joana Fontaine</div>
                             <div>Casting Director</div>
                             <div style={{ color: "#333", marginTop: 4 }}>{new Date().toLocaleDateString("fr-FR", { day: "numeric", month: "long", year: "numeric" })}</div>
                           </div>
                         </div>
-                        <div style={{ height: 1, background: "#222226", marginBottom: 18 }} />
+                        <div style={{ height: 1, background: "#33333a", marginBottom: 18 }} />
                         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "12px 36px" }}>
                           {[{ l: "Production", v: pi.production, i: "🏢" }, { l: "Réalisateur·rice", v: pi.director, i: "🎬" }, { l: "Photographe", v: pi.photographer, i: "📸" }, { l: "Jours de tournage", v: pi.shootingDays ? pi.shootingDays + " jours" : null, i: "📅" }, { l: "Rémunération", v: pi.salary?.amount ? pi.salary.amount + " €" : null, i: "💰" }, { l: "Rôles", v: state.roles.length + "", i: "🎭" }, { l: "Comédiens total", v: totalComediens > 0 ? totalComediens + "" : null, i: "👥" }].filter(x => x.v).map(x => (
-                            <div key={x.l} style={{ display: "flex", gap: 10 }}><span style={{ fontSize: 14 }}>{x.i}</span><div><div style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>{x.l}</div><div style={{ fontSize: 14, color: "#e0e0e0", fontWeight: 500 }}>{x.v}</div></div></div>
+                            <div key={x.l} style={{ display: "flex", gap: 10 }}><span style={{ fontSize: 14 }}>{x.i}</span><div><div style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>{x.l}</div><div style={{ fontSize: 14, color: "#ebebf0", fontWeight: 500 }}>{x.v}</div></div></div>
                           ))}
                         </div>
                         {projetDateChips.length > 0 && (
-                          <div style={{ marginTop: 18, paddingTop: 14, borderTop: "1px solid #1e1e22" }}>
-                            <div style={{ fontSize: 10, color: "#60a5fa", fontWeight: 600, textTransform: "uppercase", marginBottom: 10 }}>📅 Planning</div>
-                            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>{projetDateChips.map((x, i) => <div key={i} style={{ padding: "7px 12px", background: "rgba(96,165,250,0.06)", border: "1px solid rgba(96,165,250,0.15)", borderRadius: 8, fontSize: 11 }}>{x.icon} <span style={{ color: "#888", fontWeight: 600 }}>{x.label}:</span> <span style={{ color: "#e0e0e0" }}>{x.value}</span></div>)}</div>
+                          <div style={{ marginTop: 18, paddingTop: 14, borderTop: "1px solid #2e2e34" }}>
+                            <div style={{ fontSize: 10, color: "#0a84ff", fontWeight: 600, textTransform: "uppercase", marginBottom: 10 }}>📅 Planning</div>
+                            <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>{projetDateChips.map((x, i) => <div key={i} style={{ padding: "7px 12px", background: "rgba(10,132,255,0.06)", border: "1px solid rgba(10,132,255,0.15)", borderRadius: 8, fontSize: 11 }}>{x.icon} <span style={{ color: "#888", fontWeight: 600 }}>{x.label}:</span> <span style={{ color: "#ebebf0" }}>{x.value}</span></div>)}</div>
                           </div>
                         )}
                       </div>
@@ -5564,29 +5583,29 @@ function CastingAppInner({ authUser }) {
                         const tD = rd.profileType === "Autres" ? (rd.profileTypeCustom || "Autres") : rd.profileType;
                         const sD = rd.actingStyle === "Autres" ? (rd.actingStyleCustom || "Autres") : rd.actingStyle;
                         return (
-                          <div key={role} style={{ background: "#141416", borderRadius: 16, border: `1px solid ${rc.border}`, marginBottom: 14, overflow: "hidden" }}>
+                          <div key={role} style={{ background: "#232327", borderRadius: 16, border: `1px solid ${rc.border}`, marginBottom: 14, overflow: "hidden" }}>
                             <div style={{ padding: "14px 24px", background: rc.bg, display: "flex", alignItems: "center", gap: 12, borderBottom: `1px solid ${rc.border}` }}>
                               <div style={{ width: 10, height: 10, borderRadius: "50%", background: rc.color }} />
                               <span style={{ fontSize: 16, fontWeight: 700, color: rc.color, flex: 1 }}>{role}</span>
                               {rd.nbComediens && <span style={{ fontSize: 11, padding: "3px 10px", background: `${rc.color}15`, borderRadius: 8, color: rc.color, fontWeight: 600 }}>{rd.nbComediens} comédien{parseInt(rd.nbComediens) > 1 ? "s" : ""}</span>}
-                              {rd.nbJoursTournage && <span style={{ fontSize: 11, padding: "3px 10px", background: "rgba(201,164,74,0.08)", borderRadius: 8, color: "#c9a44a", fontWeight: 600 }}>{rd.nbJoursTournage}j / comédien</span>}
+                              {rd.nbJoursTournage && <span style={{ fontSize: 11, padding: "3px 10px", background: "rgba(212,175,97,0.08)", borderRadius: 8, color: "#d4af61", fontWeight: 600 }}>{rd.nbJoursTournage}j / comédien</span>}
                             </div>
                             <div style={{ padding: "18px 24px" }}>
                               {(rd.referencePhotos || []).length > 0 && <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>{rd.referencePhotos.map((p, i) => <div key={i} style={{ width: 52, height: 65, borderRadius: 8, overflow: "hidden", border: `1px solid ${rc.border}` }}><img src={p} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /></div>)}</div>}
                               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "10px 20px", marginBottom: 10 }}>
-                                {rd.sex && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Sexe</div><div style={{ fontSize: 13, color: "#e0e0e0" }}>{rd.sex}</div></div>}
-                                {rd.ageStyle && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Âge</div><div style={{ fontSize: 13, color: "#e0e0e0" }}>{rd.ageStyle}</div></div>}
-                                {(rd.ageMin || rd.ageMax) && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Tranche</div><div style={{ fontSize: 13, color: "#e0e0e0" }}>{rd.ageMin || "?"} — {rd.ageMax || "?"} ans</div></div>}
-                                {tD && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Type</div><div style={{ fontSize: 13, color: "#e0e0e0" }}>{tD}</div></div>}
-                                {sD && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Style de jeu</div><div style={{ fontSize: 13, color: "#e0e0e0" }}>{sD}</div></div>}
-                                {rd.cachet && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Rému</div><div style={{ fontSize: 14, color: (rd.cachetType === "ht" || rd.cachetType === "facture") ? "#e879f9" : "#c9a44a", fontWeight: 700 }}>{rd.cachet} € {(rd.cachetType === "ht" || rd.cachetType === "facture") ? "HT" : "BRUT"}</div></div>}
-                                {rd.droits && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Droits</div><div style={{ fontSize: 14, color: "#f59e0b", fontWeight: 700 }}>{rd.droits} €</div></div>}
-                                {rd.nbComediens && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Nb comédiens</div><div style={{ fontSize: 13, color: "#e0e0e0" }}>{rd.nbComediens}</div></div>}
-                                {rd.nbJoursTournage && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Jours / comédien</div><div style={{ fontSize: 13, color: "#e0e0e0" }}>{rd.nbJoursTournage}j</div></div>}
+                                {rd.sex && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Sexe</div><div style={{ fontSize: 13, color: "#ebebf0" }}>{rd.sex}</div></div>}
+                                {rd.ageStyle && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Âge</div><div style={{ fontSize: 13, color: "#ebebf0" }}>{rd.ageStyle}</div></div>}
+                                {(rd.ageMin || rd.ageMax) && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Tranche</div><div style={{ fontSize: 13, color: "#ebebf0" }}>{rd.ageMin || "?"} — {rd.ageMax || "?"} ans</div></div>}
+                                {tD && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Type</div><div style={{ fontSize: 13, color: "#ebebf0" }}>{tD}</div></div>}
+                                {sD && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Style de jeu</div><div style={{ fontSize: 13, color: "#ebebf0" }}>{sD}</div></div>}
+                                {rd.cachet && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Rému</div><div style={{ fontSize: 14, color: (rd.cachetType === "ht" || rd.cachetType === "facture") ? "#e879f9" : "#d4af61", fontWeight: 700 }}>{rd.cachet} € {(rd.cachetType === "ht" || rd.cachetType === "facture") ? "HT" : "BRUT"}</div></div>}
+                                {rd.droits && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Droits</div><div style={{ fontSize: 14, color: "#ffd60a", fontWeight: 700 }}>{rd.droits} €</div></div>}
+                                {rd.nbComediens && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Nb comédiens</div><div style={{ fontSize: 13, color: "#ebebf0" }}>{rd.nbComediens}</div></div>}
+                                {rd.nbJoursTournage && <div><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 2 }}>Jours / comédien</div><div style={{ fontSize: 13, color: "#ebebf0" }}>{rd.nbJoursTournage}j</div></div>}
                               </div>
                               {(rd.ethnicities || []).length > 0 && <div style={{ marginBottom: 10 }}><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 6 }}>Ethnie</div><div style={{ display: "flex", flexWrap: "wrap", gap: 4 }}>{rd.ethnicities.map(e => <span key={e} style={{ fontSize: 11, padding: "3px 12px", background: `${rc.color}15`, borderRadius: 12, color: rc.color }}>{e}</span>)}</div></div>}
                               {rd.notes && <div style={{ marginBottom: 6, padding: "10px 14px", background: "rgba(255,255,255,0.02)", borderRadius: 8, borderLeft: `3px solid ${rc.color}44` }}><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 4 }}>Notes</div><div style={{ fontSize: 13, color: "#aaa", lineHeight: 1.5 }}>{rd.notes}</div></div>}
-                              {rd.specificities && <div style={{ padding: "10px 14px", background: "rgba(255,255,255,0.02)", borderRadius: 8, borderLeft: "3px solid #f59e0b44" }}><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 4 }}>Spécificités</div><div style={{ fontSize: 13, color: "#aaa", lineHeight: 1.5 }}>{rd.specificities}</div></div>}
+                              {rd.specificities && <div style={{ padding: "10px 14px", background: "rgba(255,255,255,0.02)", borderRadius: 8, borderLeft: "3px solid #ffd60a44" }}><div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 4 }}>Spécificités</div><div style={{ fontSize: 13, color: "#aaa", lineHeight: 1.5 }}>{rd.specificities}</div></div>}
                             </div>
                           </div>
                         );
@@ -5604,38 +5623,38 @@ function CastingAppInner({ authUser }) {
               <div style={{ maxWidth: 1000 }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
                   <div>
-                    <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f0f0f0", fontFamily: "'Playfair Display', serif", marginBottom: 4 }}>📩 Candidatures</h2>
+                    <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f5f5f7", fontFamily: "inherit", marginBottom: 4 }}>📩 Candidatures</h2>
                     <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                       <span style={{ fontSize: 13, color: "#888" }}>{(state.candidatures || []).length} candidature{(state.candidatures || []).length !== 1 ? "s" : ""}</span>
                       {selectedCandidatures.size > 0 && (
-                        <button onClick={() => { if (window.confirm(`Supprimer ${selectedCandidatures.size} candidature${selectedCandidatures.size > 1 ? "s" : ""} ?`)) { setState(p => ({ ...p, candidatures: (p.candidatures || []).filter(c => !selectedCandidatures.has(c.id)) })); setSelectedCandidatures(new Set()); } }} style={{ padding: "4px 12px", background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.25)", borderRadius: 6, color: "#ef4444", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>🗑 Supprimer ({selectedCandidatures.size})</button>
+                        <button onClick={() => { if (window.confirm(`Supprimer ${selectedCandidatures.size} candidature${selectedCandidatures.size > 1 ? "s" : ""} ?`)) { setState(p => ({ ...p, candidatures: (p.candidatures || []).filter(c => !selectedCandidatures.has(c.id)) })); setSelectedCandidatures(new Set()); } }} style={{ padding: "4px 12px", background: "rgba(255,69,58,0.12)", border: "1px solid rgba(255,69,58,0.25)", borderRadius: 6, color: "#ff453a", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>🗑 Supprimer ({selectedCandidatures.size})</button>
                       )}
                       {(state.candidatures || []).length > 0 && (
-                        <button onClick={() => { if (selectedCandidatures.size === (state.candidatures || []).length) setSelectedCandidatures(new Set()); else setSelectedCandidatures(new Set((state.candidatures || []).map(c => c.id))); }} style={{ padding: "3px 10px", background: "rgba(255,255,255,0.03)", border: "1px solid #2a2a2e", borderRadius: 6, color: "#888", fontSize: 10, fontWeight: 500, cursor: "pointer", fontFamily: "inherit" }}>{selectedCandidatures.size === (state.candidatures || []).length ? "Tout désélectionner" : "Tout sélectionner"}</button>
+                        <button onClick={() => { if (selectedCandidatures.size === (state.candidatures || []).length) setSelectedCandidatures(new Set()); else setSelectedCandidatures(new Set((state.candidatures || []).map(c => c.id))); }} style={{ padding: "3px 10px", background: "rgba(255,255,255,0.03)", border: "1px solid #3a3a40", borderRadius: 6, color: "#888", fontSize: 10, fontWeight: 500, cursor: "pointer", fontFamily: "inherit" }}>{selectedCandidatures.size === (state.candidatures || []).length ? "Tout désélectionner" : "Tout sélectionner"}</button>
                       )}
                     </div>
                   </div>
                   <div style={{ display: "flex", gap: 10 }}>
-                    <button onClick={() => setCandidatureModal(true)} style={{ padding: "10px 20px", background: "rgba(255,255,255,0.03)", border: "1px solid #2a2a2e", borderRadius: 10, color: "#888", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>📋 Coller un email</button>
+                    <button onClick={() => setCandidatureModal(true)} style={{ padding: "10px 20px", background: "rgba(255,255,255,0.03)", border: "1px solid #3a3a40", borderRadius: 10, color: "#888", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>📋 Coller un email</button>
                     {!gmailToken ? (
                       <button onClick={() => connectGmail("select_account")} style={{ padding: "10px 20px", background: "linear-gradient(135deg, #EA4335, #c5221f)", border: "none", borderRadius: 10, color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>📧 Connecter Gmail</button>
                     ) : (
-                      <button onClick={() => fetchGmailEmails(gmailToken)} style={{ padding: "10px 20px", background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.25)", borderRadius: 10, color: "#22c55e", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>🔄 Actualiser</button>
+                      <button onClick={() => fetchGmailEmails(gmailToken)} style={{ padding: "10px 20px", background: "rgba(48,209,88,0.12)", border: "1px solid rgba(48,209,88,0.25)", borderRadius: 10, color: "#30d158", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>🔄 Actualiser</button>
                     )}
                   </div>
                 </div>
 
                 {/* Google Drive link */}
-                <div style={{ marginBottom: 16, padding: "14px 18px", background: "#111114", borderRadius: 10, border: "1px solid #1e1e22", display: "flex", alignItems: "center", gap: 12 }}>
+                <div style={{ marginBottom: 16, padding: "14px 18px", background: "#1c1c1f", borderRadius: 10, border: "1px solid #2e2e34", display: "flex", alignItems: "center", gap: 12 }}>
                   <span style={{ fontSize: 14 }}>📁</span>
                   <div style={{ flex: 1 }}>
                     <label style={{ display: "block", fontSize: 10, color: "#4285F4", fontWeight: 600, textTransform: "uppercase", marginBottom: 4 }}>Dossier Google Drive — Candidatures</label>
-                    <input value={state._candidaturesDriveLink || ""} onChange={e => setState(p => ({ ...p, _candidaturesDriveLink: e.target.value }))} placeholder="https://drive.google.com/drive/folders/..." style={{ width: "100%", padding: "6px 10px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 6, color: "#e0e0e0", fontSize: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
+                    <input value={state._candidaturesDriveLink || ""} onChange={e => setState(p => ({ ...p, _candidaturesDriveLink: e.target.value }))} placeholder="https://drive.google.com/drive/folders/..." style={{ width: "100%", padding: "6px 10px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 6, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
                   </div>
                   {state._candidaturesDriveLink && <a href={state._candidaturesDriveLink} target="_blank" rel="noreferrer" style={{ padding: "6px 14px", background: "rgba(66,133,244,0.1)", border: "1px solid rgba(66,133,244,0.25)", borderRadius: 6, color: "#4285F4", fontSize: 11, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>📂 Ouvrir Drive</a>}
                 </div>
 
-                {gmailError && <div style={{ padding: "10px 16px", background: "rgba(239,68,68,0.08)", borderRadius: 8, color: "#ef4444", fontSize: 12, marginBottom: 14 }}>⚠ {gmailError}</div>}
+                {gmailError && <div style={{ padding: "10px 16px", background: "rgba(255,69,58,0.08)", borderRadius: 8, color: "#ff453a", fontSize: 12, marginBottom: 14 }}>⚠ {gmailError}</div>}
 
                 {/* Gmail emails */}
                 {gmailToken && !gmailOpenEmail && (
@@ -5647,11 +5666,11 @@ function CastingAppInner({ authUser }) {
                       </div>
                       <div style={{ flex: 1 }} />
                       <form onSubmit={e => { e.preventDefault(); fetchGmailEmails(gmailToken, gmailSearchQuery || ""); }} style={{ display: "flex", gap: 6 }}>
-                        <input value={gmailSearchQuery} onChange={e => setGmailSearchQuery(e.target.value)} placeholder="Rechercher (ex: casting, nom...)" style={{ padding: "6px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "inherit", outline: "none", width: 220 }} />
+                        <input value={gmailSearchQuery} onChange={e => setGmailSearchQuery(e.target.value)} placeholder="Rechercher (ex: casting, nom...)" style={{ padding: "6px 12px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 8, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none", width: 220 }} />
                         <button type="submit" style={{ padding: "6px 14px", background: "rgba(234,67,53,0.08)", border: "1px solid rgba(234,67,53,0.2)", borderRadius: 8, color: "#EA4335", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>🔍</button>
                       </form>
                     </div>
-                    {!gmailCollapsed && <div style={{ background: "#111114", borderRadius: 14, border: "1px solid #1e1e22", overflow: "hidden" }}>
+                    {!gmailCollapsed && <div style={{ background: "#1c1c1f", borderRadius: 14, border: "1px solid #2e2e34", overflow: "hidden" }}>
                       {gmailLoading && !gmailEmails.length && <div style={{ padding: "30px", textAlign: "center", color: "#888", fontSize: 14 }}>⏳ Chargement...</div>}
                       {!gmailLoading && gmailEmails.length === 0 && <div style={{ padding: "30px", textAlign: "center", color: "#555" }}>Aucun email</div>}
                       {gmailEmails.map(em => {
@@ -5662,16 +5681,16 @@ function CastingAppInner({ authUser }) {
                         try { const d = new Date(em.date); if (!isNaN(d)) dateStr = d.toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }); } catch(e) {}
                         return (
                           <div key={em.id} onClick={() => { fetchGmailFullEmail(em); setGmailReadIds(prev => new Set([...prev, em.id])); }}
-                            style={{ display: "grid", gridTemplateColumns: "20px 8px 1fr auto", alignItems: "center", padding: "0 18px", height: 56, borderBottom: "1px solid #1a1a1e", cursor: "pointer", gap: 10, transition: "background 0.1s", background: isProcessed ? "rgba(34,197,94,0.02)" : "transparent" }}
+                            style={{ display: "grid", gridTemplateColumns: "20px 8px 1fr auto", alignItems: "center", padding: "0 18px", height: 56, borderBottom: "1px solid #2a2a30", cursor: "pointer", gap: 10, transition: "background 0.1s", background: isProcessed ? "rgba(48,209,88,0.02)" : "transparent" }}
                             onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.025)"}
-                            onMouseLeave={e => e.currentTarget.style.background = isProcessed ? "rgba(34,197,94,0.02)" : "transparent"}>
+                            onMouseLeave={e => e.currentTarget.style.background = isProcessed ? "rgba(48,209,88,0.02)" : "transparent"}>
                             {/* Status */}
-                            <div style={{ textAlign: "center" }}>{isProcessed ? <span style={{ color: "#22c55e", fontSize: 13 }}>✓</span> : <span style={{ color: "#333", fontSize: 8 }}>●</span>}</div>
+                            <div style={{ textAlign: "center" }}>{isProcessed ? <span style={{ color: "#30d158", fontSize: 13 }}>✓</span> : <span style={{ color: "#333", fontSize: 8 }}>●</span>}</div>
                             {/* Unread dot */}
                             <div style={{ width: 8, height: 8, borderRadius: "50%", background: !isRead ? "#EA4335" : "transparent" }} />
                             {/* Content — Gmail-like: from | subject - snippet */}
                             <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
-                              <span style={{ fontSize: 13, fontWeight: isRead ? 400 : 700, color: isRead ? "#aaa" : "#f0f0f0", minWidth: 140, maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flexShrink: 0 }}>{fromName}</span>
+                              <span style={{ fontSize: 13, fontWeight: isRead ? 400 : 700, color: isRead ? "#aaa" : "#f5f5f7", minWidth: 140, maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flexShrink: 0 }}>{fromName}</span>
                               <span style={{ fontSize: 13, fontWeight: isRead ? 400 : 600, color: isRead ? "#777" : "#ccc", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>{decodeHtmlEntities(em.subject) || "(Sans objet)"}</span>
                               <span style={{ fontSize: 12, color: "#444", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1, maxWidth: 300 }}>— {em.snippet?.slice(0, 80)}</span>
                             </div>
@@ -5682,7 +5701,7 @@ function CastingAppInner({ authUser }) {
                       })}
                       {/* Load more */}
                       {gmailNextPage && (
-                        <div style={{ padding: "14px", textAlign: "center", borderTop: "1px solid #1e1e22" }}>
+                        <div style={{ padding: "14px", textAlign: "center", borderTop: "1px solid #2e2e34" }}>
                           <button onClick={() => fetchGmailEmails(gmailToken, null, gmailNextPage, true)} disabled={gmailLoading}
                             style={{ padding: "8px 24px", background: "rgba(234,67,53,0.08)", border: "1px solid rgba(234,67,53,0.2)", borderRadius: 8, color: "#EA4335", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
                             {gmailLoading ? "⏳ Chargement..." : "📩 Charger plus d'emails"}
@@ -5700,16 +5719,16 @@ function CastingAppInner({ authUser }) {
                   const fromEmail = em.from?.match(/<([^>]+)>/) ? em.from.match(/<([^>]+)>/)[1] : em.from || "";
                   return (
                     <div style={{ marginBottom: 24 }}>
-                      <button onClick={() => setGmailOpenEmail(null)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 14px", background: "transparent", border: "1px solid #2a2a2e", borderRadius: 8, color: "#888", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", marginBottom: 14 }}
+                      <button onClick={() => setGmailOpenEmail(null)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 14px", background: "transparent", border: "1px solid #3a3a40", borderRadius: 8, color: "#888", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", marginBottom: 14 }}
                         onMouseEnter={e => e.currentTarget.style.color = "#EA4335"} onMouseLeave={e => e.currentTarget.style.color = "#888"}>← Retour à la boîte de réception</button>
-                      <div style={{ background: "#111114", borderRadius: 14, border: "1px solid #1e1e22", overflow: "hidden" }}>
+                      <div style={{ background: "#1c1c1f", borderRadius: 14, border: "1px solid #2e2e34", overflow: "hidden" }}>
                         {/* Email header */}
-                        <div style={{ padding: "20px 24px", borderBottom: "1px solid #1e1e22" }}>
-                          <div style={{ fontSize: 20, fontWeight: 700, color: "#f0f0f0", marginBottom: 10 }}>{decodeHtmlEntities(em.subject) || "(Sans objet)"}</div>
+                        <div style={{ padding: "20px 24px", borderBottom: "1px solid #2e2e34" }}>
+                          <div style={{ fontSize: 20, fontWeight: 700, color: "#f5f5f7", marginBottom: 10 }}>{decodeHtmlEntities(em.subject) || "(Sans objet)"}</div>
                           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
                             <div style={{ width: 44, height: 44, borderRadius: "50%", background: "rgba(234,67,53,0.1)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, color: "#EA4335", fontWeight: 700, flexShrink: 0 }}>{fromName[0]?.toUpperCase()}</div>
                             <div>
-                              <div style={{ fontSize: 15, fontWeight: 700, color: "#f0f0f0" }}>{fromName}</div>
+                              <div style={{ fontSize: 15, fontWeight: 700, color: "#f5f5f7" }}>{fromName}</div>
                               <div style={{ fontSize: 12, color: "#888" }}>{fromEmail}</div>
                             </div>
                             <div style={{ marginLeft: "auto", fontSize: 12, color: "#666" }}>{em.date ? (() => { try { return new Date(em.date).toLocaleString("fr-FR", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }); } catch(e) { return em.date; } })() : ""}</div>
@@ -5719,17 +5738,17 @@ function CastingAppInner({ authUser }) {
                         <div style={{ padding: "24px", minHeight: 100 }}>
                           {!em._loaded && <div style={{ textAlign: "center", padding: "30px", color: "#888" }}>⏳ Chargement du contenu...</div>}
                           {em._loaded && em.bodyHtml && em.bodyHtml.trim().length > 10 ? (
-                            <div className="email-body-render" dangerouslySetInnerHTML={{ __html: em.bodyHtml }} style={{ fontSize: 14, color: "#e0e0e0", lineHeight: 1.7, wordBreak: "break-word", overflowWrap: "break-word" }} />
+                            <div className="email-body-render" dangerouslySetInnerHTML={{ __html: em.bodyHtml }} style={{ fontSize: 14, color: "#ebebf0", lineHeight: 1.7, wordBreak: "break-word", overflowWrap: "break-word" }} />
                           ) : (em._loaded && em.bodyText && em.bodyText.trim().length > 0) || (!em._loaded && em.snippet) ? (
                             <div style={{ fontSize: 14, color: "#fff", lineHeight: 1.8, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
                               {(decodeHtmlEntities(em._loaded ? em.bodyText : em.snippet) || "").split(/(https?:\/\/[^\s<>"']+)/g).map((part, pi) =>
-                                part.match(/^https?:\/\//) ? <a key={pi} href={part} target="_blank" rel="noreferrer" style={{ color: "#60a5fa", textDecoration: "underline" }}>{part}</a> : <React.Fragment key={pi}>{part}</React.Fragment>
+                                part.match(/^https?:\/\//) ? <a key={pi} href={part} target="_blank" rel="noreferrer" style={{ color: "#0a84ff", textDecoration: "underline" }}>{part}</a> : <React.Fragment key={pi}>{part}</React.Fragment>
                               )}
                             </div>
                           ) : em.snippet ? (
                             <div style={{ fontSize: 14, color: "#ccc", lineHeight: 1.8, whiteSpace: "pre-wrap" }}>
                               {decodeHtmlEntities(em.snippet).split(/(https?:\/\/[^\s<>"']+)/g).map((part, pi) =>
-                                part.match(/^https?:\/\//) ? <a key={pi} href={part} target="_blank" rel="noreferrer" style={{ color: "#60a5fa", textDecoration: "underline" }}>{part}</a> : <React.Fragment key={pi}>{part}</React.Fragment>
+                                part.match(/^https?:\/\//) ? <a key={pi} href={part} target="_blank" rel="noreferrer" style={{ color: "#0a84ff", textDecoration: "underline" }}>{part}</a> : <React.Fragment key={pi}>{part}</React.Fragment>
                               )}
                             </div>
                           ) : (
@@ -5742,7 +5761,7 @@ function CastingAppInner({ authUser }) {
                             <div style={{ fontSize: 11, color: "#888", fontWeight: 600, textTransform: "uppercase", marginBottom: 8 }}>📎 Pièces jointes ({em.attachments.length})</div>
                             <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                               {em.attachments.map((att, ai) => (
-                                <div key={ai} style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 14px", background: "#0c0c0e", borderRadius: 8, border: "1px solid #2a2a2e" }}>
+                                <div key={ai} style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 14px", background: "#101013", borderRadius: 8, border: "1px solid #3a3a40" }}>
                                   <span style={{ fontSize: 16 }}>{att.mimeType?.startsWith("image/") ? "🖼" : att.mimeType?.includes("pdf") ? "📄" : "📎"}</span>
                                   <div>
                                     <div style={{ fontSize: 12, color: "#ccc", fontWeight: 500 }}>{att.filename}</div>
@@ -5762,7 +5781,7 @@ function CastingAppInner({ authUser }) {
                                           else { const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = att.filename; a.click(); }
                                         }
                                       } catch(e) { console.error("Attachment download failed:", e); }
-                                    }} style={{ padding: "4px 10px", background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.2)", borderRadius: 6, color: "#60a5fa", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+                                    }} style={{ padding: "4px 10px", background: "rgba(10,132,255,0.08)", border: "1px solid rgba(10,132,255,0.2)", borderRadius: 6, color: "#0a84ff", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
                                       {att._blobUrl ? "✓ Chargé" : att.mimeType?.startsWith("image/") ? "👁 Charger" : "⬇ Télécharger"}
                                     </button>
                                     {/* Upload video/file to Supabase → get permanent URL */}
@@ -5780,7 +5799,7 @@ function CastingAppInner({ authUser }) {
                                             att._uploadedUrl = result.url; att._uploading = false; setGmailOpenEmail({ ...em });
                                           }
                                         } catch(e) { console.error(e); att._uploading = false; setGmailOpenEmail({ ...em }); }
-                                      }} style={{ padding: "4px 10px", background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.2)", borderRadius: 6, color: "#22c55e", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+                                      }} style={{ padding: "4px 10px", background: "rgba(48,209,88,0.08)", border: "1px solid rgba(48,209,88,0.2)", borderRadius: 6, color: "#30d158", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
                                         {att._uploading ? "⏳ Upload..." : "📤 Sauvegarder → URL"}
                                       </button>
                                     )}
@@ -5825,8 +5844,8 @@ function CastingAppInner({ authUser }) {
                                     )}
                                     {att._uploadedUrl && (
                                       <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                                        <input value={att._uploadedUrl} readOnly style={{ padding: "3px 6px", background: "#0c0c0e", border: "1px solid #22c55e44", borderRadius: 4, color: "#22c55e", fontSize: 9, fontFamily: "inherit", outline: "none", width: 140 }} onClick={e => { e.target.select(); navigator.clipboard?.writeText(att._uploadedUrl); }} />
-                                        <span style={{ fontSize: 9, color: "#22c55e" }}>✓</span>
+                                        <input value={att._uploadedUrl} readOnly style={{ padding: "3px 6px", background: "#101013", border: "1px solid #30d15844", borderRadius: 4, color: "#30d158", fontSize: 9, fontFamily: "inherit", outline: "none", width: 140 }} onClick={e => { e.target.select(); navigator.clipboard?.writeText(att._uploadedUrl); }} />
+                                        <span style={{ fontSize: 9, color: "#30d158" }}>✓</span>
                                       </div>
                                     )}
                                     </>
@@ -5840,7 +5859,7 @@ function CastingAppInner({ authUser }) {
                           </div>
                         )}
                         {/* Action bar */}
-                        <div style={{ padding: "16px 24px", borderTop: "1px solid #1e1e22", display: "flex", gap: 10 }}>
+                        <div style={{ padding: "16px 24px", borderTop: "1px solid #2e2e34", display: "flex", gap: 10 }}>
                           <button onClick={() => {
                             const text = em.bodyText || em.snippet || "";
                             const parsed = parseEmailForCasting(text);
@@ -5855,7 +5874,7 @@ function CastingAppInner({ authUser }) {
                             setGmailOpenEmail(null);
                             setExpandedCandidature(newC.id);
                           }} style={{ padding: "10px 24px", background: "linear-gradient(135deg, #f472b6, #db2777)", border: "none", borderRadius: 10, color: "#fff", fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>📋 Transformer en fiche candidat</button>
-                          <button onClick={() => setGmailOpenEmail(null)} style={{ padding: "10px 20px", background: "rgba(255,255,255,0.03)", border: "1px solid #2a2a2e", borderRadius: 10, color: "#888", fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Retour</button>
+                          <button onClick={() => setGmailOpenEmail(null)} style={{ padding: "10px 20px", background: "rgba(255,255,255,0.03)", border: "1px solid #3a3a40", borderRadius: 10, color: "#888", fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Retour</button>
                         </div>
                       </div>
                     </div>
@@ -5864,11 +5883,11 @@ function CastingAppInner({ authUser }) {
 
                 {/* Separator */}
                 {gmailToken && (state.candidatures || []).length > 0 && (
-                  <div style={{ height: 1, background: "#2a2a2e", marginBottom: 20 }} />
+                  <div style={{ height: 1, background: "#3a3a40", marginBottom: 20 }} />
                 )}
 
                 {/* Candidatures list */}
-                <div style={{ background: "#111114", borderRadius: 14, border: "1px solid #1e1e22", overflow: "hidden" }}>
+                <div style={{ background: "#1c1c1f", borderRadius: 14, border: "1px solid #2e2e34", overflow: "hidden" }}>
                   {/* Header */}
                   <div style={{ display: "grid", gridTemplateColumns: "28px 1fr 1fr 60px 120px 100px 80px 32px", padding: "10px 18px", borderBottom: "2px solid #f472b633", gap: 8, background: "rgba(244,114,182,0.04)" }}>
                     {["", "Prénom", "Nom", "Âge", "Agence", "Rôle visé", "Statut", ""].map((h, hi) => (
@@ -5882,32 +5901,32 @@ function CastingAppInner({ authUser }) {
                     const isOpen = expandedCandidature === c.id;
                     return (
                       <React.Fragment key={c.id}>
-                        <div onClick={() => setExpandedCandidature(isOpen ? null : c.id)} style={{ display: "grid", gridTemplateColumns: "28px 1fr 1fr 60px 120px 100px 80px 32px", padding: "12px 18px", alignItems: "center", gap: 8, borderBottom: "1px solid #1a1a1e", cursor: "pointer", background: isOpen ? "rgba(244,114,182,0.03)" : "transparent" }}
+                        <div onClick={() => setExpandedCandidature(isOpen ? null : c.id)} style={{ display: "grid", gridTemplateColumns: "28px 1fr 1fr 60px 120px 100px 80px 32px", padding: "12px 18px", alignItems: "center", gap: 8, borderBottom: "1px solid #2a2a30", cursor: "pointer", background: isOpen ? "rgba(244,114,182,0.03)" : "transparent" }}
                           onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.015)"}
                           onMouseLeave={e => e.currentTarget.style.background = isOpen ? "rgba(244,114,182,0.03)" : "transparent"}>
                           <div onClick={e => e.stopPropagation()} style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                             <input type="checkbox" checked={selectedCandidatures.has(c.id)} onChange={() => setSelectedCandidatures(prev => { const s = new Set(prev); if (s.has(c.id)) s.delete(c.id); else s.add(c.id); return s; })} style={{ width: 16, height: 16, cursor: "pointer", accentColor: "#f472b6" }} />
                           </div>
-                          <span style={{ fontSize: 14, fontWeight: 600, color: "#f0f0f0" }}>{c.firstName || "—"}</span>
-                          <span style={{ fontSize: 14, fontWeight: 700, color: "#f0f0f0" }}>{(c.name || "—").toUpperCase()}</span>
+                          <span style={{ fontSize: 14, fontWeight: 600, color: "#f5f5f7" }}>{c.firstName || "—"}</span>
+                          <span style={{ fontSize: 14, fontWeight: 700, color: "#f5f5f7" }}>{(c.name || "—").toUpperCase()}</span>
                           <span style={{ fontSize: 13, color: "#ccc" }}>{c.age || "—"}</span>
-                          <span style={{ fontSize: 12, color: "#c9a44a" }}>{c.agency || "—"}</span>
-                          <span style={{ fontSize: 12, color: "#a855f7" }}>{c.role || "—"}</span>
-                          <span style={{ fontSize: 11, padding: "3px 8px", borderRadius: 6, fontWeight: 600, background: c.status === "transferred" ? "rgba(34,197,94,0.1)" : c.status === "rejected" ? "rgba(239,68,68,0.08)" : "rgba(245,158,11,0.08)", color: c.status === "transferred" ? "#22c55e" : c.status === "rejected" ? "#ef4444" : "#f59e0b" }}>
+                          <span style={{ fontSize: 12, color: "#d4af61" }}>{c.agency || "—"}</span>
+                          <span style={{ fontSize: 12, color: "#bf5af2" }}>{c.role || "—"}</span>
+                          <span style={{ fontSize: 11, padding: "3px 8px", borderRadius: 6, fontWeight: 600, background: c.status === "transferred" ? "rgba(48,209,88,0.1)" : c.status === "rejected" ? "rgba(255,69,58,0.08)" : "rgba(255,214,10,0.08)", color: c.status === "transferred" ? "#30d158" : c.status === "rejected" ? "#ff453a" : "#ffd60a" }}>
                             {c.status === "transferred" ? "✓ Transféré" : c.status === "rejected" ? "✕ Refusé" : "En attente"}
                           </span>
                           <span style={{ fontSize: 14, color: "#555", transform: isOpen ? "rotate(180deg)" : "rotate(0)", transition: "transform 0.2s" }}>▾</span>
                         </div>
                         {/* Expanded detail */}
                         {isOpen && (
-                          <div style={{ padding: "20px", borderBottom: "2px solid #1e1e22", background: "rgba(244,114,182,0.02)" }}>
+                          <div style={{ padding: "20px", borderBottom: "2px solid #2e2e34", background: "rgba(244,114,182,0.02)" }}>
                             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
                               {/* Left: original email — full HTML or text */}
                               <div>
                                 <label style={{ display: "block", fontSize: 10, color: "#f472b6", fontWeight: 600, textTransform: "uppercase", marginBottom: 6 }}>Email original</label>
-                                <div style={{ width: "100%", background: "#0a0a0a", border: "1px solid #2a2a2e", borderRadius: 10, maxHeight: 600, overflowY: "auto", boxSizing: "border-box" }}>
+                                <div style={{ width: "100%", background: "#0a0a0a", border: "1px solid #3a3a40", borderRadius: 10, maxHeight: 600, overflowY: "auto", boxSizing: "border-box" }}>
                                   {/* Email header */}
-                                  <div style={{ padding: "14px 18px", borderBottom: "1px solid #1e1e22" }}>
+                                  <div style={{ padding: "14px 18px", borderBottom: "1px solid #2e2e34" }}>
                                     <div style={{ fontSize: 11, color: "#888", marginBottom: 4 }}>De: <span style={{ color: "#fff", fontWeight: 600 }}>{c.email || "—"}</span></div>
                                     {c.rawEmail?.match(/Objet:\s*(.+)/)?.[1] && <div style={{ fontSize: 15, color: "#fff", fontWeight: 700 }}>{c.rawEmail.match(/Objet:\s*(.+)/)[1]}</div>}
                                   </div>
@@ -5924,7 +5943,7 @@ function CastingAppInner({ authUser }) {
                                     <div style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 4 }}>📎 Pièces jointes ({c.emailAttachments.length})</div>
                                     <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                                       {c.emailAttachments.map((att, ai) => (
-                                        <div key={ai} style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 10px", background: "#111114", borderRadius: 6, border: "1px solid #2a2a2e" }}>
+                                        <div key={ai} style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 10px", background: "#1c1c1f", borderRadius: 6, border: "1px solid #3a3a40" }}>
                                           <span style={{ fontSize: 12 }}>{att.mimeType?.startsWith("image/") ? "🖼" : att.mimeType?.includes("pdf") ? "📄" : "📎"}</span>
                                           <span style={{ fontSize: 11, color: "#ccc" }}>{att.filename}</span>
                                           {att.attachmentId && gmailToken && att.mimeType?.startsWith("image/") && (
@@ -5947,7 +5966,7 @@ function CastingAppInner({ authUser }) {
                                                   }
                                                 }
                                               } catch(e) { console.error(e); }
-                                            }} style={{ padding: "3px 8px", background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.2)", borderRadius: 4, color: "#60a5fa", fontSize: 9, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>📥 Ajouter photo</button>
+                                            }} style={{ padding: "3px 8px", background: "rgba(10,132,255,0.08)", border: "1px solid rgba(10,132,255,0.2)", borderRadius: 4, color: "#0a84ff", fontSize: 9, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>📥 Ajouter photo</button>
                                           )}
                                         </div>
                                       ))}
@@ -5959,7 +5978,7 @@ function CastingAppInner({ authUser }) {
                               <div>
                                 {(() => {
                                   const uC = (field, val) => { const arr = [...(state.candidatures || [])]; arr[ci] = { ...arr[ci], [field]: val }; setState(p => ({ ...p, candidatures: arr })); };
-                                  const sIn = { padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit", outline: "none", width: "100%", boxSizing: "border-box" };
+                                  const sIn = { padding: "8px 12px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 8, color: "#ebebf0", fontSize: 13, fontFamily: "inherit", outline: "none", width: "100%", boxSizing: "border-box" };
                                   return (
                                     <>
                                       <label style={{ display: "block", fontSize: 11, color: "#f472b6", fontWeight: 700, textTransform: "uppercase", marginBottom: 8 }}>Fiche candidat</label>
@@ -5998,11 +6017,11 @@ function CastingAppInner({ authUser }) {
                                       </div>
                                       {/* Links — editable + add */}
                                       <div style={{ marginBottom: 8 }}>
-                                        <label style={{ display: "block", fontSize: 9, color: "#60a5fa", fontWeight: 600, textTransform: "uppercase", marginBottom: 4 }}>Liens (selftapes, photos, vidéos)</label>
+                                        <label style={{ display: "block", fontSize: 9, color: "#0a84ff", fontWeight: 600, textTransform: "uppercase", marginBottom: 4 }}>Liens (selftapes, photos, vidéos)</label>
                                         {(c.links || []).map((link, li) => (
                                           <div key={li} style={{ display: "flex", gap: 6, marginBottom: 4, alignItems: "center" }}>
                                             <input value={link} onChange={e => { const arr = [...(c.links || [])]; arr[li] = e.target.value; uC("links", arr); }} style={{ ...sIn, fontSize: 12 }} />
-                                            {getEmbedUrl(link) && <span style={{ fontSize: 10, color: "#22c55e", flexShrink: 0 }}>▶</span>}
+                                            {getEmbedUrl(link) && <span style={{ fontSize: 10, color: "#30d158", flexShrink: 0 }}>▶</span>}
                                             <button onClick={() => uC("links", (c.links || []).filter((_, j) => j !== li))} style={{ background: "none", border: "none", color: "#444", cursor: "pointer", fontSize: 14, flexShrink: 0 }}>×</button>
                                           </div>
                                         ))}
@@ -6016,8 +6035,8 @@ function CastingAppInner({ authUser }) {
                               </div>
                             </div>
                             {/* Transfer to role */}
-                            <div style={{ marginTop: 16, paddingTop: 14, borderTop: "1px solid #1e1e22", display: "flex", gap: 10, alignItems: "center" }}>
-                              <select value={c.role || ""} onChange={e => { const arr = [...(state.candidatures || [])]; arr[ci] = { ...arr[ci], role: e.target.value }; setState(p => ({ ...p, candidatures: arr })); }} style={{ padding: "8px 14px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit", outline: "none" }}>
+                            <div style={{ marginTop: 16, paddingTop: 14, borderTop: "1px solid #2e2e34", display: "flex", gap: 10, alignItems: "center" }}>
+                              <select value={c.role || ""} onChange={e => { const arr = [...(state.candidatures || [])]; arr[ci] = { ...arr[ci], role: e.target.value }; setState(p => ({ ...p, candidatures: arr })); }} style={{ padding: "8px 14px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 8, color: "#ebebf0", fontSize: 13, fontFamily: "inherit", outline: "none" }}>
                                 <option value="">Assigner un rôle...</option>
                                 {state.roles.map(r => <option key={r} value={r}>{r}</option>)}
                               </select>
@@ -6030,10 +6049,10 @@ function CastingAppInner({ authUser }) {
                                   profiles: { ...prev.profiles, [c.role]: [...(prev.profiles[c.role] || []), newProfile] },
                                   candidatures: (prev.candidatures || []).map((x, xi) => xi === ci ? { ...x, status: "transferred" } : x),
                                 }));
-                              }} style={{ padding: "8px 20px", background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.3)", borderRadius: 8, color: "#22c55e", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>✓ Transférer dans les rôles</button>
+                              }} style={{ padding: "8px 20px", background: "rgba(48,209,88,0.12)", border: "1px solid rgba(48,209,88,0.3)", borderRadius: 8, color: "#30d158", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>✓ Transférer dans les rôles</button>
                               <button onClick={() => {
                                 const arr = [...(state.candidatures || [])]; arr[ci] = { ...arr[ci], status: "rejected" }; setState(p => ({ ...p, candidatures: arr }));
-                              }} style={{ padding: "8px 16px", background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 8, color: "#ef4444", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>✕ Refuser</button>
+                              }} style={{ padding: "8px 16px", background: "rgba(255,69,58,0.08)", border: "1px solid rgba(255,69,58,0.2)", borderRadius: 8, color: "#ff453a", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>✕ Refuser</button>
                               <button onClick={() => {
                                 if (window.confirm("Supprimer cette candidature ?")) setState(p => ({ ...p, candidatures: (p.candidatures || []).filter((_, xi) => xi !== ci) }));
                               }} style={{ marginLeft: "auto", background: "none", border: "none", color: "#333", cursor: "pointer", fontSize: 16 }}>🗑</button>
@@ -6048,11 +6067,11 @@ function CastingAppInner({ authUser }) {
                 {/* Paste email modal */}
                 {candidatureModal && (
                   <div onClick={() => setCandidatureModal(false)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.8)", zIndex: 2000, display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
-                    <div onClick={e => e.stopPropagation()} style={{ background: "#141416", borderRadius: 20, maxWidth: 600, width: "100%", padding: "28px 32px", border: "1px solid #2a2a2e" }}>
-                      <h3 style={{ fontSize: 18, fontWeight: 700, color: "#f0f0f0", fontFamily: "'Playfair Display', serif", marginBottom: 14 }}>📩 Coller un email de candidature</h3>
-                      <textarea id="candidatureEmailInput" rows={14} placeholder="Collez ici le contenu de l'email reçu (texte, liens, infos du candidat)..." style={{ width: "100%", padding: "14px 16px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 10, color: "#e0e0e0", fontSize: 14, fontFamily: "'DM Sans',sans-serif", outline: "none", resize: "vertical", lineHeight: 1.6, boxSizing: "border-box" }} />
+                    <div onClick={e => e.stopPropagation()} style={{ background: "#232327", borderRadius: 20, maxWidth: 600, width: "100%", padding: "28px 32px", border: "1px solid #3a3a40" }}>
+                      <h3 style={{ fontSize: 18, fontWeight: 700, color: "#f5f5f7", fontFamily: "inherit", marginBottom: 14 }}>📩 Coller un email de candidature</h3>
+                      <textarea id="candidatureEmailInput" rows={14} placeholder="Collez ici le contenu de l'email reçu (texte, liens, infos du candidat)..." style={{ width: "100%", padding: "14px 16px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 10, color: "#ebebf0", fontSize: 14, fontFamily: "inherit", outline: "none", resize: "vertical", lineHeight: 1.6, boxSizing: "border-box" }} />
                       <div style={{ display: "flex", gap: 10, marginTop: 14, justifyContent: "flex-end" }}>
-                        <button onClick={() => setCandidatureModal(false)} style={{ padding: "10px 20px", background: "rgba(255,255,255,0.03)", border: "1px solid #2a2a2e", borderRadius: 8, color: "#888", fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Annuler</button>
+                        <button onClick={() => setCandidatureModal(false)} style={{ padding: "10px 20px", background: "rgba(255,255,255,0.03)", border: "1px solid #3a3a40", borderRadius: 8, color: "#888", fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Annuler</button>
                         <button onClick={() => {
                           const text = document.getElementById("candidatureEmailInput")?.value?.trim();
                           if (!text) return;
@@ -6142,7 +6161,7 @@ function CastingAppInner({ authUser }) {
                         key={p.id}
                         style={{
                           padding: "16px 20px", display: "flex", alignItems: "center", gap: 16,
-                          borderBottom: i < total - 1 ? "1px solid #1a1a1e" : "none",
+                          borderBottom: i < total - 1 ? "1px solid #2a2a30" : "none",
                           transition: "background 0.15s", cursor: "pointer",
                           animation: `fadeIn 0.3s ease ${i * 0.03}s both`,
                         }}
@@ -6151,7 +6170,7 @@ function CastingAppInner({ authUser }) {
                         onClick={() => { setContactingProfile({ ...p, _contactMode: isFinal ? "final" : "premier" }); setContactModalOpen(true); }}
                       >
                         {/* Photo */}
-                        <div style={{ width: 44, height: 54, borderRadius: 8, overflow: "hidden", background: "#0c0c0e", flexShrink: 0 }}>
+                        <div style={{ width: 44, height: 54, borderRadius: 8, overflow: "hidden", background: "#101013", flexShrink: 0 }}>
                           {p.photos?.[0] ? (
                             <img src={p.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                           ) : (
@@ -6161,7 +6180,7 @@ function CastingAppInner({ authUser }) {
 
                         {/* Name & agency */}
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: 14, fontWeight: 700, color: "#f0f0f0", marginBottom: 2 }}>{fullName}</div>
+                          <div style={{ fontSize: 14, fontWeight: 700, color: "#f5f5f7", marginBottom: 2 }}>{fullName}</div>
                           <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
                             {p.agency && <span style={{ fontSize: 10, color: "#8a7740" }}>🏢 {p.agency}</span>}
                             {(p.email || p.agencyEmail) && <span style={{ fontSize: 10, color: "#555" }}>✉ {p.email || p.agencyEmail}</span>}
@@ -6173,9 +6192,9 @@ function CastingAppInner({ authUser }) {
                           {isFinal ? (
                             <span style={{
                               display: "inline-flex", alignItems: "center", gap: 4, padding: "5px 12px",
-                              background: finalSel?.selected ? "rgba(34,197,94,0.1)" : "rgba(239,68,68,0.1)",
-                              color: finalSel?.selected ? "#22c55e" : "#ef4444",
-                              border: `1px solid ${finalSel?.selected ? "#22c55e" : "#ef4444"}33`,
+                              background: finalSel?.selected ? "rgba(48,209,88,0.1)" : "rgba(255,69,58,0.1)",
+                              color: finalSel?.selected ? "#30d158" : "#ff453a",
+                              border: `1px solid ${finalSel?.selected ? "#30d158" : "#ff453a"}33`,
                               borderRadius: 8, fontSize: 11, fontWeight: 600,
                             }}>
                               {finalSel?.selected ? "🏆 Retenu" : "✕ Non retenu"}
@@ -6221,13 +6240,13 @@ function CastingAppInner({ authUser }) {
 
                   const renderTable = (profiles) => (
                     <div style={{
-                      background: "#111114", borderRadius: 14, border: "1px solid #1e1e22",
+                      background: "#1c1c1f", borderRadius: 14, border: "1px solid #2e2e34",
                       overflow: "hidden",
                     }}>
                       {/* Header */}
                       <div style={{
                         display: "flex", alignItems: "center", gap: 16,
-                        padding: "10px 20px", borderBottom: "1px solid #1e1e22",
+                        padding: "10px 20px", borderBottom: "1px solid #2e2e34",
                         fontSize: 9, color: "#555", fontWeight: 600, letterSpacing: "0.08em",
                         textTransform: "uppercase",
                       }}>
@@ -6242,7 +6261,7 @@ function CastingAppInner({ authUser }) {
                     </div>
                   );
 
-                  const accentColor = isFinal ? "#22c55e" : "#60a5fa";
+                  const accentColor = isFinal ? "#30d158" : "#0a84ff";
                   const selLabel = isFinal ? "🏆 Profils retenus" : "✓ Profils sélectionnés";
                   const notSelLabel = isFinal ? "✕ Profils non retenus" : "✕ Profils non sélectionnés";
                   const selEmptyMsg = isFinal ? "Aucun profil retenu pour ce rôle" : "Aucun profil sélectionné pour ce rôle";
@@ -6253,8 +6272,8 @@ function CastingAppInner({ authUser }) {
                       {/* Header */}
                       <div style={{ marginBottom: 24 }}>
                         <h2 style={{
-                          fontSize: 22, fontWeight: 700, color: "#f0f0f0", letterSpacing: "-0.01em",
-                          fontFamily: "'Playfair Display', serif", marginBottom: 4,
+                          fontSize: 22, fontWeight: 700, color: "#f5f5f7", letterSpacing: "-0.01em",
+                          fontFamily: "inherit", marginBottom: 4,
                         }}>
                           {isFinal && "🏆 "}{currentRole}
                         </h2>
@@ -6267,8 +6286,8 @@ function CastingAppInner({ authUser }) {
                       <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginBottom: 24 }}>
                         {Object.entries(CONTACT_STATUS).map(([key, s]) => (
                           <div key={key} style={{
-                            padding: "16px 20px", background: "#111114",
-                            borderRadius: 14, border: `1px solid ${stats[key] > 0 ? s.color + "33" : "#1e1e22"}`,
+                            padding: "16px 20px", background: "#1c1c1f",
+                            borderRadius: 14, border: `1px solid ${stats[key] > 0 ? s.color + "33" : "#2e2e34"}`,
                             display: "flex", alignItems: "center", gap: 14,
                           }}>
                             <div style={{
@@ -6295,7 +6314,7 @@ function CastingAppInner({ authUser }) {
                           style={{
                             display: "flex", alignItems: "center", justifyContent: "space-between",
                             width: "100%", padding: "14px 20px", marginBottom: contactSectionOpen.selected ? 12 : 0,
-                            background: "#111114", border: "1px solid #1e1e22", borderRadius: 12,
+                            background: "#1c1c1f", border: "1px solid #2e2e34", borderRadius: 12,
                             cursor: "pointer", fontFamily: "inherit", transition: "all 0.2s",
                           }}
                         >
@@ -6305,11 +6324,11 @@ function CastingAppInner({ authUser }) {
                               transform: contactSectionOpen.selected ? "rotate(90deg)" : "rotate(0deg)",
                               display: "inline-block",
                             }}>▶</span>
-                            <span style={{ fontSize: 14, fontWeight: 700, color: "#22c55e" }}>
+                            <span style={{ fontSize: 14, fontWeight: 700, color: "#30d158" }}>
                               {selLabel}
                             </span>
                             <span style={{
-                              fontSize: 11, color: "#22c55e", background: "rgba(34,197,94,0.1)",
+                              fontSize: 11, color: "#30d158", background: "rgba(48,209,88,0.1)",
                               padding: "2px 10px", borderRadius: 10, fontWeight: 600,
                             }}>{selected.length}</span>
                           </div>
@@ -6321,7 +6340,7 @@ function CastingAppInner({ authUser }) {
                         </button>
                         {contactSectionOpen.selected && (
                           selected.length > 0 ? renderTable(selected) : (
-                            <div style={{ padding: "20px", textAlign: "center", color: "#555", fontSize: 12, background: "#111114", borderRadius: 12, border: "1px solid #1e1e22" }}>
+                            <div style={{ padding: "20px", textAlign: "center", color: "#555", fontSize: 12, background: "#1c1c1f", borderRadius: 12, border: "1px solid #2e2e34" }}>
                               {selEmptyMsg}
                             </div>
                           )
@@ -6335,7 +6354,7 @@ function CastingAppInner({ authUser }) {
                           style={{
                             display: "flex", alignItems: "center", justifyContent: "space-between",
                             width: "100%", padding: "14px 20px", marginBottom: contactSectionOpen.notSelected ? 12 : 0,
-                            background: "#111114", border: "1px solid #1e1e22", borderRadius: 12,
+                            background: "#1c1c1f", border: "1px solid #2e2e34", borderRadius: 12,
                             cursor: "pointer", fontFamily: "inherit", transition: "all 0.2s",
                           }}
                         >
@@ -6345,11 +6364,11 @@ function CastingAppInner({ authUser }) {
                               transform: contactSectionOpen.notSelected ? "rotate(90deg)" : "rotate(0deg)",
                               display: "inline-block",
                             }}>▶</span>
-                            <span style={{ fontSize: 14, fontWeight: 700, color: "#ef4444" }}>
+                            <span style={{ fontSize: 14, fontWeight: 700, color: "#ff453a" }}>
                               {notSelLabel}
                             </span>
                             <span style={{
-                              fontSize: 11, color: "#ef4444", background: "rgba(239,68,68,0.1)",
+                              fontSize: 11, color: "#ff453a", background: "rgba(255,69,58,0.1)",
                               padding: "2px 10px", borderRadius: 10, fontWeight: 600,
                             }}>{notSelected.length}</span>
                           </div>
@@ -6361,7 +6380,7 @@ function CastingAppInner({ authUser }) {
                         </button>
                         {contactSectionOpen.notSelected && (
                           notSelected.length > 0 ? renderTable(notSelected) : (
-                            <div style={{ padding: "20px", textAlign: "center", color: "#555", fontSize: 12, background: "#111114", borderRadius: 12, border: "1px solid #1e1e22" }}>
+                            <div style={{ padding: "20px", textAlign: "center", color: "#555", fontSize: 12, background: "#1c1c1f", borderRadius: 12, border: "1px solid #2e2e34" }}>
                               {notSelEmptyMsg}
                             </div>
                           )
@@ -6381,24 +6400,24 @@ function CastingAppInner({ authUser }) {
                 if (!day) {
                   return (
                     <div>
-                      <div style={{ fontSize: 14, color: "#c9a44a", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 20 }}>📋 Journées de casting</div>
+                      <div style={{ fontSize: 14, color: "#d4af61", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 20 }}>📋 Journées de casting</div>
                       {state.castingDays.length > 0 ? (
                         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: 14 }}>
                           {state.castingDays.map(d => {
                             const realSlots = d.slots.filter(s => !s._isPause);
                             const confirmed = realSlots.filter(s => s.availability === "dispo").length;
                             return (
-                              <div key={d.id} onClick={() => setActiveCastingDay(d.id)} style={{ background: "#111114", borderRadius: 14, border: "1px solid #1e1e22", padding: "20px 24px", cursor: "pointer", transition: "all 0.2s" }}
-                                onMouseEnter={e => { e.currentTarget.style.borderColor = "#a855f7"; e.currentTarget.style.background = "#141418"; }}
-                                onMouseLeave={e => { e.currentTarget.style.borderColor = "#1e1e22"; e.currentTarget.style.background = "#111114"; }}>
-                                <div style={{ fontSize: 20, fontWeight: 800, color: "#f0f0f0", fontFamily: "'Playfair Display', serif", marginBottom: 6 }}>
+                              <div key={d.id} onClick={() => setActiveCastingDay(d.id)} style={{ background: "#1c1c1f", borderRadius: 14, border: "1px solid #2e2e34", padding: "20px 24px", cursor: "pointer", transition: "all 0.2s" }}
+                                onMouseEnter={e => { e.currentTarget.style.borderColor = "#bf5af2"; e.currentTarget.style.background = "#141418"; }}
+                                onMouseLeave={e => { e.currentTarget.style.borderColor = "#2e2e34"; e.currentTarget.style.background = "#1c1c1f"; }}>
+                                <div style={{ fontSize: 20, fontWeight: 800, color: "#f5f5f7", fontFamily: "inherit", marginBottom: 6 }}>
                                   {d.date ? new Date(d.date + "T00:00").toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" }) : "Date à définir"}
                                 </div>
                                 {d.location && <div style={{ fontSize: 13, color: "#888", marginBottom: 8 }}>📍 {d.location}</div>}
                                 <div style={{ display: "flex", gap: 12, fontSize: 12 }}>
-                                  <span style={{ color: "#a855f7", fontWeight: 600 }}>{realSlots.length} passage{realSlots.length !== 1 ? "s" : ""}</span>
-                                  {confirmed > 0 && <span style={{ color: "#22c55e", fontWeight: 600 }}>✓ {confirmed} confirmé{confirmed !== 1 ? "s" : ""}</span>}
-                                  {d.practicalInfoValidated && <span style={{ color: "#22c55e", fontSize: 10 }}>✅ Infos OK</span>}
+                                  <span style={{ color: "#bf5af2", fontWeight: 600 }}>{realSlots.length} passage{realSlots.length !== 1 ? "s" : ""}</span>
+                                  {confirmed > 0 && <span style={{ color: "#30d158", fontWeight: 600 }}>✓ {confirmed} confirmé{confirmed !== 1 ? "s" : ""}</span>}
+                                  {d.practicalInfoValidated && <span style={{ color: "#30d158", fontSize: 10 }}>✅ Infos OK</span>}
                                 </div>
                               </div>
                             );
@@ -6414,8 +6433,8 @@ function CastingAppInner({ authUser }) {
                         <button
                           onClick={() => setShowAddDay(true)}
                           style={{
-                            padding: "12px 28px", background: "rgba(168,85,247,0.1)",
-                            color: "#a855f7", border: "1px solid rgba(168,85,247,0.3)",
+                            padding: "12px 28px", background: "rgba(191,90,242,0.1)",
+                            color: "#bf5af2", border: "1px solid rgba(191,90,242,0.3)",
                             borderRadius: 10, cursor: "pointer", fontSize: 14,
                             fontWeight: 600, fontFamily: "inherit",
                           }}
@@ -6442,17 +6461,17 @@ function CastingAppInner({ authUser }) {
                 return (
                   <>
                     {/* Back button */}
-                    <button onClick={() => setActiveCastingDay(null)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 14px", background: "transparent", border: "1px solid #2a2a2e", borderRadius: 8, color: "#888", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", marginBottom: 16 }}
-                      onMouseEnter={e => { e.currentTarget.style.color = "#a855f7"; e.currentTarget.style.borderColor = "#a855f7"; }}
-                      onMouseLeave={e => { e.currentTarget.style.color = "#888"; e.currentTarget.style.borderColor = "#2a2a2e"; }}>
+                    <button onClick={() => setActiveCastingDay(null)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 14px", background: "transparent", border: "1px solid #3a3a40", borderRadius: 8, color: "#888", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", marginBottom: 16 }}
+                      onMouseEnter={e => { e.currentTarget.style.color = "#bf5af2"; e.currentTarget.style.borderColor = "#bf5af2"; }}
+                      onMouseLeave={e => { e.currentTarget.style.color = "#888"; e.currentTarget.style.borderColor = "#3a3a40"; }}>
                       ← Toutes les journées
                     </button>
                     {/* Day header */}
                     <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 20 }}>
                       <div>
                         <h2 style={{
-                          fontSize: 22, fontWeight: 700, color: "#f0f0f0", letterSpacing: "-0.01em",
-                          fontFamily: "'Playfair Display', serif", marginBottom: 4,
+                          fontSize: 22, fontWeight: 700, color: "#f5f5f7", letterSpacing: "-0.01em",
+                          fontFamily: "inherit", marginBottom: 4,
                         }}>
                           {day.date ? new Date(day.date + "T00:00").toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" }) : "Date à définir"}
                         </h2>
@@ -6475,9 +6494,9 @@ function CastingAppInner({ authUser }) {
                           onClick={() => recalcTimes(day.id)}
                           title="Recalculer les horaires"
                           style={{
-                            padding: "8px 14px", background: "rgba(168,85,247,0.08)",
-                            border: "1px solid rgba(168,85,247,0.2)", borderRadius: 8,
-                            color: "#a855f7", cursor: "pointer", fontSize: 11,
+                            padding: "8px 14px", background: "rgba(191,90,242,0.08)",
+                            border: "1px solid rgba(191,90,242,0.2)", borderRadius: 8,
+                            color: "#bf5af2", cursor: "pointer", fontSize: 11,
                             fontWeight: 600, fontFamily: "inherit",
                           }}
                         >
@@ -6486,9 +6505,9 @@ function CastingAppInner({ authUser }) {
                         <button
                           onClick={() => { if (window.confirm("Supprimer cette journée ?")) deleteCastingDay(day.id); }}
                           style={{
-                            padding: "8px 14px", background: "rgba(239,68,68,0.08)",
-                            border: "1px solid rgba(239,68,68,0.2)", borderRadius: 8,
-                            color: "#ef4444", cursor: "pointer", fontSize: 11,
+                            padding: "8px 14px", background: "rgba(255,69,58,0.08)",
+                            border: "1px solid rgba(255,69,58,0.2)", borderRadius: 8,
+                            color: "#ff453a", cursor: "pointer", fontSize: 11,
                             fontWeight: 600, fontFamily: "inherit",
                           }}
                         >
@@ -6507,8 +6526,8 @@ function CastingAppInner({ authUser }) {
                         <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: 8, marginBottom: 16 }}>
                           {Object.entries(SLOT_AVAILABILITY).map(([key, s]) => (
                             <div key={key} style={{
-                              padding: "10px 14px", background: counts[key] > 0 ? `${s.color}0a` : "#0c0c0e",
-                              borderRadius: 10, border: `1px solid ${counts[key] > 0 ? s.color + "33" : "#1a1a1e"}`,
+                              padding: "10px 14px", background: counts[key] > 0 ? `${s.color}0a` : "#101013",
+                              borderRadius: 10, border: `1px solid ${counts[key] > 0 ? s.color + "33" : "#2a2a30"}`,
                               display: "flex", alignItems: "center", gap: 10,
                             }}>
                               <span style={{ fontSize: 16 }}>{s.icon}</span>
@@ -6533,8 +6552,8 @@ function CastingAppInner({ authUser }) {
                           value={day.date}
                           onChange={e => updateCastingDay(day.id, { date: e.target.value })}
                           style={{
-                            width: "100%", padding: "8px 12px", background: "#111114", border: "1px solid #2a2a2e",
-                            borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit", outline: "none",
+                            width: "100%", padding: "8px 12px", background: "#1c1c1f", border: "1px solid #3a3a40",
+                            borderRadius: 8, color: "#ebebf0", fontSize: 13, fontFamily: "inherit", outline: "none",
                           }}
                         />
                       </div>
@@ -6545,26 +6564,26 @@ function CastingAppInner({ authUser }) {
                           onChange={e => updateCastingDay(day.id, { location: e.target.value })}
                           placeholder="Adresse du casting"
                           style={{
-                            width: "100%", padding: "8px 12px", background: "#111114", border: "1px solid #2a2a2e",
-                            borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit", outline: "none",
+                            width: "100%", padding: "8px 12px", background: "#1c1c1f", border: "1px solid #3a3a40",
+                            borderRadius: 8, color: "#ebebf0", fontSize: 13, fontFamily: "inherit", outline: "none",
                           }}
                         />
                       </div>
                     </div>
                     {/* Informations pratiques */}
                     {/* Practical Info - collapsible when validated */}
-                    <div style={{ marginBottom: 20, borderRadius: 12, border: day.practicalInfoValidated ? "1px solid rgba(34,197,94,0.2)" : "1px solid #1e1e22", overflow: "hidden" }}>
+                    <div style={{ marginBottom: 20, borderRadius: 12, border: day.practicalInfoValidated ? "1px solid rgba(48,209,88,0.2)" : "1px solid #2e2e34", overflow: "hidden" }}>
                       <div onClick={() => day.practicalInfoValidated && updateCastingDay(day.id, { _infoExpanded: !day._infoExpanded })}
-                        style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 20px", background: day.practicalInfoValidated ? "rgba(34,197,94,0.04)" : "rgba(255,255,255,0.02)", cursor: day.practicalInfoValidated ? "pointer" : "default" }}>
-                        <label style={{ fontSize: 12, color: day.practicalInfoValidated ? "#22c55e" : "#f59e0b", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>
+                        style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "12px 20px", background: day.practicalInfoValidated ? "rgba(48,209,88,0.04)" : "rgba(255,255,255,0.02)", cursor: day.practicalInfoValidated ? "pointer" : "default" }}>
+                        <label style={{ fontSize: 12, color: day.practicalInfoValidated ? "#30d158" : "#ffd60a", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em" }}>
                           {day.practicalInfoValidated ? "✅ Informations pratiques" : "📋 Informations pratiques"}
                         </label>
                         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
                           {day.practicalInfoValidated && day.location && <span style={{ fontSize: 11, color: "#888" }}>📍 {day.location.slice(0, 30)}{day.location.length > 30 ? "..." : ""}</span>}
                           <button onClick={e => { e.stopPropagation(); updateCastingDay(day.id, { practicalInfoValidated: !day.practicalInfoValidated, _infoExpanded: !day.practicalInfoValidated ? true : day._infoExpanded }); }} style={{
                             padding: "5px 14px", borderRadius: 6, fontSize: 11, fontWeight: 600, fontFamily: "inherit", cursor: "pointer", border: "none",
-                            background: day.practicalInfoValidated ? "rgba(34,197,94,0.12)" : "rgba(245,158,11,0.12)",
-                            color: day.practicalInfoValidated ? "#22c55e" : "#f59e0b",
+                            background: day.practicalInfoValidated ? "rgba(48,209,88,0.12)" : "rgba(255,214,10,0.12)",
+                            color: day.practicalInfoValidated ? "#30d158" : "#ffd60a",
                           }}>{day.practicalInfoValidated ? "✓ Validé" : "Valider"}</button>
                           {day.practicalInfoValidated && <span style={{ fontSize: 14, color: "#555", transform: day._infoExpanded ? "rotate(180deg)" : "rotate(0)", transition: "transform 0.2s" }}>▾</span>}
                         </div>
@@ -6572,19 +6591,19 @@ function CastingAppInner({ authUser }) {
                       {(!day.practicalInfoValidated || day._infoExpanded) && (
                         <div style={{ padding: "14px 20px", background: "rgba(255,255,255,0.01)" }}>
                           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
-                            <div><label style={{ display: "block", fontSize: 9, color: "#555", marginBottom: 3, fontWeight: 600, textTransform: "uppercase" }}>📍 Adresse</label><input value={day.location || ""} onChange={e => updateCastingDay(day.id, { location: e.target.value })} placeholder="Adresse complète" style={{ width: "100%", padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} /></div>
-                            <div><label style={{ display: "block", fontSize: 9, color: "#555", marginBottom: 3, fontWeight: 600, textTransform: "uppercase" }}>🚪 Accès</label><input value={day.access || ""} onChange={e => updateCastingDay(day.id, { access: e.target.value })} placeholder="Digicode, étage, salle..." style={{ width: "100%", padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} /></div>
-                            <div><label style={{ display: "block", fontSize: 9, color: "#555", marginBottom: 3, fontWeight: 600, textTransform: "uppercase" }}>⏰ Horaires</label><input value={day.horaires || ""} onChange={e => updateCastingDay(day.id, { horaires: e.target.value })} placeholder="9h-18h" style={{ width: "100%", padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} /></div>
-                            <div><label style={{ display: "block", fontSize: 9, color: "#555", marginBottom: 3, fontWeight: 600, textTransform: "uppercase" }}>🍽 Catering / Repas</label><input value={day.catering || ""} onChange={e => updateCastingDay(day.id, { catering: e.target.value })} placeholder="Prévu sur place, à proximité..." style={{ width: "100%", padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} /></div>
+                            <div><label style={{ display: "block", fontSize: 9, color: "#555", marginBottom: 3, fontWeight: 600, textTransform: "uppercase" }}>📍 Adresse</label><input value={day.location || ""} onChange={e => updateCastingDay(day.id, { location: e.target.value })} placeholder="Adresse complète" style={{ width: "100%", padding: "8px 12px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 8, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} /></div>
+                            <div><label style={{ display: "block", fontSize: 9, color: "#555", marginBottom: 3, fontWeight: 600, textTransform: "uppercase" }}>🚪 Accès</label><input value={day.access || ""} onChange={e => updateCastingDay(day.id, { access: e.target.value })} placeholder="Digicode, étage, salle..." style={{ width: "100%", padding: "8px 12px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 8, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} /></div>
+                            <div><label style={{ display: "block", fontSize: 9, color: "#555", marginBottom: 3, fontWeight: 600, textTransform: "uppercase" }}>⏰ Horaires</label><input value={day.horaires || ""} onChange={e => updateCastingDay(day.id, { horaires: e.target.value })} placeholder="9h-18h" style={{ width: "100%", padding: "8px 12px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 8, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} /></div>
+                            <div><label style={{ display: "block", fontSize: 9, color: "#555", marginBottom: 3, fontWeight: 600, textTransform: "uppercase" }}>🍽 Catering / Repas</label><input value={day.catering || ""} onChange={e => updateCastingDay(day.id, { catering: e.target.value })} placeholder="Prévu sur place, à proximité..." style={{ width: "100%", padding: "8px 12px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 8, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} /></div>
                           </div>
-                          <div style={{ marginTop: 10 }}><label style={{ display: "block", fontSize: 9, color: "#555", marginBottom: 3, fontWeight: 600, textTransform: "uppercase" }}>📝 Consignes / Notes</label><textarea value={day.notes || ""} onChange={e => updateCastingDay(day.id, { notes: e.target.value })} placeholder="Consignes particulières, tenue, matériel à apporter..." rows={2} style={{ width: "100%", padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "inherit", outline: "none", resize: "vertical", boxSizing: "border-box" }} /></div>
+                          <div style={{ marginTop: 10 }}><label style={{ display: "block", fontSize: 9, color: "#555", marginBottom: 3, fontWeight: 600, textTransform: "uppercase" }}>📝 Consignes / Notes</label><textarea value={day.notes || ""} onChange={e => updateCastingDay(day.id, { notes: e.target.value })} placeholder="Consignes particulières, tenue, matériel à apporter..." rows={2} style={{ width: "100%", padding: "8px 12px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 8, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none", resize: "vertical", boxSizing: "border-box" }} /></div>
                         </div>
                       )}
                     </div>
 
                     {/* === SEPARATION NETTE === */}
-                    <div style={{ height: 2, background: "linear-gradient(90deg, transparent, #c9a44a44, transparent)", marginBottom: 20 }} />
-                    <div style={{ fontSize: 14, color: "#c9a44a", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 16, textAlign: "center" }}>📋 PLANNING WIP</div>
+                    <div style={{ height: 2, background: "linear-gradient(90deg, transparent, #d4af6144, transparent)", marginBottom: 20 }} />
+                    <div style={{ fontSize: 14, color: "#d4af61", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 16, textAlign: "center" }}>📋 PLANNING WIP</div>
 
                     {/* Action buttons */}
                     <div style={{ display: "flex", gap: 8, marginBottom: 20, flexWrap: "wrap" }}>
@@ -6620,9 +6639,9 @@ function CastingAppInner({ authUser }) {
                           a.download = `planning-${day.date || "casting"}.csv`; a.click();
                         }}
                         style={{
-                          padding: "8px 16px", background: "rgba(34,197,94,0.08)",
-                          border: "1px solid rgba(34,197,94,0.2)", borderRadius: 8,
-                          color: "#22c55e", cursor: "pointer", fontSize: 11,
+                          padding: "8px 16px", background: "rgba(48,209,88,0.08)",
+                          border: "1px solid rgba(48,209,88,0.2)", borderRadius: 8,
+                          color: "#30d158", cursor: "pointer", fontSize: 11,
                           fontWeight: 600, fontFamily: "inherit",
                         }}
                       >
@@ -6631,9 +6650,9 @@ function CastingAppInner({ authUser }) {
                       <button
                         onClick={() => setPrintView(true)}
                         style={{
-                          padding: "8px 16px", background: "rgba(239,68,68,0.08)",
-                          border: "1px solid rgba(239,68,68,0.2)", borderRadius: 8,
-                          color: "#ef4444", cursor: "pointer", fontSize: 11,
+                          padding: "8px 16px", background: "rgba(255,69,58,0.08)",
+                          border: "1px solid rgba(255,69,58,0.2)", borderRadius: 8,
+                          color: "#ff453a", cursor: "pointer", fontSize: 11,
                           fontWeight: 600, fontFamily: "inherit",
                         }}
                       >
@@ -6642,21 +6661,21 @@ function CastingAppInner({ authUser }) {
                     </div>
 
                     {/* ===== PLANNING TABLE ===== */}
-                    <div style={{ background: "#111114", borderRadius: 14, border: "1px solid #1e1e22", overflow: "hidden", marginBottom: 20 }}>
+                    <div style={{ background: "#1c1c1f", borderRadius: 14, border: "1px solid #2e2e34", overflow: "hidden", marginBottom: 20 }}>
                       {/* Column headers */}
                       <div style={{
                         display: "grid", gridTemplateColumns: "28px 36px 80px 50px 1fr 100px 100px 36px 32px",
-                        padding: "12px 16px", borderBottom: "2px solid #c9a44a33", alignItems: "center", gap: 8,
-                        background: "rgba(201,164,74,0.04)",
+                        padding: "12px 16px", borderBottom: "2px solid #d4af6133", alignItems: "center", gap: 8,
+                        background: "rgba(212,175,97,0.04)",
                       }}>
                         <span></span>
-                        <span style={{ fontSize: 10, color: "#c9a44a", fontWeight: 700, textTransform: "uppercase", textAlign: "center" }}>N°</span>
-                        <span style={{ fontSize: 10, color: "#c9a44a", fontWeight: 700, textTransform: "uppercase" }}>🕐 Heure</span>
-                        <span style={{ fontSize: 10, color: "#c9a44a", fontWeight: 700, textTransform: "uppercase", textAlign: "center" }}>Durée</span>
-                        <span style={{ fontSize: 10, color: "#c9a44a", fontWeight: 700, textTransform: "uppercase" }}>Profil</span>
-                        <span style={{ fontSize: 10, color: "#c9a44a", fontWeight: 700, textTransform: "uppercase", textAlign: "center" }}>Statut</span>
-                        <span style={{ fontSize: 10, color: "#c9a44a", fontWeight: 700, textTransform: "uppercase", textAlign: "center" }}>Prévenir</span>
-                        <span style={{ fontSize: 10, color: "#c9a44a", fontWeight: 700, textTransform: "uppercase", textAlign: "center" }}>📝</span>
+                        <span style={{ fontSize: 10, color: "#d4af61", fontWeight: 700, textTransform: "uppercase", textAlign: "center" }}>N°</span>
+                        <span style={{ fontSize: 10, color: "#d4af61", fontWeight: 700, textTransform: "uppercase" }}>🕐 Heure</span>
+                        <span style={{ fontSize: 10, color: "#d4af61", fontWeight: 700, textTransform: "uppercase", textAlign: "center" }}>Durée</span>
+                        <span style={{ fontSize: 10, color: "#d4af61", fontWeight: 700, textTransform: "uppercase" }}>Profil</span>
+                        <span style={{ fontSize: 10, color: "#d4af61", fontWeight: 700, textTransform: "uppercase", textAlign: "center" }}>Statut</span>
+                        <span style={{ fontSize: 10, color: "#d4af61", fontWeight: 700, textTransform: "uppercase", textAlign: "center" }}>Prévenir</span>
+                        <span style={{ fontSize: 10, color: "#d4af61", fontWeight: 700, textTransform: "uppercase", textAlign: "center" }}>📝</span>
                         <span></span>
                       </div>
 
@@ -6666,14 +6685,14 @@ function CastingAppInner({ authUser }) {
                         if (slot._isPause) {
                           return (
                             <div key={slot.id} draggable onDragStart={() => setDragSlot(i)} onDragOver={e => e.preventDefault()} onDrop={() => { if (dragSlot !== null && dragSlot !== i) { moveSlot(day.id, dragSlot, i); setDragSlot(null); } }} onDragEnd={() => setDragSlot(null)}
-                              style={{ display: "flex", alignItems: "center", padding: "14px 16px", background: slot._pauseType === "dej" ? "rgba(245,158,11,0.08)" : "rgba(255,255,255,0.05)", borderBottom: "1px solid #2a2a2e", borderTop: "1px solid #2a2a2e", gap: 12 }}>
+                              style={{ display: "flex", alignItems: "center", padding: "14px 16px", background: slot._pauseType === "dej" ? "rgba(255,214,10,0.08)" : "rgba(255,255,255,0.05)", borderBottom: "1px solid #3a3a40", borderTop: "1px solid #3a3a40", gap: 12 }}>
                               <div style={{ cursor: "grab", color: "#444", fontSize: 14, width: 28, textAlign: "center", userSelect: "none" }}>⠿</div>
-                              <span style={{ fontSize: 15, fontWeight: 800, color: slot._pauseType === "dej" ? "#f59e0b" : "#888" }}>{slot._pauseType === "dej" ? "🍽 PAUSE DÉJEUNER" : "☕ PAUSE"}</span>
-                              <input type="time" value={slot.time || ""} onChange={e => updateSlot(day.id, slot.id, { time: e.target.value })} style={{ padding: "6px 8px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 6, color: "#fff", fontSize: 14, fontFamily: "inherit", outline: "none", fontWeight: 700, width: 90 }} />
+                              <span style={{ fontSize: 15, fontWeight: 800, color: slot._pauseType === "dej" ? "#ffd60a" : "#888" }}>{slot._pauseType === "dej" ? "🍽 PAUSE DÉJEUNER" : "☕ PAUSE"}</span>
+                              <input type="time" value={slot.time || ""} onChange={e => updateSlot(day.id, slot.id, { time: e.target.value })} style={{ padding: "6px 8px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 6, color: "#fff", fontSize: 14, fontFamily: "inherit", outline: "none", fontWeight: 700, width: 90 }} />
                               <span style={{ color: "#666", fontSize: 14 }}>→</span>
-                              <input type="time" value={slot._pauseEnd || ""} onChange={e => updateSlot(day.id, slot.id, { _pauseEnd: e.target.value })} style={{ padding: "6px 8px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 6, color: "#fff", fontSize: 14, fontFamily: "inherit", outline: "none", fontWeight: 700, width: 90 }} />
+                              <input type="time" value={slot._pauseEnd || ""} onChange={e => updateSlot(day.id, slot.id, { _pauseEnd: e.target.value })} style={{ padding: "6px 8px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 6, color: "#fff", fontSize: 14, fontFamily: "inherit", outline: "none", fontWeight: 700, width: 90 }} />
                               <div style={{ flex: 1 }} />
-                              <button onClick={() => removeSlot(day.id, slot.id)} style={{ background: "none", border: "none", color: "#444", cursor: "pointer", fontSize: 18 }} onMouseEnter={e => e.currentTarget.style.color = "#ef4444"} onMouseLeave={e => e.currentTarget.style.color = "#444"}>×</button>
+                              <button onClick={() => removeSlot(day.id, slot.id)} style={{ background: "none", border: "none", color: "#444", cursor: "pointer", fontSize: 18 }} onMouseEnter={e => e.currentTarget.style.color = "#ff453a"} onMouseLeave={e => e.currentTarget.style.color = "#444"}>×</button>
                             </div>
                           );
                         }
@@ -6688,26 +6707,26 @@ function CastingAppInner({ authUser }) {
                             style={{
                               display: "grid", gridTemplateColumns: "28px 36px 80px 50px 1fr 100px 100px 36px 32px",
                               padding: "10px 16px", alignItems: "center", gap: 8,
-                              borderBottom: i < day.slots.length - 1 ? "1px solid #1a1a1e" : "none",
+                              borderBottom: i < day.slots.length - 1 ? "1px solid #2a2a30" : "none",
                               borderLeft: `4px solid ${rc.border}`,
-                              background: dragSlot === i ? "rgba(168,85,247,0.06)" : slot.availability === "not_dispo" ? "rgba(239,68,68,0.02)" : slot.availability === "dispo" ? "rgba(34,197,94,0.02)" : "transparent",
+                              background: dragSlot === i ? "rgba(191,90,242,0.06)" : slot.availability === "not_dispo" ? "rgba(255,69,58,0.02)" : slot.availability === "dispo" ? "rgba(48,209,88,0.02)" : "transparent",
                             }}>
                             <div style={{ cursor: "grab", color: "#444", fontSize: 14, textAlign: "center", userSelect: "none" }}>⠿</div>
-                            <div style={{ fontSize: 18, fontWeight: 800, color: "#c9a44a", textAlign: "center" }}>{passageNum}</div>
+                            <div style={{ fontSize: 18, fontWeight: 800, color: "#d4af61", textAlign: "center" }}>{passageNum}</div>
                             <div style={{ fontSize: 17, fontWeight: 800, color: "#fff", fontFamily: "inherit" }}>
-                              <input type="time" value={slot.time} onChange={e => updateSlot(day.id, slot.id, { time: e.target.value })} style={{ padding: "6px 6px", background: "#0c0c0e", border: "1px solid #333", borderRadius: 6, color: "#fff", fontSize: 16, fontFamily: "inherit", outline: "none", fontWeight: 800, width: "100%", boxSizing: "border-box" }} />
+                              <input type="time" value={slot.time} onChange={e => updateSlot(day.id, slot.id, { time: e.target.value })} style={{ padding: "6px 6px", background: "#101013", border: "1px solid #333", borderRadius: 6, color: "#fff", fontSize: 16, fontFamily: "inherit", outline: "none", fontWeight: 800, width: "100%", boxSizing: "border-box" }} />
                             </div>
                             <div style={{ fontSize: 14, color: "#ccc", textAlign: "center", fontWeight: 600 }}>
-                              <input type="number" value={slot.duration} onChange={e => updateSlot(day.id, slot.id, { duration: e.target.value })} min="5" max="120" step="5" style={{ width: "100%", padding: "4px 2px", background: "transparent", border: "1px solid #2a2a2e", borderRadius: 6, color: "#ccc", fontSize: 13, fontFamily: "inherit", outline: "none", textAlign: "center", fontWeight: 600, boxSizing: "border-box" }} />
+                              <input type="number" value={slot.duration} onChange={e => updateSlot(day.id, slot.id, { duration: e.target.value })} min="5" max="120" step="5" style={{ width: "100%", padding: "4px 2px", background: "transparent", border: "1px solid #3a3a40", borderRadius: 6, color: "#ccc", fontSize: 13, fontFamily: "inherit", outline: "none", textAlign: "center", fontWeight: 600, boxSizing: "border-box" }} />
                             </div>
                             {/* Profile: photo + name + agency + contact */}
                             <div style={{ display: "flex", gap: 10, alignItems: "center", minWidth: 0 }}>
-                              <div onClick={() => { if (profile) { setActiveRole(slot.role || profile._role); setEditingProfile(profile); setModalOpen(true); } }} style={{ width: 48, height: 60, borderRadius: 8, overflow: "hidden", background: "#0c0c0e", border: "1px solid #1e1e22", flexShrink: 0, cursor: profile ? "pointer" : "default" }}>
+                              <div onClick={() => { if (profile) { setActiveRole(slot.role || profile._role); setEditingProfile(profile); setModalOpen(true); } }} style={{ width: 48, height: 60, borderRadius: 8, overflow: "hidden", background: "#101013", border: "1px solid #2e2e34", flexShrink: 0, cursor: profile ? "pointer" : "default" }}>
                                 {profile?.photos?.[0] ? <img src={profile.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 18 }}>◎</div>}
                               </div>
                               <div style={{ minWidth: 0, flex: 1 }}>
                                 <div style={{ fontSize: 15, fontWeight: 800, color: "#fff", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{fullName}</div>
-                                {profile?.agency && <div style={{ fontSize: 12, color: "#c9a44a", fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>— {profile.agency}</div>}
+                                {profile?.agency && <div style={{ fontSize: 12, color: "#d4af61", fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>— {profile.agency}</div>}
                                 <div style={{ display: "flex", gap: 8, alignItems: "center", marginTop: 2 }}>
                                   <span style={{ fontSize: 10, color: rc.color, background: `${rc.color}14`, padding: "1px 8px", borderRadius: 4, fontWeight: 700 }}>{slot.role || profile?._role || "—"}</span>
                                   {profile?.age && <span style={{ fontSize: 11, color: "#888" }}>{profile.age} ans</span>}
@@ -6719,10 +6738,10 @@ function CastingAppInner({ authUser }) {
                               {Object.entries(SLOT_AVAILABILITY).map(([k, v]) => <option key={k} value={k}>{v.icon} {v.label}</option>)}
                             </select>
                             <div style={{ textAlign: "center" }}>
-                              {hasEmail ? <button onClick={e => { e.stopPropagation(); openInviteModal(day, slot, profile); }} style={{ padding: "6px 10px", background: slot._invitedAt ? "rgba(34,197,94,0.08)" : "rgba(234,67,53,0.08)", border: `1px solid ${slot._invitedAt ? "rgba(34,197,94,0.25)" : "rgba(234,67,53,0.25)"}`, borderRadius: 8, color: slot._invitedAt ? "#22c55e" : "#EA4335", cursor: "pointer", fontSize: 11, fontWeight: 700, fontFamily: "inherit", width: "100%" }}>{slot._invitedAt ? "✓ Envoyé" : "📨"}</button> : <span style={{ fontSize: 10, color: "#333" }}>—</span>}
+                              {hasEmail ? <button onClick={e => { e.stopPropagation(); openInviteModal(day, slot, profile); }} style={{ padding: "6px 10px", background: slot._invitedAt ? "rgba(48,209,88,0.08)" : "rgba(234,67,53,0.08)", border: `1px solid ${slot._invitedAt ? "rgba(48,209,88,0.25)" : "rgba(234,67,53,0.25)"}`, borderRadius: 8, color: slot._invitedAt ? "#30d158" : "#EA4335", cursor: "pointer", fontSize: 11, fontWeight: 700, fontFamily: "inherit", width: "100%" }}>{slot._invitedAt ? "✓ Envoyé" : "📨"}</button> : <span style={{ fontSize: 10, color: "#333" }}>—</span>}
                             </div>
-                            <div style={{ textAlign: "center" }}><button onClick={() => setActingNotesModal({ dayId: day.id, slotId: slot.id })} style={{ background: slot.actingNotes || slot.actingFileName ? "rgba(168,85,247,0.12)" : "rgba(255,255,255,0.03)", border: slot.actingNotes || slot.actingFileName ? "1px solid rgba(168,85,247,0.3)" : "1px solid #2a2a2e", borderRadius: 8, color: slot.actingNotes || slot.actingFileName ? "#a855f7" : "#444", cursor: "pointer", fontSize: 14, width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center" }}>📝</button></div>
-                            <button onClick={() => removeSlot(day.id, slot.id)} style={{ background: "none", border: "none", color: "#333", cursor: "pointer", fontSize: 18, fontFamily: "inherit", padding: 0 }} onMouseEnter={e => e.currentTarget.style.color = "#ef4444"} onMouseLeave={e => e.currentTarget.style.color = "#333"}>×</button>
+                            <div style={{ textAlign: "center" }}><button onClick={() => setActingNotesModal({ dayId: day.id, slotId: slot.id })} style={{ background: slot.actingNotes || slot.actingFileName ? "rgba(191,90,242,0.12)" : "rgba(255,255,255,0.03)", border: slot.actingNotes || slot.actingFileName ? "1px solid rgba(191,90,242,0.3)" : "1px solid #3a3a40", borderRadius: 8, color: slot.actingNotes || slot.actingFileName ? "#bf5af2" : "#444", cursor: "pointer", fontSize: 14, width: 34, height: 34, display: "flex", alignItems: "center", justifyContent: "center" }}>📝</button></div>
+                            <button onClick={() => removeSlot(day.id, slot.id)} style={{ background: "none", border: "none", color: "#333", cursor: "pointer", fontSize: 18, fontFamily: "inherit", padding: 0 }} onMouseEnter={e => e.currentTarget.style.color = "#ff453a"} onMouseLeave={e => e.currentTarget.style.color = "#333"}>×</button>
                           </div>
                         );
                       }); })()}
@@ -6737,15 +6756,15 @@ function CastingAppInner({ authUser }) {
                     {/* Add pause / break */}
                     <div style={{ display: "flex", gap: 8, marginBottom: 14 }}>
                       <button onClick={() => { const slots = [...(day.slots || [])]; const lastTime = slots.length > 0 ? slots[slots.length - 1].time : "12:00"; slots.push({ id: "pause_" + Date.now(), _isPause: true, _pauseType: "pause", time: lastTime, _pauseEnd: "", duration: "15" }); updateCastingDay(day.id, { slots }); }} style={{ padding: "8px 16px", background: "rgba(255,255,255,0.03)", border: "1px dashed #333", borderRadius: 8, color: "#888", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>☕ + Pause</button>
-                      <button onClick={() => { const slots = [...(day.slots || [])]; slots.push({ id: "pause_" + Date.now(), _isPause: true, _pauseType: "dej", time: "13:00", _pauseEnd: "14:00", duration: "60" }); updateCastingDay(day.id, { slots }); }} style={{ padding: "8px 16px", background: "rgba(245,158,11,0.06)", border: "1px dashed rgba(245,158,11,0.25)", borderRadius: 8, color: "#f59e0b", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>🍽 + Pause déjeuner</button>
+                      <button onClick={() => { const slots = [...(day.slots || [])]; slots.push({ id: "pause_" + Date.now(), _isPause: true, _pauseType: "dej", time: "13:00", _pauseEnd: "14:00", duration: "60" }); updateCastingDay(day.id, { slots }); }} style={{ padding: "8px 16px", background: "rgba(255,214,10,0.06)", border: "1px dashed rgba(255,214,10,0.25)", borderRadius: 8, color: "#ffd60a", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>🍽 + Pause déjeuner</button>
                     </div>
 
                     {/* Add profile to day */}
                     <div style={{
-                      background: "#111114", borderRadius: 14, border: "1px solid #1e1e22",
+                      background: "#1c1c1f", borderRadius: 14, border: "1px solid #2e2e34",
                       padding: "16px 20px",
                     }}>
-                      <label style={{ display: "block", fontSize: 11, color: "#c9a44a", marginBottom: 10, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase" }}>
+                      <label style={{ display: "block", fontSize: 11, color: "#d4af61", marginBottom: 10, fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase" }}>
                         + Ajouter un passage
                       </label>
                       <div style={{ display: "flex", flexWrap: "wrap", gap: 8 }}>
@@ -6757,16 +6776,16 @@ function CastingAppInner({ authUser }) {
                             onClick={() => addSlot(day.id, p.id, p._role)}
                             style={{
                               display: "flex", alignItems: "center", gap: 8, padding: "8px 14px",
-                              background: p._alreadyInDay ? "rgba(168,85,247,0.06)" : prc.bg,
-                              border: p._alreadyInDay ? "1px solid rgba(168,85,247,0.2)" : "1px solid #2a2a2e",
+                              background: p._alreadyInDay ? "rgba(191,90,242,0.06)" : prc.bg,
+                              border: p._alreadyInDay ? "1px solid rgba(191,90,242,0.2)" : "1px solid #3a3a40",
                               borderLeft: `3px solid ${prc.border}`,
                               borderRadius: 10, cursor: "pointer", fontFamily: "inherit",
                               transition: "all 0.2s",
                             }}
-                            onMouseEnter={e => e.currentTarget.style.borderColor = "#a855f7"}
-                            onMouseLeave={e => { e.currentTarget.style.borderColor = p._alreadyInDay ? "rgba(168,85,247,0.2)" : "#2a2a2e"; e.currentTarget.style.borderLeftColor = prc.border; }}
+                            onMouseEnter={e => e.currentTarget.style.borderColor = "#bf5af2"}
+                            onMouseLeave={e => { e.currentTarget.style.borderColor = p._alreadyInDay ? "rgba(191,90,242,0.2)" : "#3a3a40"; e.currentTarget.style.borderLeftColor = prc.border; }}
                           >
-                            <div style={{ width: 28, height: 28, borderRadius: 6, overflow: "hidden", background: "#0c0c0e", flexShrink: 0 }}>
+                            <div style={{ width: 28, height: 28, borderRadius: 6, overflow: "hidden", background: "#101013", flexShrink: 0 }}>
                               {p.photos?.[0] ? (
                                 <img src={p.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                               ) : (
@@ -6774,7 +6793,7 @@ function CastingAppInner({ authUser }) {
                               )}
                             </div>
                             <div style={{ textAlign: "left" }}>
-                              <div style={{ fontSize: 12, fontWeight: 500, color: p._alreadyInDay ? "#a855f7" : "#ccc" }}>
+                              <div style={{ fontSize: 12, fontWeight: 500, color: p._alreadyInDay ? "#bf5af2" : "#ccc" }}>
                                 {[p.firstName, p.name].filter(Boolean).join(" ") || "Sans nom"} {p._alreadyInDay ? "✓" : ""}
                               </div>
                               <div style={{ fontSize: 9, color: prc.color, fontWeight: 500 }}>{p._role}</div>
@@ -6789,12 +6808,12 @@ function CastingAppInner({ authUser }) {
                         )}
                       </div>
                       {/* Add new profile directly from planning */}
-                      <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid #1e1e22" }}>
-                        <label style={{ display: "block", fontSize: 10, color: "#22c55e", marginBottom: 8, fontWeight: 600, textTransform: "uppercase" }}>+ Ajouter un nouveau profil</label>
+                      <div style={{ marginTop: 12, paddingTop: 12, borderTop: "1px solid #2e2e34" }}>
+                        <label style={{ display: "block", fontSize: 10, color: "#30d158", marginBottom: 8, fontWeight: 600, textTransform: "uppercase" }}>+ Ajouter un nouveau profil</label>
                         <div style={{ display: "flex", gap: 8, alignItems: "center" }}>
-                          <input id={`newProfile_first_${day.id}`} placeholder="Prénom" style={{ flex: 1, padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit", outline: "none" }} />
-                          <input id={`newProfile_last_${day.id}`} placeholder="Nom" style={{ flex: 1, padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit", outline: "none" }} />
-                          <select id={`newProfile_role_${day.id}`} style={{ padding: "8px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "inherit", outline: "none" }}>
+                          <input id={`newProfile_first_${day.id}`} placeholder="Prénom" style={{ flex: 1, padding: "8px 12px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 8, color: "#ebebf0", fontSize: 13, fontFamily: "inherit", outline: "none" }} />
+                          <input id={`newProfile_last_${day.id}`} placeholder="Nom" style={{ flex: 1, padding: "8px 12px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 8, color: "#ebebf0", fontSize: 13, fontFamily: "inherit", outline: "none" }} />
+                          <select id={`newProfile_role_${day.id}`} style={{ padding: "8px 12px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 8, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none" }}>
                             {state.roles.map(r => <option key={r} value={r}>{r}</option>)}
                           </select>
                           <button onClick={() => {
@@ -6814,17 +6833,17 @@ function CastingAppInner({ authUser }) {
                             document.getElementById(`newProfile_last_${day.id}`).value = "";
                             // Open profile edit modal to fill details
                             setTimeout(() => { setActiveRole(role); setEditingProfile(newProfile); setModalOpen(true); }, 100);
-                          }} style={{ padding: "8px 16px", background: "rgba(34,197,94,0.12)", border: "1px solid rgba(34,197,94,0.3)", borderRadius: 8, color: "#22c55e", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap" }}>+ Ajouter & Éditer</button>
+                          }} style={{ padding: "8px 16px", background: "rgba(48,209,88,0.12)", border: "1px solid rgba(48,209,88,0.3)", borderRadius: 8, color: "#30d158", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap" }}>+ Ajouter & Éditer</button>
                         </div>
                       </div>
                     </div>
 
                     {/* === VALIDER LE PLANNING === */}
-                    <div style={{ marginTop: 24, padding: "20px 24px", background: day._planningValidated ? "rgba(34,197,94,0.04)" : "rgba(255,255,255,0.01)", borderRadius: 14, border: day._planningValidated ? "1px solid rgba(34,197,94,0.25)" : "1px solid #1e1e22", textAlign: "center" }}>
+                    <div style={{ marginTop: 24, padding: "20px 24px", background: day._planningValidated ? "rgba(48,209,88,0.04)" : "rgba(255,255,255,0.01)", borderRadius: 14, border: day._planningValidated ? "1px solid rgba(48,209,88,0.25)" : "1px solid #2e2e34", textAlign: "center" }}>
                       <button onClick={() => updateCastingDay(day.id, { _planningValidated: !day._planningValidated })} style={{
                         padding: "14px 36px", borderRadius: 10, fontSize: 15, fontWeight: 800, fontFamily: "inherit", cursor: "pointer", border: "none", letterSpacing: "0.05em",
-                        background: day._planningValidated ? "rgba(34,197,94,0.15)" : "linear-gradient(135deg, #c9a44a, #a67c2e)",
-                        color: day._planningValidated ? "#22c55e" : "#000",
+                        background: day._planningValidated ? "rgba(48,209,88,0.15)" : "linear-gradient(135deg, #d4af61, #b08a3e)",
+                        color: day._planningValidated ? "#30d158" : "#000",
                       }}>{day._planningValidated ? "✅ Planning validé" : "Valider le planning"}</button>
 
                       {day._planningValidated && (
@@ -6848,7 +6867,7 @@ function CastingAppInner({ authUser }) {
                             const blob = new Blob(["\uFEFF"+csv],{type:"text/csv;charset=utf-8;"});
                             const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
                             a.download = `planning-${state.projectName||"casting"}-${day.date||"jour"}.csv`; a.click();
-                          }} style={{ padding: "12px 24px", background: "rgba(34,197,94,0.1)", border: "1px solid rgba(34,197,94,0.25)", borderRadius: 10, color: "#22c55e", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
+                          }} style={{ padding: "12px 24px", background: "rgba(48,209,88,0.1)", border: "1px solid rgba(48,209,88,0.25)", borderRadius: 10, color: "#30d158", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
                             📊 Exporter Excel
                           </button>
 
@@ -6865,12 +6884,12 @@ function CastingAppInner({ authUser }) {
                               const photo = p?.photos?.[0];
                               return `<tr><td style="text-align:center;font-weight:700;color:#8B6914">${num}</td><td style="font-weight:700;font-size:15px">${s.time||""}</td><td>${s.duration}min</td><td>${photo?`<img src="${photo}" style="width:45px;height:56px;object-fit:cover;border-radius:4px">`:"—"}</td><td><strong>${p?.firstName||""} ${(p?.name||"").toUpperCase()}</strong><br><span style="color:#8B6914;font-size:11px">${s.role||p?._role||""}</span>${p?.age?` · ${p.age} ans`:""}</td><td style="color:#8B6914">${p?.agency||"—"}</td><td style="font-size:11px">${p?.phone||""}<br>${p?.email||""}</td><td style="color:${av.color}">${av.label}</td><td style="font-size:11px">${s.actingNotes||""}</td></tr>`;
                             }).join("");
-                            const html = `<html><head><meta charset="utf-8"><title>Planning ${state.projectName||""}</title><style>body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;padding:30px;color:#222}h1{font-size:22px;margin-bottom:4px}h2{font-size:16px;color:#666;font-weight:400;margin-bottom:16px}.info{margin-bottom:16px;font-size:13px;color:#555}table{width:100%;border-collapse:collapse;font-size:12px}th{background:#1a1a1a;color:#c9a44a;padding:10px 8px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.08em}td{padding:8px;border-bottom:1px solid #e0e0e0;vertical-align:middle}tr:nth-child(even){background:#fafafa}@media print{body{padding:10px}}</style></head><body><h1>📋 Planning — ${state.projectName||"Casting"}</h1><h2>${dateStr}</h2><div class="info">${[day.location?"📍 "+day.location:"",day.access?"🚪 "+day.access:"",day.horaires?"⏰ "+day.horaires:"",day.catering?"🍽 "+day.catering:""].filter(Boolean).join(" · ")}</div><table><thead><tr><th>N°</th><th>Heure</th><th>Durée</th><th>Photo</th><th>Prénom / Nom</th><th>Agence</th><th>Contact</th><th>Statut</th><th>Notes</th></tr></thead><tbody>${slotRows}</tbody></table><div style="margin-top:20px;font-size:11px;color:#999;text-align:center">Joana Fontaine Casting · ${dateStr}</div></body></html>`;
+                            const html = `<html><head><meta charset="utf-8"><title>Planning ${state.projectName||""}</title><style>body{font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;padding:30px;color:#222}h1{font-size:22px;margin-bottom:4px}h2{font-size:16px;color:#666;font-weight:400;margin-bottom:16px}.info{margin-bottom:16px;font-size:13px;color:#555}table{width:100%;border-collapse:collapse;font-size:12px}th{background:#1a1a1a;color:#d4af61;padding:10px 8px;text-align:left;font-size:10px;text-transform:uppercase;letter-spacing:0.08em}td{padding:8px;border-bottom:1px solid #ebebf0;vertical-align:middle}tr:nth-child(even){background:#fafafa}@media print{body{padding:10px}}</style></head><body><h1>📋 Planning — ${state.projectName||"Casting"}</h1><h2>${dateStr}</h2><div class="info">${[day.location?"📍 "+day.location:"",day.access?"🚪 "+day.access:"",day.horaires?"⏰ "+day.horaires:"",day.catering?"🍽 "+day.catering:""].filter(Boolean).join(" · ")}</div><table><thead><tr><th>N°</th><th>Heure</th><th>Durée</th><th>Photo</th><th>Prénom / Nom</th><th>Agence</th><th>Contact</th><th>Statut</th><th>Notes</th></tr></thead><tbody>${slotRows}</tbody></table><div style="margin-top:20px;font-size:11px;color:#999;text-align:center">Joana Fontaine Casting · ${dateStr}</div></body></html>`;
                             const w = window.open("","_blank");
                             w.document.write(html);
                             w.document.close();
                             setTimeout(() => w.print(), 500);
-                          }} style={{ padding: "12px 24px", background: "rgba(239,68,68,0.08)", border: "1px solid rgba(239,68,68,0.2)", borderRadius: 10, color: "#ef4444", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
+                          }} style={{ padding: "12px 24px", background: "rgba(255,69,58,0.08)", border: "1px solid rgba(255,69,58,0.2)", borderRadius: 10, color: "#ff453a", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
                             🖨 Exporter PDF
                           </button>
                         </div>
@@ -6900,7 +6919,7 @@ function CastingAppInner({ authUser }) {
                   );
                 }
 
-                const rc = currentRole ? getRoleColor(currentRole) : { color: "#fb923c", bg: "rgba(251,146,60,0.08)" };
+                const rc = currentRole ? getRoleColor(currentRole) : { color: "#ff9f0a", bg: "rgba(255,159,10,0.08)" };
                 const isDirector = viewMode === "director";
 
                 // Selftape mode
@@ -6911,15 +6930,15 @@ function CastingAppInner({ authUser }) {
                       {/* Mode toggle */}
                       <div style={{ display: "flex", gap: 6, marginBottom: 20 }}>
                         <button onClick={() => setCastingMode("physique")} style={{ padding: "8px 20px", borderRadius: 8, fontSize: 13, fontWeight: 600, fontFamily: "inherit", border: "none", cursor: "pointer", background: "rgba(255,255,255,0.03)", color: "#666" }}>🎬 Casting physique</button>
-                        <button style={{ padding: "8px 20px", borderRadius: 8, fontSize: 13, fontWeight: 700, fontFamily: "inherit", border: "none", cursor: "pointer", background: "rgba(96,165,250,0.12)", color: "#60a5fa" }}>📹 Casting selftape</button>
+                        <button style={{ padding: "8px 20px", borderRadius: 8, fontSize: 13, fontWeight: 700, fontFamily: "inherit", border: "none", cursor: "pointer", background: "rgba(10,132,255,0.12)", color: "#0a84ff" }}>📹 Casting selftape</button>
                       </div>
 
-                      <div style={{ fontSize: 14, fontWeight: 700, color: "#60a5fa", marginBottom: 14 }}>📹 Casting Selftape — {currentRole} ({selftapeProfiles.length})</div>
+                      <div style={{ fontSize: 14, fontWeight: 700, color: "#0a84ff", marginBottom: 14 }}>📹 Casting Selftape — {currentRole} ({selftapeProfiles.length})</div>
 
                       {selftapeProfiles.length === 0 && <div style={{ textAlign: "center", padding: 40, color: "#555" }}>Aucun profil pour ce rôle</div>}
 
                       {/* Compact table */}
-                      <div style={{ background: "#111114", borderRadius: 12, border: "1px solid #1e1e22", overflow: "hidden" }}>
+                      <div style={{ background: "#1c1c1f", borderRadius: 12, border: "1px solid #2e2e34", overflow: "hidden" }}>
                         {selftapeProfiles.map((profile, pi) => {
                           const fullName = [profile.firstName, profile.name].filter(Boolean).join(" ") || "Sans nom";
                           const finalSel = state.finalSelections[profile.id];
@@ -6928,38 +6947,38 @@ function CastingAppInner({ authUser }) {
                           return (
                             <React.Fragment key={profile.id}>
                               {/* Compact row */}
-                              <div onClick={() => setCastingDetailProfile(isOpen ? null : profile)} style={{ display: "flex", alignItems: "center", padding: "10px 16px", gap: 12, borderBottom: "1px solid #1a1a1e", cursor: "pointer", transition: "background 0.1s" }}
+                              <div onClick={() => setCastingDetailProfile(isOpen ? null : profile)} style={{ display: "flex", alignItems: "center", padding: "10px 16px", gap: 12, borderBottom: "1px solid #2a2a30", cursor: "pointer", transition: "background 0.1s" }}
                                 onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.02)"}
                                 onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-                                <div style={{ width: 40, height: 50, borderRadius: 6, overflow: "hidden", background: "#0c0c0e", flexShrink: 0 }}>
+                                <div style={{ width: 40, height: 50, borderRadius: 6, overflow: "hidden", background: "#101013", flexShrink: 0 }}>
                                   {profile.photos?.[0] ? <img src={profile.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 14 }}>◎</div>}
                                 </div>
                                 <div style={{ flex: 1, minWidth: 0 }}>
-                                  <div style={{ fontSize: 14, fontWeight: 700, color: "#f0f0f0" }}>{fullName}</div>
+                                  <div style={{ fontSize: 14, fontWeight: 700, color: "#f5f5f7" }}>{fullName}</div>
                                   <div style={{ fontSize: 11, color: "#888" }}>{profile.age ? profile.age + " ans" : ""}{profile.agency ? " — " + profile.agency : ""}</div>
                                 </div>
                                 <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
                                   {tapes.map((link, li) => {
                                     const nm = link.includes("youtu") ? "YT" : link.includes("vimeo") ? "Vi" : link.includes("drive") ? "Dr" : link.includes("dropbox") ? "Db" : (li + 1);
-                                    return <span key={li} style={{ fontSize: 9, padding: "2px 6px", background: "rgba(96,165,250,0.08)", borderRadius: 4, color: "#60a5fa", fontWeight: 600 }}>▶{nm}</span>;
+                                    return <span key={li} style={{ fontSize: 9, padding: "2px 6px", background: "rgba(10,132,255,0.08)", borderRadius: 4, color: "#0a84ff", fontWeight: 600 }}>▶{nm}</span>;
                                   })}
                                   {tapes.length === 0 && <span style={{ fontSize: 10, color: "#444" }}>—</span>}
                                 </div>
-                                {finalSel?.selected === true && <span style={{ fontSize: 10, color: "#22c55e", fontWeight: 700 }}>🏆</span>}
-                                {finalSel?.selected === false && <span style={{ fontSize: 10, color: "#ef4444", fontWeight: 700 }}>✕</span>}
-                                {finalSel?.selected === "maybe" && <span style={{ fontSize: 10, color: "#f59e0b", fontWeight: 700 }}>?</span>}
+                                {finalSel?.selected === true && <span style={{ fontSize: 10, color: "#30d158", fontWeight: 700 }}>🏆</span>}
+                                {finalSel?.selected === false && <span style={{ fontSize: 10, color: "#ff453a", fontWeight: 700 }}>✕</span>}
+                                {finalSel?.selected === "maybe" && <span style={{ fontSize: 10, color: "#ffd60a", fontWeight: 700 }}>?</span>}
                                 <span style={{ fontSize: 12, color: "#444", transform: isOpen ? "rotate(180deg)" : "rotate(0)", transition: "transform 0.2s" }}>▾</span>
                               </div>
 
                               {/* Expanded — selftapes + vote */}
                               {isOpen && (
-                                <div style={{ padding: "14px 16px", background: "rgba(96,165,250,0.02)", borderBottom: "2px solid #1e1e22" }}>
+                                <div style={{ padding: "14px 16px", background: "rgba(10,132,255,0.02)", borderBottom: "2px solid #2e2e34" }}>
                                   {/* Selftapes — compact embeds */}
                                   {tapes.length > 0 && tapes.map((link, li) => {
                                     const linkName = link.includes("youtu") ? "YouTube" : link.includes("vimeo") ? "Vimeo" : link.includes("drive.google") ? "Google Drive" : link.includes("dropbox") ? "Dropbox" : `Selftape ${li + 1}`;
                                     return (
                                       <div key={li} style={{ marginBottom: 10 }}>
-                                        <a href={link} target="_blank" rel="noreferrer" style={{ fontSize: 11, color: "#60a5fa", textDecoration: "none", fontWeight: 600 }}>▶ {linkName}</a>
+                                        <a href={link} target="_blank" rel="noreferrer" style={{ fontSize: 11, color: "#0a84ff", textDecoration: "none", fontWeight: 600 }}>▶ {linkName}</a>
                                         {getEmbedUrl(link) && <div style={{ marginTop: 4 }}><EmbedPlayer url={link} height={160} /></div>}
                                       </div>
                                     );
@@ -6969,15 +6988,15 @@ function CastingAppInner({ authUser }) {
                                   {/* Add link + notes */}
                                   {isDirector && (
                                     <div style={{ display: "flex", gap: 6, marginBottom: 8 }}>
-                                      <input id={`addtape_${profile.id}`} placeholder="+ Lien selftape..." style={{ flex: 1, padding: "5px 10px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 6, color: "#e0e0e0", fontSize: 11, fontFamily: "inherit", outline: "none" }} />
-                                      <button onClick={() => { const val = document.getElementById(`addtape_${profile.id}`)?.value?.trim(); if (!val) return; setState(prev => { const np = { ...prev.profiles }; for (const r of Object.keys(np)) np[r] = (np[r] || []).map(p => p.id === profile.id ? { ...p, selftapeLinks: [...(p.selftapeLinks || []), val] } : p); return { ...prev, profiles: np }; }); document.getElementById(`addtape_${profile.id}`).value = ""; }} style={{ padding: "5px 10px", background: "rgba(96,165,250,0.08)", border: "1px solid rgba(96,165,250,0.15)", borderRadius: 6, color: "#60a5fa", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>+</button>
+                                      <input id={`addtape_${profile.id}`} placeholder="+ Lien selftape..." style={{ flex: 1, padding: "5px 10px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 6, color: "#ebebf0", fontSize: 11, fontFamily: "inherit", outline: "none" }} />
+                                      <button onClick={() => { const val = document.getElementById(`addtape_${profile.id}`)?.value?.trim(); if (!val) return; setState(prev => { const np = { ...prev.profiles }; for (const r of Object.keys(np)) np[r] = (np[r] || []).map(p => p.id === profile.id ? { ...p, selftapeLinks: [...(p.selftapeLinks || []), val] } : p); return { ...prev, profiles: np }; }); document.getElementById(`addtape_${profile.id}`).value = ""; }} style={{ padding: "5px 10px", background: "rgba(10,132,255,0.08)", border: "1px solid rgba(10,132,255,0.15)", borderRadius: 6, color: "#0a84ff", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>+</button>
                                     </div>
                                   )}
-                                  {isDirector && <textarea value={(state.castingSessions[profile.id]?.liveNotes) || ""} onChange={e => updateCastingSession(profile.id, { liveNotes: e.target.value })} placeholder="Notes..." rows={1} style={{ width: "100%", padding: "6px 10px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 6, color: "#e0e0e0", fontSize: 11, fontFamily: "inherit", outline: "none", resize: "vertical", boxSizing: "border-box", marginBottom: 8 }} />}
+                                  {isDirector && <textarea value={(state.castingSessions[profile.id]?.liveNotes) || ""} onChange={e => updateCastingSession(profile.id, { liveNotes: e.target.value })} placeholder="Notes..." rows={1} style={{ width: "100%", padding: "6px 10px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 6, color: "#ebebf0", fontSize: 11, fontFamily: "inherit", outline: "none", resize: "vertical", boxSizing: "border-box", marginBottom: 8 }} />}
 
                                   {/* Vote */}
                                   <div style={{ display: "flex", gap: 6 }}>
-                                    {[{ val: true, label: "✓ OUI", color: "#22c55e", bg: "rgba(34,197,94,0.1)" }, { val: "maybe", label: "? P-Ê", color: "#f59e0b", bg: "rgba(245,158,11,0.1)" }, { val: false, label: "✕ NON", color: "#ef4444", bg: "rgba(239,68,68,0.1)" }].map(opt => {
+                                    {[{ val: true, label: "✓ OUI", color: "#30d158", bg: "rgba(48,209,88,0.1)" }, { val: "maybe", label: "? P-Ê", color: "#ffd60a", bg: "rgba(255,214,10,0.1)" }, { val: false, label: "✕ NON", color: "#ff453a", bg: "rgba(255,69,58,0.1)" }].map(opt => {
                                       const isSel = opt.val === "maybe" ? finalSel?.selected === "maybe" : finalSel?.selected === opt.val;
                                       return <button key={String(opt.val)} onClick={() => updateFinalSelection(profile.id, { selected: isSel ? null : opt.val })} style={{ flex: 1, padding: "8px 0", borderRadius: 8, cursor: "pointer", fontFamily: "inherit", fontSize: 12, fontWeight: 700, background: isSel ? opt.bg : "rgba(255,255,255,0.02)", border: isSel ? `1px solid ${opt.color}` : "1px solid #222", color: isSel ? opt.color : "#555" }}>{opt.label}</button>;
                                     })}
@@ -7037,7 +7056,7 @@ function CastingAppInner({ authUser }) {
 
                   return (
                     <div key={profile.id} style={{
-                      background: "#111114", borderRadius: 14, border: "1px solid #1e1e22",
+                      background: "#1c1c1f", borderRadius: 14, border: "1px solid #2e2e34",
                       borderLeft: `4px solid ${rc.color}`,
                       overflow: "hidden",
                       opacity: session.passStatus === "absent" ? 0.5 : 1,
@@ -7049,12 +7068,12 @@ function CastingAppInner({ authUser }) {
                         style={{ display: "flex", gap: 14, padding: "14px 18px", alignItems: "center", cursor: "pointer" }}
                         onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.015)"}
                         onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-                        {slotInfo && <div style={{ textAlign: "center", flexShrink: 0, minWidth: 50 }}><div style={{ fontSize: 16, fontWeight: 800, color: "#f0f0f0" }}>{slotInfo.slot.time}</div><div style={{ fontSize: 9, color: "#666" }}>{slotInfo.slot.duration}min</div></div>}
-                        <div style={{ width: 50, height: 62, borderRadius: 8, overflow: "hidden", background: "#0c0c0e", flexShrink: 0 }}>
+                        {slotInfo && <div style={{ textAlign: "center", flexShrink: 0, minWidth: 50 }}><div style={{ fontSize: 16, fontWeight: 800, color: "#f5f5f7" }}>{slotInfo.slot.time}</div><div style={{ fontSize: 9, color: "#666" }}>{slotInfo.slot.duration}min</div></div>}
+                        <div style={{ width: 50, height: 62, borderRadius: 8, overflow: "hidden", background: "#101013", flexShrink: 0 }}>
                           {profile.photos?.[0] ? <img src={profile.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 20 }}>◎</div>}
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: 18, fontWeight: 800, color: "#f0f0f0", fontFamily: "'Playfair Display', serif" }}>{fullName}</div>
+                          <div style={{ fontSize: 18, fontWeight: 800, color: "#f5f5f7", fontFamily: "inherit" }}>{fullName}</div>
                           <div style={{ fontSize: 13, color: "#888", marginTop: 2 }}>
                             {[profile.age ? profile.age + " ans" : null, profile.agency ? "— " + profile.agency : null].filter(Boolean).join(" ")}
                           </div>
@@ -7063,36 +7082,36 @@ function CastingAppInner({ authUser }) {
                           {isDirector && <select value={session.passStatus || "not_yet"} onClick={e => e.stopPropagation()} onChange={e => { e.stopPropagation(); updateCastingSession(profile.id, { passStatus: e.target.value }); }} style={{ padding: "5px 10px", background: passInfo.bg, border: `1px solid ${passInfo.color}44`, borderRadius: 6, color: passInfo.color, fontSize: 11, fontFamily: "inherit", fontWeight: 600, outline: "none", cursor: "pointer" }}>
                             {Object.entries(CASTING_PASS_STATUS).map(([k, v]) => <option key={k} value={k}>{v.icon} {v.label}</option>)}
                           </select>}
-                          {finalSel?.selected === true && <span style={{ fontSize: 11, color: "#22c55e", background: "rgba(34,197,94,0.1)", padding: "4px 10px", borderRadius: 6, fontWeight: 700 }}>🏆 Retenu</span>}
-                          {finalSel?.selected === false && <span style={{ fontSize: 11, color: "#ef4444", background: "rgba(239,68,68,0.08)", padding: "4px 10px", borderRadius: 6, fontWeight: 700 }}>✕ Refusé</span>}
-                          {state._guestVotes?.[profile.id] && <span style={{ fontSize: 10, padding: "4px 8px", borderRadius: 6, fontWeight: 700, background: state._guestVotes[profile.id].choice === "yes" ? "rgba(96,165,250,0.1)" : "rgba(239,68,68,0.08)", color: state._guestVotes[profile.id].choice === "yes" ? "#60a5fa" : state._guestVotes[profile.id].choice === "no" ? "#ef4444" : "#f59e0b" }}>👥 {state._guestVotes[profile.id].choice === "yes" ? "OUI" : state._guestVotes[profile.id].choice === "no" ? "NON" : "P-Ê"}</span>}
+                          {finalSel?.selected === true && <span style={{ fontSize: 11, color: "#30d158", background: "rgba(48,209,88,0.1)", padding: "4px 10px", borderRadius: 6, fontWeight: 700 }}>🏆 Retenu</span>}
+                          {finalSel?.selected === false && <span style={{ fontSize: 11, color: "#ff453a", background: "rgba(255,69,58,0.08)", padding: "4px 10px", borderRadius: 6, fontWeight: 700 }}>✕ Refusé</span>}
+                          {state._guestVotes?.[profile.id] && <span style={{ fontSize: 10, padding: "4px 8px", borderRadius: 6, fontWeight: 700, background: state._guestVotes[profile.id].choice === "yes" ? "rgba(10,132,255,0.1)" : "rgba(255,69,58,0.08)", color: state._guestVotes[profile.id].choice === "yes" ? "#0a84ff" : state._guestVotes[profile.id].choice === "no" ? "#ff453a" : "#ffd60a" }}>👥 {state._guestVotes[profile.id].choice === "yes" ? "OUI" : state._guestVotes[profile.id].choice === "no" ? "NON" : "P-Ê"}</span>}
                           <span style={{ fontSize: 16, color: "#444", transform: isExpanded ? "rotate(180deg)" : "rotate(0)", transition: "transform 0.2s" }}>▾</span>
                         </div>
                       </div>
 
                       {/* === EXPANDED DETAIL (click to open) === */}
                       {isExpanded && (
-                        <div style={{ borderTop: "1px solid #1e1e22" }}>
+                        <div style={{ borderTop: "1px solid #2e2e34" }}>
                           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 0 }}>
                             {/* LEFT: Profile info */}
-                            <div style={{ padding: "20px 24px", borderRight: "1px solid #1e1e22" }}>
-                              <div style={{ fontSize: 11, color: "#c9a44a", fontWeight: 600, textTransform: "uppercase", marginBottom: 14 }}>Fiche profil</div>
+                            <div style={{ padding: "20px 24px", borderRight: "1px solid #2e2e34" }}>
+                              <div style={{ fontSize: 11, color: "#d4af61", fontWeight: 600, textTransform: "uppercase", marginBottom: 14 }}>Fiche profil</div>
                               <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "10px 20px" }}>
-                                <div><span style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Prénom</span><div style={{ fontSize: 15, color: "#e0e0e0", fontWeight: 600 }}>{profile.firstName || "—"}</div></div>
-                                <div><span style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Nom</span><div style={{ fontSize: 15, color: "#e0e0e0", fontWeight: 600 }}>{(profile.name || "—").toUpperCase()}</div></div>
-                                {profile.agency && <div><span style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Agence</span><div style={{ fontSize: 14, color: "#c9a44a", fontWeight: 600 }}>{profile.agency}</div></div>}
-                                <div><span style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Âge</span><div style={{ fontSize: 14, color: "#e0e0e0" }}>{profile.age ? profile.age + " ans" : "—"}</div></div>
-                                {profile.birthDate && <div><span style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Date de naissance</span><div style={{ fontSize: 14, color: "#e0e0e0" }}>{fmtDateFR(profile.birthDate) || profile.birthDate}</div></div>}
-                                {profile.height && <div><span style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Taille</span><div style={{ fontSize: 14, color: "#e0e0e0" }}>{profile.height}</div></div>}
-                                {profile.measurements && <div><span style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Mensurations</span><div style={{ fontSize: 14, color: "#e0e0e0" }}>{profile.measurements}</div></div>}
-                                {profile.hairColor && <div><span style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Cheveux</span><div style={{ fontSize: 14, color: "#e0e0e0" }}>{profile.hairColor}</div></div>}
+                                <div><span style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Prénom</span><div style={{ fontSize: 15, color: "#ebebf0", fontWeight: 600 }}>{profile.firstName || "—"}</div></div>
+                                <div><span style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Nom</span><div style={{ fontSize: 15, color: "#ebebf0", fontWeight: 600 }}>{(profile.name || "—").toUpperCase()}</div></div>
+                                {profile.agency && <div><span style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Agence</span><div style={{ fontSize: 14, color: "#d4af61", fontWeight: 600 }}>{profile.agency}</div></div>}
+                                <div><span style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Âge</span><div style={{ fontSize: 14, color: "#ebebf0" }}>{profile.age ? profile.age + " ans" : "—"}</div></div>
+                                {profile.birthDate && <div><span style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Date de naissance</span><div style={{ fontSize: 14, color: "#ebebf0" }}>{fmtDateFR(profile.birthDate) || profile.birthDate}</div></div>}
+                                {profile.height && <div><span style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Taille</span><div style={{ fontSize: 14, color: "#ebebf0" }}>{profile.height}</div></div>}
+                                {profile.measurements && <div><span style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Mensurations</span><div style={{ fontSize: 14, color: "#ebebf0" }}>{profile.measurements}</div></div>}
+                                {profile.hairColor && <div><span style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Cheveux</span><div style={{ fontSize: 14, color: "#ebebf0" }}>{profile.hairColor}</div></div>}
                               </div>
                               {/* Contact */}
-                              <div style={{ marginTop: 14, paddingTop: 12, borderTop: "1px solid #1e1e22" }}>
+                              <div style={{ marginTop: 14, paddingTop: 12, borderTop: "1px solid #2e2e34" }}>
                                 <div style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase", marginBottom: 6 }}>Contact</div>
-                                {profile.email && <div style={{ fontSize: 13, color: "#60a5fa", marginBottom: 3 }}>✉ {profile.email}</div>}
+                                {profile.email && <div style={{ fontSize: 13, color: "#0a84ff", marginBottom: 3 }}>✉ {profile.email}</div>}
                                 {profile.phone && <div style={{ fontSize: 13, color: "#ccc", marginBottom: 3 }}>☎ {profile.phone}</div>}
-                                {profile.agencyEmail && <div style={{ fontSize: 13, color: "#c9a44a", marginBottom: 3 }}>🏢 {profile.agencyEmail}</div>}
+                                {profile.agencyEmail && <div style={{ fontSize: 13, color: "#d4af61", marginBottom: 3 }}>🏢 {profile.agencyEmail}</div>}
                               </div>
                             </div>
 
@@ -7100,25 +7119,25 @@ function CastingAppInner({ authUser }) {
                             <div style={{ padding: "20px 24px" }}>
                               {/* Photos casting */}
                               <div style={{ marginBottom: 16 }}>
-                                <div style={{ fontSize: 11, color: "#fb923c", fontWeight: 600, textTransform: "uppercase", marginBottom: 8 }}>📸 Photos casting</div>
+                                <div style={{ fontSize: 11, color: "#ff9f0a", fontWeight: 600, textTransform: "uppercase", marginBottom: 8 }}>📸 Photos casting</div>
                                 <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                                   {(session.castingPhotos || []).map((ph, phi) => (
-                                    <div key={phi} style={{ position: "relative", width: 64, height: 80, borderRadius: 6, overflow: "hidden", border: "1px solid rgba(251,146,60,0.2)" }}>
+                                    <div key={phi} style={{ position: "relative", width: 64, height: 80, borderRadius: 6, overflow: "hidden", border: "1px solid rgba(255,159,10,0.2)" }}>
                                       <img src={ph} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                                       <button onClick={() => updateCastingSession(profile.id, { castingPhotos: (session.castingPhotos || []).filter((_, j) => j !== phi) })} style={{ position: "absolute", top: 1, right: 1, background: "rgba(0,0,0,0.7)", color: "#fff", border: "none", borderRadius: "50%", width: 14, height: 14, cursor: "pointer", fontSize: 8, display: "flex", alignItems: "center", justifyContent: "center" }}>×</button>
                                     </div>
                                   ))}
-                                  <button onClick={() => { const inp = document.createElement("input"); inp.type = "file"; inp.accept = "image/*"; inp.multiple = true; inp.onchange = ev => { Array.from(ev.target.files || []).forEach(async (f, fi) => { try { const { url } = await uploadPhoto(f, currentProjectId || "default", profile.id + "_casting", (session.castingPhotos || []).length + fi); updateCastingSession(profile.id, { castingPhotos: [...(session.castingPhotos || []), url] }); } catch(e) { console.error("[castingPhoto] fallback base64:", e.message); const r = new FileReader(); r.onload = async () => { const compressed = await compressImage(r.result, 800, 0.8); updateCastingSession(profile.id, { castingPhotos: [...(session.castingPhotos || []), compressed] }); }; r.readAsDataURL(f); } }); }; inp.click(); }} style={{ width: 64, height: 80, borderRadius: 6, border: "1px dashed rgba(251,146,60,0.3)", background: "rgba(255,255,255,0.02)", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", color: "#555", fontSize: 9, fontFamily: "inherit", gap: 2 }}>
+                                  <button onClick={() => { const inp = document.createElement("input"); inp.type = "file"; inp.accept = "image/*"; inp.multiple = true; inp.onchange = ev => { Array.from(ev.target.files || []).forEach(async (f, fi) => { try { const { url } = await uploadPhoto(f, currentProjectId || "default", profile.id + "_casting", (session.castingPhotos || []).length + fi); updateCastingSession(profile.id, { castingPhotos: [...(session.castingPhotos || []), url] }); } catch(e) { console.error("[castingPhoto] fallback base64:", e.message); const r = new FileReader(); r.onload = async () => { const compressed = await compressImage(r.result, 800, 0.8); updateCastingSession(profile.id, { castingPhotos: [...(session.castingPhotos || []), compressed] }); }; r.readAsDataURL(f); } }); }; inp.click(); }} style={{ width: 64, height: 80, borderRadius: 6, border: "1px dashed rgba(255,159,10,0.3)", background: "rgba(255,255,255,0.02)", cursor: "pointer", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", color: "#555", fontSize: 9, fontFamily: "inherit", gap: 2 }}>
                                     <span style={{ fontSize: 16 }}>📷</span><span>Ajouter</span>
                                   </button>
                                 </div>
                               </div>
                               {/* Videos casting */}
                               <div style={{ marginBottom: 16 }}>
-                                <div style={{ fontSize: 11, color: "#fb923c", fontWeight: 600, textTransform: "uppercase", marginBottom: 8 }}>🎥 Vidéos casting</div>
+                                <div style={{ fontSize: 11, color: "#ff9f0a", fontWeight: 600, textTransform: "uppercase", marginBottom: 8 }}>🎥 Vidéos casting</div>
                                 <div style={{ display: "flex", gap: 6, flexWrap: "wrap" }}>
                                   {(session.castingVideos || []).map((v, vi) => (
-                                    <button key={vi} onClick={() => setCastingVideoModal(v.url)} style={{ padding: "8px 14px", background: "rgba(251,146,60,0.08)", border: "1px solid rgba(251,146,60,0.2)", borderRadius: 8, color: "#fb923c", cursor: "pointer", fontSize: 12, fontFamily: "inherit", fontWeight: 600 }}>▶ {v.name || `Vidéo ${vi+1}`}</button>
+                                    <button key={vi} onClick={() => setCastingVideoModal(v.url)} style={{ padding: "8px 14px", background: "rgba(255,159,10,0.08)", border: "1px solid rgba(255,159,10,0.2)", borderRadius: 8, color: "#ff9f0a", cursor: "pointer", fontSize: 12, fontFamily: "inherit", fontWeight: 600 }}>▶ {v.name || `Vidéo ${vi+1}`}</button>
                                   ))}
                                   <label style={{ padding: "8px 14px", display: "flex", alignItems: "center", gap: 4, background: "rgba(255,255,255,0.02)", border: "1px dashed #333", borderRadius: 8, cursor: "pointer", fontSize: 12, color: "#555", fontFamily: "inherit" }}>
                                     <input type="file" accept="video/*" style={{ display: "none" }} onChange={e => { if (e.target.files?.[0]) addCastingVideo(profile.id, e.target.files[0]); }} />
@@ -7128,37 +7147,37 @@ function CastingAppInner({ authUser }) {
                               </div>
                               {/* Lien video casting */}
                               <div style={{ marginBottom: 16 }}>
-                                <div style={{ fontSize: 11, color: "#60a5fa", fontWeight: 600, textTransform: "uppercase", marginBottom: 8 }}>🔗 Lien vidéo casting</div>
-                                <input value={session.videoLink || ""} onChange={e => updateCastingSession(profile.id, { videoLink: e.target.value })} placeholder="https://dropbox.com/... ou https://drive.google.com/..." style={{ width: "100%", padding: "8px 12px", background: "#0c0c0e", border: "1px solid rgba(96,165,250,0.2)", borderRadius: 8, color: "#e0e0e0", fontSize: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box", marginBottom: 6 }} />
+                                <div style={{ fontSize: 11, color: "#0a84ff", fontWeight: 600, textTransform: "uppercase", marginBottom: 8 }}>🔗 Lien vidéo casting</div>
+                                <input value={session.videoLink || ""} onChange={e => updateCastingSession(profile.id, { videoLink: e.target.value })} placeholder="https://dropbox.com/... ou https://drive.google.com/..." style={{ width: "100%", padding: "8px 12px", background: "#101013", border: "1px solid rgba(10,132,255,0.2)", borderRadius: 8, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box", marginBottom: 6 }} />
                                 {session.videoLink && getEmbedUrl(session.videoLink) && (
                                   <EmbedPlayer url={session.videoLink} height={180} />
                                 )}
                                 {session.videoLink && !getEmbedUrl(session.videoLink) && (
-                                  <a href={session.videoLink} target="_blank" rel="noreferrer" style={{ fontSize: 12, color: "#60a5fa", textDecoration: "none" }}>▶ Ouvrir le lien</a>
+                                  <a href={session.videoLink} target="_blank" rel="noreferrer" style={{ fontSize: 12, color: "#0a84ff", textDecoration: "none" }}>▶ Ouvrir le lien</a>
                                 )}
                               </div>
                               {/* Notes de casting */}
                               <div>
-                                <div style={{ fontSize: 11, color: "#22c55e", fontWeight: 600, textTransform: "uppercase", marginBottom: 8 }}>📝 Notes & retours</div>
+                                <div style={{ fontSize: 11, color: "#30d158", fontWeight: 600, textTransform: "uppercase", marginBottom: 8 }}>📝 Notes & retours</div>
                                 <textarea value={session.liveNotes || ""}
                                   onChange={e => updateCastingSession(profile.id, { liveNotes: e.target.value })}
                                   placeholder="Vos impressions, retours sur le passage..."
                                   rows={4}
-                                  style={{ width: "100%", padding: "12px 14px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 10, color: "#e0e0e0", fontSize: 14, fontFamily: "'DM Sans',sans-serif", outline: "none", resize: "vertical", lineHeight: 1.6, boxSizing: "border-box" }}
+                                  style={{ width: "100%", padding: "12px 14px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 10, color: "#ebebf0", fontSize: 14, fontFamily: "inherit", outline: "none", resize: "vertical", lineHeight: 1.6, boxSizing: "border-box" }}
                                 />
                               </div>
                             </div>
                           </div>
 
                           {/* === SELECTION BUTTONS === */}
-                          <div style={{ padding: "16px 24px", borderTop: "1px solid #1e1e22", background: finalSel?.selected === true ? "rgba(34,197,94,0.03)" : finalSel?.selected === false ? "rgba(239,68,68,0.03)" : "rgba(255,255,255,0.01)" }}>
+                          <div style={{ padding: "16px 24px", borderTop: "1px solid #2e2e34", background: finalSel?.selected === true ? "rgba(48,209,88,0.03)" : finalSel?.selected === false ? "rgba(255,69,58,0.03)" : "rgba(255,255,255,0.01)" }}>
                             <div style={{ display: "flex", gap: 10, marginBottom: finalSel?.selected != null ? 10 : 0 }}>
-                              {[{ val: true, label: "✓ OUI", color: "#22c55e", bg: "rgba(34,197,94,0.1)" }, { val: "maybe", label: "? PEUT-ÊTRE", color: "#f59e0b", bg: "rgba(245,158,11,0.1)" }, { val: false, label: "✕ NON", color: "#ef4444", bg: "rgba(239,68,68,0.1)" }].map(opt => {
+                              {[{ val: true, label: "✓ OUI", color: "#30d158", bg: "rgba(48,209,88,0.1)" }, { val: "maybe", label: "? PEUT-ÊTRE", color: "#ffd60a", bg: "rgba(255,214,10,0.1)" }, { val: false, label: "✕ NON", color: "#ff453a", bg: "rgba(255,69,58,0.1)" }].map(opt => {
                                 const isSel = opt.val === "maybe" ? finalSel?.selected === "maybe" : finalSel?.selected === opt.val;
                                 return <button key={String(opt.val)} onClick={() => updateFinalSelection(profile.id, { selected: isSel ? null : opt.val })} style={{ flex: 1, padding: "14px 0", borderRadius: 10, cursor: "pointer", fontFamily: "inherit", fontSize: 15, fontWeight: 800, background: isSel ? opt.bg : "rgba(255,255,255,0.02)", border: isSel ? `2px solid ${opt.color}` : "2px solid #222", color: isSel ? opt.color : "#555", transition: "all 0.15s" }}>{opt.label}</button>;
                               })}
                             </div>
-                            {finalSel?.selected != null && <input value={finalSel?.comment || ""} onChange={e => updateFinalSelection(profile.id, { comment: e.target.value })} placeholder="Commentaire sur votre choix..." style={{ width: "100%", padding: "10px 14px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#ccc", fontSize: 13, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />}
+                            {finalSel?.selected != null && <input value={finalSel?.comment || ""} onChange={e => updateFinalSelection(profile.id, { comment: e.target.value })} placeholder="Commentaire sur votre choix..." style={{ width: "100%", padding: "10px 14px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 8, color: "#ccc", fontSize: 13, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />}
                           </div>
                         </div>
                       )}
@@ -7170,11 +7189,11 @@ function CastingAppInner({ authUser }) {
                   <>
                     {/* Header */}
                     <div style={{ marginBottom: 24 }}>
-                      <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f0f0f0", fontFamily: "'Playfair Display', serif", marginBottom: 4 }}>
+                      <h2 style={{ fontSize: 22, fontWeight: 700, color: "#f5f5f7", fontFamily: "inherit", marginBottom: 4 }}>
                         🎬 Casting — {currentRole}
                       </h2>
                       <div style={{ display: "flex", alignItems: "center", gap: 12, fontSize: 13, color: "#666" }}>
-                        {dayLabel && <span style={{ color: "#fb923c", fontWeight: 600 }}>📅 {dayLabel}</span>}
+                        {dayLabel && <span style={{ color: "#ff9f0a", fontWeight: 600 }}>📅 {dayLabel}</span>}
                         <span>{roleProfiles.length} profil{roleProfiles.length > 1 ? "s" : ""}</span>
                         <span>·</span>
                         <span>{roleProfiles.filter(p => (state.castingSessions[p.id]?.passStatus || "not_yet") === "passed").length} passés</span>
@@ -7196,15 +7215,15 @@ function CastingAppInner({ authUser }) {
               })()}
 
               {/* Global casting video link */}
-              <div style={{ marginTop: 24, padding: "20px 24px", background: "#111114", borderRadius: 14, border: "1px solid #1e1e22" }}>
-                <div style={{ fontSize: 12, color: "#60a5fa", fontWeight: 600, textTransform: "uppercase", marginBottom: 10 }}>🎬 Lien vidéo casting global</div>
+              <div style={{ marginTop: 24, padding: "20px 24px", background: "#1c1c1f", borderRadius: 14, border: "1px solid #2e2e34" }}>
+                <div style={{ fontSize: 12, color: "#0a84ff", fontWeight: 600, textTransform: "uppercase", marginBottom: 10 }}>🎬 Lien vidéo casting global</div>
                 <div style={{ fontSize: 11, color: "#666", marginBottom: 8 }}>Collez un lien Google Drive ou Dropbox avec toutes les vidéos du casting. Le réal y aura accès.</div>
-                <input value={state._castingGlobalVideoLink || ""} onChange={e => setState(p => ({ ...p, _castingGlobalVideoLink: e.target.value }))} placeholder="https://drive.google.com/... ou https://dropbox.com/..." style={{ width: "100%", padding: "10px 14px", background: "#0c0c0e", border: "1px solid rgba(96,165,250,0.2)", borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit", outline: "none", boxSizing: "border-box", marginBottom: 8 }} />
+                <input value={state._castingGlobalVideoLink || ""} onChange={e => setState(p => ({ ...p, _castingGlobalVideoLink: e.target.value }))} placeholder="https://drive.google.com/... ou https://dropbox.com/..." style={{ width: "100%", padding: "10px 14px", background: "#101013", border: "1px solid rgba(10,132,255,0.2)", borderRadius: 8, color: "#ebebf0", fontSize: 13, fontFamily: "inherit", outline: "none", boxSizing: "border-box", marginBottom: 8 }} />
                 {state._castingGlobalVideoLink && getEmbedUrl(state._castingGlobalVideoLink) && (
                   <EmbedPlayer url={state._castingGlobalVideoLink} height={240} />
                 )}
                 {state._castingGlobalVideoLink && !getEmbedUrl(state._castingGlobalVideoLink) && (
-                  <a href={state._castingGlobalVideoLink} target="_blank" rel="noreferrer" style={{ fontSize: 13, color: "#60a5fa", textDecoration: "none" }}>▶ Ouvrir le lien</a>
+                  <a href={state._castingGlobalVideoLink} target="_blank" rel="noreferrer" style={{ fontSize: 13, color: "#0a84ff", textDecoration: "none" }}>▶ Ouvrir le lien</a>
                 )}
               </div>
             </div>
@@ -7242,7 +7261,7 @@ function CastingAppInner({ authUser }) {
                 const selected = roleEvaluated.filter(p => p._finalSel?.selected === true);
                 const maybe = roleEvaluated.filter(p => p._finalSel?.selected === "maybe");
                 const rejected = roleEvaluated.filter(p => p._finalSel?.selected === false);
-                const rc = currentRole ? getRoleColor(currentRole) : { color: "#22c55e", bg: "rgba(34,197,94,0.08)", border: "rgba(34,197,94,0.4)" };
+                const rc = currentRole ? getRoleColor(currentRole) : { color: "#30d158", bg: "rgba(48,209,88,0.08)", border: "rgba(48,209,88,0.4)" };
 
                 // Quick email helper — opens compose modal
                 const quickMail = (p, type) => {
@@ -7283,18 +7302,18 @@ function CastingAppInner({ authUser }) {
                   const isSel = p._finalSel?.selected === true;
                   const isMaybe = p._finalSel?.selected === "maybe";
                   const fullName = [p.firstName, p.name].filter(Boolean).join(" ") || "Sans nom";
-                  const accentColor = isSel ? "#22c55e" : isMaybe ? "#f59e0b" : "#ef4444";
-                  const accentBg = isSel ? "rgba(34,197,94,0.06)" : isMaybe ? "rgba(245,158,11,0.06)" : "rgba(239,68,68,0.04)";
+                  const accentColor = isSel ? "#30d158" : isMaybe ? "#ffd60a" : "#ff453a";
+                  const accentBg = isSel ? "rgba(48,209,88,0.06)" : isMaybe ? "rgba(255,214,10,0.06)" : "rgba(255,69,58,0.04)";
 
                   if (isGrid) {
                     return (
                       <div key={p.id} style={{
-                        background: "#111114", borderRadius: 16, border: "1px solid #1e1e22",
+                        background: "#1c1c1f", borderRadius: 16, border: "1px solid #2e2e34",
                         borderTop: `4px solid ${accentColor}`, overflow: "hidden",
                         animation: "fadeIn 0.3s ease both",
                       }}>
                         {/* Photo */}
-                        <div style={{ height: 200, overflow: "hidden", background: "#0c0c0e", position: "relative" }}>
+                        <div style={{ height: 200, overflow: "hidden", background: "#101013", position: "relative" }}>
                           {p.photos?.[0] ? (
                             <img src={p.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                           ) : (
@@ -7323,7 +7342,7 @@ function CastingAppInner({ authUser }) {
                           {session.castingVideos?.length > 0 && (
                             <div style={{ marginBottom: 10 }}>
                               {session.castingVideos.map((v, vi) => (
-                                <button key={vi} onClick={() => setCastingVideoModal(v.url)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 10px", background: "rgba(251,146,60,0.08)", border: "1px solid rgba(251,146,60,0.15)", borderRadius: 6, cursor: "pointer", fontFamily: "inherit", fontSize: 10, color: "#fb923c", fontWeight: 500, marginBottom: 4, width: "100%" }}>
+                                <button key={vi} onClick={() => setCastingVideoModal(v.url)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 10px", background: "rgba(255,159,10,0.08)", border: "1px solid rgba(255,159,10,0.15)", borderRadius: 6, cursor: "pointer", fontFamily: "inherit", fontSize: 10, color: "#ff9f0a", fontWeight: 500, marginBottom: 4, width: "100%" }}>
                                   🎬 {v.name} — ▶ Voir
                                 </button>
                               ))}
@@ -7367,18 +7386,18 @@ function CastingAppInner({ authUser }) {
                   return (
                     <div key={p.id} style={{
                       display: "flex", alignItems: "center", gap: 14, padding: "14px 18px",
-                      background: "#111114", borderRadius: 12, border: "1px solid #1e1e22",
+                      background: "#1c1c1f", borderRadius: 12, border: "1px solid #2e2e34",
                       borderLeft: `4px solid ${accentColor}`,
                       animation: "fadeIn 0.3s ease both",
                     }}>
                       {/* Photo */}
-                      <div style={{ width: 50, height: 62, borderRadius: 8, overflow: "hidden", background: "#0c0c0e", flexShrink: 0, border: "1px solid #1e1e22" }}>
+                      <div style={{ width: 50, height: 62, borderRadius: 8, overflow: "hidden", background: "#101013", flexShrink: 0, border: "1px solid #2e2e34" }}>
                         {p.photos?.[0] ? <img src={p.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 18 }}>◎</div>}
                       </div>
 
                       {/* Info */}
                       <div style={{ flex: 1, minWidth: 0 }}>
-                        <div style={{ fontSize: 15, fontWeight: 700, color: "#f0f0f0", marginBottom: 3 }}>{fullName}</div>
+                        <div style={{ fontSize: 15, fontWeight: 700, color: "#f5f5f7", marginBottom: 3 }}>{fullName}</div>
                         <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 11, color: "#888", flexWrap: "wrap" }}>
                           {p.age && <span>{p.age} ans</span>}
                           {p.height && <span>📏 {p.height}</span>}
@@ -7394,7 +7413,7 @@ function CastingAppInner({ authUser }) {
                       {session.castingVideos?.length > 0 && (
                         <div style={{ display: "flex", gap: 4, flexShrink: 0 }}>
                           {session.castingVideos.map((v, vi) => (
-                            <button key={vi} onClick={() => setCastingVideoModal(v.url)} style={{ width: 32, height: 32, background: "rgba(251,146,60,0.1)", border: "1px solid rgba(251,146,60,0.2)", borderRadius: 8, color: "#fb923c", cursor: "pointer", fontSize: 13, display: "flex", alignItems: "center", justifyContent: "center" }}>▶</button>
+                            <button key={vi} onClick={() => setCastingVideoModal(v.url)} style={{ width: 32, height: 32, background: "rgba(255,159,10,0.1)", border: "1px solid rgba(255,159,10,0.2)", borderRadius: 8, color: "#ff9f0a", cursor: "pointer", fontSize: 13, display: "flex", alignItems: "center", justifyContent: "center" }}>▶</button>
                           ))}
                         </div>
                       )}
@@ -7455,29 +7474,29 @@ function CastingAppInner({ authUser }) {
                     {/* Header + view toggle */}
                     <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", marginBottom: 24 }}>
                       <div>
-                        <h2 style={{ fontSize: 24, fontWeight: 800, color: "#f0f0f0", fontFamily: "'Playfair Display', serif", marginBottom: 4 }}>
+                        <h2 style={{ fontSize: 24, fontWeight: 800, color: "#f5f5f7", fontFamily: "inherit", marginBottom: 4 }}>
                           🏆 Casting Définitif — {currentRole}
                         </h2>
                         <div style={{ display: "flex", gap: 14, fontSize: 13, color: "#666" }}>
-                          <span style={{ color: "#22c55e" }}>{selected.length} retenu{selected.length > 1 ? "s" : ""}</span>
-                          {maybe.length > 0 && <span style={{ color: "#f59e0b" }}>{maybe.length} en attente</span>}
-                          <span style={{ color: "#ef4444" }}>{rejected.length} non retenu{rejected.length > 1 ? "s" : ""}</span>
+                          <span style={{ color: "#30d158" }}>{selected.length} retenu{selected.length > 1 ? "s" : ""}</span>
+                          {maybe.length > 0 && <span style={{ color: "#ffd60a" }}>{maybe.length} en attente</span>}
+                          <span style={{ color: "#ff453a" }}>{rejected.length} non retenu{rejected.length > 1 ? "s" : ""}</span>
                         </div>
                       </div>
-                      <div style={{ display: "flex", gap: 2, background: "#0c0c0e", borderRadius: 8, padding: 2, flexShrink: 0 }}>
-                        <button onClick={() => setFinalViewMode("grid")} style={{ padding: "6px 12px", borderRadius: 6, border: "none", cursor: "pointer", fontFamily: "inherit", fontSize: 12, fontWeight: 600, background: finalViewMode === "grid" ? "rgba(34,197,94,0.12)" : "transparent", color: finalViewMode === "grid" ? "#22c55e" : "#555" }}>
+                      <div style={{ display: "flex", gap: 2, background: "#101013", borderRadius: 8, padding: 2, flexShrink: 0 }}>
+                        <button onClick={() => setFinalViewMode("grid")} style={{ padding: "6px 12px", borderRadius: 6, border: "none", cursor: "pointer", fontFamily: "inherit", fontSize: 12, fontWeight: 600, background: finalViewMode === "grid" ? "rgba(48,209,88,0.12)" : "transparent", color: finalViewMode === "grid" ? "#30d158" : "#555" }}>
                           ▦ Grille
                         </button>
-                        <button onClick={() => setFinalViewMode("list")} style={{ padding: "6px 12px", borderRadius: 6, border: "none", cursor: "pointer", fontFamily: "inherit", fontSize: 12, fontWeight: 600, background: finalViewMode === "list" ? "rgba(34,197,94,0.12)" : "transparent", color: finalViewMode === "list" ? "#22c55e" : "#555" }}>
+                        <button onClick={() => setFinalViewMode("list")} style={{ padding: "6px 12px", borderRadius: 6, border: "none", cursor: "pointer", fontFamily: "inherit", fontSize: 12, fontWeight: 600, background: finalViewMode === "list" ? "rgba(48,209,88,0.12)" : "transparent", color: finalViewMode === "list" ? "#30d158" : "#555" }}>
                           ☰ Liste
                         </button>
                       </div>
                     </div>
 
                     {/* Sections */}
-                    {renderSection("Retenus", "✓", "#22c55e", selected, "selected")}
-                    {renderSection("En attente de décision", "?", "#f59e0b", maybe, "maybe")}
-                    {renderSection("Non retenus", "✕", "#ef4444", rejected, "rejected")}
+                    {renderSection("Retenus", "✓", "#30d158", selected, "selected")}
+                    {renderSection("En attente de décision", "?", "#ffd60a", maybe, "maybe")}
+                    {renderSection("Non retenus", "✕", "#ff453a", rejected, "rejected")}
                   </>
                 );
               })()}
@@ -7493,8 +7512,8 @@ function CastingAppInner({ authUser }) {
             }}>
               <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
                 <h2 style={{
-                  fontSize: 22, fontWeight: 700, color: "#f0f0f0", letterSpacing: "-0.01em",
-                  fontFamily: "'Playfair Display', serif",
+                  fontSize: 22, fontWeight: 700, color: "#f5f5f7", letterSpacing: "-0.01em",
+                  fontFamily: "inherit",
                 }}>
                   {activeRole}
                 </h2>
@@ -7510,12 +7529,12 @@ function CastingAppInner({ authUser }) {
                   onChange={e => setSearchQuery(e.target.value)}
                   placeholder="Rechercher..."
                   style={{
-                    padding: "8px 14px", background: "#111114", border: "1px solid #222226",
-                    borderRadius: 10, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit",
+                    padding: "8px 14px", background: "#1c1c1f", border: "1px solid #33333a",
+                    borderRadius: 10, color: "#ebebf0", fontSize: 13, fontFamily: "inherit",
                     outline: "none", width: 180, transition: "border-color 0.2s",
                   }}
-                  onFocus={e => e.target.style.borderColor = "#c9a44a55"}
-                  onBlur={e => e.target.style.borderColor = "#222226"}
+                  onFocus={e => e.target.style.borderColor = "#d4af6155"}
+                  onBlur={e => e.target.style.borderColor = "#33333a"}
                 />
 
                 {/* Status filter */}
@@ -7524,8 +7543,8 @@ function CastingAppInner({ authUser }) {
                     value={filterStatus}
                     onChange={e => setFilterStatus(e.target.value)}
                     style={{
-                      padding: "8px 14px", background: "#111114", border: "1px solid #222226",
-                      borderRadius: 10, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit",
+                      padding: "8px 14px", background: "#1c1c1f", border: "1px solid #33333a",
+                      borderRadius: 10, color: "#ebebf0", fontSize: 13, fontFamily: "inherit",
                       outline: "none", appearance: "none", cursor: "pointer",
                     }}
                   >
@@ -7542,8 +7561,8 @@ function CastingAppInner({ authUser }) {
                     value={filterSelection}
                     onChange={e => setFilterSelection(e.target.value)}
                     style={{
-                      padding: "8px 14px", background: "#111114", border: "1px solid #222226",
-                      borderRadius: 10, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit",
+                      padding: "8px 14px", background: "#1c1c1f", border: "1px solid #33333a",
+                      borderRadius: 10, color: "#ebebf0", fontSize: 13, fontFamily: "inherit",
                       outline: "none", appearance: "none", cursor: "pointer",
                     }}
                   >
@@ -7561,8 +7580,8 @@ function CastingAppInner({ authUser }) {
                     value={filterContact}
                     onChange={e => setFilterContact(e.target.value)}
                     style={{
-                      padding: "8px 14px", background: "#111114", border: "1px solid #222226",
-                      borderRadius: 10, color: "#e0e0e0", fontSize: 13, fontFamily: "inherit",
+                      padding: "8px 14px", background: "#1c1c1f", border: "1px solid #33333a",
+                      borderRadius: 10, color: "#ebebf0", fontSize: 13, fontFamily: "inherit",
                       outline: "none", appearance: "none", cursor: "pointer",
                     }}
                   >
@@ -7579,7 +7598,7 @@ function CastingAppInner({ authUser }) {
                     <button
                       onClick={() => { setEditingProfile(null); setModalOpen(true); }}
                       style={{
-                        padding: "8px 20px", background: "linear-gradient(135deg, #c9a44a, #a67c2e)",
+                        padding: "8px 20px", background: "linear-gradient(135deg, #d4af61, #b08a3e)",
                         color: "#000", border: "none", borderRadius: 10, cursor: "pointer",
                         fontSize: 13, fontWeight: 700, fontFamily: "inherit", letterSpacing: "0.02em",
                         display: "flex", alignItems: "center", gap: 6, whiteSpace: "nowrap",
@@ -7591,8 +7610,8 @@ function CastingAppInner({ authUser }) {
                       <button
                         onClick={() => { setImportFileSearch(""); setImportFromFileModal(true); }}
                         style={{
-                          padding: "8px 14px", background: "rgba(168,85,247,0.08)",
-                          color: "#a855f7", border: "1px solid rgba(168,85,247,0.2)", borderRadius: 10, cursor: "pointer",
+                          padding: "8px 14px", background: "rgba(191,90,242,0.08)",
+                          color: "#bf5af2", border: "1px solid rgba(191,90,242,0.2)", borderRadius: 10, cursor: "pointer",
                           fontSize: 11, fontWeight: 600, fontFamily: "inherit",
                           display: "flex", alignItems: "center", gap: 5, whiteSpace: "nowrap",
                         }}
@@ -7603,8 +7622,8 @@ function CastingAppInner({ authUser }) {
                     {currentProfiles.length >= 2 && (
                       <button onClick={() => { setCompareMode(!compareMode); setCompareSelection([]); }}
                         style={{
-                          padding: "8px 14px", background: compareMode ? "rgba(96,165,250,0.12)" : "rgba(255,255,255,0.03)",
-                          color: compareMode ? "#60a5fa" : "#666", border: compareMode ? "1px solid rgba(96,165,250,0.3)" : "1px solid #2a2a2e",
+                          padding: "8px 14px", background: compareMode ? "rgba(10,132,255,0.12)" : "rgba(255,255,255,0.03)",
+                          color: compareMode ? "#0a84ff" : "#666", border: compareMode ? "1px solid rgba(10,132,255,0.3)" : "1px solid #3a3a40",
                           borderRadius: 10, cursor: "pointer", fontSize: 11, fontWeight: 600, fontFamily: "inherit", whiteSpace: "nowrap",
                         }}>
                         {compareMode ? "✕ Annuler" : "⚖ Comparer"}
@@ -7612,21 +7631,21 @@ function CastingAppInner({ authUser }) {
                     )}
                     {currentProfiles.length > 0 && (
                       <button onClick={() => { setPresentationIndex(0); setPresentationMode("slideshow"); }}
-                        style={{ padding: "8px 14px", background: "rgba(255,255,255,0.03)", color: "#666", border: "1px solid #2a2a2e", borderRadius: 10, cursor: "pointer", fontSize: 11, fontWeight: 600, fontFamily: "inherit", whiteSpace: "nowrap" }}>
+                        style={{ padding: "8px 14px", background: "rgba(255,255,255,0.03)", color: "#666", border: "1px solid #3a3a40", borderRadius: 10, cursor: "pointer", fontSize: 11, fontWeight: 600, fontFamily: "inherit", whiteSpace: "nowrap" }}>
                         ▶ Présentation
                       </button>
                     )}
                     {currentProfiles.length > 0 && (
                       <button onClick={() => setPresentationMode("pdf")}
-                        style={{ padding: "8px 14px", background: "rgba(255,255,255,0.03)", color: "#666", border: "1px solid #2a2a2e", borderRadius: 10, cursor: "pointer", fontSize: 11, fontWeight: 600, fontFamily: "inherit", whiteSpace: "nowrap" }}>
+                        style={{ padding: "8px 14px", background: "rgba(255,255,255,0.03)", color: "#666", border: "1px solid #3a3a40", borderRadius: 10, cursor: "pointer", fontSize: 11, fontWeight: 600, fontFamily: "inherit", whiteSpace: "nowrap" }}>
                         🖨 PDF
                       </button>
                     )}
                     {archivedCount > 0 && (
                       <button onClick={() => setShowArchived(!showArchived)}
                         style={{
-                          padding: "8px 14px", background: showArchived ? "rgba(239,68,68,0.08)" : "rgba(255,255,255,0.03)",
-                          color: showArchived ? "#ef4444" : "#666", border: `1px solid ${showArchived ? "rgba(239,68,68,0.2)" : "#2a2a2e"}`,
+                          padding: "8px 14px", background: showArchived ? "rgba(255,69,58,0.08)" : "rgba(255,255,255,0.03)",
+                          color: showArchived ? "#ff453a" : "#666", border: `1px solid ${showArchived ? "rgba(255,69,58,0.2)" : "#3a3a40"}`,
                           borderRadius: 10, cursor: "pointer", fontSize: 11, fontWeight: 600, fontFamily: "inherit", whiteSpace: "nowrap",
                         }}>
                         {showArchived ? "✕ Masquer refusés" : `👁 Refusés (${archivedCount})`}
@@ -7636,8 +7655,8 @@ function CastingAppInner({ authUser }) {
                 )}
                 {/* Grid/List toggle */}
                 <div style={{ display: "flex", gap: 4, marginLeft: "auto" }}>
-                  <button onClick={() => setProfileGridMode("grid")} style={{ padding: "6px 10px", borderRadius: 6, border: "none", cursor: "pointer", background: profileGridMode === "grid" ? "rgba(201,164,74,0.12)" : "transparent", color: profileGridMode === "grid" ? "#c9a44a" : "#555", fontSize: 14 }}>▦</button>
-                  <button onClick={() => setProfileGridMode("list")} style={{ padding: "6px 10px", borderRadius: 6, border: "none", cursor: "pointer", background: profileGridMode === "list" ? "rgba(201,164,74,0.12)" : "transparent", color: profileGridMode === "list" ? "#c9a44a" : "#555", fontSize: 14 }}>☰</button>
+                  <button onClick={() => setProfileGridMode("grid")} style={{ padding: "6px 10px", borderRadius: 6, border: "none", cursor: "pointer", background: profileGridMode === "grid" ? "rgba(212,175,97,0.12)" : "transparent", color: profileGridMode === "grid" ? "#d4af61" : "#555", fontSize: 14 }}>▦</button>
+                  <button onClick={() => setProfileGridMode("list")} style={{ padding: "6px 10px", borderRadius: 6, border: "none", cursor: "pointer", background: profileGridMode === "list" ? "rgba(212,175,97,0.12)" : "transparent", color: profileGridMode === "list" ? "#d4af61" : "#555", fontSize: 14 }}>☰</button>
                 </div>
               </div>
             </div>
@@ -7656,8 +7675,8 @@ function CastingAppInner({ authUser }) {
                   <button
                     onClick={() => { setEditingProfile(null); setModalOpen(true); }}
                     style={{
-                      padding: "10px 24px", background: "transparent", color: "#c9a44a",
-                      border: "1px solid #c9a44a44", borderRadius: 10, cursor: "pointer",
+                      padding: "10px 24px", background: "transparent", color: "#d4af61",
+                      border: "1px solid #d4af6144", borderRadius: 10, cursor: "pointer",
                       fontSize: 13, fontWeight: 600, fontFamily: "inherit", marginTop: 8,
                     }}
                   >
@@ -7677,26 +7696,20 @@ function CastingAppInner({ authUser }) {
                   return (
                     <div style={{
                       display: "flex", alignItems: "center", gap: 16, marginBottom: 20,
-                      padding: "12px 18px", background: "#111114", borderRadius: 10,
-                      border: "1px solid #1e1e22", fontSize: 12,
+                      padding: "12px 18px", background: "#1c1c1f", borderRadius: 10,
+                      border: "1px solid #2e2e34", fontSize: 12,
                     }}>
                       <span style={{ color: "#888", fontWeight: 500 }}>Sélection :</span>
-                      <span style={{ color: "#22c55e", fontWeight: 600 }}>✓ {yC} oui</span>
-                      <span style={{ color: "#f59e0b", fontWeight: 600 }}>? {mC} peut-être</span>
-                      <span style={{ color: "#ef4444", fontWeight: 600 }}>✕ {nC} non</span>
+                      <span style={{ color: "#30d158", fontWeight: 600 }}>✓ {yC} oui</span>
+                      <span style={{ color: "#ffd60a", fontWeight: 600 }}>? {mC} peut-être</span>
+                      <span style={{ color: "#ff453a", fontWeight: 600 }}>✕ {nC} non</span>
                       {remaining > 0 && <span style={{ color: "#555" }}>⊘ {remaining} restant{remaining > 1 ? "s" : ""}</span>}
-                      {remaining === 0 && <span style={{ color: "#c9a44a", fontWeight: 600, marginLeft: "auto" }}>✓ Tous évalués</span>}
+                      {remaining === 0 && <span style={{ color: "#d4af61", fontWeight: 600, marginLeft: "auto" }}>✓ Tous évalués</span>}
                     </div>
                   );
                 })()}
 
-                {/* Global feedback from réal */}
-                {state._guestGlobalFeedback && (
-                  <div style={{ padding: "14px 18px", background: "rgba(96,165,250,0.04)", border: "1px solid rgba(96,165,250,0.15)", borderRadius: 10, marginBottom: 14 }}>
-                    <div style={{ fontSize: 11, color: "#60a5fa", fontWeight: 600, textTransform: "uppercase", marginBottom: 6 }}>✍ Retour global du réal/prod</div>
-                    <div style={{ fontSize: 14, color: "#ccc", lineHeight: 1.6, whiteSpace: "pre-wrap" }}>{state._guestGlobalFeedback}</div>
-                  </div>
-                )}
+                {/* Global feedback from réal — hidden per user request */}
 
                 <div style={{
                   display: profileGridMode === "list" ? "flex" : "grid",
@@ -7710,8 +7723,8 @@ function CastingAppInner({ authUser }) {
                       {compareMode && viewMode === "director" && (
                         <div onClick={() => setCompareSelection(prev => prev.includes(profile.id) ? prev.filter(x => x !== profile.id) : prev.length < 3 ? [...prev, profile.id] : prev)}
                           style={{ position: "absolute", top: 8, left: 8, zIndex: 10, width: 24, height: 24, borderRadius: "50%", cursor: "pointer",
-                            background: compareSelection.includes(profile.id) ? "#60a5fa" : "rgba(0,0,0,0.6)",
-                            border: compareSelection.includes(profile.id) ? "2px solid #60a5fa" : "2px solid #555",
+                            background: compareSelection.includes(profile.id) ? "#0a84ff" : "rgba(0,0,0,0.6)",
+                            border: compareSelection.includes(profile.id) ? "2px solid #0a84ff" : "2px solid #555",
                             display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 12, fontWeight: 700,
                           }}>{compareSelection.includes(profile.id) ? compareSelection.indexOf(profile.id) + 1 : ""}</div>
                       )}
@@ -7724,11 +7737,11 @@ function CastingAppInner({ authUser }) {
                             viewMode={viewMode}
                           />
                           {/* Selection bar — Cinéma style */}
-                          <div style={{ marginTop: 4, display: "flex", borderRadius: 3, overflow: "hidden", border: "1px solid #1a1a1e" }}>
+                          <div style={{ marginTop: 4, display: "flex", borderRadius: 3, overflow: "hidden", border: "1px solid #2a2a30" }}>
                             {[
-                              { choice: "yes", label: "OUI", color: "#22c55e" },
-                              { choice: "maybe", label: "PEUT-ÊTRE", color: "#f59e0b" },
-                              { choice: "no", label: "NON", color: "#ef4444" },
+                              { choice: "yes", label: "OUI", color: "#30d158" },
+                              { choice: "maybe", label: "PEUT-ÊTRE", color: "#ffd60a" },
+                              { choice: "no", label: "NON", color: "#ff453a" },
                             ].map((opt, i) => {
                               const isActive = getChoice(profile.id) === opt.choice;
                               const isFromGuest = state._guestVotes?.[profile.id]?.choice === opt.choice;
@@ -7737,8 +7750,8 @@ function CastingAppInner({ authUser }) {
                                   onClick={(e) => { e.stopPropagation(); setSelection(profile.id, isActive ? null : opt.choice); }}
                                   style={{
                                     flex: 1, padding: "7px 0", border: "none", cursor: "pointer",
-                                    borderRight: i < 2 ? "1px solid #1a1a1e" : "none",
-                                    fontFamily: "'Bebas Neue','DM Sans',sans-serif", fontSize: 11, fontWeight: 700, letterSpacing: "0.08em",
+                                    borderRight: i < 2 ? "1px solid #2a2a30" : "none",
+                                    fontFamily: "inherit", fontSize: 11, fontWeight: 700, letterSpacing: "0.08em",
                                     background: isActive ? `${opt.color}15` : "transparent",
                                     color: isActive ? opt.color : "#333",
                                     transition: "all 0.15s",
@@ -7761,11 +7774,11 @@ function CastingAppInner({ authUser }) {
                                     padding: "4px 10px", borderRadius: 6, cursor: "pointer", fontSize: 9, fontWeight: 600, fontFamily: "inherit",
                                     border: state.contacts[profile.id]?.status && state.contacts[profile.id]?.status !== "not_contacted"
                                       ? `1px solid ${CONTACT_STATUS[state.contacts[profile.id].status].color}33`
-                                      : "1px solid #c9a44a33",
+                                      : "1px solid #d4af6133",
                                     background: "transparent",
                                     color: state.contacts[profile.id]?.status && state.contacts[profile.id]?.status !== "not_contacted"
                                       ? CONTACT_STATUS[state.contacts[profile.id].status].color
-                                      : "#c9a44a",
+                                      : "#d4af61",
                                   }}>
                                   {state.contacts[profile.id]?.status && state.contacts[profile.id]?.status !== "not_contacted" ? "✏ Contact" : "✉ Contacter"}
                                 </button>
@@ -7773,8 +7786,8 @@ function CastingAppInner({ authUser }) {
                               {/* RÉAL/PROD vote badge */}
                               {state._guestVotes?.[profile.id] && (
                                 <span style={{ fontSize: 9, padding: "3px 8px", borderRadius: 4, fontWeight: 700,
-                                  background: state._guestVotes[profile.id].choice === "yes" ? "rgba(34,197,94,0.08)" : state._guestVotes[profile.id].choice === "no" ? "rgba(239,68,68,0.08)" : "rgba(245,158,11,0.08)",
-                                  color: state._guestVotes[profile.id].choice === "yes" ? "#22c55e" : state._guestVotes[profile.id].choice === "no" ? "#ef4444" : "#f59e0b",
+                                  background: state._guestVotes[profile.id].choice === "yes" ? "rgba(48,209,88,0.08)" : state._guestVotes[profile.id].choice === "no" ? "rgba(255,69,58,0.08)" : "rgba(255,214,10,0.08)",
+                                  color: state._guestVotes[profile.id].choice === "yes" ? "#30d158" : state._guestVotes[profile.id].choice === "no" ? "#ff453a" : "#ffd60a",
                                 }}>
                                   R/P {state._guestVotes[profile.id].choice === "yes" ? "OUI" : state._guestVotes[profile.id].choice === "no" ? "NON" : "P-Ê"}
                                 </span>
@@ -7789,26 +7802,26 @@ function CastingAppInner({ authUser }) {
                             {[1,2,3,4,5].map(n => (
                               <button key={n} onClick={() => quickRateProfile(profile.id, n)}
                                 style={{ width: 18, height: 18, borderRadius: 3, border: "none", cursor: "pointer", fontSize: 10, padding: 0,
-                                  background: n <= (profile._quickRating || 0) ? "rgba(201,164,74,0.15)" : "transparent",
-                                  color: n <= (profile._quickRating || 0) ? "#c9a44a" : "#222", transition: "all 0.15s",
+                                  background: n <= (profile._quickRating || 0) ? "rgba(212,175,97,0.15)" : "transparent",
+                                  color: n <= (profile._quickRating || 0) ? "#d4af61" : "#222", transition: "all 0.15s",
                                 }}>★</button>
                             ))}
                             <div style={{ flex: 1 }} />
                             {state.roles.length > 1 && (
                               <button onClick={() => setMoveProfileModal({ profile, fromRole: activeRole })}
                                 style={{ padding: "2px 6px", background: "none", border: "none", borderRadius: 4, color: "#333", fontSize: 9, cursor: "pointer", fontFamily: "inherit" }}
-                                onMouseEnter={e => e.currentTarget.style.color = "#c9a44a"}
+                                onMouseEnter={e => e.currentTarget.style.color = "#d4af61"}
                                 onMouseLeave={e => e.currentTarget.style.color = "#333"}>↗</button>
                             )}
                             {state.roles.length > 1 && (
                               <button onClick={() => setCopyProfileModal({ profile })}
                                 style={{ padding: "2px 6px", background: "none", border: "none", borderRadius: 4, color: "#333", fontSize: 9, cursor: "pointer", fontFamily: "inherit" }}
-                                onMouseEnter={e => e.currentTarget.style.color = "#22c55e"}
+                                onMouseEnter={e => e.currentTarget.style.color = "#30d158"}
                                 onMouseLeave={e => e.currentTarget.style.color = "#333"}>⊕</button>
                             )}
                             <button onClick={() => setEmailTemplateModal({ profile })}
                               style={{ padding: "2px 6px", background: "none", border: "none", borderRadius: 4, color: "#333", fontSize: 9, cursor: "pointer", fontFamily: "inherit" }}
-                              onMouseEnter={e => e.currentTarget.style.color = "#60a5fa"}
+                              onMouseEnter={e => e.currentTarget.style.color = "#0a84ff"}
                               onMouseLeave={e => e.currentTarget.style.color = "#333"}>✉</button>
                           </div>
                         </div>
@@ -7824,18 +7837,18 @@ function CastingAppInner({ authUser }) {
             {activeTab === "mail" && (
               <div style={{ display: "flex", flexDirection: "column", height: "calc(100vh - 60px)" }}>
                 {/* Gmail toolbar */}
-                <div style={{ padding: "14px 16px", borderBottom: "1px solid #1e1e22", display: "flex", alignItems: "center", gap: 10, flexShrink: 0, flexWrap: "wrap" }}>
+                <div style={{ padding: "14px 16px", borderBottom: "1px solid #2e2e34", display: "flex", alignItems: "center", gap: 10, flexShrink: 0, flexWrap: "wrap" }}>
                   <svg width="22" height="22" viewBox="0 0 48 48" style={{ flexShrink: 0 }}><path fill="#EA4335" d="M5.5 7.5h37v33h-37z"/><path fill="#FBBC05" d="M5.5 7.5L24 24l19.5-16.5" opacity=".3"/><path fill="#34A853" d="M5.5 40.5L24 24"/><path fill="#4285F4" d="M42.5 40.5L24 24"/><path fill="#C5221F" d="M5.5 7.5L24 24l19.5-16.5v33h-37z" opacity=".1"/><rect x="2" y="10" width="44" height="28" rx="3" fill="none" stroke="#EA4335" strokeWidth="2"/></svg>
-                  <span style={{ fontSize: 14, fontWeight: 700, color: "#f0f0f0" }}>Gmail</span>
-                  <div style={{ width: 1, height: 20, background: "#2a2a2e" }} />
+                  <span style={{ fontSize: 14, fontWeight: 700, color: "#f5f5f7" }}>Gmail</span>
+                  <div style={{ width: 1, height: 20, background: "#3a3a40" }} />
 
                   {/* Gmail label input */}
                   <div style={{ display: "flex", alignItems: "center", gap: 6, flex: 1, minWidth: 200 }}>
                     <span style={{ fontSize: 10, color: "#888", fontWeight: 600, whiteSpace: "nowrap" }}>Libellé :</span>
                     <input value={state.gmailLabel || ""} onChange={e => setState(p => ({ ...p, gmailLabel: e.target.value }))}
                       placeholder={`Ex: Casting/${state.projectName || "Projet"}`}
-                      style={{ flex: 1, padding: "6px 10px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 6, color: "#e0e0e0", fontSize: 11, fontFamily: "'DM Sans',sans-serif", outline: "none", maxWidth: 250 }}
-                      onFocus={e => e.target.style.borderColor = "#EA4335"} onBlur={e => e.target.style.borderColor = "#2a2a2e"} />
+                      style={{ flex: 1, padding: "6px 10px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 6, color: "#ebebf0", fontSize: 11, fontFamily: "inherit", outline: "none", maxWidth: 250 }}
+                      onFocus={e => e.target.style.borderColor = "#EA4335"} onBlur={e => e.target.style.borderColor = "#3a3a40"} />
                   </div>
 
                   {/* Quick Gmail links */}
@@ -7854,14 +7867,14 @@ function CastingAppInner({ authUser }) {
                       const subject = `Casting ${state.projectName || ""} - ${activeRole || ""}`;
                       window.open(`https://mail.google.com/mail/?view=cm&su=${encodeURIComponent(subject)}`, "_blank");
                     }}
-                      style={{ padding: "6px 12px", background: "rgba(34,197,94,0.08)", border: "1px solid rgba(34,197,94,0.15)", borderRadius: 8, color: "#22c55e", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
+                      style={{ padding: "6px 12px", background: "rgba(48,209,88,0.08)", border: "1px solid rgba(48,209,88,0.15)", borderRadius: 8, color: "#30d158", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
                       ✏ Nouveau mail
                     </button>
                   </div>
                 </div>
 
                 {/* Gmail iframe viewer */}
-                <div style={{ flex: 1, position: "relative", background: "#0c0c0e" }}>
+                <div style={{ flex: 1, position: "relative", background: "#101013" }}>
                   <iframe
                     src={state.gmailLabel
                       ? `https://mail.google.com/mail/u/0/#label/${encodeURIComponent(state.gmailLabel)}`
@@ -7874,7 +7887,7 @@ function CastingAppInner({ authUser }) {
                   />
                   {/* Fallback overlay — shown if iframe blocked */}
                   <div id="gmail-fallback" style={{
-                    position: "absolute", inset: 0, background: "#0c0c0e",
+                    position: "absolute", inset: 0, background: "#101013",
                     display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
                     gap: 16, padding: 40, pointerEvents: "none",
                   }}>
@@ -7910,7 +7923,7 @@ function CastingAppInner({ authUser }) {
                 </div>
 
                 {/* Bottom quick actions */}
-                <div style={{ padding: "10px 16px", borderTop: "1px solid #1e1e22", display: "flex", alignItems: "center", gap: 8, flexShrink: 0, overflowX: "auto" }}>
+                <div style={{ padding: "10px 16px", borderTop: "1px solid #2e2e34", display: "flex", alignItems: "center", gap: 8, flexShrink: 0, overflowX: "auto" }}>
                   <span style={{ fontSize: 10, color: "#555", fontWeight: 600, whiteSpace: "nowrap" }}>Envoi rapide :</span>
                   {state.roles.map(role => {
                     const profiles = state.profiles[role] || [];
@@ -7983,7 +7996,7 @@ function CastingAppInner({ authUser }) {
       {/* ===== FINAL MAIL COMPOSE MODAL ===== */}
       {finalMailModal && (() => {
         const { profile, type, email, fullName, isSel, isMaybe, role } = finalMailModal;
-        const statusColor = isSel ? "#22c55e" : isMaybe ? "#f59e0b" : "#ef4444";
+        const statusColor = isSel ? "#30d158" : isMaybe ? "#ffd60a" : "#ff453a";
         const statusLabel = isSel ? "✓ Retenu" : isMaybe ? "? En attente" : "✕ Non retenu";
 
         const handleAiCorrect = async () => {
@@ -8012,22 +8025,22 @@ function CastingAppInner({ authUser }) {
 
         return (
           <div onClick={() => setFinalMailModal(null)} style={{ position: "fixed", inset: 0, zIndex: 9999, background: "rgba(0,0,0,0.75)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
-            <div onClick={e => e.stopPropagation()} style={{ width: "100%", maxWidth: 660, maxHeight: "92vh", background: "#141416", borderRadius: 20, border: "1px solid #2a2a2e", overflow: "auto", display: "flex", flexDirection: "column" }}>
+            <div onClick={e => e.stopPropagation()} style={{ width: "100%", maxWidth: 660, maxHeight: "92vh", background: "#232327", borderRadius: 20, border: "1px solid #3a3a40", overflow: "auto", display: "flex", flexDirection: "column" }}>
 
               {/* Header */}
-              <div style={{ padding: "22px 28px 16px", borderBottom: "1px solid #1e1e22", flexShrink: 0 }}>
+              <div style={{ padding: "22px 28px 16px", borderBottom: "1px solid #2e2e34", flexShrink: 0 }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 14 }}>
-                  <h3 style={{ fontSize: 18, fontWeight: 800, color: "#f0f0f0", fontFamily: "'Playfair Display',serif", margin: 0 }}>✉ Rédiger un email</h3>
+                  <h3 style={{ fontSize: 18, fontWeight: 800, color: "#f5f5f7", fontFamily: "inherit", margin: 0 }}>✉ Rédiger un email</h3>
                   <button onClick={() => setFinalMailModal(null)} style={{ background: "none", border: "none", color: "#666", cursor: "pointer", fontSize: 20 }}>×</button>
                 </div>
 
                 {/* Recipient info */}
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <div style={{ width: 42, height: 52, borderRadius: 8, overflow: "hidden", background: "#0c0c0e", flexShrink: 0 }}>
+                  <div style={{ width: 42, height: 52, borderRadius: 8, overflow: "hidden", background: "#101013", flexShrink: 0 }}>
                     {profile?.photos?.[0] ? <img src={profile.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#333" }}>◎</div>}
                   </div>
                   <div style={{ flex: 1 }}>
-                    <div style={{ fontSize: 15, fontWeight: 700, color: "#f0f0f0" }}>{fullName}</div>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: "#f5f5f7" }}>{fullName}</div>
                     <div style={{ display: "flex", alignItems: "center", gap: 8, fontSize: 11, color: "#888", marginTop: 2 }}>
                       <span style={{ color: statusColor, fontWeight: 700, background: `${statusColor}15`, padding: "1px 8px", borderRadius: 4 }}>{statusLabel}</span>
                       <span>{role}</span>
@@ -8041,13 +8054,13 @@ function CastingAppInner({ authUser }) {
                 <div style={{ marginTop: 14, display: "flex", flexDirection: "column", gap: 8 }}>
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                     <span style={{ fontSize: 10, color: "#666", fontWeight: 600, width: 40 }}>À :</span>
-                    <div style={{ flex: 1, padding: "7px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, fontSize: 12, color: "#ccc" }}>{email}</div>
+                    <div style={{ flex: 1, padding: "7px 12px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 8, fontSize: 12, color: "#ccc" }}>{email}</div>
                   </div>
                   <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
                     <span style={{ fontSize: 10, color: "#666", fontWeight: 600, width: 40 }}>Objet :</span>
                     <input value={finalMailModal.subject} onChange={e => setFinalMailModal(prev => ({ ...prev, subject: e.target.value }))}
-                      style={{ flex: 1, padding: "7px 12px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, fontSize: 12, color: "#e0e0e0", fontFamily: "'DM Sans',sans-serif", outline: "none" }}
-                      onFocus={e => e.target.style.borderColor = "#c9a44a"} onBlur={e => e.target.style.borderColor = "#2a2a2e"} />
+                      style={{ flex: 1, padding: "7px 12px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 8, fontSize: 12, color: "#ebebf0", fontFamily: "inherit", outline: "none" }}
+                      onFocus={e => e.target.style.borderColor = "#d4af61"} onBlur={e => e.target.style.borderColor = "#3a3a40"} />
                   </div>
                 </div>
               </div>
@@ -8057,20 +8070,20 @@ function CastingAppInner({ authUser }) {
                 <textarea value={finalMailModal.body} onChange={e => setFinalMailModal(prev => ({ ...prev, body: e.target.value }))}
                   rows={12}
                   style={{
-                    width: "100%", padding: "16px 18px", background: "#0c0c0e", border: "1px solid #2a2a2e",
-                    borderRadius: 14, color: "#e0e0e0", fontSize: 13, fontFamily: "'DM Sans',sans-serif",
+                    width: "100%", padding: "16px 18px", background: "#101013", border: "1px solid #3a3a40",
+                    borderRadius: 14, color: "#ebebf0", fontSize: 13, fontFamily: "inherit",
                     outline: "none", resize: "vertical", lineHeight: 1.7,
                   }}
-                  onFocus={e => e.target.style.borderColor = "#c9a44a"} onBlur={e => e.target.style.borderColor = "#2a2a2e"}
+                  onFocus={e => e.target.style.borderColor = "#d4af61"} onBlur={e => e.target.style.borderColor = "#3a3a40"}
                 />
 
                 {/* AI + Copy buttons */}
                 <div style={{ display: "flex", gap: 8, marginTop: 12, flexWrap: "wrap" }}>
                   <button onClick={handleAiCorrect} disabled={finalMailAiLoading}
                     style={{
-                      padding: "8px 16px", background: "linear-gradient(135deg, rgba(168,85,247,0.12), rgba(168,85,247,0.06))",
-                      border: "1px solid rgba(168,85,247,0.25)", borderRadius: 10,
-                      color: "#a855f7", fontSize: 11, fontWeight: 700, cursor: finalMailAiLoading ? "wait" : "pointer",
+                      padding: "8px 16px", background: "linear-gradient(135deg, rgba(191,90,242,0.12), rgba(191,90,242,0.06))",
+                      border: "1px solid rgba(191,90,242,0.25)", borderRadius: 10,
+                      color: "#bf5af2", fontSize: 11, fontWeight: 700, cursor: finalMailAiLoading ? "wait" : "pointer",
                       fontFamily: "inherit", display: "flex", alignItems: "center", gap: 6,
                       opacity: finalMailAiLoading ? 0.6 : 1,
                     }}>
@@ -8086,7 +8099,7 @@ function CastingAppInner({ authUser }) {
                     setFinalMailCopied(true);
                     setTimeout(() => setFinalMailCopied(false), 2000);
                   }}
-                    style={{ padding: "8px 16px", background: "rgba(255,255,255,0.03)", border: "1px solid #2a2a2e", borderRadius: 10, color: finalMailCopied ? "#22c55e" : "#888", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+                    style={{ padding: "8px 16px", background: "rgba(255,255,255,0.03)", border: "1px solid #3a3a40", borderRadius: 10, color: finalMailCopied ? "#30d158" : "#888", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
                     {finalMailCopied ? "✓ Copié !" : "📋 Copier le mail"}
                   </button>
 
@@ -8098,7 +8111,7 @@ function CastingAppInner({ authUser }) {
                         : `Bonjour ${fullName},\n\nJ'ai le plaisir de vous annoncer que vous avez été retenu(e) pour le rôle de ${role} dans le projet "${state.projectName || ""}".\n\nNous reviendrons vers vous très prochainement avec les détails.\n\nFélicitations,\n${authUser?.firstName || "La direction de casting"}`;
                       setFinalMailModal(prev => ({ ...prev, body: tpl }));
                     }}
-                      style={{ padding: "8px 16px", background: "rgba(34,197,94,0.06)", border: "1px solid rgba(34,197,94,0.15)", borderRadius: 10, color: "#22c55e", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+                      style={{ padding: "8px 16px", background: "rgba(48,209,88,0.06)", border: "1px solid rgba(48,209,88,0.15)", borderRadius: 10, color: "#30d158", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
                       ↻ Template "Retenu"
                     </button>
                   )}
@@ -8109,7 +8122,7 @@ function CastingAppInner({ authUser }) {
                         : `Bonjour ${fullName},\n\nMerci pour votre passage au casting pour "${state.projectName || ""}".\n\nNous avons fait le choix de nous orienter vers un autre profil. Votre talent a été apprécié et nous espérons travailler ensemble prochainement.\n\nCordialement,\n${authUser?.firstName || "La direction de casting"}`;
                       setFinalMailModal(prev => ({ ...prev, body: tpl }));
                     }}
-                      style={{ padding: "8px 16px", background: "rgba(239,68,68,0.06)", border: "1px solid rgba(239,68,68,0.15)", borderRadius: 10, color: "#ef4444", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+                      style={{ padding: "8px 16px", background: "rgba(255,69,58,0.06)", border: "1px solid rgba(255,69,58,0.15)", borderRadius: 10, color: "#ff453a", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
                       ↻ Template "Non retenu"
                     </button>
                   )}
@@ -8117,9 +8130,9 @@ function CastingAppInner({ authUser }) {
               </div>
 
               {/* Footer actions */}
-              <div style={{ padding: "16px 28px 22px", borderTop: "1px solid #1e1e22", display: "flex", gap: 10, justifyContent: "flex-end", flexShrink: 0 }}>
+              <div style={{ padding: "16px 28px 22px", borderTop: "1px solid #2e2e34", display: "flex", gap: 10, justifyContent: "flex-end", flexShrink: 0 }}>
                 <button onClick={() => setFinalMailModal(null)}
-                  style={{ padding: "12px 24px", background: "rgba(255,255,255,0.03)", border: "1px solid #2a2a2e", borderRadius: 12, color: "#888", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+                  style={{ padding: "12px 24px", background: "rgba(255,255,255,0.03)", border: "1px solid #3a3a40", borderRadius: 12, color: "#888", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
                   Annuler
                 </button>
                 <button onClick={() => {
@@ -8156,21 +8169,21 @@ function CastingAppInner({ authUser }) {
         const email = profile?.email || profile?.agencyEmail || "";
         return (
           <div onClick={() => setInviteModal(null)} style={{ position: "fixed", inset: 0, zIndex: 9999, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
-            <div onClick={e => e.stopPropagation()} style={{ width: "100%", maxWidth: 640, maxHeight: "90vh", background: "#141416", borderRadius: 20, border: "1px solid #2a2a2e", overflow: "auto" }}>
+            <div onClick={e => e.stopPropagation()} style={{ width: "100%", maxWidth: 640, maxHeight: "90vh", background: "#232327", borderRadius: 20, border: "1px solid #3a3a40", overflow: "auto" }}>
               {/* Header */}
-              <div style={{ padding: "24px 28px 16px", borderBottom: "1px solid #1e1e22" }}>
+              <div style={{ padding: "24px 28px 16px", borderBottom: "1px solid #2e2e34" }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-                  <h3 style={{ fontSize: 18, fontWeight: 800, color: "#f0f0f0", fontFamily: "'Playfair Display', serif" }}>
+                  <h3 style={{ fontSize: 18, fontWeight: 800, color: "#f5f5f7", fontFamily: "inherit" }}>
                     📨 Convocation casting
                   </h3>
                   <button onClick={() => setInviteModal(null)} style={{ background: "none", border: "none", color: "#666", cursor: "pointer", fontSize: 20 }}>×</button>
                 </div>
                 <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: 10 }}>
-                  <div style={{ width: 40, height: 48, borderRadius: 8, overflow: "hidden", background: "#0c0c0e" }}>
+                  <div style={{ width: 40, height: 48, borderRadius: 8, overflow: "hidden", background: "#101013" }}>
                     {profile?.photos?.[0] ? <img src={profile.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#333" }}>◎</div>}
                   </div>
                   <div>
-                    <div style={{ fontSize: 15, fontWeight: 700, color: "#f0f0f0" }}>{fullName}</div>
+                    <div style={{ fontSize: 15, fontWeight: 700, color: "#f5f5f7" }}>{fullName}</div>
                     <div style={{ fontSize: 11, color: "#888" }}>
                       {email} · {slot.role || ""} · {slot.time} ({slot.duration} min)
                     </div>
@@ -8180,50 +8193,50 @@ function CastingAppInner({ authUser }) {
 
               {/* Mail body */}
               <div style={{ padding: "20px 28px" }}>
-                <label style={{ display: "block", fontSize: 10, color: "#c9a44a", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 8 }}>
+                <label style={{ display: "block", fontSize: 10, color: "#d4af61", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 8 }}>
                   ✉ Corps du mail (modifiable)
                 </label>
                 <textarea value={inviteMailBody} onChange={e => setInviteMailBody(e.target.value)}
                   rows={8}
                   style={{
-                    width: "100%", padding: "14px 16px", background: "#0c0c0e", border: "1px solid #2a2a2e",
-                    borderRadius: 12, color: "#e0e0e0", fontSize: 13, fontFamily: "'DM Sans',sans-serif",
+                    width: "100%", padding: "14px 16px", background: "#101013", border: "1px solid #3a3a40",
+                    borderRadius: 12, color: "#ebebf0", fontSize: 13, fontFamily: "inherit",
                     outline: "none", resize: "vertical", lineHeight: 1.6,
                   }}
-                  onFocus={e => e.target.style.borderColor = "#c9a44a"} onBlur={e => e.target.style.borderColor = "#2a2a2e"}
+                  onFocus={e => e.target.style.borderColor = "#d4af61"} onBlur={e => e.target.style.borderColor = "#3a3a40"}
                 />
               </div>
 
               {/* Info block */}
               <div style={{ padding: "0 28px 20px" }}>
-                <label style={{ display: "block", fontSize: 10, color: "#a855f7", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 8 }}>
+                <label style={{ display: "block", fontSize: 10, color: "#bf5af2", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.08em", marginBottom: 8 }}>
                   📋 Informations pratiques (copier-coller)
                 </label>
                 <textarea value={inviteInfoBlock} onChange={e => setInviteInfoBlock(e.target.value)}
                   rows={10}
                   style={{
-                    width: "100%", padding: "14px 16px", background: "#0c0c0e", border: "1px dashed #2a2a2e",
-                    borderRadius: 12, color: "#ccc", fontSize: 12, fontFamily: "'DM Sans',sans-serif",
+                    width: "100%", padding: "14px 16px", background: "#101013", border: "1px dashed #3a3a40",
+                    borderRadius: 12, color: "#ccc", fontSize: 12, fontFamily: "inherit",
                     outline: "none", resize: "vertical", lineHeight: 1.6,
                   }}
-                  onFocus={e => e.target.style.borderColor = "#a855f7"} onBlur={e => e.target.style.borderColor = "#2a2a2e"}
+                  onFocus={e => e.target.style.borderColor = "#bf5af2"} onBlur={e => e.target.style.borderColor = "#3a3a40"}
                 />
                 <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
                   <button onClick={() => { navigator.clipboard.writeText(inviteInfoBlock); }}
-                    style={{ padding: "6px 14px", background: "rgba(168,85,247,0.08)", border: "1px solid rgba(168,85,247,0.2)", borderRadius: 8, color: "#a855f7", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+                    style={{ padding: "6px 14px", background: "rgba(191,90,242,0.08)", border: "1px solid rgba(191,90,242,0.2)", borderRadius: 8, color: "#bf5af2", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
                     📋 Copier les infos
                   </button>
                   <button onClick={() => { navigator.clipboard.writeText(inviteMailBody + "\n\n" + inviteInfoBlock); }}
-                    style={{ padding: "6px 14px", background: "rgba(255,255,255,0.03)", border: "1px solid #2a2a2e", borderRadius: 8, color: "#888", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+                    style={{ padding: "6px 14px", background: "rgba(255,255,255,0.03)", border: "1px solid #3a3a40", borderRadius: 8, color: "#888", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
                     📋 Copier tout (mail + infos)
                   </button>
                 </div>
               </div>
 
               {/* Actions */}
-              <div style={{ padding: "16px 28px 24px", borderTop: "1px solid #1e1e22", display: "flex", gap: 10, justifyContent: "flex-end" }}>
+              <div style={{ padding: "16px 28px 24px", borderTop: "1px solid #2e2e34", display: "flex", gap: 10, justifyContent: "flex-end" }}>
                 <button onClick={() => setInviteModal(null)}
-                  style={{ padding: "12px 24px", background: "rgba(255,255,255,0.03)", border: "1px solid #2a2a2e", borderRadius: 12, color: "#888", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+                  style={{ padding: "12px 24px", background: "rgba(255,255,255,0.03)", border: "1px solid #3a3a40", borderRadius: 12, color: "#888", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
                   Annuler
                 </button>
                 <button onClick={() => {
@@ -8266,9 +8279,9 @@ function CastingAppInner({ authUser }) {
               <div style={{
                 display: "flex", alignItems: "center", gap: 12, padding: "12px 16px",
                 background: "rgba(255,255,255,0.02)", borderRadius: 10, marginBottom: 20,
-                border: "1px solid #1e1e22",
+                border: "1px solid #2e2e34",
               }}>
-                <div style={{ width: 40, height: 50, borderRadius: 6, overflow: "hidden", background: "#0c0c0e", flexShrink: 0 }}>
+                <div style={{ width: 40, height: 50, borderRadius: 6, overflow: "hidden", background: "#101013", flexShrink: 0 }}>
                   {profile?.photos?.[0] ? (
                     <img src={profile.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                   ) : (
@@ -8276,7 +8289,7 @@ function CastingAppInner({ authUser }) {
                   )}
                 </div>
                 <div>
-                  <div style={{ fontSize: 14, fontWeight: 600, color: "#f0f0f0" }}>{profile?.name || "—"}</div>
+                  <div style={{ fontSize: 14, fontWeight: 600, color: "#f5f5f7" }}>{profile?.name || "—"}</div>
                   <div style={{ fontSize: 11, color: "#888" }}>
                     {slot.role || profile?._role} · Passage à {slot.time}
                   </div>
@@ -8294,12 +8307,12 @@ function CastingAppInner({ authUser }) {
                   placeholder="Décrivez la scène, les émotions, les indications de jeu, le texte à préparer..."
                   rows={8}
                   style={{
-                    width: "100%", padding: "12px 14px", background: "#0c0c0e", border: "1px solid #2a2a2e",
-                    borderRadius: 10, color: "#e0e0e0", fontSize: 13, fontFamily: "'DM Sans', sans-serif",
+                    width: "100%", padding: "12px 14px", background: "#101013", border: "1px solid #3a3a40",
+                    borderRadius: 10, color: "#ebebf0", fontSize: 13, fontFamily: "inherit",
                     outline: "none", resize: "vertical", lineHeight: 1.6,
                   }}
-                  onFocus={e => e.target.style.borderColor = "#a855f755"}
-                  onBlur={e => e.target.style.borderColor = "#2a2a2e"}
+                  onFocus={e => e.target.style.borderColor = "#bf5af255"}
+                  onBlur={e => e.target.style.borderColor = "#3a3a40"}
                 />
               </div>
 
@@ -8311,13 +8324,13 @@ function CastingAppInner({ authUser }) {
                 {slot.actingFileName ? (
                   <div style={{
                     display: "flex", alignItems: "center", justifyContent: "space-between",
-                    padding: "10px 14px", background: "rgba(168,85,247,0.06)",
-                    border: "1px solid rgba(168,85,247,0.2)", borderRadius: 10,
+                    padding: "10px 14px", background: "rgba(191,90,242,0.06)",
+                    border: "1px solid rgba(191,90,242,0.2)", borderRadius: 10,
                   }}>
                     <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
                       <span style={{ fontSize: 18 }}>📄</span>
                       <div>
-                        <div style={{ fontSize: 12, fontWeight: 600, color: "#a855f7" }}>{slot.actingFileName}</div>
+                        <div style={{ fontSize: 12, fontWeight: 600, color: "#bf5af2" }}>{slot.actingFileName}</div>
                         <div style={{ fontSize: 10, color: "#666" }}>Fichier attaché</div>
                       </div>
                     </div>
@@ -8329,9 +8342,9 @@ function CastingAppInner({ authUser }) {
                             a.href = slot.actingFile; a.download = slot.actingFileName; a.click();
                           }}
                           style={{
-                            padding: "4px 10px", background: "rgba(168,85,247,0.1)",
-                            border: "1px solid rgba(168,85,247,0.3)", borderRadius: 6,
-                            color: "#a855f7", cursor: "pointer", fontSize: 10, fontFamily: "inherit", fontWeight: 600,
+                            padding: "4px 10px", background: "rgba(191,90,242,0.1)",
+                            border: "1px solid rgba(191,90,242,0.3)", borderRadius: 6,
+                            color: "#bf5af2", cursor: "pointer", fontSize: 10, fontFamily: "inherit", fontWeight: 600,
                           }}
                         >
                           Télécharger
@@ -8340,9 +8353,9 @@ function CastingAppInner({ authUser }) {
                       <button
                         onClick={() => updateSlot(actingNotesModal.dayId, actingNotesModal.slotId, { actingFile: null, actingFileName: "" })}
                         style={{
-                          padding: "4px 10px", background: "rgba(239,68,68,0.08)",
-                          border: "1px solid rgba(239,68,68,0.2)", borderRadius: 6,
-                          color: "#ef4444", cursor: "pointer", fontSize: 10, fontFamily: "inherit", fontWeight: 600,
+                          padding: "4px 10px", background: "rgba(255,69,58,0.08)",
+                          border: "1px solid rgba(255,69,58,0.2)", borderRadius: 6,
+                          color: "#ff453a", cursor: "pointer", fontSize: 10, fontFamily: "inherit", fontWeight: 600,
                         }}
                       >
                         Retirer
@@ -8356,7 +8369,7 @@ function CastingAppInner({ authUser }) {
                     border: "1px dashed #333", borderRadius: 10, cursor: "pointer",
                     transition: "all 0.2s", color: "#666", fontSize: 12,
                   }}
-                    onMouseEnter={e => { e.currentTarget.style.borderColor = "#a855f7"; e.currentTarget.style.color = "#a855f7"; }}
+                    onMouseEnter={e => { e.currentTarget.style.borderColor = "#bf5af2"; e.currentTarget.style.color = "#bf5af2"; }}
                     onMouseLeave={e => { e.currentTarget.style.borderColor = "#333"; e.currentTarget.style.color = "#666"; }}
                   >
                     <input
@@ -8380,9 +8393,9 @@ function CastingAppInner({ authUser }) {
               <button
                 onClick={() => setActingNotesModal(null)}
                 style={{
-                  width: "100%", padding: "12px", background: "rgba(168,85,247,0.1)",
-                  border: "1px solid rgba(168,85,247,0.3)", borderRadius: 10,
-                  color: "#a855f7", cursor: "pointer", fontSize: 13, fontWeight: 600,
+                  width: "100%", padding: "12px", background: "rgba(191,90,242,0.1)",
+                  border: "1px solid rgba(191,90,242,0.3)", borderRadius: 10,
+                  color: "#bf5af2", cursor: "pointer", fontSize: 13, fontWeight: 600,
                   fontFamily: "inherit",
                 }}
               >
@@ -8405,14 +8418,14 @@ function CastingAppInner({ authUser }) {
           }}
         >
           <div onClick={e => e.stopPropagation()} style={{
-            width: "80%", maxWidth: 900, background: "#111114",
-            borderRadius: 16, overflow: "hidden", border: "1px solid #2a2a2e",
+            width: "80%", maxWidth: 900, background: "#1c1c1f",
+            borderRadius: 16, overflow: "hidden", border: "1px solid #3a3a40",
           }}>
             <div style={{
               display: "flex", alignItems: "center", justifyContent: "space-between",
-              padding: "12px 20px", borderBottom: "1px solid #1e1e22",
+              padding: "12px 20px", borderBottom: "1px solid #2e2e34",
             }}>
-              <span style={{ fontSize: 13, fontWeight: 600, color: "#fb923c" }}>🎬 Vidéo de casting</span>
+              <span style={{ fontSize: 13, fontWeight: 600, color: "#ff9f0a" }}>🎬 Vidéo de casting</span>
               <button onClick={() => setCastingVideoModal(null)} style={{
                 background: "none", border: "none", color: "#666", fontSize: 20,
                 cursor: "pointer", fontFamily: "inherit",
@@ -8429,9 +8442,9 @@ function CastingAppInner({ authUser }) {
                 href={castingVideoModal}
                 download
                 style={{
-                  padding: "8px 16px", background: "rgba(251,146,60,0.08)",
-                  border: "1px solid rgba(251,146,60,0.2)", borderRadius: 8,
-                  color: "#fb923c", fontSize: 12, fontWeight: 600,
+                  padding: "8px 16px", background: "rgba(255,159,10,0.08)",
+                  border: "1px solid rgba(255,159,10,0.2)", borderRadius: 8,
+                  color: "#ff9f0a", fontSize: 12, fontWeight: 600,
                   textDecoration: "none", fontFamily: "inherit",
                 }}
               >
@@ -8594,14 +8607,14 @@ function CastingAppInner({ authUser }) {
       {/* IMPORT FROM FICHIER CASTING MODAL */}
       {importFromFileModal && (
         <div onClick={() => setImportFromFileModal(false)} style={{ position: "fixed", inset: 0, zIndex: 9999, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <div onClick={e => e.stopPropagation()} style={{ width: "90%", maxWidth: 700, maxHeight: "80vh", overflow: "auto", background: "#141416", borderRadius: 16, border: "1px solid #2a2a2e", padding: "24px" }}>
+          <div onClick={e => e.stopPropagation()} style={{ width: "90%", maxWidth: 700, maxHeight: "80vh", overflow: "auto", background: "#232327", borderRadius: 16, border: "1px solid #3a3a40", padding: "24px" }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
               <div>
-                <h3 style={{ fontSize: 16, fontWeight: 700, color: "#f0f0f0", fontFamily: "'Playfair Display', serif" }}>
+                <h3 style={{ fontSize: 16, fontWeight: 700, color: "#f5f5f7", fontFamily: "inherit" }}>
                   📁 Importer du fichier casting
                 </h3>
                 <div style={{ fontSize: 11, color: "#888" }}>
-                  Rôle : <span style={{ color: "#c9a44a", fontWeight: 600 }}>{activeRole}</span> — {actorDatabase.length} acteur{actorDatabase.length !== 1 ? "s" : ""} disponible{actorDatabase.length !== 1 ? "s" : ""}
+                  Rôle : <span style={{ color: "#d4af61", fontWeight: 600 }}>{activeRole}</span> — {actorDatabase.length} acteur{actorDatabase.length !== 1 ? "s" : ""} disponible{actorDatabase.length !== 1 ? "s" : ""}
                 </div>
               </div>
               <button onClick={() => setImportFromFileModal(false)}
@@ -8609,8 +8622,8 @@ function CastingAppInner({ authUser }) {
             </div>
 
             <input value={importFileSearch} onChange={e => setImportFileSearch(e.target.value)} placeholder="🔍 Rechercher..."
-              style={{ width: "100%", padding: "10px 14px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 10, color: "#e0e0e0", fontSize: 13, fontFamily: "'DM Sans',sans-serif", outline: "none", marginBottom: 14 }}
-              onFocus={e => e.target.style.borderColor="#a855f7"} onBlur={e => e.target.style.borderColor="#2a2a2e"} />
+              style={{ width: "100%", padding: "10px 14px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 10, color: "#ebebf0", fontSize: 13, fontFamily: "inherit", outline: "none", marginBottom: 14 }}
+              onFocus={e => e.target.style.borderColor="#bf5af2"} onBlur={e => e.target.style.borderColor="#3a3a40"} />
 
             {(() => {
               const existingIds = new Set((state.profiles[activeRole] || []).flatMap(p => [p.id, p._sourceActorId].filter(Boolean)));
@@ -8627,30 +8640,30 @@ function CastingAppInner({ authUser }) {
                     return (
                       <div key={actor.id} style={{
                         display: "flex", alignItems: "center", gap: 12, padding: "10px 14px",
-                        background: "#111114", borderRadius: 12, border: "1px solid #1e1e22",
+                        background: "#1c1c1f", borderRadius: 12, border: "1px solid #2e2e34",
                         opacity: alreadyIn ? 0.4 : 1,
                       }}>
-                        <div style={{ width: 40, height: 50, borderRadius: 6, overflow: "hidden", background: "#0c0c0e", flexShrink: 0 }}>
+                        <div style={{ width: 40, height: 50, borderRadius: 6, overflow: "hidden", background: "#101013", flexShrink: 0 }}>
                           {actor.photos?.[0] ? <img src={actor.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 14 }}>◎</div>}
                         </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ fontSize: 13, fontWeight: 600, color: "#f0f0f0" }}>
-                            {actor._favorite && <span style={{ color: "#f59e0b", marginRight: 4 }}>★</span>}
+                          <div style={{ fontSize: 13, fontWeight: 600, color: "#f5f5f7" }}>
+                            {actor._favorite && <span style={{ color: "#ffd60a", marginRight: 4 }}>★</span>}
                             {[actor.firstName, actor.name].filter(Boolean).join(" ") || "Sans nom"}
                           </div>
                           <div style={{ fontSize: 10, color: "#888" }}>
                             {[actor.profileType, actor.age ? actor.age + " ans" : null, actor.height, actor.agency].filter(Boolean).join(" · ")}
                           </div>
-                          {actor.actingLevel > 0 && <div style={{ fontSize: 10, marginTop: 2 }}>{[1,2,3,4,5].map(n => <span key={n} style={{ color: n <= actor.actingLevel ? "#c9a44a" : "#2a2a2e" }}>★</span>)}</div>}
+                          {actor.actingLevel > 0 && <div style={{ fontSize: 10, marginTop: 2 }}>{[1,2,3,4,5].map(n => <span key={n} style={{ color: n <= actor.actingLevel ? "#d4af61" : "#3a3a40" }}>★</span>)}</div>}
                         </div>
                         {alreadyIn ? (
                           <span style={{ fontSize: 10, color: "#555", fontWeight: 600 }}>Déjà ajouté</span>
                         ) : (
                           <button onClick={() => { importActorToCurrentRole(actor); }}
                             style={{
-                              padding: "6px 14px", background: "rgba(34,197,94,0.08)",
-                              border: "1px solid rgba(34,197,94,0.2)", borderRadius: 8,
-                              color: "#22c55e", fontSize: 11, fontWeight: 600, cursor: "pointer",
+                              padding: "6px 14px", background: "rgba(48,209,88,0.08)",
+                              border: "1px solid rgba(48,209,88,0.2)", borderRadius: 8,
+                              color: "#30d158", fontSize: 11, fontWeight: 600, cursor: "pointer",
                               fontFamily: "inherit", whiteSpace: "nowrap",
                             }}>
                             + Ajouter
@@ -8672,20 +8685,20 @@ function CastingAppInner({ authUser }) {
         if (profiles.length < 2) return null;
         return (
           <div style={{ position: "fixed", inset: 0, zIndex: 9999, background: "rgba(0,0,0,0.85)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <div style={{ width: "95%", maxWidth: 900, maxHeight: "90vh", overflow: "auto", background: "#141416", borderRadius: 20, border: "1px solid #2a2a2e", padding: "24px" }}>
+            <div style={{ width: "95%", maxWidth: 900, maxHeight: "90vh", overflow: "auto", background: "#232327", borderRadius: 20, border: "1px solid #3a3a40", padding: "24px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20 }}>
-                <h3 style={{ fontSize: 18, fontWeight: 700, color: "#f0f0f0", fontFamily: "'Playfair Display', serif" }}>⚖ Comparaison — {activeRole}</h3>
+                <h3 style={{ fontSize: 18, fontWeight: 700, color: "#f5f5f7", fontFamily: "inherit" }}>⚖ Comparaison — {activeRole}</h3>
                 <button onClick={() => { setCompareMode(false); setCompareSelection([]); }}
                   style={{ background: "none", border: "none", color: "#555", fontSize: 20, cursor: "pointer" }}>✕</button>
               </div>
               <div style={{ display: "grid", gridTemplateColumns: `repeat(${profiles.length}, 1fr)`, gap: 16 }}>
                 {profiles.map(p => (
-                  <div key={p.id} style={{ background: "#111114", borderRadius: 14, border: "1px solid #1e1e22", overflow: "hidden" }}>
-                    <div style={{ height: 200, background: "#0c0c0e" }}>
+                  <div key={p.id} style={{ background: "#1c1c1f", borderRadius: 14, border: "1px solid #2e2e34", overflow: "hidden" }}>
+                    <div style={{ height: 200, background: "#101013" }}>
                       {p.photos?.[0] ? <img src={p.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 40 }}>◎</div>}
                     </div>
                     <div style={{ padding: "14px" }}>
-                      <div style={{ fontSize: 16, fontWeight: 700, color: "#f0f0f0", marginBottom: 8 }}>{[p.firstName, p.name].filter(Boolean).join(" ") || "Sans nom"}</div>
+                      <div style={{ fontSize: 16, fontWeight: 700, color: "#f5f5f7", marginBottom: 8 }}>{[p.firstName, p.name].filter(Boolean).join(" ") || "Sans nom"}</div>
                       {[
                         { label: "Type", value: p.profileType },
                         { label: "Âge", value: p.age ? p.age + " ans" : null },
@@ -8695,22 +8708,22 @@ function CastingAppInner({ authUser }) {
                         { label: "Agence", value: p.agency },
                         { label: "Source", value: p.source },
                       ].filter(f => f.value).map(f => (
-                        <div key={f.label} style={{ display: "flex", justifyContent: "space-between", padding: "5px 0", borderBottom: "1px solid #1a1a1e", fontSize: 11 }}>
+                        <div key={f.label} style={{ display: "flex", justifyContent: "space-between", padding: "5px 0", borderBottom: "1px solid #2a2a30", fontSize: 11 }}>
                           <span style={{ color: "#666", fontWeight: 600 }}>{f.label}</span>
                           <span style={{ color: "#ddd" }}>{f.value}</span>
                         </div>
                       ))}
                       {p.actingLevel > 0 && (
-                        <div style={{ display: "flex", justifyContent: "space-between", padding: "5px 0", borderBottom: "1px solid #1a1a1e", fontSize: 11 }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", padding: "5px 0", borderBottom: "1px solid #2a2a30", fontSize: 11 }}>
                           <span style={{ color: "#666", fontWeight: 600 }}>Niveau</span>
-                          <span>{[1,2,3,4,5].map(n => <span key={n} style={{ color: n <= p.actingLevel ? "#c9a44a" : "#2a2a2e" }}>★</span>)}</span>
+                          <span>{[1,2,3,4,5].map(n => <span key={n} style={{ color: n <= p.actingLevel ? "#d4af61" : "#3a3a40" }}>★</span>)}</span>
                         </div>
                       )}
                       {getChoice(p.id) && (
                         <div style={{ marginTop: 8 }}><SelectionBadge selection={{ ...(state.selections[p.id] || {}), choice: getChoice(p.id) }} /></div>
                       )}
                       {state.selections[p.id]?.comment && (
-                        <div style={{ marginTop: 6, fontSize: 10, color: "#999", fontStyle: "italic", padding: "4px 8px", background: "#0c0c0e", borderRadius: 4 }}>💬 {state.selections[p.id].comment}</div>
+                        <div style={{ marginTop: 6, fontSize: 10, color: "#999", fontStyle: "italic", padding: "4px 8px", background: "#101013", borderRadius: 4 }}>💬 {state.selections[p.id].comment}</div>
                       )}
                       {p.notes && <div style={{ marginTop: 6, fontSize: 10, color: "#888", lineHeight: 1.4 }}>📝 {p.notes}</div>}
                     </div>
@@ -8725,19 +8738,19 @@ function CastingAppInner({ authUser }) {
       {/* MOVE PROFILE MODAL */}
       {moveProfileModal && (
         <div onClick={() => setMoveProfileModal(null)} style={{ position: "fixed", inset: 0, zIndex: 9999, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <div onClick={e => e.stopPropagation()} style={{ width: "90%", maxWidth: 380, background: "#141416", borderRadius: 16, border: "1px solid #2a2a2e", padding: "24px" }}>
-            <h3 style={{ fontSize: 16, fontWeight: 700, color: "#f0f0f0", marginBottom: 4, fontFamily: "'Playfair Display', serif" }}>↗ Déplacer vers un rôle</h3>
+          <div onClick={e => e.stopPropagation()} style={{ width: "90%", maxWidth: 380, background: "#232327", borderRadius: 16, border: "1px solid #3a3a40", padding: "24px" }}>
+            <h3 style={{ fontSize: 16, fontWeight: 700, color: "#f5f5f7", marginBottom: 4, fontFamily: "inherit" }}>↗ Déplacer vers un rôle</h3>
             <div style={{ fontSize: 12, color: "#888", marginBottom: 16 }}>{[moveProfileModal.profile?.firstName, moveProfileModal.profile?.name].filter(Boolean).join(" ")}</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               {state.roles.filter(r => r !== moveProfileModal.fromRole).map(role => (
                 <button key={role} onClick={() => moveProfileToRole(moveProfileModal.profile, moveProfileModal.fromRole, role)}
                   style={{
-                    padding: "12px 16px", background: "#111114", border: "1px solid #1e1e22",
+                    padding: "12px 16px", background: "#1c1c1f", border: "1px solid #2e2e34",
                     borderRadius: 10, cursor: "pointer", textAlign: "left", fontFamily: "inherit",
-                    transition: "border-color 0.2s", color: "#f0f0f0", fontSize: 13, fontWeight: 600,
+                    transition: "border-color 0.2s", color: "#f5f5f7", fontSize: 13, fontWeight: 600,
                   }}
-                  onMouseEnter={e => e.currentTarget.style.borderColor = "#c9a44a44"}
-                  onMouseLeave={e => e.currentTarget.style.borderColor = "#1e1e22"}>
+                  onMouseEnter={e => e.currentTarget.style.borderColor = "#d4af6144"}
+                  onMouseLeave={e => e.currentTarget.style.borderColor = "#2e2e34"}>
                   🎭 {role}
                 </button>
               ))}
@@ -8753,9 +8766,9 @@ function CastingAppInner({ authUser }) {
       {/* SHARE PROJECT MODAL */}
       {shareModalOpen && state._shareCode && (
         <div onClick={() => { setShareModalOpen(false); setShareCopied(false); setShareLinkCopied(false); }} style={{ position: "fixed", inset: 0, zIndex: 9999, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <div onClick={e => e.stopPropagation()} style={{ width: "90%", maxWidth: 480, background: "#141416", borderRadius: 20, border: "1px solid #2a2a2e", padding: "32px", textAlign: "center" }}>
+          <div onClick={e => e.stopPropagation()} style={{ width: "90%", maxWidth: 480, background: "#232327", borderRadius: 20, border: "1px solid #3a3a40", padding: "32px", textAlign: "center" }}>
             <div style={{ fontSize: 48, marginBottom: 12 }}>🔗</div>
-            <h3 style={{ fontSize: 20, fontWeight: 800, color: "#f0f0f0", fontFamily: "'Playfair Display', serif", marginBottom: 6 }}>
+            <h3 style={{ fontSize: 20, fontWeight: 800, color: "#f5f5f7", fontFamily: "inherit", marginBottom: 6 }}>
               Partager ce projet
             </h3>
             <p style={{ fontSize: 13, color: "#888", marginBottom: 24, lineHeight: 1.5 }}>
@@ -8765,7 +8778,7 @@ function CastingAppInner({ authUser }) {
             {/* Link */}
             <div style={{ marginBottom: 16, textAlign: "left" }}>
               <div style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>🌐 Lien de partage</div>
-              <div style={{ padding: "12px 16px", background: "#0c0c0e", borderRadius: 10, border: "1px solid #2a2a2e", fontSize: 12, color: "#60a5fa", wordBreak: "break-all", fontFamily: "monospace" }}>
+              <div style={{ padding: "12px 16px", background: "#101013", borderRadius: 10, border: "1px solid #3a3a40", fontSize: 12, color: "#0a84ff", wordBreak: "break-all", fontFamily: "monospace" }}>
                 {window.location.origin}?share={state._shareCode}
               </div>
             </div>
@@ -8773,7 +8786,7 @@ function CastingAppInner({ authUser }) {
             {/* Password */}
             <div style={{ marginBottom: 20, textAlign: "left" }}>
               <div style={{ fontSize: 10, color: "#555", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 6 }}>🔑 Mot de passe</div>
-              <div style={{ padding: "14px 18px", background: "#0c0c0e", borderRadius: 10, border: "2px dashed #c9a44a44", fontSize: 28, fontWeight: 800, letterSpacing: "0.25em", color: "#c9a44a", fontFamily: "'DM Sans', sans-serif", textAlign: "center", userSelect: "all" }}>
+              <div style={{ padding: "14px 18px", background: "#101013", borderRadius: 10, border: "2px dashed #d4af6144", fontSize: 28, fontWeight: 800, letterSpacing: "0.25em", color: "#d4af61", fontFamily: "inherit", textAlign: "center", userSelect: "all" }}>
                 {state._sharePassword || "N/A"}
               </div>
             </div>
@@ -8785,17 +8798,17 @@ function CastingAppInner({ authUser }) {
                 setShareCopied(true); setTimeout(() => setShareCopied(false), 3000);
               }}
                 style={{
-                  padding: "12px 24px", background: shareCopied ? "rgba(34,197,94,0.1)" : "rgba(201,164,74,0.08)",
-                  border: `1px solid ${shareCopied ? "rgba(34,197,94,0.3)" : "rgba(201,164,74,0.2)"}`, borderRadius: 10,
-                  color: shareCopied ? "#22c55e" : "#c9a44a", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit",
+                  padding: "12px 24px", background: shareCopied ? "rgba(48,209,88,0.1)" : "rgba(212,175,97,0.08)",
+                  border: `1px solid ${shareCopied ? "rgba(48,209,88,0.3)" : "rgba(212,175,97,0.2)"}`, borderRadius: 10,
+                  color: shareCopied ? "#30d158" : "#d4af61", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit",
                 }}>
                 {shareCopied ? "✓ Tout copié !" : "📋 Copier lien + mot de passe"}
               </button>
             </div>
             
             {state._guestVotes && Object.keys(state._guestVotes).length > 0 && (
-              <div style={{ marginTop: 16, padding: "10px 14px", background: "rgba(96,165,250,0.06)", borderRadius: 8, border: "1px solid rgba(96,165,250,0.15)" }}>
-                <span style={{ fontSize: 11, color: "#60a5fa", fontWeight: 600 }}>
+              <div style={{ marginTop: 16, padding: "10px 14px", background: "rgba(10,132,255,0.06)", borderRadius: 8, border: "1px solid rgba(10,132,255,0.15)" }}>
+                <span style={{ fontSize: 11, color: "#0a84ff", fontWeight: 600 }}>
                   📊 {Object.keys(state._guestVotes).length} vote{Object.keys(state._guestVotes).length !== 1 ? "s" : ""} reçu{Object.keys(state._guestVotes).length !== 1 ? "s" : ""} · Synchronisation en temps réel
                 </span>
               </div>
@@ -8815,20 +8828,20 @@ function CastingAppInner({ authUser }) {
       {/* COPY PROFILE MODAL */}
       {copyProfileModal && (
         <div onClick={() => setCopyProfileModal(null)} style={{ position: "fixed", inset: 0, zIndex: 9999, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <div onClick={e => e.stopPropagation()} style={{ width: "90%", maxWidth: 380, background: "#141416", borderRadius: 16, border: "1px solid #2a2a2e", padding: "24px" }}>
-            <h3 style={{ fontSize: 16, fontWeight: 700, color: "#f0f0f0", marginBottom: 4, fontFamily: "'Playfair Display', serif" }}>⊕ Copier vers un rôle</h3>
+          <div onClick={e => e.stopPropagation()} style={{ width: "90%", maxWidth: 380, background: "#232327", borderRadius: 16, border: "1px solid #3a3a40", padding: "24px" }}>
+            <h3 style={{ fontSize: 16, fontWeight: 700, color: "#f5f5f7", marginBottom: 4, fontFamily: "inherit" }}>⊕ Copier vers un rôle</h3>
             <div style={{ fontSize: 12, color: "#888", marginBottom: 4 }}>{[copyProfileModal.profile?.firstName, copyProfileModal.profile?.name].filter(Boolean).join(" ")}</div>
             <div style={{ fontSize: 10, color: "#555", marginBottom: 16 }}>Le profil restera aussi dans le rôle actuel</div>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               {state.roles.filter(r => r !== activeRole).map(role => (
                 <button key={role} onClick={() => copyProfileToRole(copyProfileModal.profile, role)}
                   style={{
-                    padding: "12px 16px", background: "#111114", border: "1px solid #1e1e22",
+                    padding: "12px 16px", background: "#1c1c1f", border: "1px solid #2e2e34",
                     borderRadius: 10, cursor: "pointer", textAlign: "left", fontFamily: "inherit",
-                    transition: "border-color 0.2s", color: "#f0f0f0", fontSize: 13, fontWeight: 600,
+                    transition: "border-color 0.2s", color: "#f5f5f7", fontSize: 13, fontWeight: 600,
                   }}
-                  onMouseEnter={e => e.currentTarget.style.borderColor = "#22c55e44"}
-                  onMouseLeave={e => e.currentTarget.style.borderColor = "#1e1e22"}>
+                  onMouseEnter={e => e.currentTarget.style.borderColor = "#30d15844"}
+                  onMouseLeave={e => e.currentTarget.style.borderColor = "#2e2e34"}>
                   🎭 {role}
                 </button>
               ))}
@@ -8852,7 +8865,7 @@ function CastingAppInner({ authUser }) {
               <div style={{ padding: "24px 32px", maxWidth: 1000, margin: "0 auto" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 20, borderBottom: "2px solid #222", paddingBottom: 12 }}>
                   <div>
-                    <h1 style={{ fontSize: 22, fontWeight: 800, color: "#111", fontFamily: "'Playfair Display', serif" }}>{state.projectName || "Casting"}</h1>
+                    <h1 style={{ fontSize: 22, fontWeight: 800, color: "#111", fontFamily: "inherit" }}>{state.projectName || "Casting"}</h1>
                     <div style={{ fontSize: 13, color: "#666" }}>Rôle : {activeRole} — {profiles.length} profil{profiles.length > 1 ? "s" : ""}</div>
                   </div>
                   <button onClick={() => setPresentationMode(false)}
@@ -8861,13 +8874,13 @@ function CastingAppInner({ authUser }) {
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: 16 }}>
                   {profiles.map(p => (
                     <div key={p.id} style={{ border: "1px solid #ddd", borderRadius: 10, overflow: "hidden" }}>
-                      <div style={{ height: 180, background: "#f0f0f0", overflow: "hidden" }}>
+                      <div style={{ height: 180, background: "#f5f5f7", overflow: "hidden" }}>
                         {p.photos?.[0] ? <img src={p.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#bbb", fontSize: 32 }}>◎</div>}
                       </div>
                       <div style={{ padding: 12 }}>
                         <div style={{ fontSize: 14, fontWeight: 700, color: "#111", marginBottom: 3 }}>{[p.firstName, p.name].filter(Boolean).join(" ") || "Sans nom"}</div>
                         <div style={{ fontSize: 11, color: "#666", lineHeight: 1.5 }}>{[p.profileType, p.age ? p.age + " ans" : "", p.height, p.hairColor, p.agency].filter(Boolean).join(" · ")}</div>
-                        {p.actingLevel > 0 && <div style={{ color: "#c9a44a", fontSize: 13, marginTop: 2 }}>{"★".repeat(p.actingLevel)}{"☆".repeat(5 - p.actingLevel)}</div>}
+                        {p.actingLevel > 0 && <div style={{ color: "#d4af61", fontSize: 13, marginTop: 2 }}>{"★".repeat(p.actingLevel)}{"☆".repeat(5 - p.actingLevel)}</div>}
                         {p.notes && <div style={{ fontSize: 10, color: "#888", marginTop: 4, fontStyle: "italic" }}>{p.notes}</div>}
                       </div>
                     </div>
@@ -8883,27 +8896,27 @@ function CastingAppInner({ authUser }) {
         const p = profiles[presentationIndex] || profiles[0];
         const sel = { ...(state.selections[p.id] || {}), choice: getChoice(p.id) };
         return (
-          <div style={{ position: "fixed", inset: 0, zIndex: 99999, background: "#0a0a0c", display: "flex", flexDirection: "column" }}
+          <div style={{ position: "fixed", inset: 0, zIndex: 99999, background: "#000000", display: "flex", flexDirection: "column" }}
             onKeyDown={e => { if (e.key === "ArrowRight" || e.key === " ") setPresentationIndex(i => Math.min(i + 1, profiles.length - 1)); if (e.key === "ArrowLeft") setPresentationIndex(i => Math.max(i - 1, 0)); if (e.key === "Escape") setPresentationMode(false); }} tabIndex={0} ref={el => el?.focus()}>
             {/* Header */}
-            <div style={{ padding: "16px 32px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #1a1a1e", flexShrink: 0 }}>
+            <div style={{ padding: "16px 32px", display: "flex", justifyContent: "space-between", alignItems: "center", borderBottom: "1px solid #2a2a30", flexShrink: 0 }}>
               <div>
-                <div style={{ fontSize: 10, color: "#c9a44a", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.15em" }}>{state.projectName} — {activeRole}</div>
+                <div style={{ fontSize: 10, color: "#d4af61", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.15em" }}>{state.projectName} — {activeRole}</div>
                 <div style={{ fontSize: 12, color: "#666" }}>{presentationIndex + 1} / {profiles.length}</div>
               </div>
-              <button onClick={() => setPresentationMode(false)} style={{ background: "none", border: "1px solid #2a2a2e", borderRadius: 8, color: "#888", fontSize: 12, cursor: "pointer", padding: "8px 16px", fontFamily: "inherit" }}>✕ Fermer</button>
+              <button onClick={() => setPresentationMode(false)} style={{ background: "none", border: "1px solid #3a3a40", borderRadius: 8, color: "#888", fontSize: 12, cursor: "pointer", padding: "8px 16px", fontFamily: "inherit" }}>✕ Fermer</button>
             </div>
             {/* Content */}
             <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "40px", gap: 40, overflow: "hidden" }}>
-              <div style={{ width: "40%", maxWidth: 500, aspectRatio: "3/4", borderRadius: 16, overflow: "hidden", background: "#111114", flexShrink: 0 }}>
+              <div style={{ width: "40%", maxWidth: 500, aspectRatio: "3/4", borderRadius: 16, overflow: "hidden", background: "#1c1c1f", flexShrink: 0 }}>
                 {p.photos?.[0] ? <img src={p.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 80 }}>◎</div>}
               </div>
               <div style={{ flex: 1, maxWidth: 450 }}>
-                <h1 style={{ fontSize: 42, fontWeight: 800, color: "#f0f0f0", fontFamily: "'Playfair Display', serif", marginBottom: 12, lineHeight: 1.1 }}>
+                <h1 style={{ fontSize: 42, fontWeight: 800, color: "#f5f5f7", fontFamily: "inherit", marginBottom: 12, lineHeight: 1.1 }}>
                   {[p.firstName, p.name].filter(Boolean).join(" ") || "Sans nom"}
                 </h1>
-                {p.profileType && <span style={{ fontSize: 13, padding: "4px 12px", background: "rgba(168,85,247,0.08)", border: "1px solid rgba(168,85,247,0.2)", borderRadius: 8, color: "#a855f7", fontWeight: 600 }}>{p.profileType}</span>}
-                {p.actingLevel > 0 && <div style={{ fontSize: 28, marginTop: 12 }}>{[1,2,3,4,5].map(n => <span key={n} style={{ color: n <= p.actingLevel ? "#c9a44a" : "#2a2a2e" }}>★</span>)}</div>}
+                {p.profileType && <span style={{ fontSize: 13, padding: "4px 12px", background: "rgba(191,90,242,0.08)", border: "1px solid rgba(191,90,242,0.2)", borderRadius: 8, color: "#bf5af2", fontWeight: 600 }}>{p.profileType}</span>}
+                {p.actingLevel > 0 && <div style={{ fontSize: 28, marginTop: 12 }}>{[1,2,3,4,5].map(n => <span key={n} style={{ color: n <= p.actingLevel ? "#d4af61" : "#3a3a40" }}>★</span>)}</div>}
                 <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "16px 32px", marginTop: 24 }}>
                   {[
                     { label: "Âge", value: p.age ? p.age + " ans" : null },
@@ -8925,17 +8938,17 @@ function CastingAppInner({ authUser }) {
               </div>
             </div>
             {/* Navigation */}
-            <div style={{ padding: "16px 32px", display: "flex", justifyContent: "center", gap: 12, borderTop: "1px solid #1a1a1e", flexShrink: 0 }}>
+            <div style={{ padding: "16px 32px", display: "flex", justifyContent: "center", gap: 12, borderTop: "1px solid #2a2a30", flexShrink: 0 }}>
               <button onClick={() => setPresentationIndex(i => Math.max(i - 1, 0))} disabled={presentationIndex === 0}
-                style={{ padding: "10px 24px", background: presentationIndex === 0 ? "transparent" : "rgba(255,255,255,0.03)", border: "1px solid #2a2a2e", borderRadius: 10, color: presentationIndex === 0 ? "#333" : "#ccc", fontSize: 13, fontWeight: 600, cursor: presentationIndex === 0 ? "default" : "pointer", fontFamily: "inherit" }}>← Précédent</button>
+                style={{ padding: "10px 24px", background: presentationIndex === 0 ? "transparent" : "rgba(255,255,255,0.03)", border: "1px solid #3a3a40", borderRadius: 10, color: presentationIndex === 0 ? "#333" : "#ccc", fontSize: 13, fontWeight: 600, cursor: presentationIndex === 0 ? "default" : "pointer", fontFamily: "inherit" }}>← Précédent</button>
               <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                 {profiles.map((_, idx) => (
                   <div key={idx} onClick={() => setPresentationIndex(idx)}
-                    style={{ width: idx === presentationIndex ? 24 : 8, height: 8, borderRadius: 4, cursor: "pointer", transition: "all 0.3s", background: idx === presentationIndex ? "#c9a44a" : "#333" }} />
+                    style={{ width: idx === presentationIndex ? 24 : 8, height: 8, borderRadius: 4, cursor: "pointer", transition: "all 0.3s", background: idx === presentationIndex ? "#d4af61" : "#333" }} />
                 ))}
               </div>
               <button onClick={() => setPresentationIndex(i => Math.min(i + 1, profiles.length - 1))} disabled={presentationIndex === profiles.length - 1}
-                style={{ padding: "10px 24px", background: presentationIndex === profiles.length - 1 ? "transparent" : "rgba(255,255,255,0.03)", border: "1px solid #2a2a2e", borderRadius: 10, color: presentationIndex === profiles.length - 1 ? "#333" : "#ccc", fontSize: 13, fontWeight: 600, cursor: presentationIndex === profiles.length - 1 ? "default" : "pointer", fontFamily: "inherit" }}>Suivant →</button>
+                style={{ padding: "10px 24px", background: presentationIndex === profiles.length - 1 ? "transparent" : "rgba(255,255,255,0.03)", border: "1px solid #3a3a40", borderRadius: 10, color: presentationIndex === profiles.length - 1 ? "#333" : "#ccc", fontSize: 13, fontWeight: 600, cursor: presentationIndex === profiles.length - 1 ? "default" : "pointer", fontFamily: "inherit" }}>Suivant →</button>
             </div>
           </div>
         );
@@ -8957,10 +8970,10 @@ function CastingAppInner({ authUser }) {
         ];
         return (
           <div onClick={() => { setEmailTemplateModal(null); setEmailActiveTemplate(null); setEmailCopied(false); }} style={{ position: "fixed", inset: 0, zIndex: 9999, background: "rgba(0,0,0,0.7)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-            <div onClick={e => e.stopPropagation()} style={{ width: "90%", maxWidth: 650, maxHeight: "85vh", overflow: "auto", background: "#141416", borderRadius: 16, border: "1px solid #2a2a2e", padding: "24px" }}>
+            <div onClick={e => e.stopPropagation()} style={{ width: "90%", maxWidth: 650, maxHeight: "85vh", overflow: "auto", background: "#232327", borderRadius: 16, border: "1px solid #3a3a40", padding: "24px" }}>
               <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 16 }}>
                 <div>
-                  <h3 style={{ fontSize: 16, fontWeight: 700, color: "#f0f0f0", fontFamily: "'Playfair Display', serif" }}>✉ Emails — {fullName}</h3>
+                  <h3 style={{ fontSize: 16, fontWeight: 700, color: "#f5f5f7", fontFamily: "inherit" }}>✉ Emails — {fullName}</h3>
                   <div style={{ fontSize: 11, color: "#888" }}>
                     {p?.email && <span>✉ {p.email}</span>}
                     {p?.agencyEmail && <span style={{ marginLeft: 10 }}>🏢 {p.agencyEmail}</span>}
@@ -8977,8 +8990,8 @@ function CastingAppInner({ authUser }) {
                     style={{
                       padding: "8px 14px", borderRadius: 8, fontSize: 11, fontWeight: 600, fontFamily: "inherit",
                       cursor: "pointer", border: "none", transition: "all 0.2s",
-                      background: emailActiveTemplate === t.key ? "rgba(201,164,74,0.12)" : "rgba(255,255,255,0.03)",
-                      color: emailActiveTemplate === t.key ? "#c9a44a" : "#888",
+                      background: emailActiveTemplate === t.key ? "rgba(212,175,97,0.12)" : "rgba(255,255,255,0.03)",
+                      color: emailActiveTemplate === t.key ? "#d4af61" : "#888",
                     }}>{t.label}</button>
                 ))}
               </div>
@@ -8989,21 +9002,21 @@ function CastingAppInner({ authUser }) {
                   <div style={{ marginBottom: 10 }}>
                     <label style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", display: "block", marginBottom: 4 }}>Objet</label>
                     <input value={emailDraft.subject} onChange={e => setEmailDraft(d => ({ ...d, subject: e.target.value }))}
-                      style={{ width: "100%", padding: "10px 14px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "'DM Sans',sans-serif", outline: "none" }}
-                      onFocus={e => e.target.style.borderColor = "#c9a44a"} onBlur={e => e.target.style.borderColor = "#2a2a2e"} />
+                      style={{ width: "100%", padding: "10px 14px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 8, color: "#ebebf0", fontSize: 13, fontFamily: "inherit", outline: "none" }}
+                      onFocus={e => e.target.style.borderColor = "#d4af61"} onBlur={e => e.target.style.borderColor = "#3a3a40"} />
                   </div>
 
                   {/* Body */}
                   <div style={{ marginBottom: 12 }}>
                     <label style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", display: "block", marginBottom: 4 }}>Corps du message</label>
                     <textarea value={emailDraft.body} onChange={e => setEmailDraft(d => ({ ...d, body: e.target.value }))} rows={12}
-                      style={{ width: "100%", padding: "12px 14px", background: "#0c0c0e", border: "1px solid #2a2a2e", borderRadius: 8, color: "#e0e0e0", fontSize: 13, fontFamily: "'DM Sans',sans-serif", outline: "none", resize: "vertical", lineHeight: 1.6 }}
-                      onFocus={e => e.target.style.borderColor = "#c9a44a"} onBlur={e => e.target.style.borderColor = "#2a2a2e"} />
+                      style={{ width: "100%", padding: "12px 14px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 8, color: "#ebebf0", fontSize: 13, fontFamily: "inherit", outline: "none", resize: "vertical", lineHeight: 1.6 }}
+                      onFocus={e => e.target.style.borderColor = "#d4af61"} onBlur={e => e.target.style.borderColor = "#3a3a40"} />
                   </div>
 
                   {/* Prompt generator */}
-                  <div style={{ padding: "12px 14px", background: "#111114", borderRadius: 10, border: "1px solid #1e1e22", marginBottom: 14 }}>
-                    <label style={{ fontSize: 9, color: "#a855f7", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", display: "block", marginBottom: 6 }}>✨ Personnaliser</label>
+                  <div style={{ padding: "12px 14px", background: "#1c1c1f", borderRadius: 10, border: "1px solid #2e2e34", marginBottom: 14 }}>
+                    <label style={{ fontSize: 9, color: "#bf5af2", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", display: "block", marginBottom: 6 }}>✨ Personnaliser</label>
                     <div style={{ display: "flex", gap: 6, flexWrap: "wrap", marginBottom: 8 }}>
                       {[
                         { label: "Ton formel", action: () => setEmailDraft(d => ({ ...d, body: d.body.replace(/Bonjour/g, "Cher(e)").replace(/Cordialement/g, "Veuillez agréer l'expression de mes salutations distinguées") })) },
@@ -9013,7 +9026,7 @@ function CastingAppInner({ authUser }) {
                         { label: "+ Lieu & accès", action: () => setEmailDraft(d => ({ ...d, body: d.body + "\n\nAdresse : [ADRESSE]\nCode d'accès : [CODE]\nEtage/Salle : [DÉTAILS]" })) },
                       ].map(btn => (
                         <button key={btn.label} onClick={btn.action}
-                          style={{ padding: "5px 10px", background: "rgba(168,85,247,0.06)", border: "1px solid rgba(168,85,247,0.15)", borderRadius: 6, color: "#a855f7", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>{btn.label}</button>
+                          style={{ padding: "5px 10px", background: "rgba(191,90,242,0.06)", border: "1px solid rgba(191,90,242,0.15)", borderRadius: 6, color: "#bf5af2", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>{btn.label}</button>
                       ))}
                     </div>
                   </div>
@@ -9024,14 +9037,14 @@ function CastingAppInner({ authUser }) {
                       navigator.clipboard.writeText(`Objet : ${emailDraft.subject}\n\n${emailDraft.body}`);
                       setEmailCopied(true); setTimeout(() => setEmailCopied(false), 2000);
                     }}
-                      style={{ flex: 1, padding: "12px", background: emailCopied ? "rgba(34,197,94,0.1)" : "rgba(201,164,74,0.08)", border: `1px solid ${emailCopied ? "rgba(34,197,94,0.3)" : "rgba(201,164,74,0.2)"}`, borderRadius: 10, color: emailCopied ? "#22c55e" : "#c9a44a", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", transition: "all 0.2s" }}>
+                      style={{ flex: 1, padding: "12px", background: emailCopied ? "rgba(48,209,88,0.1)" : "rgba(212,175,97,0.08)", border: `1px solid ${emailCopied ? "rgba(48,209,88,0.3)" : "rgba(212,175,97,0.2)"}`, borderRadius: 10, color: emailCopied ? "#30d158" : "#d4af61", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", transition: "all 0.2s" }}>
                       {emailCopied ? "✓ Copié !" : "📋 Copier tout"}
                     </button>
                     <button onClick={() => {
                       const email = p?.email || p?.agencyEmail || "";
                       window.open(`mailto:${email}?subject=${encodeURIComponent(emailDraft.subject)}&body=${encodeURIComponent(emailDraft.body)}`, "_blank");
                     }}
-                      style={{ padding: "12px 20px", background: "linear-gradient(135deg, #c9a44a, #a67c2e)", border: "none", borderRadius: 10, color: "#000", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
+                      style={{ padding: "12px 20px", background: "linear-gradient(135deg, #d4af61, #b08a3e)", border: "none", borderRadius: 10, color: "#000", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
                       ✉ Ouvrir dans Mail
                     </button>
                   </div>
@@ -9158,16 +9171,16 @@ function GuestView({ shareCode, project, password }) {
     if (isGrid) {
       return (
         <div key={profile.id} style={{
-          background: "#111114", borderRadius: 16, overflow: "hidden",
-          border: v?.choice === "yes" ? "1px solid rgba(34,197,94,0.25)" : v?.choice === "no" ? "1px solid rgba(239,68,68,0.25)" : v?.choice === "maybe" ? "1px solid rgba(245,158,11,0.25)" : "1px solid #1e1e22",
+          background: "#1c1c1f", borderRadius: 16, overflow: "hidden",
+          border: v?.choice === "yes" ? "1px solid rgba(48,209,88,0.25)" : v?.choice === "no" ? "1px solid rgba(255,69,58,0.25)" : v?.choice === "maybe" ? "1px solid rgba(255,214,10,0.25)" : "1px solid #2e2e34",
           transition: "all 0.3s", position: "relative", cursor: "pointer",
         }}>
           {/* Photo */}
-          <div onClick={() => { setSelectedProfile(profile); setSelectedPhotoIdx(0); }} style={{ width: "100%", aspectRatio: "4/5", background: "#0c0c0e", position: "relative", overflow: "hidden" }}>
+          <div onClick={() => { setSelectedProfile(profile); setSelectedPhotoIdx(0); }} style={{ width: "100%", aspectRatio: "4/5", background: "#101013", position: "relative", overflow: "hidden" }}>
             {profile.photos?.[0] ? (
               <img src={profile.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             ) : (
-              <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 48, fontFamily: "'Playfair Display', serif" }}>
+              <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 48, fontFamily: "inherit" }}>
                 {(profile.firstName || "?")[0]}
               </div>
             )}
@@ -9176,7 +9189,7 @@ function GuestView({ shareCode, project, password }) {
               <div style={{
                 position: "absolute", top: 10, right: 10, padding: "4px 10px", borderRadius: 6,
                 fontSize: 10, fontWeight: 800, letterSpacing: "0.05em",
-                background: v.choice === "yes" ? "rgba(34,197,94,0.9)" : v.choice === "no" ? "rgba(239,68,68,0.9)" : "rgba(245,158,11,0.9)",
+                background: v.choice === "yes" ? "rgba(48,209,88,0.9)" : v.choice === "no" ? "rgba(255,69,58,0.9)" : "rgba(255,214,10,0.9)",
                 color: "#fff", backdropFilter: "blur(8px)",
               }}>
                 {v.choice === "yes" ? "OUI" : v.choice === "no" ? "NON" : "PEUT-ÊTRE"}
@@ -9206,13 +9219,13 @@ function GuestView({ shareCode, project, password }) {
                 const linkName = link.includes("youtu") ? "YouTube" : link.includes("vimeo") ? "Vimeo" : link.includes("drive.google") ? "Google Drive" : link.includes("dropbox") ? "Dropbox" : `Selftape ${i + 1}`;
                 return (
                   <div key={i} style={{ marginBottom: 6 }}>
-                    <a href={link} target="_blank" rel="noreferrer" style={{ fontSize: 11, color: "#60a5fa", textDecoration: "none", display: "block", marginBottom: 4 }}>▶ {linkName}</a>
+                    <a href={link} target="_blank" rel="noreferrer" style={{ fontSize: 11, color: "#0a84ff", textDecoration: "none", display: "block", marginBottom: 4 }}>▶ {linkName}</a>
                     {getEmbedUrl(link) && <EmbedPlayer url={link} height={140} />}
                   </div>
                 );
               })}
               {profile.selftapeVideos?.map((video, i) => (
-                <button key={i} onClick={() => setPlayingVideo(video)} style={{ display: "block", width: "100%", fontSize: 11, color: "#60a5fa", background: "rgba(96,165,250,0.06)", padding: "6px 10px", borderRadius: 6, border: "none", cursor: "pointer", fontFamily: "inherit", textAlign: "left", marginBottom: 4 }}>▶ Vidéo {i + 1} {video.name ? `— ${video.name}` : ""}</button>
+                <button key={i} onClick={() => setPlayingVideo(video)} style={{ display: "block", width: "100%", fontSize: 11, color: "#0a84ff", background: "rgba(10,132,255,0.06)", padding: "6px 10px", borderRadius: 6, border: "none", cursor: "pointer", fontFamily: "inherit", textAlign: "left", marginBottom: 4 }}>▶ Vidéo {i + 1} {video.name ? `— ${video.name}` : ""}</button>
               ))}
             </div>
           )}
@@ -9228,7 +9241,7 @@ function GuestView({ shareCode, project, password }) {
           {profileComments.length > 0 && (
             <div style={{ padding: "0 14px 8px" }}>
               {profileComments.slice(-1).map((c, ci) => (
-                <div key={ci} style={{ fontSize: 10, color: "#888", fontStyle: "italic", padding: "4px 8px", background: "#0c0c0e", borderRadius: 6 }}>💬 {c.text}</div>
+                <div key={ci} style={{ fontSize: 10, color: "#888", fontStyle: "italic", padding: "4px 8px", background: "#101013", borderRadius: 6 }}>💬 {c.text}</div>
               ))}
             </div>
           )}
@@ -9241,29 +9254,29 @@ function GuestView({ shareCode, project, password }) {
                 onChange={e => setCommentInput(prev => ({ ...prev, [profile.id]: e.target.value }))}
                 onKeyDown={e => { if (e.key === "Enter") addComment(profile.id); }}
                 placeholder="Commenter..."
-                style={{ flex: 1, padding: "6px 10px", background: "#0c0c0e", border: "1px solid #1a1a1e", borderRadius: 6, color: "#ccc", fontSize: 10, fontFamily: "'DM Sans',sans-serif", outline: "none" }}
-                onFocus={e => e.target.style.borderColor = "#c9a44a55"}
-                onBlur={e => e.target.style.borderColor = "#1a1a1e"}
+                style={{ flex: 1, padding: "6px 10px", background: "#101013", border: "1px solid #2a2a30", borderRadius: 6, color: "#ccc", fontSize: 10, fontFamily: "inherit", outline: "none" }}
+                onFocus={e => e.target.style.borderColor = "#d4af6155"}
+                onBlur={e => e.target.style.borderColor = "#2a2a30"}
               />
               {(commentInput[profile.id] || "").trim() && (
-                <button onClick={() => addComment(profile.id)} style={{ padding: "6px 8px", background: "rgba(201,164,74,0.1)", border: "none", borderRadius: 6, cursor: "pointer", fontSize: 10, color: "#c9a44a", fontWeight: 700, fontFamily: "inherit" }}>↑</button>
+                <button onClick={() => addComment(profile.id)} style={{ padding: "6px 8px", background: "rgba(212,175,97,0.1)", border: "none", borderRadius: 6, cursor: "pointer", fontSize: 10, color: "#d4af61", fontWeight: 700, fontFamily: "inherit" }}>↑</button>
               )}
             </div>
           </div>
 
           {/* Vote buttons — minimal bar at bottom */}
-          <div style={{ display: "flex", borderTop: "1px solid #1a1a1e" }}>
+          <div style={{ display: "flex", borderTop: "1px solid #2a2a30" }}>
             {[
-              { choice: "yes", label: "OUI", color: "#22c55e" },
-              { choice: "maybe", label: "PEUT-ÊTRE", color: "#f59e0b" },
-              { choice: "no", label: "NON", color: "#ef4444" },
+              { choice: "yes", label: "OUI", color: "#30d158" },
+              { choice: "maybe", label: "PEUT-ÊTRE", color: "#ffd60a" },
+              { choice: "no", label: "NON", color: "#ff453a" },
             ].map((opt, i) => {
               const isActive = votes[profile.id]?.choice === opt.choice;
               return (
                 <button key={opt.choice} onClick={() => vote(profile.id, opt.choice)} style={{
                   flex: 1, padding: "10px 0", border: "none", cursor: "pointer", fontSize: 10, fontWeight: 700,
                   fontFamily: "inherit", letterSpacing: "0.05em",
-                  borderRight: i < 2 ? "1px solid #1a1a1e" : "none",
+                  borderRight: i < 2 ? "1px solid #2a2a30" : "none",
                   background: isActive ? `${opt.color}15` : "transparent",
                   color: isActive ? opt.color : "#444", transition: "all 0.2s",
                 }}>
@@ -9279,17 +9292,17 @@ function GuestView({ shareCode, project, password }) {
     // LIST CARD (casting tab or list mode)
     return (
       <div key={profile.id} style={{
-        background: "#111114", border: "1px solid #1e1e22", borderRadius: 14,
+        background: "#1c1c1f", border: "1px solid #2e2e34", borderRadius: 14,
         marginBottom: 10, overflow: "hidden", transition: "border-color 0.2s",
-        borderColor: v?.choice === "yes" ? "rgba(34,197,94,0.25)" : v?.choice === "no" ? "rgba(239,68,68,0.25)" : v?.choice === "maybe" ? "rgba(245,158,11,0.25)" : "#1e1e22",
+        borderColor: v?.choice === "yes" ? "rgba(48,209,88,0.25)" : v?.choice === "no" ? "rgba(255,69,58,0.25)" : v?.choice === "maybe" ? "rgba(255,214,10,0.25)" : "#2e2e34",
       }}>
         <div style={{ display: "flex", alignItems: "stretch" }}>
           {/* Photo */}
-          <div onClick={() => { setSelectedProfile(profile); setSelectedPhotoIdx(0); }} style={{ width: 80, minHeight: 90, background: "#0c0c0e", flexShrink: 0, position: "relative", overflow: "hidden", cursor: "pointer" }}>
+          <div onClick={() => { setSelectedProfile(profile); setSelectedPhotoIdx(0); }} style={{ width: 80, minHeight: 90, background: "#101013", flexShrink: 0, position: "relative", overflow: "hidden", cursor: "pointer" }}>
             {profile.photos?.[0] ? (
               <img src={profile.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
             ) : (
-              <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 28, fontFamily: "'Playfair Display', serif" }}>
+              <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 28, fontFamily: "inherit" }}>
                 {(profile.firstName || "?")[0]}
               </div>
             )}
@@ -9299,12 +9312,12 @@ function GuestView({ shareCode, project, password }) {
           <div style={{ flex: 1, padding: "12px 16px", display: "flex", flexDirection: "column", justifyContent: "center", cursor: "pointer" }}
             onClick={() => setExpandedProfile(isExpanded ? null : profile.id)}>
             <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-              <div style={{ fontSize: 15, fontWeight: 700, color: "#f0f0f0" }}>{fullName}</div>
+              <div style={{ fontSize: 15, fontWeight: 700, color: "#f5f5f7" }}>{fullName}</div>
               {v && (
                 <span style={{
                   fontSize: 9, padding: "2px 8px", borderRadius: 4, fontWeight: 800, letterSpacing: "0.05em",
-                  background: v.choice === "yes" ? "rgba(34,197,94,0.12)" : v.choice === "no" ? "rgba(239,68,68,0.12)" : "rgba(245,158,11,0.12)",
-                  color: v.choice === "yes" ? "#22c55e" : v.choice === "no" ? "#ef4444" : "#f59e0b",
+                  background: v.choice === "yes" ? "rgba(48,209,88,0.12)" : v.choice === "no" ? "rgba(255,69,58,0.12)" : "rgba(255,214,10,0.12)",
+                  color: v.choice === "yes" ? "#30d158" : v.choice === "no" ? "#ff453a" : "#ffd60a",
                 }}>
                   {v.choice === "yes" ? "OUI" : v.choice === "no" ? "NON" : "P-Ê"}
                 </span>
@@ -9314,24 +9327,24 @@ function GuestView({ shareCode, project, password }) {
               {[profile.age && `${profile.age} ans`, profile.height, profile.agency].filter(Boolean).join(" · ")}
             </div>
             {profile._role && showCastingVotes && (
-              <div style={{ fontSize: 10, color: "#c9a44a", marginTop: 2 }}>🎭 {profile._role}</div>
+              <div style={{ fontSize: 10, color: "#d4af61", marginTop: 2 }}>🎭 {profile._role}</div>
             )}
             {showCastingVotes && session.videoLink && (
               <div style={{ marginTop: 4 }}>
-                {getEmbedUrl(session.videoLink) ? <EmbedPlayer url={session.videoLink} height={120} /> : <a href={session.videoLink} target="_blank" rel="noreferrer" style={{ fontSize: 11, color: "#60a5fa", textDecoration: "none" }}>▶ Vidéo casting</a>}
+                {getEmbedUrl(session.videoLink) ? <EmbedPlayer url={session.videoLink} height={120} /> : <a href={session.videoLink} target="_blank" rel="noreferrer" style={{ fontSize: 11, color: "#0a84ff", textDecoration: "none" }}>▶ Vidéo casting</a>}
               </div>
             )}
           </div>
 
           {/* Quick vote buttons (right side) */}
-          <div style={{ display: "flex", flexDirection: "column", borderLeft: "1px solid #1a1a1e" }}>
+          <div style={{ display: "flex", flexDirection: "column", borderLeft: "1px solid #2a2a30" }}>
             {(showCastingVotes ? [
-              { choice: "yes", label: "✓", color: "#22c55e" },
-              { choice: "no", label: "✕", color: "#ef4444" },
+              { choice: "yes", label: "✓", color: "#30d158" },
+              { choice: "no", label: "✕", color: "#ff453a" },
             ] : [
-              { choice: "yes", label: "✓", color: "#22c55e" },
-              { choice: "maybe", label: "~", color: "#f59e0b" },
-              { choice: "no", label: "✕", color: "#ef4444" },
+              { choice: "yes", label: "✓", color: "#30d158" },
+              { choice: "maybe", label: "~", color: "#ffd60a" },
+              { choice: "no", label: "✕", color: "#ff453a" },
             ]).map(opt => {
               const currentVotes = showCastingVotes ? castingVotes : votes;
               const voteFunc = showCastingVotes ? castingVote : vote;
@@ -9341,7 +9354,7 @@ function GuestView({ shareCode, project, password }) {
                   flex: 1, width: 44, border: "none", cursor: "pointer", fontSize: 14, fontWeight: 800,
                   background: isActive ? `${opt.color}18` : "transparent",
                   color: isActive ? opt.color : "#333", transition: "all 0.15s",
-                  borderBottom: "1px solid #1a1a1e",
+                  borderBottom: "1px solid #2a2a30",
                 }}>
                   {opt.label}
                 </button>
@@ -9352,7 +9365,7 @@ function GuestView({ shareCode, project, password }) {
 
         {/* Expanded */}
         {isExpanded && (
-          <div style={{ padding: "14px 16px", borderTop: "1px solid #1a1a1e" }}>
+          <div style={{ padding: "14px 16px", borderTop: "1px solid #2a2a30" }}>
             {/* Details */}
             <div style={{ display: "flex", gap: 12, flexWrap: "wrap", fontSize: 11, color: "#888", marginBottom: 10 }}>
               {profile.eyeColor && <span>👁 {profile.eyeColor}</span>}
@@ -9367,21 +9380,21 @@ function GuestView({ shareCode, project, password }) {
                   const linkName = link.includes("youtu") ? "YouTube" : link.includes("vimeo") ? "Vimeo" : link.includes("drive.google") ? "Google Drive" : link.includes("dropbox") ? "Dropbox" : `Selftape ${i + 1}`;
                   return (
                     <div key={i} style={{ marginBottom: 8 }}>
-                      <a href={link} target="_blank" rel="noreferrer" style={{ fontSize: 12, color: "#60a5fa", textDecoration: "none", display: "block", marginBottom: 4 }}>▶ {linkName}</a>
+                      <a href={link} target="_blank" rel="noreferrer" style={{ fontSize: 12, color: "#0a84ff", textDecoration: "none", display: "block", marginBottom: 4 }}>▶ {linkName}</a>
                       {getEmbedUrl(link) && <EmbedPlayer url={link} height={180} />}
                     </div>
                   );
                 })}
                 {profile.selftapeVideos?.map((video, i) => (
-                  <button key={i} onClick={() => setPlayingVideo(video)} style={{ display: "block", width: "100%", fontSize: 12, color: "#60a5fa", background: "rgba(96,165,250,0.06)", padding: "8px 12px", borderRadius: 6, border: "none", cursor: "pointer", fontFamily: "inherit", textAlign: "left", marginBottom: 4 }}>▶ Vidéo {i + 1} {video.name ? `— ${video.name}` : ""}</button>
+                  <button key={i} onClick={() => setPlayingVideo(video)} style={{ display: "block", width: "100%", fontSize: 12, color: "#0a84ff", background: "rgba(10,132,255,0.06)", padding: "8px 12px", borderRadius: 6, border: "none", cursor: "pointer", fontFamily: "inherit", textAlign: "left", marginBottom: 4 }}>▶ Vidéo {i + 1} {video.name ? `— ${video.name}` : ""}</button>
                 ))}
               </div>
             )}
 
             {/* Director notes / casting comment */}
             {showCastingVotes && session.comment && (
-              <div style={{ padding: "8px 12px", background: "rgba(201,164,74,0.04)", border: "1px solid rgba(201,164,74,0.12)", borderRadius: 8, marginBottom: 10, fontSize: 11, color: "#ccc" }}>
-                <span style={{ fontSize: 9, color: "#c9a44a", fontWeight: 600 }}>CASTING DIRECTOR — </span>{session.comment}
+              <div style={{ padding: "8px 12px", background: "rgba(212,175,97,0.04)", border: "1px solid rgba(212,175,97,0.12)", borderRadius: 8, marginBottom: 10, fontSize: 11, color: "#ccc" }}>
+                <span style={{ fontSize: 9, color: "#d4af61", fontWeight: 600 }}>CASTING DIRECTOR — </span>{session.comment}
               </div>
             )}
             {profile.notes && (
@@ -9392,7 +9405,7 @@ function GuestView({ shareCode, project, password }) {
             {profileComments.length > 0 && (
               <div style={{ marginBottom: 10 }}>
                 {profileComments.map((c, i) => (
-                  <div key={i} style={{ padding: "6px 10px", background: "#0c0c0e", borderRadius: 6, marginBottom: 3, fontSize: 11, color: "#ccc", display: "flex", justifyContent: "space-between" }}>
+                  <div key={i} style={{ padding: "6px 10px", background: "#101013", borderRadius: 6, marginBottom: 3, fontSize: 11, color: "#ccc", display: "flex", justifyContent: "space-between" }}>
                     <span>{c.text}</span>
                     <span style={{ fontSize: 9, color: "#444" }}>{new Date(c.at).toLocaleTimeString("fr-FR", { hour: "2-digit", minute: "2-digit" })}</span>
                   </div>
@@ -9407,11 +9420,11 @@ function GuestView({ shareCode, project, password }) {
                 onChange={e => setCommentInput(prev => ({ ...prev, [profile.id]: e.target.value }))}
                 onKeyDown={e => { if (e.key === "Enter") addComment(profile.id); }}
                 placeholder="Ajouter un commentaire..."
-                style={{ flex: 1, padding: "8px 12px", background: "#0c0c0e", border: "1px solid #1a1a1e", borderRadius: 8, color: "#e0e0e0", fontSize: 11, fontFamily: "'DM Sans',sans-serif", outline: "none" }}
-                onFocus={e => e.target.style.borderColor = "#c9a44a55"}
-                onBlur={e => e.target.style.borderColor = "#1a1a1e"}
+                style={{ flex: 1, padding: "8px 12px", background: "#101013", border: "1px solid #2a2a30", borderRadius: 8, color: "#ebebf0", fontSize: 11, fontFamily: "inherit", outline: "none" }}
+                onFocus={e => e.target.style.borderColor = "#d4af6155"}
+                onBlur={e => e.target.style.borderColor = "#2a2a30"}
               />
-              <button onClick={() => addComment(profile.id)} style={{ padding: "8px 12px", background: "rgba(201,164,74,0.08)", border: "1px solid rgba(201,164,74,0.15)", borderRadius: 8, cursor: "pointer", fontSize: 11, color: "#c9a44a", fontWeight: 600, fontFamily: "inherit" }}>
+              <button onClick={() => addComment(profile.id)} style={{ padding: "8px 12px", background: "rgba(212,175,97,0.08)", border: "1px solid rgba(212,175,97,0.15)", borderRadius: 8, cursor: "pointer", fontSize: 11, color: "#d4af61", fontWeight: 600, fontFamily: "inherit" }}>
                 Envoyer
               </button>
             </div>
@@ -9424,39 +9437,45 @@ function GuestView({ shareCode, project, password }) {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Bebas+Neue&family=Playfair+Display:wght@700;800&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { font-family: 'DM Sans', sans-serif; background: #0a0a0c; color: #e0e0e0; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
-        ::selection { background: #c9a44a44; color: #fff; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Segoe UI', Roboto, sans-serif; background: #000000; color: #ebebf0; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; letter-spacing: -0.011em; }
+        h1, h2, h3 { letter-spacing: -0.022em; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(6px) scale(0.995); } to { opacity: 1; transform: none; } }
+        ::selection { background: rgba(212,175,97,0.32); color: #fff; }
+        button { transition: transform 0.16s cubic-bezier(0.32,0.72,0,1), background 0.18s ease, color 0.18s ease, border-color 0.18s ease, opacity 0.18s ease; -webkit-tap-highlight-color: transparent; }
+        button:active { transform: scale(0.96); }
+        input, textarea { transition: border-color 0.18s ease, box-shadow 0.18s ease; }
+        input:focus, textarea:focus { outline: none; box-shadow: 0 0 0 3.5px rgba(212,175,97,0.16); }
+        header { backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); }
       `}</style>
-      <div style={{ minHeight: "100vh", background: "#0a0a0c" }}>
+      <div style={{ minHeight: "100vh", background: "#000000" }}>
         {/* Header */}
         <header style={{
           display: "flex", alignItems: "center", justifyContent: "space-between",
-          padding: "0 24px", height: 56, borderBottom: "1px solid #1a1a1e",
-          background: "#0a0a0c", position: "sticky", top: 0, zIndex: 100,
+          padding: "0 24px", height: 56, borderBottom: "1px solid #2a2a30",
+          background: "rgba(0,0,0,0.8)", position: "sticky", top: 0, zIndex: 100,
         }}>
           <div style={{ display: "flex", alignItems: "center", gap: 14 }}>
             <span style={{ fontSize: 20 }}>🎬</span>
             <div>
-              <div style={{ fontSize: 16, fontWeight: 700, color: "#f0f0f0", fontFamily: "'Playfair Display', serif" }}>
+              <div style={{ fontSize: 16, fontWeight: 700, color: "#f5f5f7", fontFamily: "inherit" }}>
                 {project.projectName}
               </div>
-              <div style={{ fontSize: 10, color: "#c9a44a", fontWeight: 600, letterSpacing: "0.15em", textTransform: "uppercase" }}>
+              <div style={{ fontSize: 10, color: "#d4af61", fontWeight: 600, letterSpacing: "0.15em", textTransform: "uppercase" }}>
                 Consultation · Joana Fontaine Casting
               </div>
             </div>
           </div>
           <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-            {savingState === "saved" && <span style={{ fontSize: 10, color: "#22c55e" }}>✓ Synchronisé</span>}
-            {savingState === "saving" && <span style={{ fontSize: 10, color: "#f59e0b" }}>⏳ Sauvegarde...</span>}
+            {savingState === "saved" && <span style={{ fontSize: 10, color: "#30d158" }}>✓ Synchronisé</span>}
+            {savingState === "saving" && <span style={{ fontSize: 10, color: "#ffd60a" }}>⏳ Sauvegarde...</span>}
             <button onClick={() => setShowGlobalFeedback(!showGlobalFeedback)} style={{
-              padding: "6px 14px", background: showGlobalFeedback ? "rgba(96,165,250,0.12)" : "rgba(255,255,255,0.03)",
-              border: showGlobalFeedback ? "1px solid rgba(96,165,250,0.3)" : "1px solid #2a2a2e",
-              borderRadius: 8, color: showGlobalFeedback ? "#60a5fa" : "#888", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
+              padding: "6px 14px", background: showGlobalFeedback ? "rgba(10,132,255,0.12)" : "rgba(255,255,255,0.03)",
+              border: showGlobalFeedback ? "1px solid rgba(10,132,255,0.3)" : "1px solid #3a3a40",
+              borderRadius: 8, color: showGlobalFeedback ? "#0a84ff" : "#888", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
             }}>✍ Retour global</button>
-            <span style={{ fontSize: 9, padding: "4px 10px", background: "rgba(168,85,247,0.1)", border: "1px solid rgba(168,85,247,0.2)", borderRadius: 6, color: "#a855f7", fontWeight: 700 }}>
+            <span style={{ fontSize: 9, padding: "4px 10px", background: "rgba(191,90,242,0.1)", border: "1px solid rgba(191,90,242,0.2)", borderRadius: 6, color: "#bf5af2", fontWeight: 700 }}>
               RÉAL
             </span>
           </div>
@@ -9464,22 +9483,22 @@ function GuestView({ shareCode, project, password }) {
 
         {/* Global feedback panel */}
         {showGlobalFeedback && (
-          <div style={{ padding: "16px 24px", background: "#111114", borderBottom: "1px solid #1e1e22" }}>
+          <div style={{ padding: "16px 24px", background: "#1c1c1f", borderBottom: "1px solid #2e2e34" }}>
             <div style={{ maxWidth: 960, margin: "0 auto" }}>
-              <label style={{ display: "block", fontSize: 11, color: "#60a5fa", fontWeight: 600, textTransform: "uppercase", marginBottom: 8 }}>✍ Retour global — Notes pour la directrice de casting</label>
+              <label style={{ display: "block", fontSize: 11, color: "#0a84ff", fontWeight: 600, textTransform: "uppercase", marginBottom: 8 }}>✍ Retour global — Notes pour la directrice de casting</label>
               <textarea
                 value={globalFeedback}
                 onChange={e => setGlobalFeedback(e.target.value)}
                 placeholder="Vos impressions générales, remarques sur le casting, orientations souhaitées..."
                 rows={4}
-                style={{ width: "100%", padding: "12px 16px", background: "#0c0c0e", border: "1px solid rgba(96,165,250,0.2)", borderRadius: 10, color: "#e0e0e0", fontSize: 14, fontFamily: "'DM Sans',sans-serif", outline: "none", resize: "vertical", lineHeight: 1.6, boxSizing: "border-box" }}
-                onFocus={e => e.target.style.borderColor = "#60a5fa"}
-                onBlur={e => e.target.style.borderColor = "rgba(96,165,250,0.2)"}
+                style={{ width: "100%", padding: "12px 16px", background: "#101013", border: "1px solid rgba(10,132,255,0.2)", borderRadius: 10, color: "#ebebf0", fontSize: 14, fontFamily: "inherit", outline: "none", resize: "vertical", lineHeight: 1.6, boxSizing: "border-box" }}
+                onFocus={e => e.target.style.borderColor = "#0a84ff"}
+                onBlur={e => e.target.style.borderColor = "rgba(10,132,255,0.2)"}
               />
               <div style={{ display: "flex", justifyContent: "flex-end", marginTop: 8 }}>
                 <button onClick={() => { saveToShared(votes, castingVotes, comments, globalFeedback); }} style={{
-                  padding: "8px 20px", background: "rgba(96,165,250,0.12)", border: "1px solid rgba(96,165,250,0.3)",
-                  borderRadius: 8, color: "#60a5fa", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
+                  padding: "8px 20px", background: "rgba(10,132,255,0.12)", border: "1px solid rgba(10,132,255,0.3)",
+                  borderRadius: 8, color: "#0a84ff", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
                 }}>💾 Envoyer le retour</button>
               </div>
             </div>
@@ -9487,16 +9506,16 @@ function GuestView({ shareCode, project, password }) {
         )}
 
         {/* Tabs */}
-        <div style={{ display: "flex", borderBottom: "1px solid #1a1a1e", padding: "0 24px" }}>
+        <div style={{ display: "flex", borderBottom: "1px solid #2a2a30", padding: "0 24px" }}>
           {tabs.map(tab => (
             <button key={tab.key} onClick={() => setActiveTab(tab.key)}
               style={{
-                padding: "14px 20px", background: "none", border: "none", borderBottom: activeTab === tab.key ? "2px solid #c9a44a" : "2px solid transparent",
+                padding: "14px 20px", background: "none", border: "none", borderBottom: activeTab === tab.key ? "2px solid #d4af61" : "2px solid transparent",
                 cursor: "pointer", fontFamily: "inherit", fontSize: 12, fontWeight: 600,
-                color: activeTab === tab.key ? "#f0f0f0" : "#555", transition: "all 0.2s",
+                color: activeTab === tab.key ? "#f5f5f7" : "#555", transition: "all 0.2s",
               }}>
               {tab.icon} {tab.label}
-              {tab.count > 0 && <span style={{ marginLeft: 6, fontSize: 10, color: "#c9a44a" }}>({tab.count})</span>}
+              {tab.count > 0 && <span style={{ marginLeft: 6, fontSize: 10, color: "#d4af61" }}>({tab.count})</span>}
             </button>
           ))}
         </div>
@@ -9515,9 +9534,9 @@ function GuestView({ shareCode, project, password }) {
                     <button key={role} onClick={() => setActiveRole(role)}
                       style={{
                         padding: "8px 16px", borderRadius: 8, cursor: "pointer", fontSize: 12, fontWeight: 600,
-                        fontFamily: "inherit", border: activeRole === role ? "1px solid #c9a44a" : "1px solid #2a2a2e",
-                        background: activeRole === role ? "rgba(201,164,74,0.08)" : "#111114",
-                        color: activeRole === role ? "#c9a44a" : "#888",
+                        fontFamily: "inherit", border: activeRole === role ? "1px solid #d4af61" : "1px solid #3a3a40",
+                        background: activeRole === role ? "rgba(212,175,97,0.08)" : "#1c1c1f",
+                        color: activeRole === role ? "#d4af61" : "#888",
                       }}>
                       🎭 {role} <span style={{ opacity: 0.5 }}>({voted}/{count})</span>
                     </button>
@@ -9538,9 +9557,9 @@ function GuestView({ shareCode, project, password }) {
                     <div style={{ display: "flex", gap: 10 }}>
                       {[
                         { label: "Total", count: roleProfiles.length, color: "#888" },
-                        { label: "OUI", count: roleProfiles.filter(p => votes[p.id]?.choice === "yes").length, color: "#22c55e" },
-                        { label: "P-Ê", count: roleProfiles.filter(p => votes[p.id]?.choice === "maybe").length, color: "#f59e0b" },
-                        { label: "NON", count: roleProfiles.filter(p => votes[p.id]?.choice === "no").length, color: "#ef4444" },
+                        { label: "OUI", count: roleProfiles.filter(p => votes[p.id]?.choice === "yes").length, color: "#30d158" },
+                        { label: "P-Ê", count: roleProfiles.filter(p => votes[p.id]?.choice === "maybe").length, color: "#ffd60a" },
+                        { label: "NON", count: roleProfiles.filter(p => votes[p.id]?.choice === "no").length, color: "#ff453a" },
                       ].map(s => (
                         <div key={s.label} style={{ textAlign: "center" }}>
                           <span style={{ fontSize: 18, fontWeight: 800, color: s.color }}>{s.count}</span>
@@ -9548,9 +9567,9 @@ function GuestView({ shareCode, project, password }) {
                         </div>
                       ))}
                     </div>
-                    <div style={{ display: "flex", gap: 2, background: "#0c0c0e", borderRadius: 6, padding: 2 }}>
-                      <button onClick={() => setGuestViewMode("grid")} style={{ padding: "5px 10px", borderRadius: 4, border: "none", cursor: "pointer", fontSize: 12, background: guestViewMode === "grid" ? "rgba(201,164,74,0.12)" : "transparent", color: guestViewMode === "grid" ? "#c9a44a" : "#555" }}>▦</button>
-                      <button onClick={() => setGuestViewMode("list")} style={{ padding: "5px 10px", borderRadius: 4, border: "none", cursor: "pointer", fontSize: 12, background: guestViewMode === "list" ? "rgba(201,164,74,0.12)" : "transparent", color: guestViewMode === "list" ? "#c9a44a" : "#555" }}>☰</button>
+                    <div style={{ display: "flex", gap: 2, background: "#101013", borderRadius: 6, padding: 2 }}>
+                      <button onClick={() => setGuestViewMode("grid")} style={{ padding: "5px 10px", borderRadius: 4, border: "none", cursor: "pointer", fontSize: 12, background: guestViewMode === "grid" ? "rgba(212,175,97,0.12)" : "transparent", color: guestViewMode === "grid" ? "#d4af61" : "#555" }}>▦</button>
+                      <button onClick={() => setGuestViewMode("list")} style={{ padding: "5px 10px", borderRadius: 4, border: "none", cursor: "pointer", fontSize: 12, background: guestViewMode === "list" ? "rgba(212,175,97,0.12)" : "transparent", color: guestViewMode === "list" ? "#d4af61" : "#555" }}>☰</button>
                     </div>
                   </div>
                   {guestViewMode === "grid" ? (
@@ -9581,15 +9600,15 @@ function GuestView({ shareCode, project, password }) {
                   {hasSelftapes && (
                     <div style={{ marginBottom: 20 }}>
                       <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 12 }}>
-                        <div style={{ fontSize: 14, color: "#60a5fa", fontWeight: 700, textTransform: "uppercase" }}>📹 Casting Selftape</div>
+                        <div style={{ fontSize: 14, color: "#0a84ff", fontWeight: 700, textTransform: "uppercase" }}>📹 Casting Selftape</div>
                         <div style={{ display: "flex", gap: 8 }}>
                           {[{ label: "Total", count: castingProfiles.filter(p => (p.selftapeLinks || []).some(l => l)).length, color: "#888" },
-                            { label: "OUI", count: castingProfiles.filter(p => (p.selftapeLinks || []).some(l => l) && castingVotes[p.id]?.choice === "yes").length, color: "#22c55e" },
-                            { label: "NON", count: castingProfiles.filter(p => (p.selftapeLinks || []).some(l => l) && castingVotes[p.id]?.choice === "no").length, color: "#ef4444" },
+                            { label: "OUI", count: castingProfiles.filter(p => (p.selftapeLinks || []).some(l => l) && castingVotes[p.id]?.choice === "yes").length, color: "#30d158" },
+                            { label: "NON", count: castingProfiles.filter(p => (p.selftapeLinks || []).some(l => l) && castingVotes[p.id]?.choice === "no").length, color: "#ff453a" },
                           ].map(s => <span key={s.label} style={{ fontSize: 11, color: s.color, fontWeight: 600 }}>{s.count} {s.label}</span>)}
                         </div>
                       </div>
-                      <div style={{ background: "#111114", borderRadius: 12, border: "1px solid #1e1e22", overflow: "hidden" }}>
+                      <div style={{ background: "#1c1c1f", borderRadius: 12, border: "1px solid #2e2e34", overflow: "hidden" }}>
                         {castingProfiles.filter(p => (p.selftapeLinks || []).filter(l => l).length > 0).map(profile => {
                           const fullName = [profile.firstName, profile.name].filter(Boolean).join(" ") || "Sans nom";
                           const tapes = (profile.selftapeLinks || []).filter(l => l);
@@ -9598,36 +9617,36 @@ function GuestView({ shareCode, project, password }) {
                           return (
                             <React.Fragment key={profile.id + "_st"}>
                               {/* Compact row */}
-                              <div onClick={() => setExpandedProfile(isOpen ? null : profile.id + "_st")} style={{ display: "flex", alignItems: "center", padding: "10px 16px", gap: 12, borderBottom: "1px solid #1a1a1e", cursor: "pointer", transition: "background 0.1s" }}
+                              <div onClick={() => setExpandedProfile(isOpen ? null : profile.id + "_st")} style={{ display: "flex", alignItems: "center", padding: "10px 16px", gap: 12, borderBottom: "1px solid #2a2a30", cursor: "pointer", transition: "background 0.1s" }}
                                 onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.02)"}
                                 onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
-                                <div style={{ width: 40, height: 50, borderRadius: 6, overflow: "hidden", background: "#0c0c0e", flexShrink: 0 }}>
+                                <div style={{ width: 40, height: 50, borderRadius: 6, overflow: "hidden", background: "#101013", flexShrink: 0 }}>
                                   {profile.photos?.[0] ? <img src={profile.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 14 }}>◎</div>}
                                 </div>
                                 <div style={{ flex: 1, minWidth: 0 }}>
-                                  <div style={{ fontSize: 14, fontWeight: 700, color: "#f0f0f0" }}>{fullName}</div>
+                                  <div style={{ fontSize: 14, fontWeight: 700, color: "#f5f5f7" }}>{fullName}</div>
                                   <div style={{ fontSize: 11, color: "#888" }}>{profile.age ? profile.age + " ans" : ""}{profile.agency ? " — " + profile.agency : ""}</div>
                                 </div>
-                                <span style={{ fontSize: 11, color: "#60a5fa", fontWeight: 600 }}>{tapes.length} tape{tapes.length > 1 ? "s" : ""}</span>
-                                {cv?.choice === "yes" && <span style={{ fontSize: 11, color: "#22c55e", fontWeight: 700, padding: "2px 8px", background: "rgba(34,197,94,0.1)", borderRadius: 4 }}>✓ OUI</span>}
-                                {cv?.choice === "no" && <span style={{ fontSize: 11, color: "#ef4444", fontWeight: 700, padding: "2px 8px", background: "rgba(239,68,68,0.08)", borderRadius: 4 }}>✕ NON</span>}
+                                <span style={{ fontSize: 11, color: "#0a84ff", fontWeight: 600 }}>{tapes.length} tape{tapes.length > 1 ? "s" : ""}</span>
+                                {cv?.choice === "yes" && <span style={{ fontSize: 11, color: "#30d158", fontWeight: 700, padding: "2px 8px", background: "rgba(48,209,88,0.1)", borderRadius: 4 }}>✓ OUI</span>}
+                                {cv?.choice === "no" && <span style={{ fontSize: 11, color: "#ff453a", fontWeight: 700, padding: "2px 8px", background: "rgba(255,69,58,0.08)", borderRadius: 4 }}>✕ NON</span>}
                                 <span style={{ fontSize: 12, color: "#444", transform: isOpen ? "rotate(180deg)" : "rotate(0)", transition: "transform 0.2s" }}>▾</span>
                               </div>
                               {/* Expanded */}
                               {isOpen && (
-                                <div style={{ padding: "12px 16px", background: "rgba(96,165,250,0.02)", borderBottom: "2px solid #1e1e22" }}>
+                                <div style={{ padding: "12px 16px", background: "rgba(10,132,255,0.02)", borderBottom: "2px solid #2e2e34" }}>
                                   {tapes.map((link, li) => {
                                     const linkName = link.includes("youtu") ? "YouTube" : link.includes("vimeo") ? "Vimeo" : link.includes("drive.google") ? "Google Drive" : link.includes("dropbox") ? "Dropbox" : `Selftape ${li + 1}`;
                                     return (
                                       <div key={li} style={{ marginBottom: 8 }}>
-                                        <a href={link} target="_blank" rel="noreferrer" style={{ fontSize: 11, color: "#60a5fa", textDecoration: "none", fontWeight: 600 }}>▶ {linkName}</a>
+                                        <a href={link} target="_blank" rel="noreferrer" style={{ fontSize: 11, color: "#0a84ff", textDecoration: "none", fontWeight: 600 }}>▶ {linkName}</a>
                                         {getEmbedUrl(link) && <div style={{ marginTop: 4 }}><EmbedPlayer url={link} height={160} /></div>}
                                       </div>
                                     );
                                   })}
                                   {/* Vote OUI / PEUT-ETRE / NON */}
                                   <div style={{ display: "flex", gap: 6, marginTop: 8 }}>
-                                    {[{ choice: "yes", label: "✓ OUI", color: "#22c55e" }, { choice: "maybe", label: "? PEUT-ÊTRE", color: "#f59e0b" }, { choice: "no", label: "✕ NON", color: "#ef4444" }].map(opt => (
+                                    {[{ choice: "yes", label: "✓ OUI", color: "#30d158" }, { choice: "maybe", label: "? PEUT-ÊTRE", color: "#ffd60a" }, { choice: "no", label: "✕ NON", color: "#ff453a" }].map(opt => (
                                       <button key={opt.choice} onClick={() => castingVote(profile.id, opt.choice)} style={{ flex: 1, padding: "10px 0", borderRadius: 8, border: "none", cursor: "pointer", fontSize: 12, fontWeight: 700, background: cv?.choice === opt.choice ? `${opt.color}18` : "rgba(255,255,255,0.02)", color: cv?.choice === opt.choice ? opt.color : "#444", fontFamily: "inherit" }}>{opt.label}</button>
                                     ))}
                                   </div>
@@ -9637,17 +9656,17 @@ function GuestView({ shareCode, project, password }) {
                           );
                         })}
                       </div>
-                      <div style={{ height: 1, background: "#2a2a2e", margin: "20px 0" }} />
+                      <div style={{ height: 1, background: "#3a3a40", margin: "20px 0" }} />
                     </div>
                   )}
 
                   <div style={{ display: "flex", gap: 12, marginBottom: 16 }}>
                     {[
                       { label: "En casting", count: castingProfiles.length, color: "#888" },
-                      { label: "OUI", count: castingProfiles.filter(p => castingVotes[p.id]?.choice === "yes").length, color: "#22c55e" },
-                      { label: "NON", count: castingProfiles.filter(p => castingVotes[p.id]?.choice === "no").length, color: "#ef4444" },
+                      { label: "OUI", count: castingProfiles.filter(p => castingVotes[p.id]?.choice === "yes").length, color: "#30d158" },
+                      { label: "NON", count: castingProfiles.filter(p => castingVotes[p.id]?.choice === "no").length, color: "#ff453a" },
                     ].map(s => (
-                      <div key={s.label} style={{ padding: "8px 14px", background: "#111114", borderRadius: 8, border: "1px solid #1e1e22" }}>
+                      <div key={s.label} style={{ padding: "8px 14px", background: "#1c1c1f", borderRadius: 8, border: "1px solid #2e2e34" }}>
                         <span style={{ fontSize: 16, fontWeight: 800, color: s.color }}>{s.count}</span>
                         <span style={{ fontSize: 10, color: "#555", marginLeft: 6 }}>{s.label}</span>
                       </div>
@@ -9657,12 +9676,12 @@ function GuestView({ shareCode, project, password }) {
 
                   {/* Global casting video link for real */}
                   {project._castingGlobalVideoLink && (
-                    <div style={{ marginTop: 20, padding: "16px 20px", background: "#111114", borderRadius: 14, border: "1px solid rgba(96,165,250,0.15)" }}>
-                      <div style={{ fontSize: 12, color: "#60a5fa", fontWeight: 600, textTransform: "uppercase", marginBottom: 10 }}>🎬 Vidéos casting</div>
+                    <div style={{ marginTop: 20, padding: "16px 20px", background: "#1c1c1f", borderRadius: 14, border: "1px solid rgba(10,132,255,0.15)" }}>
+                      <div style={{ fontSize: 12, color: "#0a84ff", fontWeight: 600, textTransform: "uppercase", marginBottom: 10 }}>🎬 Vidéos casting</div>
                       {getEmbedUrl(project._castingGlobalVideoLink) ? (
                         <EmbedPlayer url={project._castingGlobalVideoLink} height={280} />
                       ) : (
-                        <a href={project._castingGlobalVideoLink} target="_blank" rel="noreferrer" style={{ fontSize: 14, color: "#60a5fa", textDecoration: "none" }}>▶ Ouvrir les vidéos du casting</a>
+                        <a href={project._castingGlobalVideoLink} target="_blank" rel="noreferrer" style={{ fontSize: 14, color: "#0a84ff", textDecoration: "none" }}>▶ Ouvrir les vidéos du casting</a>
                       )}
                     </div>
                   )}
@@ -9686,23 +9705,23 @@ function GuestView({ shareCode, project, password }) {
                     {finalProfiles.length} profil{finalProfiles.length !== 1 ? "s" : ""} sélectionné{finalProfiles.length !== 1 ? "s" : ""}
                   </div>
                   {finalProfiles.map(p => (
-                    <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 14, padding: "16px 18px", background: "#111114", border: "1px solid rgba(34,197,94,0.2)", borderRadius: 14, marginBottom: 10 }}>
+                    <div key={p.id} style={{ display: "flex", alignItems: "center", gap: 14, padding: "16px 18px", background: "#1c1c1f", border: "1px solid rgba(48,209,88,0.2)", borderRadius: 14, marginBottom: 10 }}>
                       {p.photos?.[0] ? (
                         <img src={p.photos[0]} style={{ width: 48, height: 48, borderRadius: 10, objectFit: "cover" }} />
                       ) : (
-                        <div style={{ width: 48, height: 48, borderRadius: 10, background: "#1e1e22", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, color: "#555" }}>
+                        <div style={{ width: 48, height: 48, borderRadius: 10, background: "#2e2e34", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, color: "#555" }}>
                           {(p.firstName || "?")[0]}
                         </div>
                       )}
                       <div style={{ flex: 1 }}>
-                        <div style={{ fontSize: 15, fontWeight: 700, color: "#f0f0f0" }}>
+                        <div style={{ fontSize: 15, fontWeight: 700, color: "#f5f5f7" }}>
                           {[p.firstName, p.name].filter(Boolean).join(" ")}
                         </div>
                         <div style={{ fontSize: 11, color: "#888", marginTop: 2 }}>
                           🎭 {p._role} {p.agency && `· ${p.agency}`}
                         </div>
                       </div>
-                      <span style={{ padding: "4px 12px", borderRadius: 6, fontSize: 11, fontWeight: 700, background: "rgba(34,197,94,0.12)", color: "#22c55e" }}>
+                      <span style={{ padding: "4px 12px", borderRadius: 6, fontSize: 11, fontWeight: 700, background: "rgba(48,209,88,0.12)", color: "#30d158" }}>
                         🏆 Sélectionné
                       </span>
                     </div>
@@ -9727,13 +9746,13 @@ function GuestView({ shareCode, project, password }) {
           };
           return (
             <div onClick={() => setSelectedProfile(null)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.85)", zIndex: 2000, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer", padding: 20 }}>
-              <div onClick={e => e.stopPropagation()} style={{ background: "#111114", borderRadius: 20, maxWidth: 500, width: "100%", maxHeight: "90vh", overflow: "auto", border: "1px solid #2a2a2e", cursor: "default" }}>
+              <div onClick={e => e.stopPropagation()} style={{ background: "#1c1c1f", borderRadius: 20, maxWidth: 500, width: "100%", maxHeight: "90vh", overflow: "auto", border: "1px solid #3a3a40", cursor: "default" }}>
                 {/* Photo gallery */}
-                <div style={{ position: "relative", width: "100%", aspectRatio: "3/4", background: "#0c0c0e", overflow: "hidden", borderRadius: "20px 20px 0 0" }}>
+                <div style={{ position: "relative", width: "100%", aspectRatio: "3/4", background: "#101013", overflow: "hidden", borderRadius: "20px 20px 0 0" }}>
                   {photos.length > 0 ? (
                     <img src={photos[selectedPhotoIdx] || photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
                   ) : (
-                    <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 80, fontFamily: "'Playfair Display', serif" }}>{(sp.firstName || "?")[0]}</div>
+                    <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "#333", fontSize: 80, fontFamily: "inherit" }}>{(sp.firstName || "?")[0]}</div>
                   )}
                   {/* Close button */}
                   <button onClick={() => setSelectedProfile(null)} style={{ position: "absolute", top: 12, right: 12, width: 32, height: 32, borderRadius: "50%", background: "rgba(0,0,0,0.6)", border: "none", color: "#fff", fontSize: 16, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center" }}>×</button>
@@ -9752,22 +9771,22 @@ function GuestView({ shareCode, project, password }) {
                 </div>
                 {/* Profile info */}
                 <div style={{ padding: "20px 24px" }}>
-                  <div style={{ fontSize: 22, fontWeight: 800, color: "#f0f0f0", fontFamily: "'Playfair Display', serif", marginBottom: 4 }}>{fullName}</div>
+                  <div style={{ fontSize: 22, fontWeight: 800, color: "#f5f5f7", fontFamily: "inherit", marginBottom: 4 }}>{fullName}</div>
                   <div style={{ fontSize: 13, color: "#888", marginBottom: 12 }}>
                     {[sp.age ? sp.age + " ans" : null, sp.height, sp.hairColor].filter(Boolean).join(" · ")}
                   </div>
-                  {sp.agency && <div style={{ fontSize: 12, color: "#c9a44a", fontWeight: 700, marginBottom: 10 }}>— {sp.agency}</div>}
+                  {sp.agency && <div style={{ fontSize: 12, color: "#d4af61", fontWeight: 700, marginBottom: 10 }}>— {sp.agency}</div>}
                   {/* Details grid */}
                   <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "8px 16px", marginBottom: 16 }}>
                     {sp.measurements && <div><span style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Mensurations</span><div style={{ fontSize: 13, color: "#ccc" }}>{sp.measurements}</div></div>}
                     {sp.profileType && <div><span style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Type</span><div style={{ fontSize: 13, color: "#ccc" }}>{sp.profileType}</div></div>}
                     {sp.eyeColor && <div><span style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Yeux</span><div style={{ fontSize: 13, color: "#ccc" }}>{sp.eyeColor}</div></div>}
                     {sp.city && <div><span style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Ville</span><div style={{ fontSize: 13, color: "#ccc" }}>{sp.city}</div></div>}
-                    {sp.email && <div><span style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Email</span><div style={{ fontSize: 13, color: "#60a5fa" }}>{sp.email}</div></div>}
+                    {sp.email && <div><span style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Email</span><div style={{ fontSize: 13, color: "#0a84ff" }}>{sp.email}</div></div>}
                     {sp.phone && <div><span style={{ fontSize: 9, color: "#555", fontWeight: 600, textTransform: "uppercase" }}>Tel</span><div style={{ fontSize: 13, color: "#ccc" }}>{sp.phone}</div></div>}
                   </div>
-                  {sp.notes && <div style={{ padding: "10px 14px", background: "rgba(255,255,255,0.02)", borderRadius: 8, borderLeft: "3px solid #c9a44a44", fontSize: 13, color: "#aaa", marginBottom: 12, lineHeight: 1.5 }}>{sp.notes}</div>}
-                  {sp.specificities && <div style={{ padding: "10px 14px", background: "rgba(255,255,255,0.02)", borderRadius: 8, borderLeft: "3px solid #f59e0b44", fontSize: 13, color: "#aaa", marginBottom: 12, lineHeight: 1.5 }}>{sp.specificities}</div>}
+                  {sp.notes && <div style={{ padding: "10px 14px", background: "rgba(255,255,255,0.02)", borderRadius: 8, borderLeft: "3px solid #d4af6144", fontSize: 13, color: "#aaa", marginBottom: 12, lineHeight: 1.5 }}>{sp.notes}</div>}
+                  {sp.specificities && <div style={{ padding: "10px 14px", background: "rgba(255,255,255,0.02)", borderRadius: 8, borderLeft: "3px solid #ffd60a44", fontSize: 13, color: "#aaa", marginBottom: 12, lineHeight: 1.5 }}>{sp.specificities}</div>}
                   {/* Selftapes */}
                   {(sp.selftapeLinks?.filter(l => l).length > 0) && (
                     <div style={{ marginBottom: 16 }}>
@@ -9779,7 +9798,7 @@ function GuestView({ shareCode, project, password }) {
                   )}
                   {/* Vote buttons */}
                   <div style={{ display: "flex", gap: 8, marginTop: 8 }}>
-                    {[{ k: "yes", l: "OUI", c: "#22c55e" }, { k: "maybe", l: "PEUT-ETRE", c: "#f59e0b" }, { k: "no", l: "NON", c: "#ef4444" }].map(opt => (
+                    {[{ k: "yes", l: "OUI", c: "#30d158" }, { k: "maybe", l: "PEUT-ETRE", c: "#ffd60a" }, { k: "no", l: "NON", c: "#ff453a" }].map(opt => (
                       <button key={opt.k} onClick={() => voteProfile(opt.k)} style={{
                         flex: 1, padding: "12px 0", borderRadius: 10, fontSize: 12, fontWeight: 700,
                         fontFamily: "inherit", border: "none", cursor: "pointer",
@@ -9973,13 +9992,17 @@ export default function CastingApp() {
 
   // ===== STYLES =====
   const loginStyles = `
-    @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Bebas+Neue&family=Playfair+Display:wght@700;800&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'DM Sans', sans-serif; background: #0a0a0c; color: #e0e0e0; }
-    @keyframes fadeIn { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: translateY(0); } }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Segoe UI', Roboto, sans-serif; background: #000000; color: #ebebf0; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; letter-spacing: -0.011em; }
+    h1, h2, h3 { letter-spacing: -0.022em; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(6px) scale(0.995); } to { opacity: 1; transform: none; } }
     @keyframes shimmer { 0% { background-position: -200% 0; } 100% { background-position: 200% 0; } }
     @keyframes pulse { 0%,100%{opacity:1}50%{opacity:0.4} }
-    ::selection { background: #c9a44a44; color: #fff; }
+    ::selection { background: rgba(212,175,97,0.32); color: #fff; }
+    button { transition: transform 0.16s cubic-bezier(0.32,0.72,0,1), background 0.18s ease, opacity 0.18s ease; }
+    button:active { transform: scale(0.96); }
+    input:focus, textarea:focus { outline: none; box-shadow: 0 0 0 3.5px rgba(212,175,97,0.16); }
   `;
 
   // ===== CONDITIONAL RENDERS (all hooks are above) =====
@@ -9990,7 +10013,7 @@ export default function CastingApp() {
       return (
         <>
           <style>{loginStyles}</style>
-          <div style={{ minHeight: "100vh", background: "#0a0a0c", display: "flex", alignItems: "center", justifyContent: "center" }}>
+          <div style={{ minHeight: "100vh", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center" }}>
             <div style={{ textAlign: "center", animation: "pulse 1.5s infinite" }}>
               <div style={{ fontSize: 40, marginBottom: 12 }}>🎬</div>
               <div style={{ fontSize: 13, color: "#666" }}>Chargement du projet...</div>
@@ -10005,15 +10028,15 @@ export default function CastingApp() {
       return (
         <>
           <style>{loginStyles}</style>
-          <div style={{ minHeight: "100vh", background: "#0a0a0c", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
+          <div style={{ minHeight: "100vh", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
             <div style={{ textAlign: "center", animation: "fadeIn 0.5s", maxWidth: 400 }}>
               <div style={{ fontSize: 56, marginBottom: 16 }}>⚠️</div>
-              <h1 style={{ fontSize: 24, fontWeight: 800, fontFamily: "'Playfair Display', serif", color: "#f0f0f0", marginBottom: 8 }}>Projet introuvable</h1>
+              <h1 style={{ fontSize: 24, fontWeight: 800, fontFamily: "inherit", color: "#f5f5f7", marginBottom: 8 }}>Projet introuvable</h1>
               <p style={{ fontSize: 13, color: "#666", marginBottom: 16 }}>{guestError || "Ce lien de partage n'est plus valide ou le projet a été supprimé."}</p>
               <p style={{ fontSize: 10, color: "#444", marginBottom: 20 }}>Code: {shareCodeFromUrl}</p>
               <button onClick={() => window.location.reload()} style={{
-                padding: "10px 20px", background: "rgba(201,164,74,0.1)", border: "1px solid rgba(201,164,74,0.2)",
-                borderRadius: 8, color: "#c9a44a", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
+                padding: "10px 20px", background: "rgba(212,175,97,0.1)", border: "1px solid rgba(212,175,97,0.2)",
+                borderRadius: 8, color: "#d4af61", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit",
               }}>🔄 Réessayer</button>
             </div>
           </div>
@@ -10025,13 +10048,13 @@ export default function CastingApp() {
       return (
         <>
           <style>{loginStyles}</style>
-          <div style={{ minHeight: "100vh", background: "#0a0a0c", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
+          <div style={{ minHeight: "100vh", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
             <div style={{ width: "100%", maxWidth: 380, textAlign: "center", animation: "fadeIn 0.5s ease" }}>
               <div style={{ fontSize: 56, marginBottom: 16 }}>🎬</div>
-              <h1 style={{ fontSize: 24, fontWeight: 800, fontFamily: "'Playfair Display', serif", color: "#f0f0f0", marginBottom: 4 }}>
+              <h1 style={{ fontSize: 24, fontWeight: 800, fontFamily: "inherit", color: "#f5f5f7", marginBottom: 4 }}>
                 {guestProject.projectName}
               </h1>
-              <p style={{ fontSize: 12, color: "#c9a44a", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 24 }}>
+              <p style={{ fontSize: 12, color: "#d4af61", fontWeight: 600, letterSpacing: "0.1em", textTransform: "uppercase", marginBottom: 24 }}>
                 Joana Fontaine · Casting Director
               </p>
               <p style={{ fontSize: 13, color: "#666", marginBottom: 24 }}>
@@ -10047,13 +10070,13 @@ export default function CastingApp() {
                     type={showGuestPwd ? "text" : "password"}
                     autoFocus
                     style={{
-                      width: "100%", padding: "14px 48px 14px 18px", background: "#111114",
-                      border: guestPasswordError ? "1px solid rgba(239,68,68,0.4)" : "1px solid #2a2a2e",
-                      borderRadius: 12, color: "#e0e0e0", fontSize: 16, fontFamily: "'DM Sans',sans-serif",
+                      width: "100%", padding: "14px 48px 14px 18px", background: "#1c1c1f",
+                      border: guestPasswordError ? "1px solid rgba(255,69,58,0.4)" : "1px solid #3a3a40",
+                      borderRadius: 12, color: "#ebebf0", fontSize: 16, fontFamily: "inherit",
                       outline: "none", textAlign: "center", letterSpacing: "0.15em", fontWeight: 700, boxSizing: "border-box",
                     }}
-                    onFocus={e => e.target.style.borderColor = "#a855f7"}
-                    onBlur={e => e.target.style.borderColor = guestPasswordError ? "rgba(239,68,68,0.4)" : "#2a2a2e"}
+                    onFocus={e => e.target.style.borderColor = "#bf5af2"}
+                    onBlur={e => e.target.style.borderColor = guestPasswordError ? "rgba(255,69,58,0.4)" : "#3a3a40"}
                   />
                   <button onClick={() => setShowGuestPwd(p => !p)} type="button" style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", fontSize: 16, color: "#555", padding: 4 }} title={showGuestPwd ? "Masquer" : "Afficher"}>
                     {showGuestPwd ? "🙈" : "👁"}
@@ -10061,7 +10084,7 @@ export default function CastingApp() {
                 </div>
                 <button onClick={handleGuestPassword}
                   style={{
-                    padding: "14px 24px", background: "linear-gradient(135deg, #a855f7, #7c3aed)",
+                    padding: "14px 24px", background: "linear-gradient(135deg, #bf5af2, #7c3aed)",
                     border: "none", borderRadius: 12, cursor: "pointer", fontSize: 15, fontWeight: 700,
                     fontFamily: "inherit", color: "#fff", transition: "all 0.2s",
                   }}>
@@ -10069,7 +10092,7 @@ export default function CastingApp() {
                 </button>
               </div>
               {guestPasswordError && (
-                <div style={{ fontSize: 12, color: "#ef4444", animation: "fadeIn 0.3s ease" }}>{guestPasswordError}</div>
+                <div style={{ fontSize: 12, color: "#ff453a", animation: "fadeIn 0.3s ease" }}>{guestPasswordError}</div>
               )}
               <div style={{ marginTop: 40, fontSize: 10, color: "#333" }}>
                 Casting Director · Joana Fontaine
@@ -10088,10 +10111,10 @@ export default function CastingApp() {
     return (
       <>
         <style>{loginStyles}</style>
-        <div style={{ minHeight: "100vh", background: "#0a0a0c", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
+        <div style={{ minHeight: "100vh", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
           <div style={{ width: "100%", maxWidth: 380, textAlign: "center", animation: "fadeIn 0.5s ease" }}>
             <div style={{ fontSize: 56, marginBottom: 16 }}>🔒</div>
-            <h1 style={{ fontSize: 26, fontWeight: 800, fontFamily: "'Playfair Display', serif", color: "#f0f0f0", marginBottom: 8 }}>
+            <h1 style={{ fontSize: 26, fontWeight: 800, fontFamily: "inherit", color: "#f5f5f7", marginBottom: 8 }}>
               Casting Director
             </h1>
             <p style={{ fontSize: 13, color: "#666", marginBottom: 32, lineHeight: 1.5 }}>
@@ -10107,12 +10130,12 @@ export default function CastingApp() {
                   type={showSiteCode ? "text" : "password"}
                   autoFocus
                   style={{
-                    width: "100%", padding: "14px 48px 14px 18px", background: "#111114", border: siteCodeError ? "1px solid rgba(239,68,68,0.4)" : "1px solid #2a2a2e",
-                    borderRadius: 12, color: "#e0e0e0", fontSize: 16, fontFamily: "'DM Sans',sans-serif",
+                    width: "100%", padding: "14px 48px 14px 18px", background: "#1c1c1f", border: siteCodeError ? "1px solid rgba(255,69,58,0.4)" : "1px solid #3a3a40",
+                    borderRadius: 12, color: "#ebebf0", fontSize: 16, fontFamily: "inherit",
                     outline: "none", textAlign: "center", letterSpacing: "0.15em", fontWeight: 700, boxSizing: "border-box",
                   }}
-                  onFocus={e => e.target.style.borderColor = "#c9a44a"}
-                  onBlur={e => e.target.style.borderColor = siteCodeError ? "rgba(239,68,68,0.4)" : "#2a2a2e"}
+                  onFocus={e => e.target.style.borderColor = "#d4af61"}
+                  onBlur={e => e.target.style.borderColor = siteCodeError ? "rgba(255,69,58,0.4)" : "#3a3a40"}
                 />
                 <button onClick={() => setShowSiteCode(p => !p)} type="button" style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", fontSize: 16, color: "#555", padding: 4 }} title={showSiteCode ? "Masquer" : "Afficher"}>
                   {showSiteCode ? "🙈" : "👁"}
@@ -10120,7 +10143,7 @@ export default function CastingApp() {
               </div>
               <button onClick={handleSiteUnlock}
                 style={{
-                  padding: "14px 24px", background: "linear-gradient(135deg, #c9a44a, #b8963a)",
+                  padding: "14px 24px", background: "linear-gradient(135deg, #d4af61, #b8963a)",
                   border: "none", borderRadius: 12, cursor: "pointer", fontSize: 15, fontWeight: 700,
                   fontFamily: "inherit", color: "#000", transition: "all 0.2s",
                 }}>
@@ -10128,7 +10151,7 @@ export default function CastingApp() {
               </button>
             </div>
             {siteCodeError && (
-              <div style={{ fontSize: 12, color: "#ef4444", animation: "fadeIn 0.3s ease" }}>{siteCodeError}</div>
+              <div style={{ fontSize: 12, color: "#ff453a", animation: "fadeIn 0.3s ease" }}>{siteCodeError}</div>
             )}
             <div style={{ marginTop: 40, fontSize: 10, color: "#333" }}>
               Joana Fontaine · Casting Director
@@ -10143,7 +10166,7 @@ export default function CastingApp() {
     return (
       <>
         <style>{loginStyles}</style>
-        <div style={{ minHeight: "100vh", background: "#0a0a0c", display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ minHeight: "100vh", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center" }}>
           <div style={{ textAlign: "center", animation: "pulse 1.5s infinite" }}>
             <div style={{ fontSize: 40, marginBottom: 12 }}>🎬</div>
             <div style={{ fontSize: 13, color: "#666" }}>Chargement...</div>
