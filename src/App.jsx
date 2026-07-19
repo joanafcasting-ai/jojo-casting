@@ -294,6 +294,38 @@ function PhotoSlot({ src, onAdd, onRemove, size = 90 }) {
   );
 }
 
+// ---- Icon System (SF Symbols style, stroke SVG) ----
+
+const ICON_PATHS = {
+  doc: <><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" /><polyline points="14 2 14 8 20 8" /><line x1="16" y1="13" x2="8" y2="13" /><line x1="16" y1="17" x2="8" y2="17" /></>,
+  inbox: <><polyline points="22 12 16 12 14 15 10 15 8 12 2 12" /><path d="M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z" /></>,
+  users: <><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M23 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></>,
+  book: <><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></>,
+  calendar: <><rect x="3" y="4" width="18" height="18" rx="2" /><line x1="16" y1="2" x2="16" y2="6" /><line x1="8" y1="2" x2="8" y2="6" /><line x1="3" y1="10" x2="21" y2="10" /></>,
+  clapper: <><path d="M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3z" /><path d="m6.2 5.3 3.1 3.9" /><path d="m12.4 3.4 3.1 4" /><path d="M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /></>,
+  trophy: <><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" /><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" /><path d="M4 22h16" /><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22" /><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22" /><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z" /></>,
+  mail: <><rect x="2" y="4" width="20" height="16" rx="2" /><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7" /></>,
+  film: <><rect x="2" y="2" width="20" height="20" rx="2.18" /><line x1="7" y1="2" x2="7" y2="22" /><line x1="17" y1="2" x2="17" y2="22" /><line x1="2" y1="12" x2="22" y2="12" /><line x1="2" y1="7" x2="7" y2="7" /><line x1="2" y1="17" x2="7" y2="17" /><line x1="17" y1="17" x2="22" y2="17" /><line x1="17" y1="7" x2="22" y2="7" /></>,
+  folder: <path d="M20 20a2 2 0 0 0 2-2V8a2 2 0 0 0-2-2h-7.9a2 2 0 0 1-1.69-.9L9.6 3.9A2 2 0 0 0 7.93 3H4a2 2 0 0 0-2 2v13a2 2 0 0 0 2 2Z" />,
+  euro: <><path d="M4 10h12" /><path d="M4 14h9" /><path d="M19 6a7.7 7.7 0 0 0-5.2-2A7.9 7.9 0 0 0 6 12c0 4.4 3.5 8 7.8 8 2 0 3.8-.8 5.2-2" /></>,
+  search: <><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></>,
+  paperclip: <path d="m21.44 11.05-9.19 9.19a6 6 0 0 1-8.49-8.49l8.57-8.57A4 4 0 1 1 18 8.84l-8.59 8.57a2 2 0 0 1-2.83-2.83l8.49-8.48" />,
+  pen: <><path d="M17 3a2.85 2.83 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5Z" /><path d="m15 5 4 4" /></>,
+  listCheck: <><path d="m3 17 2 2 4-4" /><path d="m3 7 2 2 4-4" /><path d="M13 6h8" /><path d="M13 12h8" /><path d="M13 18h8" /></>,
+  lock: <><rect x="3" y="11" width="18" height="11" rx="2" /><path d="M7 11V7a5 5 0 0 1 10 0v4" /></>,
+  plus: <><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></>,
+};
+
+function Icon({ name, size = 17, color = "currentColor", strokeWidth = 1.8, style }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color}
+      strokeWidth={strokeWidth} strokeLinecap="round" strokeLinejoin="round"
+      style={{ flexShrink: 0, ...style }} aria-hidden="true">
+      {ICON_PATHS[name] || null}
+    </svg>
+  );
+}
+
 // ---- Modal Component ----
 
 function Modal({ open, onClose, title, children, width = 600 }) {
@@ -3116,6 +3148,7 @@ function CastingAppInner({ authUser }) {
     ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.16); border-radius: 9px; border: 2.5px solid transparent; background-clip: padding-box; }
     ::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); border: 2.5px solid transparent; background-clip: padding-box; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(6px) scale(0.995); } to { opacity: 1; transform: none; } }
+    @keyframes slideUp { from { opacity: 0; transform: translateY(18px) scale(0.985); } to { opacity: 1; transform: none; } }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
     ::selection { background: rgba(212,175,97,0.32); color: #fff; }
     button {
@@ -3570,11 +3603,14 @@ function CastingAppInner({ authUser }) {
           <div style={{ maxWidth: 900, margin: "0 auto", padding: "40px 24px" }}>
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 20 }}>
               <div>
+                <p style={{ fontSize: 13, fontWeight: 600, color: "#d4af61", marginBottom: 6, letterSpacing: "0.01em" }}>
+                  {(d => d.charAt(0).toUpperCase() + d.slice(1))(new Date().toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long" }))}
+                </p>
                 <h1 style={{ fontSize: 34, fontWeight: 800, color: "#f5f5f7", fontFamily: "inherit", marginBottom: 6, letterSpacing: "-0.025em" }}>
                   {authUser?.firstName ? `Bonjour ${authUser.firstName} 👋` : "Mes Projets"}
                 </h1>
                 <p style={{ fontSize: 15, color: "#98989d" }}>
-                  {projectList.length} projet{projectList.length !== 1 ? "s" : ""}
+                  {projectList.length} projet{projectList.length !== 1 ? "s" : ""} en cours de casting
                 </p>
               </div>
               <button
@@ -3593,29 +3629,29 @@ function CastingAppInner({ authUser }) {
             </div>
 
             {/* Storage & Backup bar */}
-            <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 20, padding: "14px 18px", background: "#1c1c1f", borderRadius: 12, border: "1px solid #2e2e34" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 16, marginBottom: 20, padding: "14px 20px", background: "#1c1c1f", borderRadius: 16, border: "0.5px solid rgba(255,255,255,0.08)" }}>
               <div style={{ flex: 1 }}>
-                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 6 }}>
-                  <span style={{ fontSize: 11, color: "#888", fontWeight: 600 }}>💾 Stockage vidéo</span>
-                  <span style={{ fontSize: 10, color: "#666" }}>{storageInfo.usedMB} MB / {storageInfo.maxMB} MB</span>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: 8 }}>
+                  <span style={{ fontSize: 12, color: "#98989d", fontWeight: 600 }}>Stockage vidéo</span>
+                  <span style={{ fontSize: 11, color: "#666" }}>{(storageInfo.usedMB / 1024).toFixed(1)} Go sur {Math.round(storageInfo.maxMB / 1024)} Go</span>
                 </div>
-                <div style={{ height: 4, background: "#3a3a40", borderRadius: 4, overflow: "hidden" }}>
-                  <div style={{ height: "100%", width: `${Math.min(storageInfo.percentage, 100)}%`, background: storageInfo.percentage > 80 ? "#ff453a" : storageInfo.percentage > 50 ? "#ffd60a" : "#30d158", borderRadius: 4, transition: "width 0.5s" }} />
+                <div style={{ height: 5, background: "rgba(255,255,255,0.08)", borderRadius: 4, overflow: "hidden" }}>
+                  <div style={{ height: "100%", width: `${Math.max(Math.min(storageInfo.percentage, 100), 1)}%`, background: storageInfo.percentage > 80 ? "#ff453a" : storageInfo.percentage > 50 ? "#ffd60a" : "linear-gradient(90deg, #30d158, #4cd964)", borderRadius: 4, transition: "width 0.5s" }} />
                 </div>
               </div>
-              <div style={{ display: "flex", gap: 6 }}>
+              <div style={{ display: "flex", gap: 8 }}>
                 <button onClick={handleImportBackup}
-                  style={{ padding: "8px 14px", background: "rgba(255,159,10,0.08)", border: "1px solid rgba(255,159,10,0.2)", borderRadius: 12, cursor: "pointer", fontSize: 11, fontWeight: 600, fontFamily: "inherit", color: "#ff9f0a", whiteSpace: "nowrap" }}>
-                  📤 Restaurer
+                  style={{ padding: "8px 16px", background: "rgba(255,255,255,0.07)", border: "none", borderRadius: 100, cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: "inherit", color: "#ff9f0a", whiteSpace: "nowrap" }}>
+                  Restaurer
                 </button>
                 <button onClick={handleExportBackup}
                   disabled={backupStatus === "exporting"}
                   style={{
-                    padding: "8px 14px", background: "rgba(10,132,255,0.08)", border: "1px solid rgba(10,132,255,0.2)",
-                    borderRadius: 12, cursor: "pointer", fontSize: 11, fontWeight: 600, fontFamily: "inherit",
+                    padding: "8px 16px", background: "rgba(255,255,255,0.07)", border: "none",
+                    borderRadius: 100, cursor: "pointer", fontSize: 12, fontWeight: 600, fontFamily: "inherit",
                     color: backupStatus === "done" ? "#30d158" : "#0a84ff", transition: "all 0.2s", whiteSpace: "nowrap",
                   }}>
-                  {backupStatus === "exporting" ? "⏳ Export..." : backupStatus === "done" ? "✓ Sauvegardé !" : "💾 Sauvegarder tout"}
+                  {backupStatus === "exporting" ? "Export…" : backupStatus === "done" ? "✓ Sauvegardé" : "Sauvegarder tout"}
                 </button>
               </div>
             </div>
@@ -3642,10 +3678,21 @@ function CastingAppInner({ authUser }) {
                 <div style={{ fontSize: 14, animation: "pulse 1.5s infinite" }}>Chargement...</div>
               </div>
             ) : projectList.length === 0 ? (
-              <div style={{ textAlign: "center", padding: "80px 24px", background: "#1c1c1f", borderRadius: 20, border: "1px solid #2e2e34" }}>
-                <div style={{ fontSize: 56, marginBottom: 16, opacity: 0.3 }}>🎬</div>
-                <div style={{ fontSize: 16, color: "#888", marginBottom: 8 }}>Aucun projet encore</div>
-                <div style={{ fontSize: 13, color: "#555" }}>Créez votre premier projet de casting</div>
+              <div style={{ textAlign: "center", padding: "80px 24px", background: "#1c1c1f", borderRadius: 20, border: "0.5px solid rgba(255,255,255,0.08)", animation: "slideUp 0.5s cubic-bezier(0.32,0.72,0,1) both" }}>
+                <div style={{
+                  width: 76, height: 76, margin: "0 auto 20px", borderRadius: 20,
+                  background: "linear-gradient(145deg, rgba(232,199,120,0.14), rgba(212,175,97,0.04))",
+                  border: "0.5px solid rgba(212,175,97,0.2)",
+                  display: "flex", alignItems: "center", justifyContent: "center",
+                }}>
+                  <Icon name="clapper" size={34} color="#d4af61" strokeWidth={1.5} />
+                </div>
+                <div style={{ fontSize: 17, fontWeight: 600, color: "#ebebf0", marginBottom: 6, letterSpacing: "-0.015em" }}>Aucun projet encore</div>
+                <div style={{ fontSize: 14, color: "#98989d", marginBottom: 24 }}>Créez votre premier projet de casting pour commencer.</div>
+                <button onClick={createNewProject} style={{
+                  padding: "10px 22px", background: "rgba(212,175,97,0.12)", border: "none", borderRadius: 100,
+                  cursor: "pointer", fontSize: 14, fontWeight: 600, fontFamily: "inherit", color: "#d4af61",
+                }}>+ Nouveau projet</button>
               </div>
             ) : (() => {
               const filtered = projectFilter === "all" ? projectList : projectList.filter(p => (p.status || "en_cours") === projectFilter);
@@ -3660,22 +3707,29 @@ function CastingAppInner({ authUser }) {
                         display: "flex", alignItems: "center", gap: 18, padding: "22px 26px",
                         background: "#1c1c1f", borderRadius: 20, border: "0.5px solid rgba(255,255,255,0.08)",
                         boxShadow: "0 2px 12px rgba(0,0,0,0.25)",
-                        cursor: "pointer", transition: "all 0.25s cubic-bezier(0.32,0.72,0,1)", animation: `fadeIn 0.3s ease ${i * 0.05}s both`,
+                        cursor: "pointer", transition: "all 0.25s cubic-bezier(0.32,0.72,0,1)", animation: `slideUp 0.45s cubic-bezier(0.32,0.72,0,1) ${i * 0.06}s both`,
                       }}
                         onMouseEnter={e => { e.currentTarget.style.transform = "translateY(-2px) scale(1.005)"; e.currentTarget.style.boxShadow = "0 12px 32px rgba(0,0,0,0.45)"; e.currentTarget.style.background = "#232327"; }}
                         onMouseLeave={e => { e.currentTarget.style.transform = "none"; e.currentTarget.style.boxShadow = "0 2px 12px rgba(0,0,0,0.25)"; e.currentTarget.style.background = "#1c1c1f"; }}
                         onClick={() => loadProject(proj.id)}
                       >
-                        <div style={{ width: 48, height: 48, borderRadius: 12, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 22, background: "rgba(212,175,97,0.08)", flexShrink: 0 }}>🎬</div>
+                        <div style={{
+                          width: 52, height: 52, borderRadius: 14, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0,
+                          background: "linear-gradient(145deg, rgba(232,199,120,0.18), rgba(212,175,97,0.06))",
+                          border: "0.5px solid rgba(212,175,97,0.25)",
+                        }}>
+                          <Icon name="clapper" size={22} color="#d4af61" strokeWidth={1.7} />
+                        </div>
                         <div style={{ flex: 1, minWidth: 0 }}>
-                          <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 4 }}>
-                            <span style={{ fontSize: 15, fontWeight: 700, color: "#f5f5f7" }}>{proj.name || "Sans titre"}</span>
-                            <span style={{ fontSize: 9, padding: "2px 8px", borderRadius: 4, fontWeight: 600, background: st.bg, color: st.color, border: `1px solid ${st.border}` }}>{st.label}</span>
+                          <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 5 }}>
+                            <span style={{ fontSize: 16, fontWeight: 700, color: "#f5f5f7", letterSpacing: "-0.015em" }}>{proj.name || "Sans titre"}</span>
+                            <span style={{ fontSize: 10, padding: "3px 10px", borderRadius: 100, fontWeight: 600, background: st.bg, color: st.color }}>{st.label}</span>
                           </div>
-                          <div style={{ display: "flex", gap: 12, fontSize: 11, color: "#666" }}>
+                          <div style={{ display: "flex", gap: 14, fontSize: 12, color: "#98989d" }}>
                             <span>{proj.rolesCount} rôle{proj.rolesCount !== 1 ? "s" : ""}</span>
+                            <span style={{ color: "#48484d" }}>·</span>
                             <span>{proj.profilesCount} profil{proj.profilesCount !== 1 ? "s" : ""}</span>
-                            {proj.finalCount > 0 && <span style={{ color: "#30d158" }}>🏆 {proj.finalCount}</span>}
+                            {proj.finalCount > 0 && <><span style={{ color: "#48484d" }}>·</span><span style={{ color: "#30d158", display: "inline-flex", alignItems: "center", gap: 4 }}><Icon name="trophy" size={11} color="#30d158" /> {proj.finalCount} retenu{proj.finalCount !== 1 ? "s" : ""}</span></>}
                           </div>
                         </div>
                         <div style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }} onClick={e => e.stopPropagation()}>
@@ -4608,14 +4662,14 @@ function CastingAppInner({ authUser }) {
             {/* Tab nav */}
             <div style={{ padding: "0 8px", marginBottom: 20, display: "flex", flexDirection: "column", gap: 2 }}>
               {[
-                { key: "projet", icon: "📄", label: "Projet", color: "#e879f9", show: true },
-                { key: "candidatures", icon: "📩", label: "Candidatures", color: "#f472b6", show: true, badge: (state.candidatures || []).length },
-                { key: "roles", icon: "🎭", label: "Rôles", color: "#d4af61", show: true },
-                { key: "contacts", icon: "📇", label: "Contacts", color: "#0a84ff", show: true, badge: (() => { const all = Object.values(state.profiles).flat(); return all.filter(p => getChoice(p.id)).length; })() },
-                { key: "planning", icon: "📋", label: "Planning", color: "#bf5af2", show: true, badge: state.castingDays.length },
-                { key: "casting", icon: "🎬", label: "Casting", color: "#ff9f0a", show: true },
-                { key: "final", icon: "🏆", label: "Final", color: "#30d158", show: true, badge: Object.values(state.finalSelections).filter(f => f.selected === true).length },
-                { key: "mail", icon: "✉", label: "Gmail", color: "#EA4335", show: true, badge: (state.emailLog || []).length },
+                { key: "projet", icon: "doc", label: "Projet", color: "#e879f9", show: true },
+                { key: "candidatures", icon: "inbox", label: "Candidatures", color: "#f472b6", show: true, badge: (state.candidatures || []).length },
+                { key: "roles", icon: "users", label: "Rôles", color: "#d4af61", show: true },
+                { key: "contacts", icon: "book", label: "Contacts", color: "#0a84ff", show: true, badge: (() => { const all = Object.values(state.profiles).flat(); return all.filter(p => getChoice(p.id)).length; })() },
+                { key: "planning", icon: "calendar", label: "Planning", color: "#bf5af2", show: true, badge: state.castingDays.length },
+                { key: "casting", icon: "clapper", label: "Casting", color: "#ff9f0a", show: true },
+                { key: "final", icon: "trophy", label: "Final", color: "#30d158", show: true, badge: Object.values(state.finalSelections).filter(f => f.selected === true).length },
+                { key: "mail", icon: "mail", label: "Gmail", color: "#EA4335", show: true, badge: (state.emailLog || []).length },
               ].filter(t => t.show).map(tab => (
                 <button key={tab.key} onClick={() => setActiveTab(tab.key)}
                   style={{
@@ -4629,7 +4683,9 @@ function CastingAppInner({ authUser }) {
                   onMouseEnter={e => { if (activeTab !== tab.key) e.currentTarget.style.background = "rgba(255,255,255,0.04)"; }}
                   onMouseLeave={e => { if (activeTab !== tab.key) e.currentTarget.style.background = "transparent"; }}
                 >
-                  <span style={{ fontSize: 16, width: 24, textAlign: "center", filter: activeTab === tab.key ? "none" : "grayscale(0.4) opacity(0.8)" }}>{tab.icon}</span>
+                  <span style={{ width: 24, display: "flex", justifyContent: "center" }}>
+                    <Icon name={tab.icon} size={17} color={activeTab === tab.key ? tab.color : "#8e8e93"} strokeWidth={activeTab === tab.key ? 2 : 1.7} />
+                  </span>
                   <span>{tab.label}</span>
                   {tab.badge > 0 && (
                     <span style={{
@@ -4650,10 +4706,10 @@ function CastingAppInner({ authUser }) {
                   <div style={{ fontSize: 10, letterSpacing: "0.2em", textTransform: "uppercase", color: "#555", fontWeight: 600 }}>Sections</div>
                 </div>
                 {[
-                  { key: "infos", icon: "🎬", label: "Infos & Rôles" },
-                  { key: "documents", icon: "📎", label: "Documents" },
-                  { key: "devis", icon: "📝", label: "Devis" },
-                  { key: "summary", icon: "📋", label: "Fiche synthétique" },
+                  { key: "infos", icon: "film", label: "Infos & Rôles" },
+                  { key: "documents", icon: "paperclip", label: "Documents" },
+                  { key: "devis", icon: "pen", label: "Devis" },
+                  { key: "summary", icon: "listCheck", label: "Fiche synthétique" },
                 ].map(item => (
                   <button key={item.key} onClick={() => setProjetSection(item.key)} style={{
                     display: "flex", alignItems: "center", gap: 10, width: "100%", padding: "9px 14px",
@@ -4662,7 +4718,9 @@ function CastingAppInner({ authUser }) {
                     background: projetSection === item.key ? "rgba(232,121,249,0.1)" : "transparent",
                     color: projetSection === item.key ? "#e879f9" : "#666",
                   }}>
-                    <span style={{ fontSize: 14, width: 20, textAlign: "center" }}>{item.icon}</span>
+                    <span style={{ width: 20, display: "flex", justifyContent: "center" }}>
+                      <Icon name={item.icon} size={14} color={projetSection === item.key ? "#e879f9" : "#8e8e93"} />
+                    </span>
                     <span>{item.label}</span>
                   </button>
                 ))}
@@ -10116,13 +10174,31 @@ export default function CastingApp() {
     return (
       <>
         <style>{loginStyles}</style>
-        <div style={{ minHeight: "100vh", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", padding: 20 }}>
-          <div style={{ width: "100%", maxWidth: 380, textAlign: "center", animation: "fadeIn 0.5s ease" }}>
-            <div style={{ fontSize: 56, marginBottom: 16 }}>🔒</div>
-            <h1 style={{ fontSize: 26, fontWeight: 800, fontFamily: "inherit", color: "#f5f5f7", marginBottom: 8 }}>
+        <div style={{ minHeight: "100vh", background: "#000000", display: "flex", alignItems: "center", justifyContent: "center", padding: 20, position: "relative", overflow: "hidden" }}>
+          {/* Halo cinématique */}
+          <div style={{
+            position: "absolute", top: "50%", left: "50%", transform: "translate(-50%, -60%)",
+            width: 700, height: 700, borderRadius: "50%", pointerEvents: "none",
+            background: "radial-gradient(circle, rgba(212,175,97,0.10) 0%, rgba(212,175,97,0.04) 35%, transparent 65%)",
+          }} />
+          <div style={{ width: "100%", maxWidth: 380, textAlign: "center", animation: "fadeIn 0.6s cubic-bezier(0.32,0.72,0,1)", position: "relative" }}>
+            {/* App icon */}
+            <div style={{
+              width: 88, height: 88, margin: "0 auto 24px", borderRadius: 22,
+              background: "linear-gradient(145deg, #e8c778 0%, #d4af61 45%, #a8853c 100%)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              boxShadow: "0 12px 40px rgba(212,175,97,0.25), inset 0 1px 1px rgba(255,255,255,0.35)",
+            }}>
+              <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#1a1408" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3z" />
+                <path d="m6.2 5.3 3.1 3.9" /><path d="m12.4 3.4 3.1 4" />
+                <path d="M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+              </svg>
+            </div>
+            <h1 style={{ fontSize: 30, fontWeight: 800, fontFamily: "inherit", color: "#f5f5f7", marginBottom: 8, letterSpacing: "-0.025em" }}>
               Casting Director
             </h1>
-            <p style={{ fontSize: 13, color: "#666", marginBottom: 32, lineHeight: 1.5 }}>
+            <p style={{ fontSize: 14, color: "#98989d", marginBottom: 36, lineHeight: 1.5 }}>
               Joana Fontaine<br/>Entrez le code d'accès pour continuer.
             </p>
             <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
@@ -10135,12 +10211,11 @@ export default function CastingApp() {
                   type={showSiteCode ? "text" : "password"}
                   autoFocus
                   style={{
-                    width: "100%", padding: "14px 48px 14px 18px", background: "#1c1c1f", border: siteCodeError ? "1px solid rgba(255,69,58,0.4)" : "1px solid #3a3a40",
-                    borderRadius: 12, color: "#ebebf0", fontSize: 16, fontFamily: "inherit",
+                    width: "100%", padding: "15px 48px 15px 18px", background: "rgba(255,255,255,0.06)",
+                    border: siteCodeError ? "1px solid rgba(255,69,58,0.5)" : "1px solid transparent",
+                    borderRadius: 14, color: "#ebebf0", fontSize: 16, fontFamily: "inherit",
                     outline: "none", textAlign: "center", letterSpacing: "0.15em", fontWeight: 700, boxSizing: "border-box",
                   }}
-                  onFocus={e => e.target.style.borderColor = "#d4af61"}
-                  onBlur={e => e.target.style.borderColor = siteCodeError ? "rgba(255,69,58,0.4)" : "#3a3a40"}
                 />
                 <button onClick={() => setShowSiteCode(p => !p)} type="button" style={{ position: "absolute", right: 12, top: "50%", transform: "translateY(-50%)", background: "none", border: "none", cursor: "pointer", fontSize: 16, color: "#555", padding: 4 }} title={showSiteCode ? "Masquer" : "Afficher"}>
                   {showSiteCode ? "🙈" : "👁"}
@@ -10148,9 +10223,10 @@ export default function CastingApp() {
               </div>
               <button onClick={handleSiteUnlock}
                 style={{
-                  padding: "14px 24px", background: "linear-gradient(135deg, #d4af61, #b8963a)",
-                  border: "none", borderRadius: 12, cursor: "pointer", fontSize: 15, fontWeight: 700,
-                  fontFamily: "inherit", color: "#000", transition: "all 0.2s",
+                  padding: "14px 24px", background: "linear-gradient(145deg, #e8c778, #c49a4a)",
+                  border: "none", borderRadius: 14, cursor: "pointer", fontSize: 15, fontWeight: 700,
+                  fontFamily: "inherit", color: "#1a1408", transition: "all 0.2s",
+                  boxShadow: "0 4px 16px rgba(212,175,97,0.25)",
                 }}>
                 →
               </button>
