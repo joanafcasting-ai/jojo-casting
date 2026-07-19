@@ -47,6 +47,13 @@ const storage = {
       const prefix = shared ? 'shared:' : ''
       const val = localStorage.getItem(prefix + key)
       if (val === null) throw new Error('Key not found: ' + key)
+      // Self-heal ONLY when the cloud confirmed the key is gone (not on
+      // timeouts — we must never overwrite newer cloud data with stale cache).
+      if (String(e?.message || '').startsWith('Key not found')) {
+        storage.set(key, val, shared).then(() => {
+          console.warn('[storage.get] Re-uploaded missing cloud copy of', key)
+        }).catch(() => {})
+      }
       return { key, value: val, shared }
     }
   },
@@ -109,7 +116,23 @@ const storage = {
     }
   },
 
+  // Scan localStorage for keys matching prefix (mirror cache of every save)
+  _localKeys(prefix = '', shared = false) {
+    const keys = []
+    for (let i = 0; i < localStorage.length; i++) {
+      const k = localStorage.key(i)
+      if (!k) continue
+      if (shared) {
+        if (k.startsWith('shared:' + prefix)) keys.push(k.replace('shared:', ''))
+      } else {
+        if (!k.startsWith('shared:') && k.startsWith(prefix)) keys.push(k)
+      }
+    }
+    return keys
+  },
+
   async list(prefix = '', shared = false) {
+    let cloudKeys = []
     try {
       let query = supabase.from('kv_store').select('key')
       if (shared) {
@@ -126,21 +149,15 @@ const storage = {
       ])
       const { data, error } = result
       if (error) throw error
-      return { keys: (data || []).map(d => d.key), prefix, shared }
+      cloudKeys = (data || []).map(d => d.key)
     } catch (e) {
-      // Fallback: scan localStorage
-      const storePrefix = shared ? 'shared:' : ''
-      const keys = []
-      for (let i = 0; i < localStorage.length; i++) {
-        const k = localStorage.key(i)
-        if (shared) {
-          if (k.startsWith('shared:' + prefix)) keys.push(k.replace('shared:', ''))
-        } else {
-          if (!k.startsWith('shared:') && k.startsWith(prefix)) keys.push(k)
-        }
-      }
-      return { keys, prefix, shared }
+      console.warn('[storage.list] Supabase failed:', e?.message || e, '— using localStorage only')
     }
+    // ALWAYS merge with localStorage cache: if the cloud copy was lost,
+    // local keys keep the data reachable (get() will then self-heal the cloud).
+    const localKeys = this._localKeys(prefix, shared)
+    const keys = [...new Set([...cloudKeys, ...localKeys])]
+    return { keys, prefix, shared }
   }
 }
 
