@@ -504,6 +504,218 @@ function ProfileCard({ profile, onEdit, onStatusChange, viewMode }) {
   );
 }
 
+// ---- Profile Sheet — fiche de présentation (lecture) ----
+
+function ProfileSheet({ profile, choice, onVote, guestVote, rating, onRate, contact, onContact, onEdit, onClose, onPrev, onNext, index, total }) {
+  const [photoIdx, setPhotoIdx] = useState(0);
+  const photos = (profile.photos || []).filter(Boolean);
+  const mainPhoto = photos[Math.min(photoIdx, Math.max(photos.length - 1, 0))];
+  const av = AVAILABILITY[profile.availability] || AVAILABILITY.available;
+  const links = (profile.selftapeLinks || []).filter(Boolean);
+  const videos = profile.selftapeVideos || [];
+  const choiceColor = choice === "yes" ? "#30d158" : choice === "maybe" ? "#ffd60a" : choice === "no" ? "#ff453a" : null;
+
+  useEffect(() => { setPhotoIdx(0); }, [profile.id]);
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.key === "Escape") onClose();
+      else if (e.key === "ArrowLeft" && onPrev) onPrev();
+      else if (e.key === "ArrowRight" && onNext) onNext();
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose, onPrev, onNext]);
+
+  const sectionLabel = { fontSize: 10.5, fontWeight: 700, color: "#666", textTransform: "uppercase", letterSpacing: "0.1em", marginBottom: 10 };
+  const infoItem = (label, value) => value ? (
+    <div>
+      <div style={{ fontSize: 10.5, color: "#666", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 3 }}>{label}</div>
+      <div style={{ fontSize: 14.5, color: "#ebebf0", fontWeight: 500 }}>{value}</div>
+    </div>
+  ) : null;
+  const copyLine = (icon, value) => value ? (
+    <div style={{ display: "flex", alignItems: "center", gap: 10, padding: "9px 0", borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+      <span style={{ fontSize: 13, width: 18, textAlign: "center", flexShrink: 0 }}>{icon}</span>
+      <span style={{ fontSize: 14, color: "#ebebf0", flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{value}</span>
+      <button onClick={() => { try { navigator.clipboard.writeText(value); } catch (e) {} }}
+        style={{ padding: "4px 12px", background: "rgba(255,255,255,0.06)", border: "none", borderRadius: 100, color: "#98989d", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", flexShrink: 0 }}>Copier</button>
+    </div>
+  ) : null;
+
+  return (
+    <div onClick={onClose} style={{
+      position: "fixed", inset: 0, background: "rgba(0,0,0,0.6)", zIndex: 1000,
+      display: "flex", alignItems: "center", justifyContent: "center", padding: 20,
+      backdropFilter: "blur(24px) saturate(140%)", WebkitBackdropFilter: "blur(24px) saturate(140%)",
+      animation: "fadeIn 0.25s cubic-bezier(0.32,0.72,0,1)",
+    }}>
+      <div onClick={e => e.stopPropagation()} style={{
+        width: "min(980px, 96vw)", height: "min(660px, 90vh)",
+        display: "grid", gridTemplateColumns: "minmax(280px, 400px) 1fr",
+        background: "#18181b", borderRadius: 26, overflow: "hidden",
+        border: "0.5px solid rgba(255,255,255,0.12)",
+        boxShadow: choiceColor ? `0 0 0 2.5px ${choiceColor}, 0 40px 120px rgba(0,0,0,0.8)` : "0 40px 120px rgba(0,0,0,0.8)",
+        animation: "slideUp 0.35s cubic-bezier(0.32,0.72,0,1)",
+      }}>
+        {/* ===== Photos ===== */}
+        <div style={{ position: "relative", background: "#0e0e10", overflow: "hidden" }}>
+          {mainPhoto ? (
+            <img src={mainPhoto} alt="" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+          ) : (
+            <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "#3a3a40", fontSize: 52 }}>◎</div>
+          )}
+          {/* Statut dispo */}
+          <div style={{ position: "absolute", top: 14, left: 14, padding: "5px 12px", borderRadius: 100, background: "rgba(0,0,0,0.6)", backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)", fontSize: 11, fontWeight: 600, color: av.color }}>● {av.label}</div>
+          {/* Miniatures */}
+          {photos.length > 1 && (
+            <div style={{ position: "absolute", bottom: 14, left: 0, right: 0, display: "flex", justifyContent: "center", gap: 8 }}>
+              {photos.map((ph, i) => (
+                <button key={i} onClick={() => setPhotoIdx(i)} style={{
+                  width: 42, height: 54, borderRadius: 8, overflow: "hidden", padding: 0, cursor: "pointer",
+                  border: "none", boxShadow: i === photoIdx ? "0 0 0 2.5px #fff, 0 4px 12px rgba(0,0,0,0.6)" : "0 0 0 1px rgba(255,255,255,0.25), 0 4px 12px rgba(0,0,0,0.6)",
+                  opacity: i === photoIdx ? 1 : 0.75, transition: "all 0.2s",
+                }}>
+                  <img src={ph} alt="" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* ===== Infos ===== */}
+        <div style={{ display: "flex", flexDirection: "column", minWidth: 0 }}>
+          {/* Header */}
+          <div style={{ padding: "26px 30px 0", position: "relative" }}>
+            <button onClick={onClose} style={{ position: "absolute", top: 20, right: 20, width: 32, height: 32, borderRadius: "50%", background: "rgba(255,255,255,0.07)", border: "none", color: "#98989d", fontSize: 15, cursor: "pointer", fontFamily: "inherit", display: "flex", alignItems: "center", justifyContent: "center" }}>✕</button>
+            <div style={{ fontSize: 28, fontWeight: 800, color: "#f5f5f7", letterSpacing: "-0.025em", lineHeight: 1.15, paddingRight: 44 }}>
+              {[profile.firstName, profile.name].filter(Boolean).join(" ") || "Sans nom"}
+            </div>
+            <div style={{ fontSize: 15, color: "#98989d", marginTop: 6 }}>
+              {[profile.age ? profile.age + " ans" : null, profile.height, profile.hairColor].filter(Boolean).join(" · ") || "—"}
+            </div>
+            <div style={{ display: "flex", alignItems: "center", gap: 8, marginTop: 10, flexWrap: "wrap" }}>
+              {profile.agency && <span style={{ fontSize: 13, fontWeight: 700, color: "#d4af61" }}>— {profile.agency}</span>}
+              {profile.profileType && <span style={{ fontSize: 10, padding: "3px 10px", background: "rgba(191,90,242,0.12)", borderRadius: 100, color: "#bf5af2", fontWeight: 700, textTransform: "uppercase" }}>{profile.profileType}</span>}
+              {guestVote && <span style={{ fontSize: 10, padding: "3px 10px", borderRadius: 100, fontWeight: 800,
+                background: guestVote === "yes" ? "rgba(48,209,88,0.12)" : guestVote === "no" ? "rgba(255,69,58,0.12)" : "rgba(255,214,10,0.12)",
+                color: guestVote === "yes" ? "#30d158" : guestVote === "no" ? "#ff453a" : "#ffd60a" }}>RÉAL/PROD : {guestVote === "yes" ? "OUI" : guestVote === "no" ? "NON" : "PEUT-ÊTRE"}</span>}
+            </div>
+            {/* Vote */}
+            <div style={{ display: "flex", gap: 2, padding: 3, background: "#101013", borderRadius: 13, marginTop: 18 }}>
+              {[
+                { c: "yes", label: "✓ Oui", col: "#30d158" },
+                { c: "maybe", label: "? Peut-être", col: "#ffd60a" },
+                { c: "no", label: "✕ Non", col: "#ff453a" },
+              ].map(v => (
+                <button key={v.c} onClick={() => onVote(choice === v.c ? null : v.c)} style={{
+                  flex: 1, padding: "11px 0", border: "none", cursor: "pointer", borderRadius: 10,
+                  fontFamily: "inherit", fontSize: 13.5, fontWeight: 700,
+                  background: choice === v.c ? `${v.col}22` : "transparent",
+                  color: choice === v.c ? v.col : "#666",
+                  boxShadow: choice === v.c ? `inset 0 0 0 1.5px ${v.col}66` : "none",
+                  transition: "all 0.15s",
+                }}>{v.label}</button>
+              ))}
+            </div>
+          </div>
+
+          {/* Corps scrollable */}
+          <div style={{ flex: 1, overflowY: "auto", padding: "22px 30px", display: "flex", flexDirection: "column", gap: 24 }}>
+            {/* Infos physiques */}
+            {(profile.measurements || profile.actingLevel > 0 || profile.source || profile.availability) && (
+              <div>
+                <div style={sectionLabel}>Profil</div>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "14px 20px" }}>
+                  {infoItem("Mensurations", profile.measurements)}
+                  {infoItem("Source", profile.source)}
+                  {profile.actingLevel > 0 && (
+                    <div>
+                      <div style={{ fontSize: 10.5, color: "#666", fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: 5 }}>Niveau de jeu</div>
+                      <div style={{ display: "flex", gap: 3 }}>{[1,2,3,4,5].map(n => <div key={n} style={{ width: 20, height: 4, borderRadius: 2, background: n <= profile.actingLevel ? "#d4af61" : "#2a2a30" }} />)}</div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            )}
+
+            {/* Contact */}
+            {(profile.email || profile.phone || profile.agencyEmail) && (
+              <div>
+                <div style={sectionLabel}>Contact</div>
+                {copyLine("✉", profile.email)}
+                {copyLine("☎", profile.phone)}
+                {copyLine("🏢", profile.agencyEmail)}
+              </div>
+            )}
+
+            {/* Selftapes */}
+            {(links.length > 0 || videos.length > 0) && (
+              <div>
+                <div style={sectionLabel}>Selftapes ({links.length + videos.length})</div>
+                {videos.map((v, i) => (
+                  <video key={i} src={v.url || v.data} controls preload="metadata" style={{ width: "100%", maxHeight: 240, borderRadius: 14, background: "#000", marginBottom: 10, border: "0.5px solid rgba(255,255,255,0.08)" }} />
+                ))}
+                <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
+                  {links.map((l, i) => (
+                    <a key={i} href={l} target="_blank" rel="noreferrer" style={{ padding: "8px 16px", background: "rgba(10,132,255,0.1)", borderRadius: 100, color: "#0a84ff", fontSize: 13, fontWeight: 600, textDecoration: "none", display: "inline-flex", alignItems: "center", gap: 6 }}>
+                      ▶ Selftape {links.length > 1 ? i + 1 : ""}
+                    </a>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Notes */}
+            {profile.notes && (
+              <div>
+                <div style={sectionLabel}>Notes</div>
+                <div style={{ fontSize: 14, color: "#ccc", lineHeight: 1.65, whiteSpace: "pre-wrap", background: "rgba(255,255,255,0.03)", borderRadius: 14, padding: "14px 16px" }}>{profile.notes}</div>
+              </div>
+            )}
+          </div>
+
+          {/* Footer */}
+          <div style={{ padding: "14px 30px", borderTop: "0.5px solid rgba(255,255,255,0.08)", display: "flex", alignItems: "center", gap: 12 }}>
+            <div style={{ display: "flex", gap: 2 }}>
+              {[1,2,3,4,5].map(n => (
+                <button key={n} onClick={() => onRate(n)} style={{ width: 22, height: 22, border: "none", cursor: "pointer", fontSize: 15, padding: 0, background: "transparent", color: n <= rating ? "#d4af61" : "#2e2e34", transition: "color 0.15s" }}>★</button>
+              ))}
+            </div>
+            <div style={{ flex: 1 }} />
+            {choice && (
+              <button onClick={onContact} style={{ padding: "10px 20px", background: "rgba(255,255,255,0.07)", border: "none", borderRadius: 100, color: contact?.status && contact.status !== "not_contacted" ? (CONTACT_STATUS[contact.status]?.color || "#d4af61") : "#d4af61", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+                {contact?.status && contact.status !== "not_contacted" ? (CONTACT_STATUS[contact.status]?.label || "Contact") : "Contacter"}
+              </button>
+            )}
+            <button onClick={onEdit} style={{ padding: "10px 26px", background: "#d4af61", border: "none", borderRadius: 100, color: "#1a1200", fontSize: 13.5, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
+              Modifier
+            </button>
+          </div>
+        </div>
+      </div>
+
+      {/* Navigation */}
+      {total > 1 && (
+        <>
+          {[[-1, "‹", "left", onPrev], [1, "›", "right", onNext]].map(([d, sym, side, fn]) => fn && (
+            <button key={side} onClick={e => { e.stopPropagation(); fn(); }} style={{
+              position: "fixed", top: "50%", [side]: 18, transform: "translateY(-50%)", zIndex: 1001,
+              width: 46, height: 46, borderRadius: "50%", border: "none", cursor: "pointer",
+              background: "rgba(30,30,34,0.85)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
+              color: "#f5f5f7", fontSize: 20, fontWeight: 600, fontFamily: "inherit",
+              boxShadow: "0 4px 20px rgba(0,0,0,0.5), inset 0 0 0 0.5px rgba(255,255,255,0.14)",
+              display: "flex", alignItems: "center", justifyContent: "center",
+            }}>{sym}</button>
+          ))}
+          <div onClick={e => e.stopPropagation()} style={{ position: "fixed", bottom: 20, left: "50%", transform: "translateX(-50%)", zIndex: 1001, padding: "6px 16px", borderRadius: 100, background: "rgba(30,30,34,0.85)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", color: "#98989d", fontSize: 12, fontWeight: 600, boxShadow: "0 4px 20px rgba(0,0,0,0.5)" }}>
+            {index + 1} / {total}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
 // ---- Profile Form Modal ----
 
 function VideoThumbnail({ video, onRemove, index }) {
@@ -1612,6 +1824,7 @@ function CastingAppInner({ authUser }) {
   const [compareMode, setCompareMode] = useState(false);
   const [compareSelection, setCompareSelection] = useState([]);
   const [profileGridMode, setProfileGridMode] = useState("grid"); // "grid" | "list"
+  const [profileSheetId, setProfileSheetId] = useState(null); // fiche de présentation ouverte
   const [moveProfileModal, setMoveProfileModal] = useState(null); // { profile, fromRole }
   const [copyProfileModal, setCopyProfileModal] = useState(null); // { profile }
   const [presentationMode, setPresentationMode] = useState(false);
@@ -7921,7 +8134,7 @@ function CastingAppInner({ authUser }) {
                     const tapes = (profile.selftapeLinks || []).filter(l => l).length + (profile.selftapeVideos || []).length;
                     return (
                       <div key={profile.id}
-                        onClick={() => { setEditingProfile(profile); setModalOpen(true); }}
+                        onClick={() => setProfileSheetId(profile.id)}
                         onMouseEnter={e => { const q = e.currentTarget.querySelector(".qv"); if (q) q.style.opacity = 1; e.currentTarget.style.transform = "translateY(-3px) scale(1.01)"; }}
                         onMouseLeave={e => { const q = e.currentTarget.querySelector(".qv"); if (q) q.style.opacity = 0; e.currentTarget.style.transform = "none"; }}
                         style={{
@@ -8004,7 +8217,7 @@ function CastingAppInner({ authUser }) {
                     const tapes = (profile.selftapeLinks || []).filter(l => l).length + (profile.selftapeVideos || []).length;
                     return (
                       <div key={profile.id}
-                        onClick={() => { setEditingProfile(profile); setModalOpen(true); }}
+                        onClick={() => setProfileSheetId(profile.id)}
                         style={{ display: "flex", alignItems: "center", gap: 14, padding: "10px 18px", borderBottom: "1px solid #2a2a30", cursor: "pointer", opacity: choice === "no" ? 0.45 : 1, transition: "background 0.15s" }}
                         onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.025)"}
                         onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
@@ -8204,6 +8417,33 @@ function CastingAppInner({ authUser }) {
           </main>
         </div>
       </div>
+
+      {/* Fiche de présentation */}
+      {profileSheetId && (() => {
+        const list = state.profiles[activeRole] || [];
+        const idx = list.findIndex(p => p.id === profileSheetId);
+        const live = list[idx];
+        if (!live) return null;
+        const go = (dir) => setProfileSheetId(list[(idx + dir + list.length) % list.length].id);
+        return (
+          <ProfileSheet
+            profile={live}
+            choice={getChoice(live.id)}
+            onVote={c => setSelection(live.id, c)}
+            guestVote={state._guestVotes?.[live.id]?.choice}
+            rating={live._quickRating || 0}
+            onRate={n => quickRateProfile(live.id, n)}
+            contact={state.contacts[live.id]}
+            onContact={() => { setContactingProfile(live); setContactModalOpen(true); }}
+            onEdit={() => { setEditingProfile(live); setModalOpen(true); setProfileSheetId(null); }}
+            onClose={() => setProfileSheetId(null)}
+            onPrev={list.length > 1 ? () => go(-1) : null}
+            onNext={list.length > 1 ? () => go(1) : null}
+            index={idx}
+            total={list.length}
+          />
+        );
+      })()}
 
       {/* Modal */}
       <Modal
