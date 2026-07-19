@@ -1818,6 +1818,13 @@ function CastingAppInner({ authUser }) {
           if (parsed._shareCode) {
             await window.storage.delete(`shared:${parsed._shareCode}`, true);
           }
+          if (parsed._applyCode) {
+            await window.storage.delete(`applyform:${parsed._applyCode}`, true);
+            try {
+              const { keys } = await window.storage.list(`apply:${parsed._applyCode}:`, true);
+              for (const k of keys) await window.storage.delete(k, true);
+            } catch (e2) {}
+          }
         }
       } catch (e) { /* project may not exist, continue with delete */ }
       await window.storage.delete(`project:${projectId}`);
@@ -2225,6 +2232,156 @@ function CastingAppInner({ authUser }) {
   const [candidatureModal, setCandidatureModal] = useState(false);
   const [expandedCandidature, setExpandedCandidature] = useState(null);
   const [selectedCandidatures, setSelectedCandidatures] = useState(new Set());
+  const [applyLinkCopied, setApplyLinkCopied] = useState(false);
+  const [applyFetching, setApplyFetching] = useState(false);
+  const [applyLastFetch, setApplyLastFetch] = useState(null);
+  const [excelExporting, setExcelExporting] = useState(false);
+
+  // ---- Candidatures v2 : lien public + relève + export Excel ----
+
+  // Publish (or refresh) the public application form metadata
+  const publishApplyForm = useCallback(async (code, active = true) => {
+    try {
+      await window.storage.set(`applyform:${code}`, JSON.stringify({
+        projectName: state.projectName || "", roles: state.roles || [],
+        active, updatedAt: new Date().toISOString(),
+      }), true);
+    } catch (e) { console.error("publishApplyForm failed:", e); }
+  }, [state.projectName, state.roles]);
+
+  // Create the public link if needed, always resync roles/name
+  const ensureApplyLink = async () => {
+    let code = state._applyCode;
+    if (!code) {
+      code = "C" + Math.random().toString(36).slice(2, 8).toUpperCase();
+      setState(prev => ({ ...prev, _applyCode: code }));
+    }
+    await publishApplyForm(code, state._applyActive !== false);
+    return code;
+  };
+
+  // Pull submitted applications from shared storage into state.candidatures
+  const fetchApplications = useCallback(async (code) => {
+    if (!code) return;
+    setApplyFetching(true);
+    try {
+      const { keys } = await window.storage.list(`apply:${code}:`, true);
+      for (const key of keys) {
+        try {
+          const data = await window.storage.get(key, true);
+          if (!data?.value) continue;
+          const app = JSON.parse(data.value);
+          const candId = "form_" + key.split(":").pop();
+          setState(prev => {
+            if ((prev.candidatures || []).some(c => c.id === candId)) return prev;
+            const newC = {
+              id: candId, source: "form", status: "pending",
+              createdAt: app.submittedAt || new Date().toISOString(),
+              firstName: app.firstName || "", name: app.name || "", age: app.age || "",
+              sex: app.sex || "", height: app.height || "", city: app.city || "",
+              hairColor: "", measurements: "", agency: app.agency || "", agencyEmail: "",
+              email: app.email || "", phone: app.phone || "",
+              photos: app.photos || [], links: (app.selftape ? [app.selftape] : []),
+              notes: app.message || "", role: app.role || "",
+            };
+            return { ...prev, candidatures: [...(prev.candidatures || []), newC] };
+          });
+          await window.storage.delete(key, true);
+        } catch (e) { console.error("Import application failed:", key, e); }
+      }
+      setApplyLastFetch(new Date());
+    } catch (e) { console.error("fetchApplications failed:", e); }
+    setApplyFetching(false);
+  }, [setState]);
+
+  // Auto-fetch + resync form metadata when opening the Candidatures tab
+  useEffect(() => {
+    if (activeTab !== "candidatures" || guestMode) return;
+    if (state._applyCode) {
+      publishApplyForm(state._applyCode, state._applyActive !== false);
+      fetchApplications(state._applyCode);
+    }
+  }, [activeTab]);
+
+  // Export candidatures to a real .xlsx with embedded photos
+  const exportCandidaturesExcel = async () => {
+    const list = state.candidatures || [];
+    if (!list.length) { alert("Aucune candidature à exporter."); return; }
+    setExcelExporting(true);
+    try {
+      const mod = await import("exceljs");
+      const ExcelJS = mod.default || mod;
+      const wb = new ExcelJS.Workbook();
+      const ws = wb.addWorksheet("Candidatures");
+      ws.columns = [
+        { header: "Photo", key: "photo", width: 15 },
+        { header: "Prénom", key: "firstName", width: 15 },
+        { header: "Nom", key: "name", width: 16 },
+        { header: "Âge", key: "age", width: 7 },
+        { header: "Taille", key: "height", width: 9 },
+        { header: "Ville", key: "city", width: 13 },
+        { header: "Agence", key: "agency", width: 16 },
+        { header: "Email", key: "email", width: 26 },
+        { header: "Téléphone", key: "phone", width: 15 },
+        { header: "Rôle visé", key: "role", width: 14 },
+        { header: "Selftape", key: "selftape", width: 34 },
+        { header: "Notes", key: "notes", width: 30 },
+        { header: "Statut", key: "status", width: 15 },
+      ];
+      const header = ws.getRow(1);
+      header.font = { bold: true, color: { argb: "FFFFFFFF" }, size: 11 };
+      header.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF1C1C1F" } };
+      header.height = 24;
+      header.alignment = { vertical: "middle" };
+      for (const c of list) {
+        const links = (c.links || []).filter(Boolean);
+        const row = ws.addRow({
+          photo: "", firstName: c.firstName || "", name: (c.name || "").toUpperCase(),
+          age: c.age || "", height: c.height || "", city: c.city || "",
+          agency: c.agency || "", email: c.email || "", phone: c.phone || "",
+          role: c.role || "", selftape: links.join("  |  "), notes: c.notes || "",
+          status: c.status === "transferred" ? "Présélectionné·e" : c.status === "rejected" ? "Refusé·e" : "En attente",
+        });
+        row.height = 82;
+        row.alignment = { vertical: "middle", wrapText: true };
+        if (links[0]) {
+          const cell = row.getCell("selftape");
+          cell.value = { text: links.join("  |  "), hyperlink: links[0] };
+          cell.font = { color: { argb: "FF0A84FF" }, underline: true };
+        }
+        const ph = (c.photos || [])[0];
+        if (ph) {
+          try {
+            let base64, extension = "jpeg";
+            if (ph.startsWith("data:")) {
+              base64 = ph.split(",")[1];
+              extension = ph.includes("image/png") ? "png" : "jpeg";
+            } else {
+              const resp = await fetch(ph);
+              const blob = await resp.blob();
+              extension = blob.type.includes("png") ? "png" : "jpeg";
+              base64 = await new Promise(res => { const r = new FileReader(); r.onload = () => res(String(r.result).split(",")[1]); r.readAsDataURL(blob); });
+            }
+            if (base64) {
+              const imgId = wb.addImage({ base64, extension });
+              ws.addImage(imgId, { tl: { col: 0.15, row: row.number - 1 + 0.05 }, ext: { width: 82, height: 104 }, editAs: "oneCell" });
+            }
+          } catch (e) { console.warn("Photo export skipped:", e); }
+        }
+      }
+      const buf = await wb.xlsx.writeBuffer();
+      const blob = new Blob([buf], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = `Candidatures - ${state.projectName || "Casting"}.xlsx`;
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 30000);
+    } catch (e) {
+      console.error("Excel export failed:", e);
+      alert("Export Excel échoué : " + (e?.message || e));
+    }
+    setExcelExporting(false);
+  };
   const [gmailToken, setGmailToken] = useState(null);
   const [gmailEmails, setGmailEmails] = useState([]);
   const [gmailLoading, setGmailLoading] = useState(false);
@@ -5698,279 +5855,93 @@ function CastingAppInner({ authUser }) {
                     </div>
                   </div>
                   <div style={{ display: "flex", gap: 10 }}>
-                    <button onClick={() => setCandidatureModal(true)} style={{ padding: "10px 20px", background: "rgba(255,255,255,0.03)", border: "1px solid #3a3a40", borderRadius: 14, color: "#888", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>📋 Coller un email</button>
-                    {!gmailToken ? (
-                      <button onClick={() => connectGmail("select_account")} style={{ padding: "10px 20px", background: "linear-gradient(135deg, #EA4335, #c5221f)", border: "none", borderRadius: 14, color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>📧 Connecter Gmail</button>
-                    ) : (
-                      <button onClick={() => fetchGmailEmails(gmailToken)} style={{ padding: "10px 20px", background: "rgba(48,209,88,0.12)", border: "1px solid rgba(48,209,88,0.25)", borderRadius: 14, color: "#30d158", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>🔄 Actualiser</button>
+                    <button onClick={() => setCandidatureModal(true)} style={{ padding: "10px 20px", background: "rgba(255,255,255,0.07)", border: "none", borderRadius: 100, color: "#ebebf0", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>Coller un email</button>
+                    <button onClick={exportCandidaturesExcel} disabled={excelExporting} style={{ padding: "10px 20px", background: "rgba(48,209,88,0.12)", border: "none", borderRadius: 100, color: "#30d158", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", opacity: excelExporting ? 0.6 : 1 }}>
+                      {excelExporting ? "Export en cours…" : "⬇︎ Exporter Excel"}
+                    </button>
+                  </div>
+                </div>
+
+                {/* ===== Lien de candidature public ===== */}
+                <div style={{ marginBottom: 16, padding: "20px 22px", background: "linear-gradient(145deg, rgba(212,175,97,0.08), rgba(212,175,97,0.02))", borderRadius: 18, border: "0.5px solid rgba(212,175,97,0.25)" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: state._applyCode ? 14 : 6 }}>
+                    <div style={{ width: 40, height: 40, borderRadius: 12, background: "linear-gradient(145deg, rgba(232,199,120,0.2), rgba(212,175,97,0.06))", border: "0.5px solid rgba(212,175,97,0.3)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      <Icon name="inbox" size={18} color="#d4af61" strokeWidth={1.8} />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 15, fontWeight: 700, color: "#f5f5f7", letterSpacing: "-0.01em" }}>Lien de candidature public</div>
+                      <div style={{ fontSize: 12, color: "#98989d", marginTop: 2 }}>Postez ce lien sur vos réseaux — les candidats remplissent leur fiche eux-mêmes (photos et selftape inclus), elle arrive directement ici.</div>
+                    </div>
+                    {!state._applyCode && (
+                      <button onClick={async () => {
+                        const code = await ensureApplyLink();
+                        try { await navigator.clipboard.writeText(`${window.location.origin}?postuler=${code}`); setApplyLinkCopied(true); setTimeout(() => setApplyLinkCopied(false), 2500); } catch(e) {}
+                      }} style={{ padding: "10px 22px", background: "#d4af61", border: "none", borderRadius: 100, color: "#1a1200", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap" }}>Activer le lien</button>
                     )}
                   </div>
+                  {state._applyCode && (
+                    <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                      <code style={{ flex: 1, minWidth: 220, padding: "10px 16px", background: "rgba(0,0,0,0.4)", borderRadius: 100, color: "#d4af61", fontSize: 13, fontFamily: "SF Mono, Menlo, monospace", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                        {window.location.origin}?postuler={state._applyCode}
+                      </code>
+                      <button onClick={async () => {
+                        await ensureApplyLink();
+                        try { await navigator.clipboard.writeText(`${window.location.origin}?postuler=${state._applyCode}`); setApplyLinkCopied(true); setTimeout(() => setApplyLinkCopied(false), 2500); } catch(e) {}
+                      }} style={{ padding: "10px 20px", background: applyLinkCopied ? "rgba(48,209,88,0.15)" : "#d4af61", border: "none", borderRadius: 100, color: applyLinkCopied ? "#30d158" : "#1a1200", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap" }}>
+                        {applyLinkCopied ? "✓ Copié !" : "Copier le lien"}
+                      </button>
+                      <button onClick={() => fetchApplications(state._applyCode)} disabled={applyFetching} style={{ padding: "10px 20px", background: "rgba(255,255,255,0.07)", border: "none", borderRadius: 100, color: "#ebebf0", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap", opacity: applyFetching ? 0.6 : 1 }}>
+                        {applyFetching ? "Relève…" : "⟳ Relever"}
+                      </button>
+                      <button onClick={async () => {
+                        const nowActive = state._applyActive === false;
+                        setState(prev => ({ ...prev, _applyActive: nowActive }));
+                        await publishApplyForm(state._applyCode, nowActive);
+                      }} style={{ padding: "10px 16px", background: "transparent", border: `1px solid ${state._applyActive === false ? "rgba(48,209,88,0.4)" : "rgba(255,69,58,0.35)"}`, borderRadius: 100, color: state._applyActive === false ? "#30d158" : "#ff453a", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap" }}>
+                        {state._applyActive === false ? "Rouvrir" : "Clôturer"}
+                      </button>
+                    </div>
+                  )}
+                  {state._applyCode && state._applyActive === false && (
+                    <div style={{ marginTop: 10, fontSize: 12, color: "#ff9f0a" }}>Le lien est clôturé — les candidats voient « Casting clôturé ».</div>
+                  )}
                 </div>
 
-                {/* Google Drive link */}
-                <div style={{ marginBottom: 16, padding: "14px 18px", background: "#1c1c1f", borderRadius: 14, border: "1px solid #2e2e34", display: "flex", alignItems: "center", gap: 12 }}>
-                  <span style={{ fontSize: 14 }}>📁</span>
-                  <div style={{ flex: 1 }}>
-                    <label style={{ display: "block", fontSize: 10, color: "#4285F4", fontWeight: 600, textTransform: "uppercase", marginBottom: 4 }}>Dossier Google Drive — Candidatures</label>
-                    <input value={state._candidaturesDriveLink || ""} onChange={e => setState(p => ({ ...p, _candidaturesDriveLink: e.target.value }))} placeholder="https://drive.google.com/drive/folders/..." style={{ width: "100%", padding: "6px 10px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 10, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
-                  </div>
-                  {state._candidaturesDriveLink && <a href={state._candidaturesDriveLink} target="_blank" rel="noreferrer" style={{ padding: "6px 14px", background: "rgba(66,133,244,0.1)", border: "1px solid rgba(66,133,244,0.25)", borderRadius: 10, color: "#4285F4", fontSize: 11, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>📂 Ouvrir Drive</a>}
+                {/* Dossier Drive (pour déposer l'export Excel) */}
+                <div style={{ marginBottom: 16, padding: "12px 18px", background: "#1c1c1f", borderRadius: 16, border: "0.5px solid rgba(255,255,255,0.08)", display: "flex", alignItems: "center", gap: 12 }}>
+                  <Icon name="folder" size={16} color="#4285F4" />
+                  <input value={state._candidaturesDriveLink || ""} onChange={e => setState(p => ({ ...p, _candidaturesDriveLink: e.target.value }))} placeholder="Lien de votre dossier Google Drive (pour y déposer l'export Excel)…" style={{ flex: 1, padding: "8px 12px", background: "rgba(255,255,255,0.05)", border: "none", borderRadius: 100, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
+                  {state._candidaturesDriveLink && <a href={state._candidaturesDriveLink} target="_blank" rel="noreferrer" style={{ padding: "8px 16px", background: "rgba(66,133,244,0.12)", borderRadius: 100, color: "#4285F4", fontSize: 12, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>Ouvrir Drive</a>}
                 </div>
-
-                {gmailError && <div style={{ padding: "10px 16px", background: "rgba(255,69,58,0.08)", borderRadius: 12, color: "#ff453a", fontSize: 12, marginBottom: 14 }}>⚠ {gmailError}</div>}
-
-                {/* Gmail emails */}
-                {gmailToken && !gmailOpenEmail && (
-                  <div style={{ marginBottom: 24 }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: gmailCollapsed ? 0 : 10 }}>
-                      <div onClick={() => setGmailCollapsed(!gmailCollapsed)} style={{ fontSize: 13, color: "#EA4335", fontWeight: 700, textTransform: "uppercase", cursor: "pointer", display: "flex", alignItems: "center", gap: 6 }}>
-                        <span style={{ transform: gmailCollapsed ? "rotate(-90deg)" : "rotate(0)", transition: "transform 0.2s", fontSize: 12 }}>▾</span>
-                        📧 Boîte de réception ({gmailEmails.length})
-                      </div>
-                      <div style={{ flex: 1 }} />
-                      <form onSubmit={e => { e.preventDefault(); fetchGmailEmails(gmailToken, gmailSearchQuery || ""); }} style={{ display: "flex", gap: 6 }}>
-                        <input value={gmailSearchQuery} onChange={e => setGmailSearchQuery(e.target.value)} placeholder="Rechercher (ex: casting, nom...)" style={{ padding: "6px 12px", background: "#101013", border: "1px solid #3a3a40", borderRadius: 12, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none", width: 220 }} />
-                        <button type="submit" style={{ padding: "6px 14px", background: "rgba(234,67,53,0.08)", border: "1px solid rgba(234,67,53,0.2)", borderRadius: 12, color: "#EA4335", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>🔍</button>
-                      </form>
-                    </div>
-                    {!gmailCollapsed && <div style={{ background: "#1c1c1f", borderRadius: 18, border: "1px solid #2e2e34", overflow: "hidden" }}>
-                      {gmailLoading && !gmailEmails.length && <div style={{ padding: "30px", textAlign: "center", color: "#888", fontSize: 14 }}>⏳ Chargement...</div>}
-                      {!gmailLoading && gmailEmails.length === 0 && <div style={{ padding: "30px", textAlign: "center", color: "#555" }}>Aucun email</div>}
-                      {gmailEmails.map(em => {
-                        const fromName = em.from ? (em.from.match(/^"?([^"<]+)"?\s*</) || [])[1]?.replace(/^["']|["']$/g, "").trim() || em.from.replace(/<.*>/, "").trim() || em.from.split("@")[0] : "—";
-                        const isRead = gmailReadIds.has(em.id) || !em.unread;
-                        const isProcessed = gmailProcessedIds.has(em.id);
-                        let dateStr = "";
-                        try { const d = new Date(em.date); if (!isNaN(d)) dateStr = d.toLocaleString("fr-FR", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" }); } catch(e) {}
-                        return (
-                          <div key={em.id} onClick={() => { fetchGmailFullEmail(em); setGmailReadIds(prev => new Set([...prev, em.id])); }}
-                            style={{ display: "grid", gridTemplateColumns: "20px 8px 1fr auto", alignItems: "center", padding: "0 18px", height: 56, borderBottom: "1px solid #2a2a30", cursor: "pointer", gap: 10, transition: "background 0.1s", background: isProcessed ? "rgba(48,209,88,0.02)" : "transparent" }}
-                            onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.025)"}
-                            onMouseLeave={e => e.currentTarget.style.background = isProcessed ? "rgba(48,209,88,0.02)" : "transparent"}>
-                            {/* Status */}
-                            <div style={{ textAlign: "center" }}>{isProcessed ? <span style={{ color: "#30d158", fontSize: 13 }}>✓</span> : <span style={{ color: "#333", fontSize: 8 }}>●</span>}</div>
-                            {/* Unread dot */}
-                            <div style={{ width: 8, height: 8, borderRadius: "50%", background: !isRead ? "#EA4335" : "transparent" }} />
-                            {/* Content — Gmail-like: from | subject - snippet */}
-                            <div style={{ display: "flex", alignItems: "center", gap: 8, minWidth: 0 }}>
-                              <span style={{ fontSize: 13, fontWeight: isRead ? 400 : 700, color: isRead ? "#aaa" : "#f5f5f7", minWidth: 140, maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flexShrink: 0 }}>{fromName}</span>
-                              <span style={{ fontSize: 13, fontWeight: isRead ? 400 : 600, color: isRead ? "#777" : "#ccc", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1 }}>{decodeHtmlEntities(em.subject) || "(Sans objet)"}</span>
-                              <span style={{ fontSize: 12, color: "#444", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: 1, maxWidth: 300 }}>— {em.snippet?.slice(0, 80)}</span>
-                            </div>
-                            {/* Date */}
-                            <span style={{ fontSize: 11, color: "#666", whiteSpace: "nowrap", flexShrink: 0 }}>{dateStr}</span>
-                          </div>
-                        );
-                      })}
-                      {/* Load more */}
-                      {gmailNextPage && (
-                        <div style={{ padding: "14px", textAlign: "center", borderTop: "1px solid #2e2e34" }}>
-                          <button onClick={() => fetchGmailEmails(gmailToken, null, gmailNextPage, true)} disabled={gmailLoading}
-                            style={{ padding: "8px 24px", background: "rgba(234,67,53,0.08)", border: "1px solid rgba(234,67,53,0.2)", borderRadius: 12, color: "#EA4335", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
-                            {gmailLoading ? "⏳ Chargement..." : "📩 Charger plus d'emails"}
-                          </button>
-                        </div>
-                      )}
-                    </div>}
-                  </div>
-                )}
-
-                {/* Email open view - full email */}
-                {gmailOpenEmail && (() => {
-                  const em = gmailOpenEmail;
-                  const fromName = em.from?.match(/^"?([^"<]+)"?\s*</) ? em.from.match(/^"?([^"<]+)"?\s*</)[1].replace(/^["']|["']$/g, "").trim() : em.from?.split("@")[0] || "—";
-                  const fromEmail = em.from?.match(/<([^>]+)>/) ? em.from.match(/<([^>]+)>/)[1] : em.from || "";
-                  return (
-                    <div style={{ marginBottom: 24 }}>
-                      <button onClick={() => setGmailOpenEmail(null)} style={{ display: "flex", alignItems: "center", gap: 6, padding: "6px 14px", background: "transparent", border: "1px solid #3a3a40", borderRadius: 12, color: "#888", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", marginBottom: 14 }}
-                        onMouseEnter={e => e.currentTarget.style.color = "#EA4335"} onMouseLeave={e => e.currentTarget.style.color = "#888"}>← Retour à la boîte de réception</button>
-                      <div style={{ background: "#1c1c1f", borderRadius: 18, border: "1px solid #2e2e34", overflow: "hidden" }}>
-                        {/* Email header */}
-                        <div style={{ padding: "20px 24px", borderBottom: "1px solid #2e2e34" }}>
-                          <div style={{ fontSize: 20, fontWeight: 700, color: "#f5f5f7", marginBottom: 10 }}>{decodeHtmlEntities(em.subject) || "(Sans objet)"}</div>
-                          <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                            <div style={{ width: 44, height: 44, borderRadius: "50%", background: "rgba(234,67,53,0.1)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, color: "#EA4335", fontWeight: 700, flexShrink: 0 }}>{fromName[0]?.toUpperCase()}</div>
-                            <div>
-                              <div style={{ fontSize: 15, fontWeight: 700, color: "#f5f5f7" }}>{fromName}</div>
-                              <div style={{ fontSize: 12, color: "#888" }}>{fromEmail}</div>
-                            </div>
-                            <div style={{ marginLeft: "auto", fontSize: 12, color: "#666" }}>{em.date ? (() => { try { return new Date(em.date).toLocaleString("fr-FR", { weekday: "long", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" }); } catch(e) { return em.date; } })() : ""}</div>
-                          </div>
-                        </div>
-                        {/* Email body - FULL with scoped CSS */}
-                        <div style={{ padding: "24px", minHeight: 100 }}>
-                          {!em._loaded && <div style={{ textAlign: "center", padding: "30px", color: "#888" }}>⏳ Chargement du contenu...</div>}
-                          {em._loaded && em.bodyHtml && em.bodyHtml.trim().length > 10 ? (
-                            <div className="email-body-render" dangerouslySetInnerHTML={{ __html: em.bodyHtml }} style={{ fontSize: 14, color: "#ebebf0", lineHeight: 1.7, wordBreak: "break-word", overflowWrap: "break-word" }} />
-                          ) : (em._loaded && em.bodyText && em.bodyText.trim().length > 0) || (!em._loaded && em.snippet) ? (
-                            <div style={{ fontSize: 14, color: "#fff", lineHeight: 1.8, whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
-                              {(decodeHtmlEntities(em._loaded ? em.bodyText : em.snippet) || "").split(/(https?:\/\/[^\s<>"']+)/g).map((part, pi) =>
-                                part.match(/^https?:\/\//) ? <a key={pi} href={part} target="_blank" rel="noreferrer" style={{ color: "#0a84ff", textDecoration: "underline" }}>{part}</a> : <React.Fragment key={pi}>{part}</React.Fragment>
-                              )}
-                            </div>
-                          ) : em.snippet ? (
-                            <div style={{ fontSize: 14, color: "#ccc", lineHeight: 1.8, whiteSpace: "pre-wrap" }}>
-                              {decodeHtmlEntities(em.snippet).split(/(https?:\/\/[^\s<>"']+)/g).map((part, pi) =>
-                                part.match(/^https?:\/\//) ? <a key={pi} href={part} target="_blank" rel="noreferrer" style={{ color: "#0a84ff", textDecoration: "underline" }}>{part}</a> : <React.Fragment key={pi}>{part}</React.Fragment>
-                              )}
-                            </div>
-                          ) : (
-                            <div style={{ fontSize: 14, color: "#555", fontStyle: "italic" }}>Aucun contenu texte — voir les pièces jointes ci-dessous</div>
-                          )}
-                        </div>
-                        {/* Attachments */}
-                        {(em.attachments || []).length > 0 && (
-                          <div style={{ padding: "0 24px 16px" }}>
-                            <div style={{ fontSize: 11, color: "#888", fontWeight: 600, textTransform: "uppercase", marginBottom: 8 }}>📎 Pièces jointes ({em.attachments.length})</div>
-                            <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
-                              {em.attachments.map((att, ai) => (
-                                <div key={ai} style={{ display: "flex", alignItems: "center", gap: 8, padding: "8px 14px", background: "#101013", borderRadius: 12, border: "1px solid #3a3a40" }}>
-                                  <span style={{ fontSize: 16 }}>{att.mimeType?.startsWith("image/") ? "🖼" : att.mimeType?.includes("pdf") ? "📄" : "📎"}</span>
-                                  <div>
-                                    <div style={{ fontSize: 12, color: "#ccc", fontWeight: 500 }}>{att.filename}</div>
-                                    <div style={{ fontSize: 10, color: "#555" }}>{att.size ? Math.round(att.size / 1024) + " Ko" : ""}</div>
-                                  </div>
-                                  {att.attachmentId && gmailToken && (
-                                    <>
-                                    <button onClick={async () => {
-                                      try {
-                                        const res = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${em.id}/attachments/${att.attachmentId}`, { headers: { Authorization: `Bearer ${gmailToken}` } });
-                                        const data = await res.json();
-                                        if (data.data) {
-                                          const binary = atob(data.data.replace(/-/g, "+").replace(/_/g, "/"));
-                                          const bytes = new Uint8Array(binary.length); for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-                                          const blob = new Blob([bytes], { type: att.mimeType });
-                                          if (att.mimeType?.startsWith("image/")) { att._blobUrl = URL.createObjectURL(blob); setGmailOpenEmail({ ...em }); }
-                                          else { const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = att.filename; a.click(); }
-                                        }
-                                      } catch(e) { console.error("Attachment download failed:", e); }
-                                    }} style={{ padding: "4px 10px", background: "rgba(10,132,255,0.08)", border: "1px solid rgba(10,132,255,0.2)", borderRadius: 10, color: "#0a84ff", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
-                                      {att._blobUrl ? "✓ Chargé" : att.mimeType?.startsWith("image/") ? "👁 Charger" : "⬇ Télécharger"}
-                                    </button>
-                                    {/* Upload video/file to Supabase → get permanent URL */}
-                                    {(att.mimeType?.startsWith("video/") || att.mimeType?.startsWith("audio/")) && !att._uploadedUrl && (
-                                      <button onClick={async () => {
-                                        try {
-                                          att._uploading = true; setGmailOpenEmail({ ...em });
-                                          const res = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${em.id}/attachments/${att.attachmentId}`, { headers: { Authorization: `Bearer ${gmailToken}` } });
-                                          const data = await res.json();
-                                          if (data.data) {
-                                            const binary = atob(data.data.replace(/-/g, "+").replace(/_/g, "/"));
-                                            const bytes = new Uint8Array(binary.length); for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-                                            const file = new File([bytes], att.filename || "video.mp4", { type: att.mimeType });
-                                            const result = await uploadVideo(file, "default", "email_" + em.id);
-                                            att._uploadedUrl = result.url; att._uploading = false; setGmailOpenEmail({ ...em });
-                                          }
-                                        } catch(e) { console.error(e); att._uploading = false; setGmailOpenEmail({ ...em }); }
-                                      }} style={{ padding: "4px 10px", background: "rgba(48,209,88,0.08)", border: "1px solid rgba(48,209,88,0.2)", borderRadius: 10, color: "#30d158", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
-                                        {att._uploading ? "⏳ Upload..." : "📤 Sauvegarder → URL"}
-                                      </button>
-                                    )}
-                                    {/* Upload to Google Drive */}
-                                    {(att.mimeType?.startsWith("video/") || att.mimeType?.startsWith("image/")) && gmailToken && !att._driveUrl && (
-                                      <button onClick={async () => {
-                                        try {
-                                          att._driveUploading = true; setGmailOpenEmail({ ...em });
-                                          // Fetch attachment data
-                                          const res = await fetch(`https://gmail.googleapis.com/gmail/v1/users/me/messages/${em.id}/attachments/${att.attachmentId}`, { headers: { Authorization: `Bearer ${gmailToken}` } });
-                                          const data = await res.json();
-                                          if (!data.data) throw new Error("No data");
-                                          const binary = atob(data.data.replace(/-/g, "+").replace(/_/g, "/"));
-                                          const bytes = new Uint8Array(binary.length); for (let k = 0; k < binary.length; k++) bytes[k] = binary.charCodeAt(k);
-                                          const blob = new Blob([bytes], { type: att.mimeType });
-                                          // Get sender name for folder
-                                          const senderName = (em.from?.match(/^"?([^"<]+)"?\s*</) || [])[1]?.trim() || "Candidat";
-                                          // Create folder
-                                          const folderRes = await fetch("https://www.googleapis.com/drive/v3/files", { method: "POST", headers: { Authorization: `Bearer ${gmailToken}`, "Content-Type": "application/json" }, body: JSON.stringify({ name: senderName + " — Casting", mimeType: "application/vnd.google-apps.folder" }) });
-                                          const folder = await folderRes.json();
-                                          if (!folder.id) throw new Error("Folder creation failed");
-                                          // Upload file to folder
-                                          const metadata = { name: att.filename || "video.mp4", parents: [folder.id] };
-                                          const form = new FormData();
-                                          form.append("metadata", new Blob([JSON.stringify(metadata)], { type: "application/json" }));
-                                          form.append("file", blob);
-                                          const uploadRes = await fetch("https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id,webViewLink", { method: "POST", headers: { Authorization: `Bearer ${gmailToken}` }, body: form });
-                                          const uploaded = await uploadRes.json();
-                                          att._driveUrl = uploaded.webViewLink || `https://drive.google.com/file/d/${uploaded.id}/view`;
-                                          att._driveUploading = false;
-                                          setGmailOpenEmail({ ...em });
-                                        } catch(e) { console.error("Drive upload failed:", e); att._driveUploading = false; setGmailOpenEmail({ ...em }); }
-                                      }} style={{ padding: "4px 10px", background: "rgba(66,133,244,0.08)", border: "1px solid rgba(66,133,244,0.2)", borderRadius: 10, color: "#4285F4", fontSize: 10, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
-                                        {att._driveUploading ? "⏳ Drive..." : "📂 → Google Drive"}
-                                      </button>
-                                    )}
-                                    {att._driveUrl && (
-                                      <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                                        <a href={att._driveUrl} target="_blank" rel="noreferrer" style={{ padding: "3px 8px", background: "rgba(66,133,244,0.08)", border: "1px solid rgba(66,133,244,0.2)", borderRadius: 4, color: "#4285F4", fontSize: 9, fontWeight: 600, textDecoration: "none" }}>📂 Voir sur Drive</a>
-                                        <button onClick={() => { navigator.clipboard?.writeText(att._driveUrl); }} style={{ background: "none", border: "none", color: "#4285F4", cursor: "pointer", fontSize: 10 }} title="Copier le lien">📋</button>
-                                      </div>
-                                    )}
-                                    {att._uploadedUrl && (
-                                      <div style={{ display: "flex", alignItems: "center", gap: 4 }}>
-                                        <input value={att._uploadedUrl} readOnly style={{ padding: "3px 6px", background: "#101013", border: "1px solid #30d15844", borderRadius: 4, color: "#30d158", fontSize: 9, fontFamily: "inherit", outline: "none", width: 140 }} onClick={e => { e.target.select(); navigator.clipboard?.writeText(att._uploadedUrl); }} />
-                                        <span style={{ fontSize: 9, color: "#30d158" }}>✓</span>
-                                      </div>
-                                    )}
-                                    </>
-                                  )}
-                                  {att._blobUrl && att.mimeType?.startsWith("image/") && (
-                                    <img src={att._blobUrl} alt={att.filename} style={{ width: "100%", maxHeight: 300, objectFit: "contain", borderRadius: 12, marginTop: 8 }} />
-                                  )}
-                                </div>
-                              ))}
-                            </div>
-                          </div>
-                        )}
-                        {/* Action bar */}
-                        <div style={{ padding: "16px 24px", borderTop: "1px solid #2e2e34", display: "flex", gap: 10 }}>
-                          <button onClick={() => {
-                            const text = em.bodyText || em.snippet || "";
-                            const parsed = parseEmailForCasting(text);
-                            const fMatch = em.from?.match(/^"?([^"<]+)"?\s*</);
-                            if (fMatch && !parsed.firstName) { const p = fMatch[1].replace(/^["']|["']$/g, "").trim().split(/\s+/); if (p.length >= 2) { parsed.firstName = p[0]; parsed.name = p.slice(1).join(" "); } else parsed.firstName = p[0] || ""; }
-                            parsed.firstName = (parsed.firstName || "").replace(/^["']|["']$/g, "").trim();
-                            parsed.name = (parsed.name || "").replace(/^["']|["']$/g, "").trim();
-                            if (!parsed.email) { const eM2 = em.from?.match(/<([^>]+)>/); if (eM2) parsed.email = eM2[1]; }
-                            const newC = { id: "cand_" + Date.now(), rawEmail: `De: ${fromName} <${fromEmail}>\nObjet: ${em.subject}\nDate: ${em.date}\n\n${em.bodyText || em.snippet || ""}`, rawHtml: em.bodyHtml || null, ...parsed, role: "", status: "pending", createdAt: new Date().toISOString(), emailAttachments: em.attachments || [], gmailMsgId: em.id };
-                            setState(prev => ({ ...prev, candidatures: [...(prev.candidatures || []), newC] }));
-                            setGmailProcessedIds(prev => new Set([...prev, em.id]));
-                            setGmailOpenEmail(null);
-                            setExpandedCandidature(newC.id);
-                          }} style={{ padding: "10px 24px", background: "linear-gradient(135deg, #f472b6, #db2777)", border: "none", borderRadius: 14, color: "#fff", fontSize: 14, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>📋 Transformer en fiche candidat</button>
-                          <button onClick={() => setGmailOpenEmail(null)} style={{ padding: "10px 20px", background: "rgba(255,255,255,0.03)", border: "1px solid #3a3a40", borderRadius: 14, color: "#888", fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Retour</button>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })()}
-
-                {/* Separator */}
-                {gmailToken && (state.candidatures || []).length > 0 && (
-                  <div style={{ height: 1, background: "#3a3a40", marginBottom: 20 }} />
-                )}
 
                 {/* Candidatures list */}
                 <div style={{ background: "#1c1c1f", borderRadius: 18, border: "1px solid #2e2e34", overflow: "hidden" }}>
                   {/* Header */}
-                  <div style={{ display: "grid", gridTemplateColumns: "28px 1fr 1fr 60px 120px 100px 80px 32px", padding: "10px 18px", borderBottom: "2px solid #f472b633", gap: 8, background: "rgba(244,114,182,0.04)" }}>
-                    {["", "Prénom", "Nom", "Âge", "Agence", "Rôle visé", "Statut", ""].map((h, hi) => (
+                  <div style={{ display: "grid", gridTemplateColumns: "28px 44px 1fr 1fr 50px 110px 100px 90px 32px", padding: "10px 18px", borderBottom: "2px solid #f472b633", gap: 8, background: "rgba(244,114,182,0.04)", alignItems: "center" }}>
+                    {["", "", "Prénom", "Nom", "Âge", "Agence", "Rôle visé", "Statut", ""].map((h, hi) => (
                       <span key={hi} style={{ fontSize: 10, color: "#f472b6", fontWeight: 700, textTransform: "uppercase" }}>{h}</span>
                     ))}
                   </div>
                   {(state.candidatures || []).length === 0 && (
-                    <div style={{ padding: "40px 20px", textAlign: "center", color: "#555", fontSize: 14 }}>Aucune candidature — collez un email pour commencer</div>
+                    <div style={{ padding: "48px 24px", textAlign: "center" }}>
+                      <div style={{ fontSize: 15, fontWeight: 600, color: "#ebebf0", marginBottom: 6 }}>Aucune candidature pour l'instant</div>
+                      <div style={{ fontSize: 13, color: "#98989d", lineHeight: 1.6 }}>Activez le lien public ci-dessus et partagez-le sur vos réseaux —<br />les fiches arriveront ici toutes seules. Ou collez un email reçu.</div>
+                    </div>
                   )}
                   {(state.candidatures || []).map((c, ci) => {
                     const isOpen = expandedCandidature === c.id;
                     return (
                       <React.Fragment key={c.id}>
-                        <div onClick={() => setExpandedCandidature(isOpen ? null : c.id)} style={{ display: "grid", gridTemplateColumns: "28px 1fr 1fr 60px 120px 100px 80px 32px", padding: "12px 18px", alignItems: "center", gap: 8, borderBottom: "1px solid #2a2a30", cursor: "pointer", background: isOpen ? "rgba(244,114,182,0.03)" : "transparent" }}
+                        <div onClick={() => setExpandedCandidature(isOpen ? null : c.id)} style={{ display: "grid", gridTemplateColumns: "28px 44px 1fr 1fr 50px 110px 100px 90px 32px", padding: "10px 18px", alignItems: "center", gap: 8, borderBottom: "1px solid #2a2a30", cursor: "pointer", background: isOpen ? "rgba(244,114,182,0.03)" : "transparent" }}
                           onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.015)"}
                           onMouseLeave={e => e.currentTarget.style.background = isOpen ? "rgba(244,114,182,0.03)" : "transparent"}>
                           <div onClick={e => e.stopPropagation()} style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                             <input type="checkbox" checked={selectedCandidatures.has(c.id)} onChange={() => setSelectedCandidatures(prev => { const s = new Set(prev); if (s.has(c.id)) s.delete(c.id); else s.add(c.id); return s; })} style={{ width: 16, height: 16, cursor: "pointer", accentColor: "#f472b6" }} />
                           </div>
-                          <span style={{ fontSize: 14, fontWeight: 600, color: "#f5f5f7" }}>{c.firstName || "—"}</span>
+                          <div style={{ width: 38, height: 48, borderRadius: 8, overflow: "hidden", background: "#101013", display: "flex", alignItems: "center", justifyContent: "center" }}>
+                            {(c.photos || [])[0] ? <img src={c.photos[0]} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <span style={{ color: "#333", fontSize: 13 }}>◎</span>}
+                          </div>
+                          <span style={{ fontSize: 14, fontWeight: 600, color: "#f5f5f7" }}>{c.firstName || "—"}{c.source === "form" && <span title="Reçue via le lien public" style={{ marginLeft: 6, fontSize: 9, padding: "1px 6px", borderRadius: 100, background: "rgba(212,175,97,0.12)", color: "#d4af61", fontWeight: 700, verticalAlign: "middle" }}>LIEN</span>}</span>
                           <span style={{ fontSize: 14, fontWeight: 700, color: "#f5f5f7" }}>{(c.name || "—").toUpperCase()}</span>
                           <span style={{ fontSize: 13, color: "#ccc" }}>{c.age || "—"}</span>
                           <span style={{ fontSize: 12, color: "#d4af61" }}>{c.agency || "—"}</span>
@@ -5984,8 +5955,30 @@ function CastingAppInner({ authUser }) {
                         {isOpen && (
                           <div style={{ padding: "20px", borderBottom: "2px solid #2e2e34", background: "rgba(244,114,182,0.02)" }}>
                             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
-                              {/* Left: original email — full HTML or text */}
+                              {/* Left: original email — full HTML or text — OR form submission */}
                               <div>
+                                {c.source === "form" ? (
+                                  <>
+                                    <label style={{ display: "block", fontSize: 10, color: "#d4af61", fontWeight: 600, textTransform: "uppercase", marginBottom: 6 }}>Candidature reçue via le lien public</label>
+                                    <div style={{ display: "flex", gap: 10, flexWrap: "wrap", marginBottom: 12 }}>
+                                      {(c.photos || []).map((ph, phi) => (
+                                        <a key={phi} href={ph} target="_blank" rel="noreferrer" style={{ display: "block", width: 130, height: 164, borderRadius: 14, overflow: "hidden", border: "0.5px solid rgba(212,175,97,0.3)" }}>
+                                          <img src={ph} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                                        </a>
+                                      ))}
+                                    </div>
+                                    <div style={{ background: "#0a0a0a", border: "1px solid #2e2e34", borderRadius: 14, padding: "14px 18px", fontSize: 13, color: "#ccc", lineHeight: 1.7 }}>
+                                      {c.city && <div><span style={{ color: "#666" }}>Ville :</span> {c.city}</div>}
+                                      {c.sex && <div><span style={{ color: "#666" }}>Sexe :</span> {c.sex}</div>}
+                                      {(c.links || []).filter(Boolean).map((l, li) => (
+                                        <div key={li}><span style={{ color: "#666" }}>Selftape :</span> <a href={l} target="_blank" rel="noreferrer" style={{ color: "#0a84ff" }}>{l}</a></div>
+                                      ))}
+                                      {c.notes && <div style={{ marginTop: 8, whiteSpace: "pre-wrap" }}><span style={{ color: "#666" }}>Message :</span><br />{c.notes}</div>}
+                                      <div style={{ marginTop: 8, fontSize: 11, color: "#555" }}>Reçue le {new Date(c.createdAt).toLocaleString("fr-FR", { day: "numeric", month: "long", hour: "2-digit", minute: "2-digit" })}</div>
+                                    </div>
+                                  </>
+                                ) : (
+                                <>
                                 <label style={{ display: "block", fontSize: 10, color: "#f472b6", fontWeight: 600, textTransform: "uppercase", marginBottom: 6 }}>Email original</label>
                                 <div style={{ width: "100%", background: "#0a0a0a", border: "1px solid #3a3a40", borderRadius: 14, maxHeight: 600, overflowY: "auto", boxSizing: "border-box" }}>
                                   {/* Email header */}
@@ -6035,6 +6028,8 @@ function CastingAppInner({ authUser }) {
                                       ))}
                                     </div>
                                   </div>
+                                )}
+                                </>
                                 )}
                               </div>
                               {/* Right: editable form — full profile fields */}
@@ -9158,6 +9153,230 @@ function CastingAppInner({ authUser }) {
 }
 
 // ===============================================================
+// APPLY VIEW — Public application form for candidates (?postuler=CODE)
+// ===============================================================
+function ApplyView({ code }) {
+  const [form, setForm] = useState({ firstName: "", name: "", age: "", sex: "", height: "", city: "", phone: "", email: "", agency: "", role: "", selftape: "", message: "" });
+  const [photos, setPhotos] = useState([]); // { url } uploaded
+  const [uploading, setUploading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState("");
+  const [meta, setMeta] = useState(null); // { projectName, roles, active }
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const data = await window.storage.get(`applyform:${code}`, true);
+        if (!cancelled && data?.value) setMeta(JSON.parse(data.value));
+        else if (!cancelled) setMeta(null);
+      } catch (e) { if (!cancelled) setMeta(null); }
+      if (!cancelled) setLoading(false);
+    })();
+    return () => { cancelled = true; };
+  }, [code]);
+
+  const set = (k, v) => setForm(f => ({ ...f, [k]: v }));
+
+  const addPhotos = () => {
+    const inp = document.createElement("input");
+    inp.type = "file"; inp.accept = "image/*"; inp.multiple = true;
+    inp.onchange = async ev => {
+      const files = Array.from(ev.target.files || []).slice(0, 3 - photos.length);
+      if (!files.length) return;
+      setUploading(true);
+      for (const f of files) {
+        try {
+          const dataUrl = await new Promise(res => { const r = new FileReader(); r.onload = () => res(r.result); r.readAsDataURL(f); });
+          const compressed = await compressImage(dataUrl, 900, 0.8);
+          const { url } = await uploadPhoto(compressed, "candidatures", `apply_${code}_${Date.now().toString(36)}`, photos.length);
+          setPhotos(prev => prev.length < 3 ? [...prev, url] : prev);
+        } catch (e) { console.error("Photo upload failed:", e); }
+      }
+      setUploading(false);
+    };
+    inp.click();
+  };
+
+  const submit = async () => {
+    setError("");
+    if (!form.firstName.trim() || !form.name.trim()) return setError("Prénom et nom sont obligatoires.");
+    if (!form.email.trim() && !form.phone.trim()) return setError("Indiquez au moins un email ou un téléphone.");
+    if (photos.length === 0) return setError("Ajoutez au moins une photo.");
+    setSubmitting(true);
+    try {
+      const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+      await window.storage.set(`apply:${code}:${id}`, JSON.stringify({
+        ...form, photos, submittedAt: new Date().toISOString(),
+      }), true);
+      setSubmitted(true);
+    } catch (e) {
+      setError("Échec de l'envoi — vérifiez votre connexion et réessayez.");
+    }
+    setSubmitting(false);
+  };
+
+  const inputStyle = {
+    width: "100%", padding: "13px 16px", background: "rgba(255,255,255,0.06)",
+    border: "1px solid transparent", borderRadius: 13, color: "#ebebf0", fontSize: 16,
+    fontFamily: "inherit", outline: "none", boxSizing: "border-box",
+  };
+  const labelStyle = { display: "block", fontSize: 12, color: "#98989d", fontWeight: 600, marginBottom: 6, textTransform: "uppercase", letterSpacing: "0.05em" };
+
+  const shell = children => (
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #000; font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Inter', 'Segoe UI', sans-serif; -webkit-font-smoothing: antialiased; }
+        input:focus, textarea:focus, select:focus { border-color: rgba(212,175,97,0.5) !important; box-shadow: 0 0 0 3.5px rgba(212,175,97,0.14); }
+        button { transition: transform 0.16s cubic-bezier(0.32,0.72,0,1), opacity 0.2s; }
+        button:active { transform: scale(0.97); }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+      `}</style>
+      <div style={{ minHeight: "100vh", background: "#000", display: "flex", justifyContent: "center", padding: "32px 16px 60px" }}>
+        <div style={{ width: "100%", maxWidth: 520, animation: "fadeIn 0.5s cubic-bezier(0.32,0.72,0,1)" }}>
+          {children}
+        </div>
+      </div>
+    </>
+  );
+
+  if (loading) return shell(
+    <div style={{ textAlign: "center", paddingTop: 120, color: "#666", fontSize: 15 }}>Chargement…</div>
+  );
+
+  if (!meta || meta.active === false) return shell(
+    <div style={{ textAlign: "center", paddingTop: 100 }}>
+      <div style={{ fontSize: 44, marginBottom: 18 }}>🎬</div>
+      <h1 style={{ fontSize: 24, fontWeight: 800, color: "#f5f5f7", marginBottom: 10, letterSpacing: "-0.02em" }}>Casting clôturé</h1>
+      <p style={{ fontSize: 15, color: "#98989d", lineHeight: 1.6 }}>Ce lien de candidature n'est plus actif.<br />Merci de votre intérêt !</p>
+    </div>
+  );
+
+  if (submitted) return shell(
+    <div style={{ textAlign: "center", paddingTop: 90 }}>
+      <div style={{
+        width: 84, height: 84, margin: "0 auto 24px", borderRadius: "50%",
+        background: "linear-gradient(145deg, rgba(48,209,88,0.2), rgba(48,209,88,0.06))",
+        border: "1px solid rgba(48,209,88,0.35)", display: "flex", alignItems: "center", justifyContent: "center",
+      }}>
+        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#30d158" strokeWidth="2.4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg>
+      </div>
+      <h1 style={{ fontSize: 26, fontWeight: 800, color: "#f5f5f7", marginBottom: 12, letterSpacing: "-0.02em" }}>Candidature envoyée !</h1>
+      <p style={{ fontSize: 15, color: "#98989d", lineHeight: 1.7 }}>
+        Merci <span style={{ color: "#ebebf0", fontWeight: 600 }}>{form.firstName}</span> — votre candidature pour
+        <span style={{ color: "#d4af61", fontWeight: 600 }}> {meta.projectName || "le casting"} </span>
+        a bien été reçue.<br />La direction de casting vous recontactera si votre profil est retenu.
+      </p>
+    </div>
+  );
+
+  return shell(
+    <>
+      {/* Header */}
+      <div style={{ textAlign: "center", marginBottom: 32 }}>
+        <div style={{
+          width: 64, height: 64, margin: "0 auto 18px", borderRadius: 16,
+          background: "linear-gradient(145deg, #e8c778 0%, #d4af61 45%, #a8853c 100%)",
+          display: "flex", alignItems: "center", justifyContent: "center",
+          boxShadow: "0 10px 32px rgba(212,175,97,0.25)",
+        }}>
+          <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#1a1408" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round">
+            <path d="M20.2 6 3 11l-.9-2.4c-.3-1.1.3-2.2 1.3-2.5l13.5-4c1.1-.3 2.2.3 2.5 1.3z" />
+            <path d="m6.2 5.3 3.1 3.9" /><path d="m12.4 3.4 3.1 4" />
+            <path d="M3 11h18v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+          </svg>
+        </div>
+        <div style={{ fontSize: 11, letterSpacing: "0.22em", textTransform: "uppercase", color: "#d4af61", fontWeight: 700, marginBottom: 8 }}>Casting</div>
+        <h1 style={{ fontSize: 27, fontWeight: 800, color: "#f5f5f7", letterSpacing: "-0.022em", marginBottom: 10 }}>{meta.projectName || "Projet"}</h1>
+        <p style={{ fontSize: 14, color: "#98989d", lineHeight: 1.6 }}>Remplissez ce formulaire pour postuler.<br />Votre candidature arrive directement chez la direction de casting.</p>
+      </div>
+
+      <div style={{ background: "#1c1c1f", borderRadius: 22, border: "0.5px solid rgba(255,255,255,0.1)", padding: "26px 22px", display: "flex", flexDirection: "column", gap: 18 }}>
+        {/* Photos */}
+        <div>
+          <label style={labelStyle}>Photos * <span style={{ color: "#666", textTransform: "none", letterSpacing: 0 }}>(1 à 3 — portrait récent)</span></label>
+          <div style={{ display: "flex", gap: 10 }}>
+            {photos.map((ph, i) => (
+              <div key={i} style={{ position: "relative", width: 86, height: 108, borderRadius: 14, overflow: "hidden", border: "1px solid rgba(212,175,97,0.3)" }}>
+                <img src={ph} alt="" style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                <button onClick={() => setPhotos(p => p.filter((_, j) => j !== i))} style={{ position: "absolute", top: 4, right: 4, width: 22, height: 22, borderRadius: "50%", background: "rgba(0,0,0,0.75)", color: "#fff", border: "none", cursor: "pointer", fontSize: 12, display: "flex", alignItems: "center", justifyContent: "center" }}>✕</button>
+              </div>
+            ))}
+            {photos.length < 3 && (
+              <button onClick={addPhotos} disabled={uploading} style={{
+                width: 86, height: 108, borderRadius: 14, border: "1.5px dashed rgba(212,175,97,0.4)",
+                background: "rgba(212,175,97,0.05)", cursor: "pointer", color: "#d4af61",
+                display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 6,
+                fontSize: 12, fontWeight: 600, fontFamily: "inherit",
+              }}>
+                {uploading ? "…" : <><span style={{ fontSize: 22, fontWeight: 400 }}>+</span>Photo</>}
+              </button>
+            )}
+          </div>
+        </div>
+
+        {/* Identity */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <div><label style={labelStyle}>Prénom *</label><input value={form.firstName} onChange={e => set("firstName", e.target.value)} style={inputStyle} autoComplete="given-name" /></div>
+          <div><label style={labelStyle}>Nom *</label><input value={form.name} onChange={e => set("name", e.target.value)} style={inputStyle} autoComplete="family-name" /></div>
+        </div>
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 12 }}>
+          <div><label style={labelStyle}>Âge</label><input value={form.age} onChange={e => set("age", e.target.value)} style={inputStyle} inputMode="numeric" placeholder="25" /></div>
+          <div><label style={labelStyle}>Taille</label><input value={form.height} onChange={e => set("height", e.target.value)} style={inputStyle} placeholder="175cm" /></div>
+          <div><label style={labelStyle}>Sexe</label>
+            <select value={form.sex} onChange={e => set("sex", e.target.value)} style={{ ...inputStyle, appearance: "none" }}>
+              <option value="">—</option><option>Femme</option><option>Homme</option><option>Non-binaire</option>
+            </select>
+          </div>
+        </div>
+        <div><label style={labelStyle}>Ville</label><input value={form.city} onChange={e => set("city", e.target.value)} style={inputStyle} placeholder="Paris" /></div>
+
+        {/* Contact */}
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
+          <div><label style={labelStyle}>Email *</label><input value={form.email} onChange={e => set("email", e.target.value)} style={inputStyle} type="email" autoComplete="email" /></div>
+          <div><label style={labelStyle}>Téléphone</label><input value={form.phone} onChange={e => set("phone", e.target.value)} style={inputStyle} type="tel" autoComplete="tel" /></div>
+        </div>
+        <div><label style={labelStyle}>Agence <span style={{ color: "#666", textTransform: "none", letterSpacing: 0 }}>(si représenté·e)</span></label><input value={form.agency} onChange={e => set("agency", e.target.value)} style={inputStyle} /></div>
+
+        {/* Role + selftape */}
+        {(meta.roles || []).length > 0 && (
+          <div><label style={labelStyle}>Rôle visé</label>
+            <select value={form.role} onChange={e => set("role", e.target.value)} style={{ ...inputStyle, appearance: "none" }}>
+              <option value="">— Choisir un rôle —</option>
+              {meta.roles.map(r => <option key={r} value={r}>{r}</option>)}
+            </select>
+          </div>
+        )}
+        <div><label style={labelStyle}>Lien selftape / bande démo <span style={{ color: "#666", textTransform: "none", letterSpacing: 0 }}>(YouTube, Vimeo, Drive…)</span></label><input value={form.selftape} onChange={e => set("selftape", e.target.value)} style={inputStyle} type="url" placeholder="https://…" /></div>
+
+        {/* Message */}
+        <div><label style={labelStyle}>Message <span style={{ color: "#666", textTransform: "none", letterSpacing: 0 }}>(expériences, disponibilités…)</span></label>
+          <textarea value={form.message} onChange={e => set("message", e.target.value)} rows={3} style={{ ...inputStyle, resize: "vertical", lineHeight: 1.5 }} />
+        </div>
+
+        {error && <div style={{ padding: "12px 16px", background: "rgba(255,69,58,0.1)", borderRadius: 12, color: "#ff453a", fontSize: 14, fontWeight: 500 }}>{error}</div>}
+
+        <button onClick={submit} disabled={submitting || uploading} style={{
+          padding: "16px", background: "linear-gradient(145deg, #e8c778, #c49a4a)",
+          border: "none", borderRadius: 100, cursor: "pointer", fontSize: 16, fontWeight: 700,
+          fontFamily: "inherit", color: "#1a1408", marginTop: 4,
+          boxShadow: "0 6px 24px rgba(212,175,97,0.3)", opacity: submitting ? 0.6 : 1,
+        }}>
+          {submitting ? "Envoi en cours…" : "Envoyer ma candidature"}
+        </button>
+        <div style={{ fontSize: 11, color: "#555", textAlign: "center", lineHeight: 1.5 }}>
+          Vos informations sont transmises uniquement à la direction de casting de ce projet.
+        </div>
+      </div>
+    </>
+  );
+}
+
+// ===============================================================
 // GUEST VIEW — Read-only project view for réalisateur/production/agence
 // ===============================================================
 function GuestView({ shareCode, project, password }) {
@@ -9936,6 +10155,14 @@ export default function CastingApp() {
     } catch (e) { return null; }
   })();
 
+  const applyCodeFromUrl = (() => {
+    try {
+      const params = new URLSearchParams(window.location.search);
+      const code = params.get("postuler");
+      return code ? code.toUpperCase() : null;
+    } catch (e) { return null; }
+  })();
+
   // Guest share mode
   const [guestProject, setGuestProject] = useState(null);
   const [guestPasswordInput, setGuestPasswordInput] = useState("");
@@ -10101,6 +10328,11 @@ export default function CastingApp() {
   `;
 
   // ===== CONDITIONAL RENDERS (all hooks are above) =====
+
+  // PUBLIC APPLICATION FORM (?postuler=CODE) — no auth required
+  if (applyCodeFromUrl) {
+    return <ErrorBoundary><ApplyView code={applyCodeFromUrl} /></ErrorBoundary>;
+  }
 
   // GUEST SHARE MODE
   if (shareCodeFromUrl) {
