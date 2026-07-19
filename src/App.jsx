@@ -2293,7 +2293,7 @@ function CastingAppInner({ authUser }) {
             sex: app.sex || "", height: app.height || "", city: app.city || "",
             hairColor: "", measurements: "", agency: app.agency || "", agencyEmail: "",
             email: app.email || "", phone: app.phone || "",
-            photos: app.photos || [], links: (app.selftape ? [app.selftape] : []),
+            photos: app.photos || [], links: [app.selftape, app.videoLink].filter(Boolean),
             videoFile: app.video || null,
             notes: app.message || "", role: app.role || "",
           };
@@ -9189,6 +9189,8 @@ function ApplyView({ code }) {
   const [videoUploading, setVideoUploading] = useState(false);
   const [videoError, setVideoError] = useState("");
   const [dragOver, setDragOver] = useState(false);
+  const [videoLink, setVideoLink] = useState("");
+  const [showVideoLink, setShowVideoLink] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [error, setError] = useState("");
@@ -9201,7 +9203,11 @@ function ApplyView({ code }) {
     setVideoError("");
     if (!file) return;
     if (!file.type.startsWith("video/")) { setVideoError("Ce fichier n'est pas une vidéo."); return; }
-    if (file.size > MAX_VIDEO_MB * 1024 * 1024) { setVideoError(`Vidéo trop lourde (max ${MAX_VIDEO_MB} Mo). Compressez-la ou utilisez un lien YouTube/Drive.`); return; }
+    if (file.size > MAX_VIDEO_MB * 1024 * 1024) {
+      setVideoError(`Vidéo trop lourde (${(file.size / 1024 / 1024).toFixed(0)} Mo — max ${MAX_VIDEO_MB} Mo). Pas de panique : collez un lien Google Drive ou WeTransfer juste en dessous.`);
+      setShowVideoLink(true);
+      return;
+    }
     setVideoUploading(true);
     try {
       const result = await uploadVideo(file, "candidatures", `apply_${code}_${Date.now().toString(36)}`);
@@ -9265,7 +9271,7 @@ function ApplyView({ code }) {
     try {
       const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
       await window.storage.set(`apply:${code}:${id}`, JSON.stringify({
-        ...form, photos, video, submittedAt: new Date().toISOString(),
+        ...form, photos, video, videoLink: videoLink.trim(), submittedAt: new Date().toISOString(),
       }), true);
       setSubmitted(true);
     } catch (e) {
@@ -9449,6 +9455,26 @@ function ApplyView({ code }) {
             </div>
           )}
           {videoError && <div style={{ marginTop: 8, fontSize: 13, color: "#ff453a" }}>{videoError}</div>}
+
+          {/* Fichier trop gros ? Lien Drive/WeTransfer à la place */}
+          {!video && (
+            !showVideoLink && !videoLink ? (
+              <button onClick={() => setShowVideoLink(true)} style={{
+                marginTop: 10, padding: 0, background: "none", border: "none", cursor: "pointer",
+                fontSize: 13, color: "#0a84ff", fontFamily: "inherit", textDecoration: "underline", textUnderlineOffset: 3,
+              }}>
+                Vidéo trop lourde ou déjà en ligne ? Collez un lien Google Drive / WeTransfer
+              </button>
+            ) : (
+              <div style={{ marginTop: 10 }}>
+                <input value={videoLink} onChange={e => setVideoLink(e.target.value)} style={inputStyle} type="url"
+                  placeholder="Lien Google Drive, WeTransfer, Swiss Transfer…" autoFocus={showVideoLink} />
+                <div style={{ marginTop: 6, fontSize: 12, color: "#98989d", lineHeight: 1.5 }}>
+                  💡 Sur Google Drive : clic droit sur la vidéo → Partager → « <span style={{ color: "#ebebf0" }}>Tous les utilisateurs disposant du lien</span> » — sinon la direction de casting ne pourra pas l'ouvrir.
+                </div>
+              </div>
+            )
+          )}
         </div>
 
         {/* Message */}
