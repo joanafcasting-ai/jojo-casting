@@ -7885,141 +7885,198 @@ function CastingAppInner({ authUser }) {
                   const mC = currentProfiles.filter(p => getChoice(p.id) === "maybe").length;
                   const nC = currentProfiles.filter(p => getChoice(p.id) === "no").length;
                   const remaining = total - yC - mC - nC;
+                  const chip = (key, label, count, color) => (
+                    <button onClick={() => setFilterSelection(filterSelection === key ? "all" : key)} style={{
+                      display: "inline-flex", alignItems: "center", gap: 6, padding: "7px 14px",
+                      borderRadius: 100, border: "none", cursor: "pointer", fontFamily: "inherit",
+                      fontSize: 12.5, fontWeight: 650,
+                      background: filterSelection === key ? `${color}22` : "rgba(255,255,255,0.05)",
+                      color: filterSelection === key ? color : "#98989d",
+                      boxShadow: filterSelection === key ? `inset 0 0 0 1px ${color}55` : "none",
+                      transition: "all 0.15s",
+                    }}>
+                      <span style={{ color, fontWeight: 800 }}>{count}</span> {label}
+                    </button>
+                  );
                   return (
                     <div style={{
-                      display: "flex", alignItems: "center", gap: 16, marginBottom: 20,
-                      padding: "12px 18px", background: "#1c1c1f", borderRadius: 14,
-                      border: "1px solid #2e2e34", fontSize: 12,
+                      display: "flex", alignItems: "center", gap: 8, marginBottom: 18, flexWrap: "wrap",
                     }}>
-                      <span style={{ color: "#888", fontWeight: 500 }}>Sélection :</span>
-                      <span style={{ color: "#30d158", fontWeight: 600 }}>✓ {yC} oui</span>
-                      <span style={{ color: "#ffd60a", fontWeight: 600 }}>? {mC} peut-être</span>
-                      <span style={{ color: "#ff453a", fontWeight: 600 }}>✕ {nC} non</span>
-                      {remaining > 0 && <span style={{ color: "#555" }}>⊘ {remaining} restant{remaining > 1 ? "s" : ""}</span>}
-                      {remaining === 0 && <span style={{ color: "#d4af61", fontWeight: 600, marginLeft: "auto" }}>✓ Tous évalués</span>}
+                      {chip("yes", "oui", yC, "#30d158")}
+                      {chip("maybe", "peut-être", mC, "#ffd60a")}
+                      {chip("no", "non", nC, "#ff453a")}
+                      {chip("none", "à trier", remaining, "#98989d")}
+                      {remaining === 0 && total > 0 && <span style={{ color: "#d4af61", fontWeight: 600, fontSize: 12.5, marginLeft: "auto" }}>✓ Tous évalués</span>}
                     </div>
                   );
                 })()}
 
-                {/* Global feedback from réal — hidden per user request */}
-
-                <div style={{
-                  display: profileGridMode === "list" ? "flex" : "grid",
-                  flexDirection: profileGridMode === "list" ? "column" : undefined,
-                  gridTemplateColumns: profileGridMode === "list" ? undefined : "1fr 1fr",
-                  gap: 10,
-                }}>
-                  {filteredProfiles.map((profile, i) => (
-                    <div key={profile.id} style={{ animation: `fadeIn 0.3s ease ${i * 0.05}s both`, position: "relative" }}>
-                      {/* Compare mode overlay */}
-                      {compareMode && viewMode === "director" && (
-                        <div onClick={() => setCompareSelection(prev => prev.includes(profile.id) ? prev.filter(x => x !== profile.id) : prev.length < 3 ? [...prev, profile.id] : prev)}
-                          style={{ position: "absolute", top: 8, left: 8, zIndex: 10, width: 24, height: 24, borderRadius: "50%", cursor: "pointer",
-                            background: compareSelection.includes(profile.id) ? "#0a84ff" : "rgba(0,0,0,0.6)",
-                            border: compareSelection.includes(profile.id) ? "2px solid #0a84ff" : "2px solid #555",
-                            display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 12, fontWeight: 700,
-                          }}>{compareSelection.includes(profile.id) ? compareSelection.indexOf(profile.id) + 1 : ""}</div>
-                      )}
-                      {/* Profile card with integrated selection */}
-                        <div style={{ position: "relative" }}>
-                          <ProfileCard
-                            profile={profile}
-                            onEdit={() => { setEditingProfile(profile); setModalOpen(true); }}
-                            onStatusChange={(newStatus) => changeStatus(profile.id, newStatus)}
-                            viewMode={viewMode}
-                          />
-                          {/* Selection bar — iOS segmented */}
-                          <div style={{ marginTop: 6, display: "flex", gap: 2, padding: 3, borderRadius: 12, background: "#1c1c1f", border: "0.5px solid rgba(255,255,255,0.06)" }}>
-                            {[
-                              { choice: "yes", label: "OUI", color: "#30d158" },
-                              { choice: "maybe", label: "PEUT-ÊTRE", color: "#ffd60a" },
-                              { choice: "no", label: "NON", color: "#ff453a" },
-                            ].map((opt, i) => {
-                              const isActive = getChoice(profile.id) === opt.choice;
-                              const isFromGuest = state._guestVotes?.[profile.id]?.choice === opt.choice;
-                              return (
-                                <button key={opt.choice}
-                                  onClick={(e) => { e.stopPropagation(); setSelection(profile.id, isActive ? null : opt.choice); }}
-                                  style={{
-                                    flex: 1, padding: "8px 0", border: "none", cursor: "pointer", borderRadius: 9,
-                                    fontFamily: "inherit", fontSize: 12, fontWeight: 600, letterSpacing: "0.02em",
-                                    background: isActive ? `${opt.color}1e` : "transparent",
-                                    color: isActive ? opt.color : "#666",
-                                    boxShadow: isActive ? `inset 0 0 0 1px ${opt.color}44` : "none",
-                                    transition: "all 0.15s",
-                                  }}>
-                                  {isActive ? (opt.choice === "yes" ? "✓ " : opt.choice === "no" ? "✕ " : "~ ") : ""}{opt.label}
-                                  {isFromGuest && isActive && <span style={{ fontSize: 8, marginLeft: 3, opacity: 0.7 }}>R/P</span>}
-                                </button>
-                              );
-                            })}
+                {/* ===== PLANCHE CASTING — grille photo ===== */}
+                {profileGridMode === "grid" ? (
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(190px, 1fr))", gap: 14 }}>
+                  {filteredProfiles.map((profile, i) => {
+                    const choice = getChoice(profile.id);
+                    const choiceColor = choice === "yes" ? "#30d158" : choice === "maybe" ? "#ffd60a" : choice === "no" ? "#ff453a" : null;
+                    const guestVote = state._guestVotes?.[profile.id]?.choice;
+                    const tapes = (profile.selftapeLinks || []).filter(l => l).length + (profile.selftapeVideos || []).length;
+                    return (
+                      <div key={profile.id}
+                        onClick={() => { setEditingProfile(profile); setModalOpen(true); }}
+                        onMouseEnter={e => { const q = e.currentTarget.querySelector(".qv"); if (q) q.style.opacity = 1; e.currentTarget.style.transform = "translateY(-3px) scale(1.01)"; }}
+                        onMouseLeave={e => { const q = e.currentTarget.querySelector(".qv"); if (q) q.style.opacity = 0; e.currentTarget.style.transform = "none"; }}
+                        style={{
+                          position: "relative", aspectRatio: "3/4", borderRadius: 16, overflow: "hidden", cursor: "pointer",
+                          background: "#1c1c1f",
+                          boxShadow: choiceColor ? `0 0 0 2.5px ${choiceColor}, 0 4px 20px rgba(0,0,0,0.35)` : "0 0 0 0.5px rgba(255,255,255,0.1), 0 4px 20px rgba(0,0,0,0.35)",
+                          opacity: choice === "no" ? 0.4 : 1,
+                          animation: `slideUp 0.4s cubic-bezier(0.32,0.72,0,1) ${Math.min(i * 0.03, 0.4)}s both`,
+                          transition: "transform 0.25s cubic-bezier(0.32,0.72,0,1), box-shadow 0.25s, opacity 0.25s",
+                        }}>
+                        {(profile.photos || [])[0] ? (
+                          <img src={profile.photos[0]} alt="" loading="lazy" style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+                        ) : (
+                          <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center", color: "#48484d", fontSize: 36, background: "linear-gradient(160deg, #232327, #17171a)" }}>◎</div>
+                        )}
+                        {/* Nom + méta sur dégradé */}
+                        <div style={{ position: "absolute", left: 0, right: 0, bottom: 0, padding: "44px 13px 11px", background: "linear-gradient(transparent, rgba(0,0,0,0.55) 40%, rgba(0,0,0,0.88))", pointerEvents: "none" }}>
+                          <div style={{ fontSize: 15.5, fontWeight: 700, color: "#fff", letterSpacing: "-0.015em", lineHeight: 1.2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                            {[profile.firstName, profile.name].filter(Boolean).join(" ") || "Sans nom"}
                           </div>
-
-                          {/* Status row — compact, only shows when relevant */}
-                          {(getChoice(profile.id) || state._guestVotes?.[profile.id] || state._guestComments?.[profile.id]?.length > 0) && (
-                            <div style={{ marginTop: 6, display: "flex", alignItems: "center", gap: 6, flexWrap: "wrap" }}>
-                              {getChoice(profile.id) && <ContactStatusBadge contact={state.contacts[profile.id]} />}
-                              {getChoice(profile.id) && (
-                                <button
-                                  onClick={(e) => { e.stopPropagation(); setContactingProfile(profile); setContactModalOpen(true); }}
-                                  style={{
-                                    padding: "4px 10px", borderRadius: 10, cursor: "pointer", fontSize: 9, fontWeight: 600, fontFamily: "inherit",
-                                    border: state.contacts[profile.id]?.status && state.contacts[profile.id]?.status !== "not_contacted"
-                                      ? `1px solid ${CONTACT_STATUS[state.contacts[profile.id].status].color}33`
-                                      : "1px solid #d4af6133",
-                                    background: "transparent",
-                                    color: state.contacts[profile.id]?.status && state.contacts[profile.id]?.status !== "not_contacted"
-                                      ? CONTACT_STATUS[state.contacts[profile.id].status].color
-                                      : "#d4af61",
-                                  }}>
-                                  {state.contacts[profile.id]?.status && state.contacts[profile.id]?.status !== "not_contacted" ? "✏ Contact" : "✉ Contacter"}
-                                </button>
-                              )}
-                              {/* RÉAL/PROD vote badge */}
-                              {state._guestVotes?.[profile.id] && (
-                                <span style={{ fontSize: 9, padding: "3px 8px", borderRadius: 4, fontWeight: 700,
-                                  background: state._guestVotes[profile.id].choice === "yes" ? "rgba(48,209,88,0.08)" : state._guestVotes[profile.id].choice === "no" ? "rgba(255,69,58,0.08)" : "rgba(255,214,10,0.08)",
-                                  color: state._guestVotes[profile.id].choice === "yes" ? "#30d158" : state._guestVotes[profile.id].choice === "no" ? "#ff453a" : "#ffd60a",
-                                }}>
-                                  R/P {state._guestVotes[profile.id].choice === "yes" ? "OUI" : state._guestVotes[profile.id].choice === "no" ? "NON" : "P-Ê"}
-                                </span>
-                              )}
-                              {/* Guest comments hidden from role view */}
-                            </div>
-                          )}
-
-                          {/* Tools row — compact, single line */}
-                          <div style={{ marginTop: 4, display: "flex", alignItems: "center", gap: 2 }}>
-                            {/* Stars */}
-                            {[1,2,3,4,5].map(n => (
-                              <button key={n} onClick={() => quickRateProfile(profile.id, n)}
-                                style={{ width: 18, height: 18, borderRadius: 3, border: "none", cursor: "pointer", fontSize: 10, padding: 0,
-                                  background: n <= (profile._quickRating || 0) ? "rgba(212,175,97,0.15)" : "transparent",
-                                  color: n <= (profile._quickRating || 0) ? "#d4af61" : "#222", transition: "all 0.15s",
-                                }}>★</button>
-                            ))}
-                            <div style={{ flex: 1 }} />
-                            {state.roles.length > 1 && (
-                              <button onClick={() => setMoveProfileModal({ profile, fromRole: activeRole })}
-                                style={{ padding: "2px 6px", background: "none", border: "none", borderRadius: 4, color: "#333", fontSize: 9, cursor: "pointer", fontFamily: "inherit" }}
-                                onMouseEnter={e => e.currentTarget.style.color = "#d4af61"}
-                                onMouseLeave={e => e.currentTarget.style.color = "#333"}>↗</button>
-                            )}
-                            {state.roles.length > 1 && (
-                              <button onClick={() => setCopyProfileModal({ profile })}
-                                style={{ padding: "2px 6px", background: "none", border: "none", borderRadius: 4, color: "#333", fontSize: 9, cursor: "pointer", fontFamily: "inherit" }}
-                                onMouseEnter={e => e.currentTarget.style.color = "#30d158"}
-                                onMouseLeave={e => e.currentTarget.style.color = "#333"}>⊕</button>
-                            )}
-                            <button onClick={() => setEmailTemplateModal({ profile })}
-                              style={{ padding: "2px 6px", background: "none", border: "none", borderRadius: 4, color: "#333", fontSize: 9, cursor: "pointer", fontFamily: "inherit" }}
-                              onMouseEnter={e => e.currentTarget.style.color = "#0a84ff"}
-                              onMouseLeave={e => e.currentTarget.style.color = "#333"}>✉</button>
+                          <div style={{ fontSize: 12, color: "rgba(255,255,255,0.72)", marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                            {[profile.age ? profile.age + " ans" : null, profile.height, profile.agency].filter(Boolean).join(" · ") || "—"}
                           </div>
                         </div>
-                    </div>
-                  ))}
+                        {/* Badge sélection (haut gauche) */}
+                        {choice && !compareMode && (
+                          <div style={{ position: "absolute", top: 9, left: 9, width: 26, height: 26, borderRadius: "50%", background: choiceColor, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 13, fontWeight: 800, color: choice === "maybe" ? "#1a1200" : "#fff", boxShadow: "0 2px 8px rgba(0,0,0,0.5)" }}>
+                            {choice === "yes" ? "✓" : choice === "maybe" ? "?" : "✕"}
+                          </div>
+                        )}
+                        {/* Compare checkbox */}
+                        {compareMode && (
+                          <div onClick={e => { e.stopPropagation(); setCompareSelection(prev => prev.includes(profile.id) ? prev.filter(x => x !== profile.id) : prev.length < 3 ? [...prev, profile.id] : prev); }}
+                            style={{ position: "absolute", top: 9, left: 9, zIndex: 10, width: 26, height: 26, borderRadius: "50%", cursor: "pointer",
+                              background: compareSelection.includes(profile.id) ? "#0a84ff" : "rgba(0,0,0,0.6)",
+                              border: compareSelection.includes(profile.id) ? "2px solid #0a84ff" : "2px solid rgba(255,255,255,0.4)",
+                              display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 13, fontWeight: 700,
+                            }}>{compareSelection.includes(profile.id) ? compareSelection.indexOf(profile.id) + 1 : ""}</div>
+                        )}
+                        {/* Vote réal/prod (haut droite, sous quick-vote) */}
+                        {guestVote && (
+                          <div style={{ position: "absolute", top: 9, right: 9, fontSize: 9, padding: "3px 8px", borderRadius: 100, fontWeight: 800, letterSpacing: "0.04em",
+                            background: "rgba(0,0,0,0.65)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)",
+                            color: guestVote === "yes" ? "#30d158" : guestVote === "no" ? "#ff453a" : "#ffd60a",
+                          }}>R/P {guestVote === "yes" ? "OUI" : guestVote === "no" ? "NON" : "P-Ê"}</div>
+                        )}
+                        {/* Selftapes */}
+                        {tapes > 0 && (
+                          <div style={{ position: "absolute", bottom: 52, right: 10, fontSize: 10, padding: "3px 9px", borderRadius: 100, fontWeight: 700, background: "rgba(0,0,0,0.65)", backdropFilter: "blur(8px)", WebkitBackdropFilter: "blur(8px)", color: "#7cc4ff" }}>▶ {tapes}</div>
+                        )}
+                        {/* Quick vote au survol */}
+                        <div className="qv" onClick={e => e.stopPropagation()} style={{ position: "absolute", top: guestVote ? 40 : 9, right: 9, display: "flex", flexDirection: "column", gap: 6, opacity: 0, transition: "opacity 0.2s" }}>
+                          {[
+                            { c: "yes", sym: "✓", col: "#30d158" },
+                            { c: "maybe", sym: "?", col: "#ffd60a" },
+                            { c: "no", sym: "✕", col: "#ff453a" },
+                          ].map(v => (
+                            <button key={v.c} onClick={() => setSelection(profile.id, choice === v.c ? null : v.c)}
+                              title={v.c === "yes" ? "Oui" : v.c === "maybe" ? "Peut-être" : "Non"}
+                              style={{
+                                width: 32, height: 32, borderRadius: "50%", border: "none", cursor: "pointer",
+                                fontSize: 14, fontWeight: 800, fontFamily: "inherit",
+                                background: choice === v.c ? v.col : "rgba(0,0,0,0.65)",
+                                color: choice === v.c ? (v.c === "maybe" ? "#1a1200" : "#fff") : v.col,
+                                backdropFilter: "blur(10px)", WebkitBackdropFilter: "blur(10px)",
+                                boxShadow: "0 2px 8px rgba(0,0,0,0.4)",
+                              }}>{v.sym}</button>
+                          ))}
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
+                ) : (
+                /* ===== LISTE COMPACTE ===== */
+                <div style={{ background: "#1c1c1f", borderRadius: 18, border: "0.5px solid rgba(255,255,255,0.08)", overflow: "hidden" }}>
+                  {filteredProfiles.map((profile, i) => {
+                    const choice = getChoice(profile.id);
+                    const guestVote = state._guestVotes?.[profile.id]?.choice;
+                    const tapes = (profile.selftapeLinks || []).filter(l => l).length + (profile.selftapeVideos || []).length;
+                    return (
+                      <div key={profile.id}
+                        onClick={() => { setEditingProfile(profile); setModalOpen(true); }}
+                        style={{ display: "flex", alignItems: "center", gap: 14, padding: "10px 18px", borderBottom: "1px solid #2a2a30", cursor: "pointer", opacity: choice === "no" ? 0.45 : 1, transition: "background 0.15s" }}
+                        onMouseEnter={e => e.currentTarget.style.background = "rgba(255,255,255,0.025)"}
+                        onMouseLeave={e => e.currentTarget.style.background = "transparent"}>
+                        {compareMode && (
+                          <div onClick={e => { e.stopPropagation(); setCompareSelection(prev => prev.includes(profile.id) ? prev.filter(x => x !== profile.id) : prev.length < 3 ? [...prev, profile.id] : prev); }}
+                            style={{ width: 22, height: 22, borderRadius: "50%", cursor: "pointer", flexShrink: 0,
+                              background: compareSelection.includes(profile.id) ? "#0a84ff" : "transparent",
+                              border: compareSelection.includes(profile.id) ? "2px solid #0a84ff" : "2px solid #48484d",
+                              display: "flex", alignItems: "center", justifyContent: "center", color: "#fff", fontSize: 11, fontWeight: 700,
+                            }}>{compareSelection.includes(profile.id) ? compareSelection.indexOf(profile.id) + 1 : ""}</div>
+                        )}
+                        <div style={{ width: 44, height: 56, borderRadius: 9, overflow: "hidden", background: "#101013", flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                          {(profile.photos || [])[0] ? <img src={profile.photos[0]} alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover" }} /> : <span style={{ color: "#333" }}>◎</span>}
+                        </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
+                            <span style={{ fontSize: 14.5, fontWeight: 650, color: "#f5f5f7", letterSpacing: "-0.01em", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{[profile.firstName, profile.name].filter(Boolean).join(" ") || "Sans nom"}</span>
+                            {profile.profileType && <span style={{ fontSize: 9, padding: "2px 7px", background: "rgba(191,90,242,0.12)", borderRadius: 100, color: "#bf5af2", fontWeight: 700, textTransform: "uppercase", flexShrink: 0 }}>{profile.profileType}</span>}
+                            {guestVote && <span style={{ fontSize: 9, padding: "2px 7px", borderRadius: 100, fontWeight: 800, flexShrink: 0,
+                              background: guestVote === "yes" ? "rgba(48,209,88,0.1)" : guestVote === "no" ? "rgba(255,69,58,0.1)" : "rgba(255,214,10,0.1)",
+                              color: guestVote === "yes" ? "#30d158" : guestVote === "no" ? "#ff453a" : "#ffd60a" }}>R/P {guestVote === "yes" ? "OUI" : guestVote === "no" ? "NON" : "P-Ê"}</span>}
+                          </div>
+                          <div style={{ fontSize: 12, color: "#98989d", marginTop: 2, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                            {[profile.age ? profile.age + " ans" : null, profile.height, profile.hairColor].filter(Boolean).join(" · ")}
+                            {profile.agency && <span style={{ color: "#d4af61" }}>{([profile.age, profile.height, profile.hairColor].some(Boolean) ? "  ·  " : "")}{profile.agency}</span>}
+                            {tapes > 0 && <span style={{ color: "#0a84ff" }}>  ·  ▶ {tapes}</span>}
+                          </div>
+                        </div>
+                        {/* Étoiles */}
+                        <div style={{ display: "flex", gap: 1, flexShrink: 0 }} onClick={e => e.stopPropagation()}>
+                          {[1,2,3,4,5].map(n => (
+                            <button key={n} onClick={() => quickRateProfile(profile.id, n)}
+                              style={{ width: 17, height: 17, border: "none", cursor: "pointer", fontSize: 11, padding: 0, background: "transparent",
+                                color: n <= (profile._quickRating || 0) ? "#d4af61" : "#2e2e34", transition: "color 0.15s" }}>★</button>
+                          ))}
+                        </div>
+                        {/* Contact */}
+                        {choice && (
+                          <button onClick={e => { e.stopPropagation(); setContactingProfile(profile); setContactModalOpen(true); }}
+                            style={{ padding: "5px 12px", borderRadius: 100, cursor: "pointer", fontSize: 11, fontWeight: 600, fontFamily: "inherit", border: "none", flexShrink: 0,
+                              background: "rgba(255,255,255,0.06)",
+                              color: state.contacts[profile.id]?.status && state.contacts[profile.id]?.status !== "not_contacted" ? CONTACT_STATUS[state.contacts[profile.id].status].color : "#d4af61" }}>
+                            {state.contacts[profile.id]?.status && state.contacts[profile.id]?.status !== "not_contacted" ? CONTACT_STATUS[state.contacts[profile.id].status].label : "Contacter"}
+                          </button>
+                        )}
+                        {/* Vote segmenté compact */}
+                        <div style={{ display: "flex", gap: 4, flexShrink: 0 }} onClick={e => e.stopPropagation()}>
+                          {[
+                            { c: "yes", sym: "✓", col: "#30d158" },
+                            { c: "maybe", sym: "?", col: "#ffd60a" },
+                            { c: "no", sym: "✕", col: "#ff453a" },
+                          ].map(v => (
+                            <button key={v.c} onClick={() => setSelection(profile.id, choice === v.c ? null : v.c)}
+                              style={{ width: 30, height: 30, borderRadius: "50%", border: "none", cursor: "pointer", fontSize: 13, fontWeight: 800, fontFamily: "inherit",
+                                background: choice === v.c ? v.col : "rgba(255,255,255,0.05)",
+                                color: choice === v.c ? (v.c === "maybe" ? "#1a1200" : "#fff") : "#666",
+                                transition: "all 0.15s" }}>{v.sym}</button>
+                          ))}
+                        </div>
+                        {/* Outils */}
+                        <div style={{ display: "flex", gap: 2, flexShrink: 0 }} onClick={e => e.stopPropagation()}>
+                          {state.roles.length > 1 && <button title="Déplacer vers un autre rôle" onClick={() => setMoveProfileModal({ profile, fromRole: activeRole })} style={{ width: 26, height: 26, background: "none", border: "none", borderRadius: 8, color: "#48484d", fontSize: 12, cursor: "pointer" }} onMouseEnter={e => e.currentTarget.style.color = "#d4af61"} onMouseLeave={e => e.currentTarget.style.color = "#48484d"}>↗</button>}
+                          {state.roles.length > 1 && <button title="Copier vers un autre rôle" onClick={() => setCopyProfileModal({ profile })} style={{ width: 26, height: 26, background: "none", border: "none", borderRadius: 8, color: "#48484d", fontSize: 12, cursor: "pointer" }} onMouseEnter={e => e.currentTarget.style.color = "#30d158"} onMouseLeave={e => e.currentTarget.style.color = "#48484d"}>⊕</button>}
+                          <button title="Email type" onClick={() => setEmailTemplateModal({ profile })} style={{ width: 26, height: 26, background: "none", border: "none", borderRadius: 8, color: "#48484d", fontSize: 12, cursor: "pointer" }} onMouseEnter={e => e.currentTarget.style.color = "#0a84ff"} onMouseLeave={e => e.currentTarget.style.color = "#48484d"}>✉</button>
+                        </div>
+                        <span style={{ color: "#48484d", fontSize: 16, flexShrink: 0 }}>›</span>
+                      </div>
+                    );
+                  })}
+                </div>
+                )}
+
               </>
             )}
             </div>
@@ -8155,12 +8212,42 @@ function CastingAppInner({ authUser }) {
         title={editingProfile ? "Modifier le profil" : "Nouveau profil"}
       >
         <ProfileForm
+          key={editingProfile?.id || "new"}
           profile={editingProfile || { availability: "pending", photos: [], selftapeVideos: [], selftapeLinks: [], source: "", email: "", phone: "", agencyEmail: "", shareContacts: false }}
           onSave={editingProfile ? updateProfile : addProfile}
           onDelete={editingProfile ? () => deleteProfile(editingProfile.id) : null}
           onClose={() => { setModalOpen(false); setEditingProfile(null); }}
         />
       </Modal>
+      {/* Navigation ◀ ▶ entre profils du rôle (par-dessus la modale) */}
+      {modalOpen && editingProfile && (() => {
+        const list = state.profiles[activeRole] || [];
+        const idx = list.findIndex(p => p.id === editingProfile.id);
+        if (idx === -1 || list.length < 2) return null;
+        const go = (dir) => {
+          const next = list[(idx + dir + list.length) % list.length];
+          setEditingProfile(next);
+        };
+        const navBtn = (dir, sym, side) => (
+          <button onClick={() => go(dir)} style={{
+            position: "fixed", top: "50%", [side]: 18, transform: "translateY(-50%)", zIndex: 1001,
+            width: 46, height: 46, borderRadius: "50%", border: "none", cursor: "pointer",
+            background: "rgba(30,30,34,0.85)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)",
+            color: "#f5f5f7", fontSize: 20, fontWeight: 600, fontFamily: "inherit",
+            boxShadow: "0 4px 20px rgba(0,0,0,0.5), inset 0 0 0 0.5px rgba(255,255,255,0.14)",
+            display: "flex", alignItems: "center", justifyContent: "center",
+          }}>{sym}</button>
+        );
+        return (
+          <>
+            {navBtn(-1, "‹", "left")}
+            {navBtn(1, "›", "right")}
+            <div style={{ position: "fixed", bottom: 22, left: "50%", transform: "translateX(-50%)", zIndex: 1001, padding: "6px 16px", borderRadius: 100, background: "rgba(30,30,34,0.85)", backdropFilter: "blur(16px)", WebkitBackdropFilter: "blur(16px)", color: "#98989d", fontSize: 12, fontWeight: 600, boxShadow: "0 4px 20px rgba(0,0,0,0.5)" }}>
+              {idx + 1} / {list.length}
+            </div>
+          </>
+        );
+      })()}
 
       {/* Contact Modal */}
       <Modal
