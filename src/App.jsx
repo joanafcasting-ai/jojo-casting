@@ -2236,6 +2236,10 @@ function CastingAppInner({ authUser }) {
   const [applyFetching, setApplyFetching] = useState(false);
   const [applyLastFetch, setApplyLastFetch] = useState(null);
   const [excelExporting, setExcelExporting] = useState(false);
+  const [sheetConfigModal, setSheetConfigModal] = useState(false);
+  const [sheetsWebhookInput, setSheetsWebhookInput] = useState(() => { try { return localStorage.getItem("sheets_webhook") || ""; } catch (e) { return ""; } });
+  const [sheetSyncNotice, setSheetSyncNotice] = useState("");
+  const [prodLinkCopied, setProdLinkCopied] = useState(false);
 
   // ---- Candidatures v2 : lien public + relève + export Excel ----
 
@@ -2261,38 +2265,72 @@ function CastingAppInner({ authUser }) {
   };
 
   // Pull submitted applications from shared storage into state.candidatures
+  // ---- Synchro Google Sheet (via Apps Script webhook — sans OAuth) ----
+
+  const getSheetsWebhook = () => { try { return localStorage.getItem("sheets_webhook") || ""; } catch (e) { return ""; } };
+
+  const pushCandidatureToSheet = useCallback((cand, action = "append", statusLabel = "") => {
+    try {
+      const webhook = getSheetsWebhook();
+      const m = (state._prodSheetUrl || "").match(/\/d\/([a-zA-Z0-9-_]+)/);
+      if (!webhook || !m) return false;
+      const payload = action === "append" ? {
+        sheetId: m[1], action: "append",
+        row: {
+          id: cand.id,
+          date: new Date(cand.createdAt || Date.now()).toLocaleString("fr-FR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }),
+          firstName: cand.firstName || "", name: (cand.name || "").toUpperCase(),
+          age: cand.age || "", height: cand.height || "", city: cand.city || "", sex: cand.sex || "",
+          agency: cand.agency || "", email: cand.email || "", phone: cand.phone || "",
+          role: cand.role || "", selftape: (cand.links || []).filter(Boolean).join(" | "),
+          photos: cand.photos || [], message: cand.notes || "",
+          status: cand.status === "transferred" ? "Présélectionné·e" : cand.status === "rejected" ? "Refusé·e" : "En attente",
+        },
+      } : { sheetId: m[1], action: "status", id: cand.id, status: statusLabel };
+      fetch(webhook, { method: "POST", mode: "no-cors", body: JSON.stringify(payload) });
+      return true;
+    } catch (e) { console.warn("Sheet push failed:", e); return false; }
+  }, [state._prodSheetUrl]);
+
   const fetchApplications = useCallback(async (code) => {
     if (!code) return;
     setApplyFetching(true);
     try {
       const { keys } = await window.storage.list(`apply:${code}:`, true);
+      const imported = [];
       for (const key of keys) {
         try {
           const data = await window.storage.get(key, true);
           if (!data?.value) continue;
           const app = JSON.parse(data.value);
           const candId = "form_" + key.split(":").pop();
-          setState(prev => {
-            if ((prev.candidatures || []).some(c => c.id === candId)) return prev;
-            const newC = {
-              id: candId, source: "form", status: "pending",
-              createdAt: app.submittedAt || new Date().toISOString(),
-              firstName: app.firstName || "", name: app.name || "", age: app.age || "",
-              sex: app.sex || "", height: app.height || "", city: app.city || "",
-              hairColor: "", measurements: "", agency: app.agency || "", agencyEmail: "",
-              email: app.email || "", phone: app.phone || "",
-              photos: app.photos || [], links: (app.selftape ? [app.selftape] : []),
-              notes: app.message || "", role: app.role || "",
-            };
-            return { ...prev, candidatures: [...(prev.candidatures || []), newC] };
-          });
+          const newC = {
+            id: candId, source: "form", status: "pending",
+            createdAt: app.submittedAt || new Date().toISOString(),
+            firstName: app.firstName || "", name: app.name || "", age: app.age || "",
+            sex: app.sex || "", height: app.height || "", city: app.city || "",
+            hairColor: "", measurements: "", agency: app.agency || "", agencyEmail: "",
+            email: app.email || "", phone: app.phone || "",
+            photos: app.photos || [], links: (app.selftape ? [app.selftape] : []),
+            notes: app.message || "", role: app.role || "",
+          };
+          imported.push(newC);
           await window.storage.delete(key, true);
         } catch (e) { console.error("Import application failed:", key, e); }
+      }
+      if (imported.length) {
+        setState(prev => {
+          const existing = new Set((prev.candidatures || []).map(c => c.id));
+          const fresh = imported.filter(c => !existing.has(c.id));
+          return fresh.length ? { ...prev, candidatures: [...(prev.candidatures || []), ...fresh] } : prev;
+        });
+        // Push each new candidature to the live Google Sheet
+        imported.forEach(c => pushCandidatureToSheet(c, "append"));
       }
       setApplyLastFetch(new Date());
     } catch (e) { console.error("fetchApplications failed:", e); }
     setApplyFetching(false);
-  }, [setState]);
+  }, [setState, pushCandidatureToSheet]);
 
   // Auto-fetch + resync form metadata when opening the Candidatures tab
   useEffect(() => {
@@ -2302,6 +2340,20 @@ function CastingAppInner({ authUser }) {
       fetchApplications(state._applyCode);
     }
   }, [activeTab]);
+
+  // Hydrate the Sheets webhook from the cloud on other devices
+  useEffect(() => {
+    try {
+      if (!localStorage.getItem("sheets_webhook")) {
+        window.storage.get("sheets_webhook").then(d => {
+          if (d?.value) {
+            try { localStorage.setItem("sheets_webhook", d.value); } catch (e) {}
+            setSheetsWebhookInput(d.value);
+          }
+        }).catch(() => {});
+      }
+    } catch (e) {}
+  }, []);
 
   // Export candidatures to a real .xlsx with embedded photos
   const exportCandidaturesExcel = async () => {
@@ -5907,12 +5959,56 @@ function CastingAppInner({ authUser }) {
                   )}
                 </div>
 
-                {/* Dossier Drive (pour déposer l'export Excel) */}
-                <div style={{ marginBottom: 16, padding: "12px 18px", background: "#1c1c1f", borderRadius: 16, border: "0.5px solid rgba(255,255,255,0.08)", display: "flex", alignItems: "center", gap: 12 }}>
-                  <Icon name="folder" size={16} color="#4285F4" />
-                  <input value={state._candidaturesDriveLink || ""} onChange={e => setState(p => ({ ...p, _candidaturesDriveLink: e.target.value }))} placeholder="Lien de votre dossier Google Drive (pour y déposer l'export Excel)…" style={{ flex: 1, padding: "8px 12px", background: "rgba(255,255,255,0.05)", border: "none", borderRadius: 100, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
-                  {state._candidaturesDriveLink && <a href={state._candidaturesDriveLink} target="_blank" rel="noreferrer" style={{ padding: "8px 16px", background: "rgba(66,133,244,0.12)", borderRadius: 100, color: "#4285F4", fontSize: 12, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>Ouvrir Drive</a>}
+                {/* ===== Tableau prod sur Google Drive (synchro live) ===== */}
+                {(() => {
+                  const webhookOk = !!(() => { try { return localStorage.getItem("sheets_webhook"); } catch (e) { return ""; } })();
+                  const sheetOk = /\/d\/[a-zA-Z0-9-_]+/.test(state._prodSheetUrl || "");
+                  const syncOn = webhookOk && sheetOk;
+                  return (
+                <div style={{ marginBottom: 16, padding: "18px 22px", background: "#1c1c1f", borderRadius: 18, border: `0.5px solid ${syncOn ? "rgba(48,209,88,0.3)" : "rgba(255,255,255,0.08)"}` }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: 12, marginBottom: 12 }}>
+                    <div style={{ width: 40, height: 40, borderRadius: 12, background: "rgba(66,133,244,0.1)", border: "0.5px solid rgba(66,133,244,0.25)", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                      <Icon name="folder" size={18} color="#4285F4" strokeWidth={1.8} />
+                    </div>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ fontSize: 15, fontWeight: 700, color: "#f5f5f7", letterSpacing: "-0.01em", display: "flex", alignItems: "center", gap: 10 }}>
+                        Tableau Excel sur Drive — pour la prod
+                        {syncOn ? (
+                          <span style={{ fontSize: 10, padding: "3px 10px", borderRadius: 100, background: "rgba(48,209,88,0.12)", color: "#30d158", fontWeight: 700, display: "inline-flex", alignItems: "center", gap: 5 }}><span style={{ width: 6, height: 6, borderRadius: "50%", background: "#30d158" }} />SYNCHRO ACTIVE</span>
+                        ) : (
+                          <span style={{ fontSize: 10, padding: "3px 10px", borderRadius: 100, background: "rgba(255,159,10,0.1)", color: "#ff9f0a", fontWeight: 700 }}>NON CONFIGURÉ</span>
+                        )}
+                      </div>
+                      <div style={{ fontSize: 12, color: "#98989d", marginTop: 2 }}>Chaque candidature s'ajoute automatiquement dans votre Google Sheet (photo incluse). La prod voit le tableau se remplir en direct.</div>
+                    </div>
+                    <button onClick={() => setSheetConfigModal(true)} style={{ padding: "8px 16px", background: "rgba(255,255,255,0.07)", border: "none", borderRadius: 100, color: "#ebebf0", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap" }}>
+                      {webhookOk ? "⚙ Réglages" : "⚙ Configurer (2 min)"}
+                    </button>
+                  </div>
+                  <div style={{ display: "flex", gap: 8, flexWrap: "wrap", alignItems: "center" }}>
+                    <input value={state._prodSheetUrl || ""} onChange={e => setState(p => ({ ...p, _prodSheetUrl: e.target.value }))} placeholder="Collez ici le lien de votre Google Sheet (créé dans le Drive du projet)…" style={{ flex: 1, minWidth: 260, padding: "10px 16px", background: "rgba(255,255,255,0.05)", border: "none", borderRadius: 100, color: "#ebebf0", fontSize: 13, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
+                    {sheetOk && <a href={state._prodSheetUrl} target="_blank" rel="noreferrer" style={{ padding: "10px 18px", background: "rgba(66,133,244,0.12)", borderRadius: 100, color: "#4285F4", fontSize: 13, fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap" }}>Ouvrir</a>}
+                    {sheetOk && (
+                      <button onClick={async () => {
+                        try { await navigator.clipboard.writeText(state._prodSheetUrl); setProdLinkCopied(true); setTimeout(() => setProdLinkCopied(false), 2500); } catch (e) {}
+                      }} style={{ padding: "10px 18px", background: prodLinkCopied ? "rgba(48,209,88,0.15)" : "rgba(255,255,255,0.07)", border: "none", borderRadius: 100, color: prodLinkCopied ? "#30d158" : "#ebebf0", fontSize: 13, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap" }}>
+                        {prodLinkCopied ? "✓ Copié !" : "Copier le lien pour la prod"}
+                      </button>
+                    )}
+                    {syncOn && (state.candidatures || []).length > 0 && (
+                      <button onClick={() => {
+                        (state.candidatures || []).forEach(c => pushCandidatureToSheet(c, "append"));
+                        setSheetSyncNotice(`${(state.candidatures || []).length} candidature(s) renvoyée(s) vers le tableau.`);
+                        setTimeout(() => setSheetSyncNotice(""), 4000);
+                      }} style={{ padding: "10px 18px", background: "transparent", border: "1px solid rgba(255,255,255,0.15)", borderRadius: 100, color: "#98989d", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap" }}>
+                        ⟳ Tout renvoyer
+                      </button>
+                    )}
+                  </div>
+                  {sheetSyncNotice && <div style={{ marginTop: 10, fontSize: 12, color: "#30d158" }}>{sheetSyncNotice}</div>}
                 </div>
+                  );
+                })()}
 
                 {/* Candidatures list */}
                 <div style={{ background: "#1c1c1f", borderRadius: 18, border: "1px solid #2e2e34", overflow: "hidden" }}>
@@ -6107,9 +6203,11 @@ function CastingAppInner({ authUser }) {
                                   profiles: { ...prev.profiles, [c.role]: [...(prev.profiles[c.role] || []), newProfile] },
                                   candidatures: (prev.candidatures || []).map((x, xi) => xi === ci ? { ...x, status: "transferred" } : x),
                                 }));
+                                pushCandidatureToSheet(c, "status", "Présélectionné·e");
                               }} style={{ padding: "8px 20px", background: "rgba(48,209,88,0.12)", border: "1px solid rgba(48,209,88,0.3)", borderRadius: 12, color: "#30d158", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>✓ Transférer dans les rôles</button>
                               <button onClick={() => {
                                 const arr = [...(state.candidatures || [])]; arr[ci] = { ...arr[ci], status: "rejected" }; setState(p => ({ ...p, candidatures: arr }));
+                                pushCandidatureToSheet(c, "status", "Refusé·e");
                               }} style={{ padding: "8px 16px", background: "rgba(255,69,58,0.08)", border: "1px solid rgba(255,69,58,0.2)", borderRadius: 12, color: "#ff453a", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>✕ Refuser</button>
                               <button onClick={() => {
                                 if (window.confirm("Supprimer cette candidature ?")) setState(p => ({ ...p, candidatures: (p.candidatures || []).filter((_, xi) => xi !== ci) }));
@@ -6121,6 +6219,95 @@ function CastingAppInner({ authUser }) {
                     );
                   })}
                 </div>
+
+                {/* Sheet sync config modal */}
+                {sheetConfigModal && (() => {
+                  const APPS_SCRIPT_CODE = `function doPost(e) {
+  try {
+    var data = JSON.parse(e.postData.contents);
+    var ss = SpreadsheetApp.openById(data.sheetId);
+    var sh = ss.getSheets()[0];
+    var HEAD = ["Reçu le","Prénom","NOM","Âge","Taille","Ville","Sexe","Agence","Email","Téléphone","Rôle visé","Selftape","Photo","Photos (liens)","Message","Statut","ID"];
+    if (sh.getLastRow() === 0) {
+      sh.appendRow(HEAD);
+      sh.getRange(1,1,1,HEAD.length).setFontWeight("bold").setBackground("#1c1c1f").setFontColor("#ffffff");
+      sh.setFrozenRows(1);
+      sh.setColumnWidth(13, 110);
+    }
+    if (data.action === "append") {
+      var ids = sh.getLastRow() > 1 ? sh.getRange(2, 17, sh.getLastRow()-1, 1).getValues().flat() : [];
+      if (ids.indexOf(data.row.id) !== -1) return ContentService.createTextOutput("dup");
+      var r = data.row;
+      sh.appendRow([r.date, r.firstName, r.name, r.age, r.height, r.city, r.sex, r.agency, r.email, r.phone, r.role, r.selftape, "", (r.photos||[]).join(" | "), r.message, r.status, r.id]);
+      var last = sh.getLastRow();
+      if (r.photos && r.photos.length) {
+        sh.getRange(last, 13).setFormula('=IMAGE("' + r.photos[0] + '")');
+        sh.setRowHeight(last, 110);
+      }
+      if (r.selftape) {
+        var firstLink = r.selftape.split(" | ")[0];
+        sh.getRange(last, 12).setRichTextValue(SpreadsheetApp.newRichTextValue().setText(r.selftape).setLinkUrl(0, firstLink.length, firstLink).build());
+      }
+    } else if (data.action === "status") {
+      var ids2 = sh.getLastRow() > 1 ? sh.getRange(2, 17, sh.getLastRow()-1, 1).getValues() : [];
+      for (var i = 0; i < ids2.length; i++) {
+        if (ids2[i][0] === data.id) { sh.getRange(i+2, 16).setValue(data.status); break; }
+      }
+    }
+    return ContentService.createTextOutput("ok");
+  } catch (err) {
+    return ContentService.createTextOutput("error: " + err);
+  }
+}`;
+                  return (
+                  <div onClick={() => setSheetConfigModal(false)} style={{ position: "fixed", inset: 0, background: "rgba(0,0,0,0.55)", zIndex: 2000, display: "flex", alignItems: "center", justifyContent: "center", padding: 20, backdropFilter: "blur(24px) saturate(140%)", WebkitBackdropFilter: "blur(24px) saturate(140%)" }}>
+                    <div onClick={e => e.stopPropagation()} style={{ background: "rgba(36,36,40,0.97)", borderRadius: 24, maxWidth: 720, width: "100%", maxHeight: "88vh", overflowY: "auto", padding: "30px 34px", border: "0.5px solid rgba(255,255,255,0.12)", boxShadow: "0 32px 100px rgba(0,0,0,0.7)" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
+                        <h3 style={{ fontSize: 21, fontWeight: 700, color: "#f5f5f7", fontFamily: "inherit", letterSpacing: "-0.022em" }}>Synchro Google Sheet — installation</h3>
+                        <button onClick={() => setSheetConfigModal(false)} style={{ background: "rgba(255,255,255,0.08)", border: "none", borderRadius: 100, width: 30, height: 30, display: "flex", alignItems: "center", justifyContent: "center", color: "#98989d", fontSize: 15, cursor: "pointer", fontFamily: "inherit" }}>✕</button>
+                      </div>
+                      <p style={{ fontSize: 13, color: "#98989d", lineHeight: 1.6, marginBottom: 20 }}>À faire <strong style={{ color: "#d4af61" }}>une seule fois</strong> — ensuite ça marche pour tous vos projets, sans connexion Google dans l'app.</p>
+
+                      {[
+                        { n: "1", t: <>Ouvrez <a href="https://script.google.com/home/projects/create" target="_blank" rel="noreferrer" style={{ color: "#0a84ff" }}>script.google.com</a> (connectée à votre compte Google habituel) — un nouveau projet de script s'ouvre.</> },
+                        { n: "2", t: <>Effacez tout le contenu, puis collez le code ci-dessous :</> },
+                      ].map(s => (
+                        <div key={s.n} style={{ display: "flex", gap: 12, marginBottom: 12, alignItems: "flex-start" }}>
+                          <span style={{ width: 24, height: 24, borderRadius: "50%", background: "rgba(212,175,97,0.15)", color: "#d4af61", fontSize: 12, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{s.n}</span>
+                          <span style={{ fontSize: 13, color: "#ccc", lineHeight: 1.6 }}>{s.t}</span>
+                        </div>
+                      ))}
+                      <div style={{ position: "relative", marginBottom: 16 }}>
+                        <pre style={{ background: "#0a0a0a", border: "1px solid rgba(255,255,255,0.1)", borderRadius: 14, padding: "14px 16px", fontSize: 10.5, color: "#a8d08a", overflowX: "auto", maxHeight: 180, lineHeight: 1.5, fontFamily: "SF Mono, Menlo, monospace" }}>{APPS_SCRIPT_CODE}</pre>
+                        <button onClick={e => { navigator.clipboard.writeText(APPS_SCRIPT_CODE); e.currentTarget.textContent = "✓ Copié !"; setTimeout(() => { try { e.target.textContent = "Copier le code"; } catch(_){} }, 2000); }} style={{ position: "absolute", top: 10, right: 10, padding: "6px 14px", background: "#d4af61", border: "none", borderRadius: 100, color: "#1a1200", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Copier le code</button>
+                      </div>
+                      {[
+                        { n: "3", t: <>En haut à droite : <strong style={{ color: "#ebebf0" }}>Déployer → Nouveau déploiement → Application Web</strong>. Réglez « Exécuter en tant que » : <strong style={{ color: "#ebebf0" }}>Moi</strong>, et « Qui a accès » : <strong style={{ color: "#ebebf0" }}>Tout le monde</strong>. Cliquez Déployer et autorisez votre propre script.</> },
+                        { n: "4", t: <>Copiez l'<strong style={{ color: "#ebebf0" }}>URL de l'application Web</strong> (elle finit par <code style={{ color: "#d4af61" }}>/exec</code>) et collez-la ici :</> },
+                      ].map(s => (
+                        <div key={s.n} style={{ display: "flex", gap: 12, marginBottom: 12, alignItems: "flex-start" }}>
+                          <span style={{ width: 24, height: 24, borderRadius: "50%", background: "rgba(212,175,97,0.15)", color: "#d4af61", fontSize: 12, fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{s.n}</span>
+                          <span style={{ fontSize: 13, color: "#ccc", lineHeight: 1.6 }}>{s.t}</span>
+                        </div>
+                      ))}
+                      <div style={{ display: "flex", gap: 8, marginBottom: 16 }}>
+                        <input value={sheetsWebhookInput} onChange={e => setSheetsWebhookInput(e.target.value)} placeholder="https://script.google.com/macros/s/…/exec" style={{ flex: 1, padding: "12px 16px", background: "rgba(255,255,255,0.06)", border: "1px solid transparent", borderRadius: 13, color: "#ebebf0", fontSize: 13, fontFamily: "inherit", outline: "none", boxSizing: "border-box" }} />
+                        <button onClick={() => {
+                          const url = sheetsWebhookInput.trim();
+                          try { localStorage.setItem("sheets_webhook", url); } catch (e) {}
+                          window.storage.set("sheets_webhook", url).catch(() => {});
+                          setSheetSyncNotice("Webhook enregistré ✓");
+                          setTimeout(() => setSheetSyncNotice(""), 3000);
+                          setSheetConfigModal(false);
+                        }} style={{ padding: "12px 24px", background: "#d4af61", border: "none", borderRadius: 100, color: "#1a1200", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit", whiteSpace: "nowrap" }}>Enregistrer</button>
+                      </div>
+                      <div style={{ padding: "12px 16px", background: "rgba(48,209,88,0.06)", borderRadius: 12, fontSize: 12, color: "#98989d", lineHeight: 1.6 }}>
+                        <strong style={{ color: "#30d158" }}>Ensuite, pour chaque projet :</strong> créez votre Google Sheet dans le dossier Drive du projet (comme d'habitude), collez son lien dans l'onglet Candidatures, et le tableau se remplit tout seul. Utilisez « ⟳ Tout renvoyer » pour envoyer les candidatures déjà reçues.
+                      </div>
+                    </div>
+                  </div>
+                  );
+                })()}
 
                 {/* Paste email modal */}
                 {candidatureModal && (
@@ -6136,6 +6323,7 @@ function CastingAppInner({ authUser }) {
                           const parsed = parseEmailForCasting(text);
                           const newCandidature = { id: "cand_" + Date.now(), rawEmail: text, ...parsed, role: "", status: "pending", createdAt: new Date().toISOString() };
                           setState(prev => ({ ...prev, candidatures: [...(prev.candidatures || []), newCandidature] }));
+                          pushCandidatureToSheet(newCandidature, "append");
                           setCandidatureModal(false);
                         }} style={{ padding: "10px 24px", background: "linear-gradient(135deg, #f472b6, #db2777)", border: "none", borderRadius: 12, color: "#fff", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>🔍 Analyser & Ajouter</button>
                       </div>
