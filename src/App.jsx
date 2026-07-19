@@ -3172,41 +3172,44 @@ function CastingAppInner({ authUser }) {
         <style>{globalStyles}</style>
         <div className={lightTheme ? "light-wrapper" : ""} style={{ minHeight: "100vh", background: "#000000" }}>
           <header style={{
-            padding: "18px 32px", borderBottom: "1px solid #2a2a30",
+            padding: "14px 28px", borderBottom: "0.5px solid rgba(255,255,255,0.1)",
             display: "flex", alignItems: "center", justifyContent: "space-between",
-            background: "rgba(0,0,0,0.9)", position: "relative",
+            background: "rgba(10,10,12,0.72)", position: "relative",
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
               <div style={{ fontSize: 10, letterSpacing: "0.25em", textTransform: "uppercase", color: "#d4af61", fontWeight: 600 }}>
                 Casting Director
               </div>
-              <div style={{ width: 1, height: 20, background: "#3a3a40" }} />
-              <div style={{ display: "flex", gap: 4 }}>
+              <div style={{ width: 1, height: 20, background: "rgba(255,255,255,0.12)" }} />
+              <div style={{ display: "inline-flex", gap: 2, padding: 3, background: "#1c1c1f", borderRadius: 12 }}>
                 <button onClick={() => { setCastingFileView(false); setComptaView(false); }} style={{
-                  padding: "6px 16px", borderRadius: 10, fontSize: 11, fontWeight: 600,
+                  padding: "6px 16px", borderRadius: 9, fontSize: 12, fontWeight: 600,
                   fontFamily: "inherit", border: "none", cursor: "pointer",
-                  background: !castingFileView && !comptaView ? "rgba(212,175,97,0.12)" : "transparent",
-                  color: !castingFileView && !comptaView ? "#d4af61" : "#555", transition: "all 0.2s",
-                }}>🎬 Projets</button>
+                  background: !castingFileView && !comptaView ? "#3a3a40" : "transparent",
+                  boxShadow: !castingFileView && !comptaView ? "0 1px 4px rgba(0,0,0,0.4)" : "none",
+                  color: !castingFileView && !comptaView ? "#fff" : "#98989d", transition: "all 0.2s",
+                }}>Projets</button>
                 <button onClick={() => { setCastingFileView(true); setComptaView(false); }} style={{
-                  padding: "6px 16px", borderRadius: 10, fontSize: 11, fontWeight: 600,
+                  padding: "6px 16px", borderRadius: 9, fontSize: 12, fontWeight: 600,
                   fontFamily: "inherit", border: "none", cursor: "pointer",
-                  background: castingFileView && !comptaView ? "rgba(191,90,242,0.12)" : "transparent",
-                  color: castingFileView && !comptaView ? "#bf5af2" : "#555", transition: "all 0.2s",
+                  background: castingFileView && !comptaView ? "#3a3a40" : "transparent",
+                  boxShadow: castingFileView && !comptaView ? "0 1px 4px rgba(0,0,0,0.4)" : "none",
+                  color: castingFileView && !comptaView ? "#fff" : "#98989d", transition: "all 0.2s",
                   position: "relative",
                 }}>
-                  📁 Fichier Casting
+                  Fichier Casting
                   {actorDatabase.length > 0 && (
-                    <span style={{ position: "absolute", top: -2, right: -4, fontSize: 9, fontWeight: 700, background: "#bf5af2", color: "#000", borderRadius: 14, padding: "1px 5px", minWidth: 14, textAlign: "center" }}>{actorDatabase.length}</span>
+                    <span style={{ position: "absolute", top: -4, right: -6, fontSize: 9, fontWeight: 700, background: "#bf5af2", color: "#000", borderRadius: 100, padding: "1px 5px", minWidth: 14, textAlign: "center" }}>{actorDatabase.length}</span>
                   )}
                 </button>
                 <button onClick={() => { setComptaView(true); setCastingFileView(false); }} style={{
-                  padding: "6px 16px", borderRadius: 10, fontSize: 11, fontWeight: 600,
+                  padding: "6px 16px", borderRadius: 9, fontSize: 12, fontWeight: 600,
                   fontFamily: "inherit", border: "none", cursor: "pointer",
-                  background: comptaView ? "rgba(48,209,88,0.12)" : "transparent",
-                  color: comptaView ? "#30d158" : "#555", transition: "all 0.2s",
+                  background: comptaView ? "#3a3a40" : "transparent",
+                  boxShadow: comptaView ? "0 1px 4px rgba(0,0,0,0.4)" : "none",
+                  color: comptaView ? "#fff" : "#98989d", transition: "all 0.2s",
                 }}>
-                  💰 Comptabilité
+                  Comptabilité
                 </button>
               </div>
             </div>
@@ -3214,8 +3217,8 @@ function CastingAppInner({ authUser }) {
             <div style={{ position: "relative" }}>
               <input value={globalSearch} onChange={e => { setGlobalSearch(e.target.value); setGlobalSearchOpen(true); }}
                 placeholder="🔍 Recherche globale..."
-                style={{ padding: "8px 14px", background: "#1c1c1f", border: "1px solid #3a3a40", borderRadius: 12, color: "#ebebf0", fontSize: 12, fontFamily: "inherit", outline: "none", width: 240 }}
-                onFocus={e => { if (globalSearch.length >= 2) setGlobalSearchOpen(true); e.target.style.borderColor="#d4af61"; }} onBlur={e => { setTimeout(() => setGlobalSearchOpen(false), 200); e.target.style.borderColor="#3a3a40"; }} />
+                style={{ padding: "8px 16px", background: "rgba(255,255,255,0.07)", border: "none", borderRadius: 100, color: "#ebebf0", fontSize: 13, fontFamily: "inherit", outline: "none", width: 240 }}
+                onFocus={e => { if (globalSearch.length >= 2) setGlobalSearchOpen(true); }} onBlur={e => { setTimeout(() => setGlobalSearchOpen(false), 200); }} />
               {globalSearchOpen && globalSearch.length >= 2 && (() => {
                 const res = getGlobalSearchResults(globalSearch);
                 if (res.projects.length === 0 && res.actors.length === 0) return <div style={{ position: "absolute", top: "100%", right: 0, marginTop: 6, width: 320, background: "#232327", border: "1px solid #3a3a40", borderRadius: 12, padding: "16px", zIndex: 999, fontSize: 12, color: "#555" }}>Aucun résultat</div>;
