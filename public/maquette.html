@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maquette — Le Studio de Joana</title>
+<style>
+  /* ===== DESIGN.md v2 — Premium Dark ===== */
+  :root {
+    --fond: #0E0D0B;
+    --s1: #161411;
+    --s2: #1E1B17;
+    --s3: #26221D;
+    --trait: #2E2A24;
+    --ivoire: #F1EDE5;
+    --fumee: #989184;
+    --cendre: #5F594F;
+    --laiton: #C6A567;
+    --laiton-h: #D9BC82;
+    --laiton-v: rgba(198,165,103,0.12);
+    --oui: #7C9E82;
+    --pe: #A88D55;
+    --non: #9E6B60;
+    --ease: cubic-bezier(0.25, 0.1, 0.25, 1);
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html, body { height: 100%; overflow: hidden; }
+  body {
+    font-family: 'Helvetica Neue', -apple-system, Helvetica, Arial, sans-serif;
+    background: var(--fond); color: var(--ivoire);
+    font-size: 14px; line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  .georgia { font-family: Georgia, 'Times New Roman', serif; font-weight: 400; }
+  button { font-family: inherit; cursor: pointer; transition: background 160ms var(--ease), color 160ms var(--ease), border-color 160ms var(--ease); }
+  input { font-family: inherit; }
+  ::selection { background: rgba(198,165,103,0.32); }
+  ::-webkit-scrollbar { width: 8px; height: 8px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--trait); border-radius: 8px; }
+
+  /* ===== Squelette logiciel : rien ne scrolle sauf les panneaux ===== */
+  #app { display: grid; grid-template-rows: 44px 1fr 32px; height: 100vh; }
+
+  /* --- Barre de titre --- */
+  #titlebar {
+    display: flex; align-items: center; gap: 20px; padding: 0 16px;
+    background: var(--s1); border-bottom: 1px solid var(--trait);
+  }
+  #titlebar .project { display: flex; align-items: center; gap: 10px; min-width: 200px; }
+  #titlebar .project .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--oui); }
+  #titlebar .project .name { font-family: Georgia, serif; font-size: 16px; }
+  #titlebar .project .sub { font-size: 12px; color: var(--cendre); }
+
+  /* Workspaces façon DaVinci */
+  #workspaces { display: flex; gap: 2px; margin: 0 auto; }
+  #workspaces button {
+    padding: 6px 18px; background: none; border: none; border-bottom: 2px solid transparent;
+    color: var(--fumee); font-size: 13px; border-radius: 0;
+  }
+  #workspaces button:hover { color: var(--ivoire); background: var(--s3); }
+  #workspaces button.active { color: var(--ivoire); border-bottom-color: var(--laiton); }
+  #workspaces button .n { color: var(--cendre); font-size: 11px; margin-left: 6px; }
+
+  #titlebar .right { display: flex; align-items: center; gap: 8px; min-width: 200px; justify-content: flex-end; }
+  #titlebar input {
+    background: var(--s2); border: 1px solid var(--trait); border-radius: 6px;
+    padding: 5px 10px; color: var(--ivoire); font-size: 12px; width: 150px; outline: none;
+  }
+  #titlebar input:focus { border-color: var(--laiton); }
+  #titlebar input::placeholder { color: var(--cendre); }
+  .btn-sec {
+    background: none; border: 1px solid var(--trait); border-radius: 6px;
+    padding: 5px 14px; color: var(--ivoire); font-size: 12px;
+  }
+  .btn-sec:hover { background: var(--s3); }
+  .btn-prim {
+    background: var(--laiton); border: none; border-radius: 6px;
+    padding: 6px 16px; color: var(--fond); font-size: 13px; font-weight: 500;
+  }
+  .btn-prim:hover { background: var(--laiton-h); }
+
+  /* --- Corps 3 zones --- */
+  #body { display: grid; grid-template-columns: 240px 1fr 340px; overflow: hidden; }
+
+  /* Rail gauche — bibliothèque */
+  #rail {
+    background: var(--s1); border-right: 1px solid var(--trait);
+    padding: 20px 0; overflow-y: auto;
+  }
+  .rail-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--cendre); padding: 0 16px; margin-bottom: 8px;
+  }
+  .rail-item {
+    display: flex; align-items: center; gap: 10px; padding: 8px 16px;
+    color: var(--fumee); font-size: 14px; cursor: pointer;
+    border-left: 2px solid transparent; transition: background 160ms var(--ease);
+  }
+  .rail-item:hover { background: var(--s3); }
+  .rail-item.active { color: var(--ivoire); border-left-color: var(--laiton); background: var(--laiton-v); }
+  .rail-item .count { margin-left: auto; font-size: 12px; color: var(--cendre); }
+  .rail-sep { height: 1px; background: var(--trait); margin: 16px 16px; }
+  .rail-stats { padding: 0 16px; display: flex; flex-direction: column; gap: 6px; }
+  .rail-stat { display: flex; align-items: center; gap: 8px; font-size: 13px; color: var(--fumee); }
+  .rail-stat .pastille { width: 6px; height: 6px; border-radius: 50%; }
+  .rail-stat b { color: var(--ivoire); font-weight: 500; }
+
+  /* Centre — espace de travail */
+  #center { display: flex; flex-direction: column; overflow: hidden; }
+  #toolbar {
+    display: flex; align-items: center; gap: 8px; padding: 12px 24px;
+    border-bottom: 1px solid var(--trait); flex-shrink: 0;
+  }
+  #toolbar h1 { font-family: Georgia, serif; font-weight: 400; font-size: 22px; margin-right: 8px; }
+  .chip {
+    display: inline-flex; align-items: center; gap: 7px; padding: 4px 12px;
+    border: 1px solid var(--trait); border-radius: 6px; background: none;
+    color: var(--fumee); font-size: 12.5px;
+  }
+  .chip:hover { background: var(--s3); }
+  .chip.active { color: var(--ivoire); border-color: var(--laiton); }
+  .chip .pastille { width: 6px; height: 6px; border-radius: 50%; }
+  .chip b { color: var(--ivoire); font-weight: 500; }
+  #toolbar .spacer { flex: 1; }
+  .viewtoggle { display: flex; border: 1px solid var(--trait); border-radius: 6px; overflow: hidden; }
+  .viewtoggle button { background: none; border: none; padding: 5px 12px; color: var(--cendre); font-size: 12px; }
+  .viewtoggle button.active { background: var(--s3); color: var(--ivoire); }
+
+  #workarea { flex: 1; overflow-y: auto; padding: 24px; }
+
+  /* Planche */
+  #grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 20px; max-width: 1100px; }
+  .card { cursor: pointer; }
+  .card .photo {
+    aspect-ratio: 3/4; border-radius: 4px; border: 1px solid var(--trait);
+    position: relative; overflow: hidden;
+    display: flex; align-items: center; justify-content: center;
+    transition: box-shadow 160ms var(--ease);
+  }
+  .card .photo .init {
+    font-family: Georgia, serif; font-size: 42px; color: rgba(241,237,229,0.45);
+    opacity: 0.92; transition: opacity 160ms var(--ease);
+  }
+  .card:hover .photo .init { opacity: 1; }
+  .card.selected .photo { box-shadow: 0 0 0 1.5px var(--laiton); }
+  .card .nom {
+    font-family: Georgia, serif; font-size: 18px; margin-top: 9px;
+    display: flex; align-items: center; gap: 7px;
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+  .card .nom .pastille { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .card .meta { font-size: 13px; color: var(--fumee); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .card.voted-non { opacity: 0.45; }
+
+  /* Liste */
+  #list { max-width: 1100px; }
+  .row {
+    display: flex; align-items: center; gap: 14px; padding: 10px 4px;
+    border-bottom: 1px solid var(--trait); cursor: pointer;
+    transition: background 160ms var(--ease);
+  }
+  .row:hover { background: var(--s3); }
+  .row.selected { background: var(--laiton-v); box-shadow: inset 2px 0 0 var(--laiton); }
+  .row .vignette {
+    width: 56px; height: 72px; border-radius: 4px; border: 1px solid var(--trait);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    font-family: Georgia, serif; font-size: 20px; color: rgba(241,237,229,0.4);
+  }
+  .row .nom { font-family: Georgia, serif; font-size: 19px; }
+  .row .meta { font-size: 13px; color: var(--fumee); }
+  .row .tag { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: var(--fumee); }
+  .row .fill { flex: 1; }
+  .row .pastille { width: 6px; height: 6px; border-radius: 50%; }
+
+  /* Inspecteur droit */
+  #inspector {
+    background: var(--s1); border-left: 1px solid var(--trait);
+    display: flex; flex-direction: column; overflow: hidden;
+  }
+  #insp-photo {
+    height: 300px; flex-shrink: 0; border-bottom: 1px solid var(--trait);
+    display: flex; align-items: center; justify-content: center;
+    font-family: Georgia, serif; font-size: 64px; color: rgba(241,237,229,0.35);
+    position: relative;
+  }
+  #insp-photo .thumbs { position: absolute; bottom: 10px; display: flex; gap: 6px; }
+  #insp-photo .thumbs span {
+    width: 30px; height: 38px; border-radius: 4px; border: 1px solid var(--trait);
+    background: var(--s3); display: flex; align-items: center; justify-content: center;
+    font-size: 11px; color: var(--cendre); cursor: pointer;
+  }
+  #insp-photo .thumbs span.active { border-color: var(--laiton); }
+  #insp-body { flex: 1; overflow-y: auto; padding: 20px 22px; }
+  #insp-nom { font-family: Georgia, serif; font-size: 26px; line-height: 1.2; }
+  #insp-meta { font-size: 14px; color: var(--fumee); margin-top: 4px; }
+  #insp-agence { font-size: 13px; color: var(--laiton); margin-top: 6px; }
+  .vote { display: flex; border: 1px solid var(--trait); border-radius: 6px; overflow: hidden; margin-top: 16px; }
+  .vote button { flex: 1; background: none; border: none; padding: 9px 0; color: var(--cendre); font-size: 13px; border-right: 1px solid var(--trait); }
+  .vote button:last-child { border-right: none; }
+  .vote button:hover { background: var(--s3); color: var(--ivoire); }
+  .vote button.v-oui.on { background: rgba(124,158,130,0.14); color: var(--oui); }
+  .vote button.v-pe.on { background: rgba(168,141,85,0.14); color: var(--pe); }
+  .vote button.v-non.on { background: rgba(158,107,96,0.14); color: var(--non); }
+  .insp-section { margin-top: 22px; }
+  .insp-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--cendre); margin-bottom: 8px;
+  }
+  .insp-line { display: flex; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px solid var(--trait); font-size: 13.5px; }
+  .insp-line .k { width: 80px; color: var(--cendre); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; flex-shrink: 0; }
+  .insp-line .copy { margin-left: auto; background: none; border: 1px solid var(--trait); border-radius: 6px; padding: 2px 10px; color: var(--fumee); font-size: 11px; }
+  .insp-line .copy:hover { background: var(--s3); }
+  .insp-line input {
+    background: none; border: none; color: var(--ivoire); font-size: 13.5px; outline: none; flex: 1; min-width: 0;
+    border-bottom: 1px dashed transparent;
+  }
+  .insp-line input:focus { border-bottom-color: var(--laiton); }
+  .tape { display: inline-block; border: 1px solid var(--trait); border-radius: 6px; padding: 5px 14px; color: var(--ivoire); font-size: 12.5px; margin: 0 6px 6px 0; cursor: pointer; }
+  .tape:hover { background: var(--s3); }
+  #insp-notes { width: 100%; background: var(--s2); border: 1px solid var(--trait); border-radius: 6px; padding: 10px 12px; color: var(--ivoire); font-size: 13px; font-family: inherit; resize: vertical; min-height: 60px; outline: none; }
+  #insp-notes:focus { border-color: var(--laiton); }
+  #insp-footer { padding: 12px 22px; border-top: 1px solid var(--trait); display: flex; gap: 8px; align-items: center; flex-shrink: 0; }
+  .stars { display: flex; gap: 2px; }
+  .stars span { color: var(--cendre); cursor: pointer; font-size: 15px; }
+  .stars span.on { color: var(--laiton); }
+
+  /* Barre d'état */
+  #statusbar {
+    display: flex; align-items: center; gap: 20px; padding: 0 16px;
+    background: var(--s1); border-top: 1px solid var(--trait);
+    font-size: 12px; color: var(--cendre);
+  }
+  #statusbar .sel { color: var(--fumee); }
+  #statusbar kbd {
+    background: var(--s3); border: 1px solid var(--trait); border-radius: 4px;
+    padding: 0 5px; font-size: 11px; font-family: inherit; color: var(--fumee);
+  }
+  #statusbar .maquette { margin-left: auto; color: var(--cendre); font-style: italic; }
+
+  /* ===== Workspaces secondaires (évocations) ===== */
+  .ws-panel { max-width: 1100px; }
+  .ws-intro { color: var(--fumee); font-size: 13px; margin-bottom: 20px; }
+
+  /* Dépouillement */
+  #ws-depouillement { display: grid; grid-template-columns: 300px 1fr; gap: 0; height: 100%; }
+  #dep-list { border-right: 1px solid var(--trait); overflow-y: auto; }
+  .dep-item { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--trait); cursor: pointer; }
+  .dep-item:hover { background: var(--s3); }
+  .dep-item.selected { background: var(--laiton-v); box-shadow: inset 2px 0 0 var(--laiton); }
+  .dep-item .vignette { width: 40px; height: 50px; border-radius: 4px; border: 1px solid var(--trait); display: flex; align-items: center; justify-content: center; font-family: Georgia, serif; font-size: 15px; color: rgba(241,237,229,0.4); flex-shrink: 0; }
+  .dep-item .nom { font-family: Georgia, serif; font-size: 15px; }
+  .dep-item .sub { font-size: 11.5px; color: var(--cendre); }
+  .dep-item .new-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--laiton); margin-left: auto; flex-shrink: 0; }
+  #dep-preview { padding: 32px 40px; overflow-y: auto; }
+  #dep-preview .photo-lg { width: 220px; aspect-ratio: 3/4; border-radius: 4px; border: 1px solid var(--trait); background: var(--s2); display: flex; align-items: center; justify-content: center; font-family: Georgia, serif; font-size: 52px; color: rgba(241,237,229,0.35); float: left; margin: 0 28px 16px 0; }
+  #dep-preview h2 { font-family: Georgia, serif; font-weight: 400; font-size: 26px; }
+  #dep-actions { clear: both; padding-top: 20px; display: flex; gap: 10px; }
+
+  /* Sessions */
+  .session-day { border: 1px solid var(--trait); border-radius: 6px; margin-bottom: 16px; overflow: hidden; }
+  .session-day .day-head { padding: 10px 16px; background: var(--s2); border-bottom: 1px solid var(--trait); display: flex; align-items: center; gap: 12px; }
+  .session-day .day-head .georgia { font-size: 17px; }
+  .slot { display: flex; align-items: center; gap: 14px; padding: 8px 16px; border-bottom: 1px solid var(--trait); font-size: 13px; }
+  .slot:last-child { border-bottom: none; }
+  .slot .time { width: 60px; color: var(--fumee); font-variant-numeric: tabular-nums; }
+  .slot .nom { font-family: Georgia, serif; font-size: 15px; }
+  .slot .role { color: var(--cendre); font-size: 12px; }
+  .slot .st { margin-left: auto; display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--fumee); }
+  .slot .pastille { width: 6px; height: 6px; border-radius: 50%; }
+
+  /* Final */
+  #ws-final .role-block { margin-bottom: 28px; }
+  #ws-final .role-title { font-family: Georgia, serif; font-size: 19px; margin-bottom: 12px; display: flex; align-items: baseline; gap: 10px; }
+  #ws-final .role-title .sub { font-size: 12px; color: var(--cendre); }
+  #ws-final .finalists { display: flex; gap: 16px; }
+  .finalist { width: 150px; cursor: pointer; }
+  .finalist .photo { aspect-ratio: 3/4; border-radius: 4px; border: 1px solid var(--trait); display: flex; align-items: center; justify-content: center; font-family: Georgia, serif; font-size: 34px; color: rgba(241,237,229,0.4); position: relative; }
+  .finalist.retenu .photo { box-shadow: 0 0 0 1.5px var(--oui); }
+  .finalist .nom { font-family: Georgia, serif; font-size: 15px; margin-top: 8px; display: flex; gap: 6px; align-items: center; }
+  .finalist .pastille { width: 6px; height: 6px; border-radius: 50%; background: var(--oui); }
+
+  /* Livraison */
+  .deliver-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; max-width: 800px; }
+  .deliver-card { border: 1px solid var(--trait); border-radius: 6px; padding: 20px; }
+  .deliver-card h3 { font-family: Georgia, serif; font-weight: 400; font-size: 17px; margin-bottom: 6px; }
+  .deliver-card p { font-size: 12.5px; color: var(--fumee); margin-bottom: 14px; }
+
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<div id="app">
+
+  <!-- ===== Barre de titre ===== -->
+  <div id="titlebar">
+    <div class="project">
+      <span class="dot"></span>
+      <span class="name">nike</span>
+      <span class="sub">Casting Director</span>
+    </div>
+    <nav id="workspaces">
+      <button data-ws="candidatures">Candidatures<span class="n">8</span></button>
+      <button data-ws="depouillement">Dépouillement<span class="n">3</span></button>
+      <button data-ws="planche" class="active">Planche</button>
+      <button data-ws="sessions">Sessions</button>
+      <button data-ws="final">Final</button>
+      <button data-ws="livraison">Livraison</button>
+    </nav>
+    <div class="right">
+      <input placeholder="Rechercher un comédien…">
+      <button class="btn-sec">Partager</button>
+    </div>
+  </div>
+
+  <!-- ===== Corps ===== -->
+  <div id="body">
+
+    <!-- Rail gauche -->
+    <div id="rail">
+      <div class="rail-label">Rôles</div>
+      <div class="rail-item active">Rôle principal <span class="count">12</span></div>
+      <div class="rail-item">Second rôle <span class="count">4</span></div>
+      <div class="rail-item" style="color:var(--cendre)">Ajouter un rôle</div>
+      <div class="rail-sep"></div>
+      <div class="rail-label">Sélection</div>
+      <div class="rail-stats" id="rail-stats"></div>
+      <div class="rail-sep"></div>
+      <div class="rail-label">Bibliothèque</div>
+      <div class="rail-item">Fichier casting <span class="count">14</span></div>
+      <div class="rail-item">Contacts <span class="count">5</span></div>
+    </div>
+
+    <!-- Centre -->
+    <div id="center">
+      <div id="toolbar">
+        <h1 id="ws-title">Rôle principal</h1>
+        <span id="chips"></span>
+        <span class="spacer"></span>
+        <span class="viewtoggle" id="vt">
+          <button data-v="grid" class="active">Grille</button>
+          <button data-v="list">Liste</button>
+        </span>
+        <button class="btn-prim" id="btn-add">Ajouter un profil</button>
+      </div>
+      <div id="workarea"></div>
+    </div>
+
+    <!-- Inspecteur -->
+    <div id="inspector"></div>
+  </div>
+
+  <!-- ===== Barre d'état ===== -->
+  <div id="statusbar">
+    <span id="sb-count"></span>
+    <span class="sel" id="sb-sel"></span>
+    <span><kbd>↑</kbd><kbd>↓</kbd> naviguer</span>
+    <span><kbd>1</kbd> oui · <kbd>2</kbd> peut-être · <kbd>3</kbd> non · <kbd>0</kbd> effacer</span>
+    <span><kbd>G</kbd>/<kbd>L</kbd> vue</span>
+    <span class="maquette">Maquette interactive — données factices</span>
+  </div>
+</div>
+
+<script>
+// ===== Données factices =====
+const COMEDIENS = [
+  { id: 1, prenom: "Léa", nom: "Martin", age: 24, taille: "168 cm", cheveux: "Châtain", agence: "Agence Yay", ville: "Paris", type: "Comédienne", email: "lea.martin@mail.com", tel: "06 11 22 33 44", tapes: 2, vote: "oui", real: "oui", stars: 4, notes: "Très bonne présence caméra. Dispo tout août." },
+  { id: 2, prenom: "Sofia", nom: "Bernard", age: 29, taille: "172 cm", cheveux: "Brun", agence: "", ville: "Lyon", type: "Comédienne", email: "sofia.b@mail.com", tel: "06 55 66 77 88", tapes: 1, vote: "peut-etre", real: null, stars: 3, notes: "" },
+  { id: 3, prenom: "Jules", nom: "Petit", age: 31, taille: "182 cm", cheveux: "Blond", agence: "Talents & Co", ville: "Paris", type: "Comédien", email: "jules@talents.co", tel: "06 99 88 77 66", tapes: 1, vote: null, real: null, stars: 0, notes: "Indisponible semaine 34." },
+  { id: 4, prenom: "Emma", nom: "Roux", age: 26, taille: "165 cm", cheveux: "Roux", agence: "", ville: "Marseille", type: "Comédienne", email: "emma.roux@mail.com", tel: "06 12 34 56 78", tapes: 0, vote: "oui", real: null, stars: 5, notes: "Coup de cœur." },
+  { id: 5, prenom: "Nina", nom: "Garcia", age: 22, taille: "170 cm", cheveux: "Noir", agence: "Agence Yay", ville: "Paris", type: "Modèle", email: "nina.g@mail.com", tel: "06 44 33 22 11", tapes: 1, vote: null, real: "peut-etre", stars: 2, notes: "" },
+  { id: 6, prenom: "Tom", nom: "Leroy", age: 35, taille: "178 cm", cheveux: "Châtain", agence: "", ville: "Bordeaux", type: "Comédien", email: "tom.leroy@mail.com", tel: "06 77 88 99 00", tapes: 0, vote: "non", real: null, stars: 1, notes: "" },
+  { id: 7, prenom: "Chloé", nom: "Moreau", age: 27, taille: "169 cm", cheveux: "Blond", agence: "Studio M", ville: "Paris", type: "Comédienne", email: "chloe@studiom.fr", tel: "06 10 20 30 40", tapes: 3, vote: null, real: null, stars: 0, notes: "" },
+  { id: 8, prenom: "Rayan", nom: "Dubois", age: 30, taille: "185 cm", cheveux: "Noir", agence: "", ville: "Lille", type: "Comédien", email: "rayan.d@mail.com", tel: "06 50 60 70 80", tapes: 1, vote: null, real: null, stars: 0, notes: "" },
+  { id: 9, prenom: "Maya", nom: "Fontaine", age: 25, taille: "171 cm", cheveux: "Brun", agence: "Talents & Co", ville: "Paris", type: "Comédienne", email: "maya@talents.co", tel: "06 21 43 65 87", tapes: 2, vote: "peut-etre", real: null, stars: 3, notes: "" },
+  { id: 10, prenom: "Louis", nom: "Marchand", age: 28, taille: "180 cm", cheveux: "Châtain", agence: "", ville: "Nantes", type: "Comédien", email: "louis.m@mail.com", tel: "06 32 54 76 98", tapes: 0, vote: null, real: null, stars: 0, notes: "" },
+  { id: 11, prenom: "Inès", nom: "Blanc", age: 23, taille: "166 cm", cheveux: "Noir", agence: "Agence Yay", ville: "Paris", type: "Comédienne", email: "ines.b@mail.com", tel: "06 13 57 91 13", tapes: 1, vote: null, real: null, stars: 0, notes: "" },
+  { id: 12, prenom: "Hugo", nom: "Renard", age: 33, taille: "176 cm", cheveux: "Blond", agence: "", ville: "Paris", type: "Comédien", email: "hugo.r@mail.com", tel: "06 24 68 02 46", tapes: 1, vote: null, real: null, stars: 0, notes: "" },
+];
+const TONES = ["#3f3a33", "#38332c", "#433d34", "#332f29", "#3c362e", "#46403a"];
+
+const CANDIDATURES = [
+  { prenom: "Alice", nom: "Marek", age: 26, ville: "Paris", role: "Rôle principal", nouveau: true },
+  { prenom: "Karim", nom: "Sadi", age: 31, ville: "Saint-Denis", role: "Rôle principal", nouveau: true },
+  { prenom: "Julie", nom: "Weiss", age: 24, ville: "Lyon", role: "Second rôle", nouveau: true },
+  { prenom: "Marc", nom: "Olivier", age: 40, ville: "Paris", role: "Rôle principal", nouveau: false },
+  { prenom: "Sara", nom: "Benali", age: 22, ville: "Marseille", role: "Rôle principal", nouveau: false },
+];
+
+let state = {
+  ws: "planche",
+  view: "grid",
+  filter: null,          // null | oui | peut-etre | non | atrier
+  selected: 1,           // comédien sélectionné
+  depSelected: 0,
+};
+
+const $ = s => document.querySelector(s);
+const voteColor = v => v === "oui" ? "var(--oui)" : v === "peut-etre" ? "var(--pe)" : v === "non" ? "var(--non)" : null;
+const voteLabel = v => v === "oui" ? "Oui" : v === "peut-etre" ? "Peut-être" : v === "non" ? "Non" : "À trier";
+const getSel = () => COMEDIENS.find(c => c.id === state.selected);
+
+function counts() {
+  return {
+    oui: COMEDIENS.filter(c => c.vote === "oui").length,
+    pe: COMEDIENS.filter(c => c.vote === "peut-etre").length,
+    non: COMEDIENS.filter(c => c.vote === "non").length,
+    atrier: COMEDIENS.filter(c => !c.vote).length,
+  };
+}
+function filtered() {
+  if (!state.filter) return COMEDIENS;
+  if (state.filter === "atrier") return COMEDIENS.filter(c => !c.vote);
+  return COMEDIENS.filter(c => c.vote === state.filter);
+}
+
+// ===== Rendus =====
+function renderRail() {
+  const k = counts();
+  $("#rail-stats").innerHTML = `
+    <div class="rail-stat"><span class="pastille" style="background:var(--oui)"></span><b>${k.oui}</b> oui</div>
+    <div class="rail-stat"><span class="pastille" style="background:var(--pe)"></span><b>${k.pe}</b> peut-être</div>
+    <div class="rail-stat"><span class="pastille" style="background:var(--non)"></span><b>${k.non}</b> non</div>
+    <div class="rail-stat"><span class="pastille" style="background:var(--cendre)"></span><b>${k.atrier}</b> à trier</div>`;
+}
+
+function renderChips() {
+  const k = counts();
+  const chip = (key, label, count, color) =>
+    `<button class="chip ${state.filter === key ? "active" : ""}" data-f="${key}">
+      <span class="pastille" style="background:${color}"></span><b>${count}</b> ${label}
+    </button>`;
+  $("#chips").innerHTML =
+    chip("oui", "oui", k.oui, "var(--oui)") +
+    chip("peut-etre", "peut-être", k.pe, "var(--pe)") +
+    chip("non", "non", k.non, "var(--non)") +
+    chip("atrier", "à trier", k.atrier, "var(--cendre)");
+  document.querySelectorAll(".chip").forEach(b =>
+    b.onclick = () => { state.filter = state.filter === b.dataset.f ? null : b.dataset.f; render(); });
+}
+
+function cardHTML(c, i) {
+  const col = voteColor(c.vote);
+  return `
+    <div class="card ${c.id === state.selected ? "selected" : ""} ${c.vote === "non" ? "voted-non" : ""}" data-id="${c.id}">
+      <div class="photo" style="background:${TONES[i % TONES.length]}"><span class="init">${c.prenom[0]}${c.nom[0]}</span></div>
+      <div class="nom">${col ? `<span class="pastille" style="background:${col}"></span>` : ""}${c.prenom} ${c.nom}</div>
+      <div class="meta">${c.age} ans · ${c.taille}${c.agence ? " · " + c.agence : ""}${c.tapes ? ` · ${c.tapes} selftape${c.tapes > 1 ? "s" : ""}` : ""}</div>
+    </div>`;
+}
+function rowHTML(c, i) {
+  const col = voteColor(c.vote);
+  return `
+    <div class="row ${c.id === state.selected ? "selected" : ""} ${c.vote === "non" ? "voted-non" : ""}" data-id="${c.id}">
+      <div class="vignette" style="background:${TONES[i % TONES.length]}">${c.prenom[0]}${c.nom[0]}</div>
+      <div>
+        <div class="nom">${c.prenom} ${c.nom}</div>
+        <div class="meta">${c.age} ans · ${c.taille} · ${c.cheveux}${c.agence ? ` · <span style="color:var(--laiton)">${c.agence}</span>` : ""}</div>
+      </div>
+      <span class="tag">${c.type}</span>
+      <span class="fill"></span>
+      ${c.tapes ? `<span class="meta">${c.tapes} selftape${c.tapes > 1 ? "s" : ""}</span>` : ""}
+      ${col ? `<span class="pastille" style="background:${col}"></span><span class="meta">${voteLabel(c.vote)}</span>` : `<span class="meta" style="color:var(--cendre)">à trier</span>`}
+    </div>`;
+}
+
+function renderWorkarea() {
+  const wa = $("#workarea");
+  wa.style.padding = "24px";
+  if (state.ws === "planche") {
+    const list = filtered();
+    wa.innerHTML = state.view === "grid"
+      ? `<div id="grid">${list.map(cardHTML).join("")}</div>`
+      : `<div id="list">${list.map(rowHTML).join("")}</div>`;
+    wa.querySelectorAll("[data-id]").forEach(el =>
+      el.onclick = () => { state.selected = +el.dataset.id; render(); });
+  }
+  else if (state.ws === "depouillement") {
+    wa.style.padding = "0";
+    const c = CANDIDATURES[state.depSelected];
+    wa.innerHTML = `
+      <div id="ws-depouillement" style="height:100%">
+        <div id="dep-list">
+          ${CANDIDATURES.map((x, i) => `
+            <div class="dep-item ${i === state.depSelected ? "selected" : ""}" data-i="${i}">
+              <div class="vignette">${x.prenom[0]}${x.nom[0]}</div>
+              <div><div class="nom">${x.prenom} ${x.nom}</div><div class="sub">${x.age} ans · ${x.ville}</div></div>
+              ${x.nouveau ? '<span class="new-dot" title="Nouvelle"></span>' : ""}
+            </div>`).join("")}
+        </div>
+        <div id="dep-preview">
+          <div class="photo-lg">${c.prenom[0]}${c.nom[0]}</div>
+          <h2>${c.prenom} ${c.nom}</h2>
+          <div style="color:var(--fumee); margin-top:4px">${c.age} ans · ${c.ville} · vise « ${c.role} »</div>
+          <div class="insp-section">
+            <div class="insp-label">Selftape</div>
+            <span class="tape">Lire la vidéo</span><span class="tape">Ouvrir le lien Drive</span>
+          </div>
+          <div class="insp-section">
+            <div class="insp-label">Message</div>
+            <div style="font-size:13.5px; color:var(--fumee); max-width:420px">Bonjour, je suis très motivée par ce projet. Disponible tout l'été, basée à ${c.ville}. Au plaisir d'échanger.</div>
+          </div>
+          <div id="dep-actions">
+            <button class="btn-prim">Présélectionner dans « ${c.role} »</button>
+            <button class="btn-sec">Refuser</button>
+            <button class="btn-sec">Passer</button>
+          </div>
+          <div style="margin-top:14px; font-size:12px; color:var(--cendre)"><kbd style="background:var(--s3);border:1px solid var(--trait);border-radius:4px;padding:0 5px">A</kbd> présélectionner · <kbd style="background:var(--s3);border:1px solid var(--trait);border-radius:4px;padding:0 5px">R</kbd> refuser · <kbd style="background:var(--s3);border:1px solid var(--trait);border-radius:4px;padding:0 5px">↓</kbd> suivante</div>
+        </div>
+      </div>`;
+    wa.querySelectorAll(".dep-item").forEach(el =>
+      el.onclick = () => { state.depSelected = +el.dataset.i; render(); });
+  }
+  else if (state.ws === "candidatures") {
+    wa.innerHTML = `
+      <div class="ws-panel">
+        <div class="ws-intro">La porte d'entrée : le lien public, la relève, l'export. Le tri se fait dans « Dépouillement ».</div>
+        <div class="deliver-grid">
+          <div class="deliver-card"><h3>Lien de candidature</h3><p>jojo-casting.app/postuler/NK24 — actif, 8 reçues cette semaine.</p><button class="btn-prim">Copier le lien</button></div>
+          <div class="deliver-card"><h3>Relève</h3><p>Dernière relève il y a 12 min. 3 nouvelles candidatures.</p><button class="btn-sec">Relever maintenant</button></div>
+          <div class="deliver-card"><h3>Export Excel</h3><p>Toutes les candidatures, photos incluses.</p><button class="btn-sec">Exporter</button></div>
+        </div>
+      </div>`;
+  }
+  else if (state.ws === "sessions") {
+    wa.innerHTML = `
+      <div class="ws-panel">
+        <div class="session-day">
+          <div class="day-head"><span class="georgia">Mardi 22 juillet</span><span style="font-size:12px;color:var(--cendre)">Studio Harcourt, Paris 8ᵉ</span><span style="margin-left:auto"><button class="btn-sec">Convoquer</button></span></div>
+          <div class="slot"><span class="time">09:30</span><span class="nom">Léa Martin</span><span class="role">Rôle principal</span><span class="st"><span class="pastille" style="background:var(--oui)"></span>Confirmée</span></div>
+          <div class="slot"><span class="time">10:00</span><span class="nom">Emma Roux</span><span class="role">Rôle principal</span><span class="st"><span class="pastille" style="background:var(--pe)"></span>En attente</span></div>
+          <div class="slot"><span class="time">10:30</span><span class="nom">Maya Fontaine</span><span class="role">Rôle principal</span><span class="st"><span class="pastille" style="background:var(--cendre)"></span>À convoquer</span></div>
+        </div>
+        <div class="session-day">
+          <div class="day-head"><span class="georgia">Mercredi 23 juillet</span><span style="font-size:12px;color:var(--cendre)">Callback — réalisateur présent</span><span style="margin-left:auto"><button class="btn-sec">Convoquer</button></span></div>
+          <div class="slot"><span class="time">14:00</span><span class="nom">Sofia Bernard</span><span class="role">Rôle principal</span><span class="st"><span class="pastille" style="background:var(--oui)"></span>Confirmée</span></div>
+        </div>
+        <button class="btn-sec">Ajouter une journée</button>
+      </div>`;
+  }
+  else if (state.ws === "final") {
+    wa.innerHTML = `
+      <div class="ws-panel" id="ws-final">
+        <div class="role-block">
+          <div class="role-title">Rôle principal <span class="sub">2 retenues sur 4 oui</span></div>
+          <div class="finalists">
+            <div class="finalist retenu"><div class="photo" style="background:#3f3a33">LM</div><div class="nom"><span class="pastille"></span>Léa Martin</div></div>
+            <div class="finalist retenu"><div class="photo" style="background:#332f29">ER</div><div class="nom"><span class="pastille"></span>Emma Roux</div></div>
+            <div class="finalist"><div class="photo" style="background:#38332c">SB</div><div class="nom" style="color:var(--fumee)">Sofia Bernard</div></div>
+          </div>
+        </div>
+        <div class="role-block">
+          <div class="role-title">Second rôle <span class="sub">1 retenu</span></div>
+          <div class="finalists">
+            <div class="finalist retenu"><div class="photo" style="background:#433d34">JP</div><div class="nom"><span class="pastille"></span>Jules Petit</div></div>
+          </div>
+        </div>
+      </div>`;
+  }
+  else if (state.ws === "livraison") {
+    wa.innerHTML = `
+      <div class="ws-panel">
+        <div class="ws-intro">Tout ce qui sort du studio vers la prod et le réalisateur.</div>
+        <div class="deliver-grid">
+          <div class="deliver-card"><h3>Planche pour le réal</h3><p>Lien privé, vote intégré. Dernière visite : hier 18:40.</p><button class="btn-prim">Copier le lien</button></div>
+          <div class="deliver-card"><h3>Excel prod</h3><p>Présélection complète, photos et selftapes.</p><button class="btn-sec">Exporter</button></div>
+          <div class="deliver-card"><h3>PDF de présentation</h3><p>Une page par comédien·ne, format envoi.</p><button class="btn-sec">Générer</button></div>
+          <div class="deliver-card"><h3>Convocations</h3><p>Emails de session, calendrier joint.</p><button class="btn-sec">Préparer</button></div>
+        </div>
+      </div>`;
+  }
+}
+
+function renderInspector() {
+  const insp = $("#inspector");
+  if (state.ws !== "planche" && state.ws !== "final") {
+    insp.innerHTML = `<div style="padding:24px; color:var(--cendre); font-size:13px; text-align:center; margin-top:60px">L'inspecteur affiche le détail<br>de l'élément sélectionné.</div>`;
+    return;
+  }
+  const c = getSel();
+  if (!c) { insp.innerHTML = ""; return; }
+  const i = COMEDIENS.indexOf(c);
+  insp.innerHTML = `
+    <div id="insp-photo" style="background:${TONES[i % TONES.length]}">
+      ${c.prenom[0]}${c.nom[0]}
+      <div class="thumbs"><span class="active">1</span><span>2</span><span>3</span></div>
+    </div>
+    <div id="insp-body">
+      <div id="insp-nom">${c.prenom} ${c.nom}</div>
+      <div id="insp-meta">${c.age} ans · ${c.taille} · ${c.cheveux} · ${c.ville}</div>
+      ${c.agence ? `<div id="insp-agence">${c.agence}</div>` : ""}
+      ${c.real ? `<div style="font-size:11px; letter-spacing:0.06em; text-transform:uppercase; margin-top:8px; color:${voteColor(c.real)}">Réal : ${voteLabel(c.real)}</div>` : ""}
+      <div class="vote">
+        <button class="v-oui ${c.vote === "oui" ? "on" : ""}" data-v="oui">Oui</button>
+        <button class="v-pe ${c.vote === "peut-etre" ? "on" : ""}" data-v="peut-etre">Peut-être</button>
+        <button class="v-non ${c.vote === "non" ? "on" : ""}" data-v="non">Non</button>
+      </div>
+      <div class="insp-section">
+        <div class="insp-label">Contact — modifiable en direct</div>
+        <div class="insp-line"><span class="k">Email</span><input value="${c.email}"><button class="copy">Copier</button></div>
+        <div class="insp-line"><span class="k">Téléphone</span><input value="${c.tel}"><button class="copy">Copier</button></div>
+      </div>
+      ${c.tapes ? `<div class="insp-section">
+        <div class="insp-label">Selftapes (${c.tapes})</div>
+        ${Array.from({ length: c.tapes }, (_, n) => `<span class="tape">Selftape ${n + 1}</span>`).join("")}
+      </div>` : ""}
+      <div class="insp-section">
+        <div class="insp-label">Notes</div>
+        <textarea id="insp-notes" placeholder="Vos observations…">${c.notes}</textarea>
+      </div>
+    </div>
+    <div id="insp-footer">
+      <div class="stars">${[1,2,3,4,5].map(n => `<span class="${n <= c.stars ? "on" : ""}" data-s="${n}">★</span>`).join("")}</div>
+      <span style="flex:1"></span>
+      <button class="btn-sec">Contacter</button>
+      <button class="btn-sec">Tout modifier</button>
+    </div>`;
+  insp.querySelectorAll(".vote button").forEach(b =>
+    b.onclick = () => { c.vote = c.vote === b.dataset.v ? null : b.dataset.v; render(); });
+  insp.querySelectorAll(".stars span").forEach(s =>
+    s.onclick = () => { c.stars = +s.dataset.s; render(); });
+  insp.querySelector("#insp-notes").onchange = e => { c.notes = e.target.value; };
+}
+
+function renderStatus() {
+  const c = getSel();
+  $("#sb-count").textContent = `${filtered().length} comédien·nes affichés · ${COMEDIENS.length} au total`;
+  $("#sb-sel").textContent = c && (state.ws === "planche") ? `Sélection : ${c.prenom} ${c.nom} — ${voteLabel(c.vote)}` : "";
+}
+
+function renderWorkspaceUI() {
+  document.querySelectorAll("#workspaces button").forEach(b =>
+    b.classList.toggle("active", b.dataset.ws === state.ws));
+  const titles = { planche: "Rôle principal", candidatures: "Candidatures", depouillement: "Dépouillement", sessions: "Sessions de casting", final: "Casting final", livraison: "Livraison" };
+  $("#ws-title").textContent = titles[state.ws];
+  const isPlanche = state.ws === "planche";
+  $("#chips").classList.toggle("hidden", !isPlanche);
+  $("#vt").classList.toggle("hidden", !isPlanche);
+  $("#btn-add").classList.toggle("hidden", !isPlanche);
+  document.querySelectorAll("#vt button").forEach(b =>
+    b.classList.toggle("active", b.dataset.v === state.view));
+}
+
+function render() {
+  renderRail(); renderChips(); renderWorkspaceUI(); renderWorkarea(); renderInspector(); renderStatus();
+}
+
+// ===== Interactions globales =====
+document.querySelectorAll("#workspaces button").forEach(b =>
+  b.onclick = () => { state.ws = b.dataset.ws; render(); });
+document.querySelectorAll("#vt button").forEach(b =>
+  b.onclick = () => { state.view = b.dataset.v; render(); });
+
+document.addEventListener("keydown", e => {
+  if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+  if (state.ws === "planche") {
+    const list = filtered();
+    const idx = list.findIndex(c => c.id === state.selected);
+    if (e.key === "ArrowDown" || e.key === "ArrowRight") { e.preventDefault(); state.selected = list[Math.min(idx + 1, list.length - 1)]?.id ?? state.selected; render(); }
+    else if (e.key === "ArrowUp" || e.key === "ArrowLeft") { e.preventDefault(); state.selected = list[Math.max(idx - 1, 0)]?.id ?? state.selected; render(); }
+    else if (["1", "2", "3", "0"].includes(e.key)) {
+      const c = getSel(); if (!c) return;
+      c.vote = e.key === "1" ? "oui" : e.key === "2" ? "peut-etre" : e.key === "3" ? "non" : null;
+      render();
+    }
+    else if (e.key.toLowerCase() === "g") { state.view = "grid"; render(); }
+    else if (e.key.toLowerCase() === "l") { state.view = "list"; render(); }
+  }
+  else if (state.ws === "depouillement") {
+    if (e.key === "ArrowDown") { e.preventDefault(); state.depSelected = Math.min(state.depSelected + 1, CANDIDATURES.length - 1); render(); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); state.depSelected = Math.max(state.depSelected - 1, 0); render(); }
+  }
+});
+
+render();
+</script>
+</body>
+</html>
