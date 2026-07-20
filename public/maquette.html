@@ -300,9 +300,8 @@
       <span class="sub">Casting Director</span>
     </div>
     <nav id="workspaces">
-      <button data-ws="candidatures">Candidatures<span class="n">8</span></button>
-      <button data-ws="preselection">Présélection<span class="n">3</span></button>
-      <button data-ws="planche" class="active">Planche</button>
+      <button data-ws="candidatures">Candidatures<span class="n">5</span></button>
+      <button data-ws="planche" class="active">Présélection</button>
       <button data-ws="sessions">Sessions</button>
       <button data-ws="final">Final</button>
       <button data-ws="livraison">Livraison</button>
@@ -475,52 +474,52 @@ function renderWorkarea() {
     wa.querySelectorAll("[data-id]").forEach(el =>
       el.onclick = () => { state.selected = +el.dataset.id; render(); });
   }
-  else if (state.ws === "preselection") {
+  else if (state.ws === "candidatures") {
     wa.style.padding = "0";
     const c = CANDIDATURES[state.depSelected];
     wa.innerHTML = `
-      <div id="ws-preselection" style="height:100%">
-        <div id="dep-list">
-          ${CANDIDATURES.map((x, i) => `
-            <div class="dep-item ${i === state.depSelected ? "selected" : ""}" data-i="${i}">
-              <div class="vignette">${x.prenom[0]}${x.nom[0]}</div>
-              <div><div class="nom">${x.prenom} ${x.nom}</div><div class="sub">${x.age} ans · ${x.ville}</div></div>
-              ${x.nouveau ? '<span class="new-dot" title="Nouvelle"></span>' : ""}
-            </div>`).join("")}
+      <div style="display:flex; flex-direction:column; height:100%">
+        <div style="display:flex; align-items:center; gap:10px; padding:10px 16px; border-bottom:1px solid var(--trait); font-size:12.5px; color:var(--fumee); flex-shrink:0">
+          <span>Lien public : <span style="color:var(--ivoire)">jojo-casting.app/postuler/NK24</span></span>
+          <button class="btn-sec" style="padding:3px 10px; font-size:11.5px">Copier</button>
+          <span style="color:var(--cendre)">·</span>
+          <span>Dernière relève il y a 12 min</span>
+          <button class="btn-sec" style="padding:3px 10px; font-size:11.5px">Relever</button>
+          <span style="flex:1"></span>
+          <button class="btn-sec" style="padding:3px 10px; font-size:11.5px">Exporter en Excel</button>
         </div>
-        <div id="dep-preview">
-          <div class="photo-lg">${c.prenom[0]}${c.nom[0]}</div>
-          <h2>${c.prenom} ${c.nom}</h2>
-          <div style="color:var(--fumee); margin-top:4px">${c.age} ans · ${c.ville} · vise « ${c.role} »</div>
-          <div class="insp-section">
-            <div class="insp-label">Selftape</div>
-            <span class="tape">Lire la vidéo</span><span class="tape">Ouvrir le lien Drive</span>
+        <div id="ws-preselection" style="flex:1; overflow:hidden">
+          <div id="dep-list">
+            ${CANDIDATURES.map((x, i) => `
+              <div class="dep-item ${i === state.depSelected ? "selected" : ""}" data-i="${i}">
+                <div class="vignette">${x.prenom[0]}${x.nom[0]}</div>
+                <div><div class="nom">${x.prenom} ${x.nom}</div><div class="sub">${x.age} ans · ${x.ville}</div></div>
+                ${x.nouveau ? '<span class="new-dot" title="Nouvelle"></span>' : ""}
+              </div>`).join("")}
           </div>
-          <div class="insp-section">
-            <div class="insp-label">Message</div>
-            <div style="font-size:13.5px; color:var(--fumee); max-width:420px">Bonjour, je suis très motivée par ce projet. Disponible tout l'été, basée à ${c.ville}. Au plaisir d'échanger.</div>
+          <div id="dep-preview">
+            <div class="photo-lg">${c.prenom[0]}${c.nom[0]}</div>
+            <h2>${c.prenom} ${c.nom}</h2>
+            <div style="color:var(--fumee); margin-top:4px">${c.age} ans · ${c.ville} · vise « ${c.role} »</div>
+            <div class="insp-section">
+              <div class="insp-label">Selftape</div>
+              <span class="tape">Lire la vidéo</span><span class="tape">Ouvrir le lien Drive</span>
+            </div>
+            <div class="insp-section">
+              <div class="insp-label">Message</div>
+              <div style="font-size:13.5px; color:var(--fumee); max-width:420px">Bonjour, je suis très motivée par ce projet. Disponible tout l'été, basée à ${c.ville}. Au plaisir d'échanger.</div>
+            </div>
+            <div id="dep-actions">
+              <button class="btn-prim">Oui — vers la présélection « ${c.role} »</button>
+              <button class="btn-sec">Non</button>
+              <button class="btn-sec">Passer</button>
+            </div>
+            <div style="margin-top:14px; font-size:12px; color:var(--cendre)"><kbd style="background:var(--s3);border:1px solid var(--trait);border-radius:4px;padding:0 5px">O</kbd> oui · <kbd style="background:var(--s3);border:1px solid var(--trait);border-radius:4px;padding:0 5px">N</kbd> non · <kbd style="background:var(--s3);border:1px solid var(--trait);border-radius:4px;padding:0 5px">↓</kbd> suivante</div>
           </div>
-          <div id="dep-actions">
-            <button class="btn-prim">Présélectionner dans « ${c.role} »</button>
-            <button class="btn-sec">Refuser</button>
-            <button class="btn-sec">Passer</button>
-          </div>
-          <div style="margin-top:14px; font-size:12px; color:var(--cendre)"><kbd style="background:var(--s3);border:1px solid var(--trait);border-radius:4px;padding:0 5px">A</kbd> présélectionner · <kbd style="background:var(--s3);border:1px solid var(--trait);border-radius:4px;padding:0 5px">R</kbd> refuser · <kbd style="background:var(--s3);border:1px solid var(--trait);border-radius:4px;padding:0 5px">↓</kbd> suivante</div>
         </div>
       </div>`;
     wa.querySelectorAll(".dep-item").forEach(el =>
       el.onclick = () => { state.depSelected = +el.dataset.i; render(); });
-  }
-  else if (state.ws === "candidatures") {
-    wa.innerHTML = `
-      <div class="ws-panel">
-        <div class="ws-intro">La porte d'entrée : le lien public, la relève, l'export. Le tri se fait dans « Présélection ».</div>
-        <div class="deliver-grid">
-          <div class="deliver-card"><h3>Lien de candidature</h3><p>jojo-casting.app/postuler/NK24 — actif, 8 reçues cette semaine.</p><button class="btn-prim">Copier le lien</button></div>
-          <div class="deliver-card"><h3>Relève</h3><p>Dernière relève il y a 12 min. 3 nouvelles candidatures.</p><button class="btn-sec">Relever maintenant</button></div>
-          <div class="deliver-card"><h3>Export Excel</h3><p>Toutes les candidatures, photos incluses.</p><button class="btn-sec">Exporter</button></div>
-        </div>
-      </div>`;
   }
   else if (state.ws === "sessions") {
     wa.innerHTML = `
@@ -631,7 +630,7 @@ function renderStatus() {
 function renderWorkspaceUI() {
   document.querySelectorAll("#workspaces button").forEach(b =>
     b.classList.toggle("active", b.dataset.ws === state.ws));
-  const titles = { planche: "Rôle principal", candidatures: "Candidatures", preselection: "Présélection", sessions: "Sessions de casting", final: "Casting final", livraison: "Livraison" };
+  const titles = { planche: "Présélection — Rôle principal", candidatures: "Candidatures", sessions: "Sessions de casting", final: "Casting final", livraison: "Livraison" };
   $("#ws-title").textContent = titles[state.ws];
   const isPlanche = state.ws === "planche";
   $("#chips").classList.toggle("hidden", !isPlanche);
@@ -666,7 +665,7 @@ document.addEventListener("keydown", e => {
     else if (e.key.toLowerCase() === "g") { state.view = "grid"; render(); }
     else if (e.key.toLowerCase() === "l") { state.view = "list"; render(); }
   }
-  else if (state.ws === "preselection") {
+  else if (state.ws === "candidatures") {
     if (e.key === "ArrowDown") { e.preventDefault(); state.depSelected = Math.min(state.depSelected + 1, CANDIDATURES.length - 1); render(); }
     else if (e.key === "ArrowUp") { e.preventDefault(); state.depSelected = Math.max(state.depSelected - 1, 0); render(); }
   }
