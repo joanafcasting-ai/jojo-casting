@@ -476,6 +476,83 @@
     100% { opacity: 1; transform: none; }
   }
 
+  /* ===== Choix production ===== */
+  #workspaces button.locked { opacity: 0.35; cursor: not-allowed; }
+  #workspaces button .notif-dot {
+    display: inline-block; width: 7px; height: 7px; border-radius: 50%;
+    background: var(--laiton); margin-left: 7px; vertical-align: 2px;
+    animation: notifPulse 1.6s ease-in-out infinite;
+  }
+  @keyframes notifPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+  /* État d'attente */
+  .cp-wait { max-width: 560px; margin: 60px auto 0; text-align: center; }
+  .cp-wait .cp-icon {
+    width: 56px; height: 56px; margin: 0 auto 18px; border: 1px solid rgba(198,165,103,0.4);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-family: Georgia, serif; font-size: 24px; color: var(--laiton);
+  }
+  .cp-wait h2 { font-family: Georgia, serif; font-weight: 400; font-size: 22px; }
+  .cp-wait p { font-size: 13px; color: var(--fumee); margin-top: 8px; line-height: 1.6; }
+  .cp-link {
+    display: flex; align-items: center; gap: 8px; margin: 18px auto 0; max-width: 430px;
+    border: 1px solid var(--trait); border-radius: 6px; padding: 8px 8px 8px 14px;
+  }
+  .cp-link .u { flex: 1; font-size: 12.5px; color: var(--ivoire); text-align: left; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* Résultats */
+  .cp-summary { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; font-size: 13px; color: var(--fumee); }
+  .cp-summary .pastille { width: 6px; height: 6px; border-radius: 50%; }
+  .cp-summary b { color: var(--ivoire); font-weight: 500; }
+  .cp-group-label { display: flex; align-items: center; gap: 8px; margin: 14px 0 10px; font-size: 11px; font-weight: 600; letter-spacing: 0.09em; text-transform: uppercase; }
+  .cp-grid { display: flex; gap: 12px; flex-wrap: wrap; }
+  .cp-card { width: 104px; cursor: pointer; }
+  .cp-card .pv-photo { font-size: 24px; }
+  .cp-card.retenu .pv-photo { box-shadow: 0 0 0 1.5px var(--oui); }
+  .cp-card.ecarte { opacity: 0.55; }
+  .cp-card.ecarte .pv-photo { box-shadow: 0 0 0 1px var(--non); }
+  .cp-card .pv-nom { font-size: 13.5px; }
+  .cp-card .cp-contact {
+    margin-top: 6px; width: 100%; background: none; border: 1px solid var(--trait);
+    border-radius: 6px; padding: 4px 0; color: var(--laiton); font-size: 11px;
+  }
+  .cp-card .cp-contact:hover { background: var(--s3); }
+
+  /* ===== Vue production (simulation) ===== */
+  #prod-page {
+    position: fixed; inset: 0; z-index: 600; background: var(--fond);
+    display: flex; flex-direction: column;
+    animation: modalIn 400ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  #prod-page .pp-head {
+    display: flex; align-items: center; gap: 14px; padding: 14px 28px;
+    border-bottom: 1px solid var(--trait); background: var(--s1); flex-shrink: 0;
+  }
+  #prod-page .pp-title { font-family: Georgia, serif; font-size: 19px; }
+  #prod-page .pp-sub { font-size: 12px; color: var(--fumee); flex: 1; }
+  #prod-page .pp-badge { font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--laiton); border: 1px solid rgba(198,165,103,0.4); border-radius: 6px; padding: 3px 10px; }
+  #prod-page .pp-body { flex: 1; overflow-y: auto; padding: 24px 28px; }
+  #prod-page .pp-role-title { display: flex; align-items: center; gap: 8px; font-family: Georgia, serif; font-size: 18px; margin: 4px 0 14px; }
+  #prod-page .pp-grid { display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 26px; }
+  .pp-card { width: 168px; }
+  .pp-card .pv-photo { font-size: 34px; }
+  .pp-card.retenu .pv-photo { box-shadow: 0 0 0 1.5px var(--oui); }
+  .pp-card.ecarte { opacity: 0.5; }
+  .pp-card .pv-nom { font-size: 15px; }
+  .pp-card .pv-meta { font-size: 11.5px; }
+  .pp-card .tape { padding: 2px 9px; font-size: 10.5px; margin: 5px 4px 0 0; }
+  .pp-choice { display: flex; border: 1px solid var(--trait); border-radius: 6px; overflow: hidden; margin-top: 8px; }
+  .pp-choice button { flex: 1; background: none; border: none; padding: 6px 0; color: var(--cendre); font-size: 11.5px; border-right: 1px solid var(--trait); }
+  .pp-choice button:last-child { border-right: none; }
+  .pp-choice button:hover { background: var(--s3); color: var(--ivoire); }
+  .pp-choice button.on-oui { background: rgba(124,158,130,0.16); color: var(--oui); }
+  .pp-choice button.on-non { background: rgba(158,107,96,0.16); color: var(--non); }
+  #prod-page .pp-foot {
+    display: flex; align-items: center; gap: 14px; padding: 12px 28px;
+    border-top: 1px solid rgba(198,165,103,0.35); background: var(--s1); flex-shrink: 0;
+  }
+  #prod-page .pp-count { font-size: 12.5px; color: var(--fumee); flex: 1; }
+
   /* Toast */
   #toast {
     position: fixed; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 9999;
@@ -774,6 +851,7 @@
     <nav id="workspaces">
       <button data-ws="candidatures">Candidatures<span class="n">5</span></button>
       <button data-ws="planche" class="active">Présélection</button>
+      <button data-ws="choixprod" id="nav-choixprod">Choix production</button>
       <button data-ws="sessions">Sessions</button>
       <button data-ws="final">Final</button>
       <button data-ws="livraison">Livraison</button>
@@ -872,6 +950,10 @@ let state = {
   rolePicker: false,     // sélecteur de rôle ouvert (après clic sur Oui)
   roleAdding: false,     // champ "nouveau rôle" ouvert dans le menu
   candPhoto: 0,          // photo affichée dans la fiche candidature
+  prodSent: false,       // sélection envoyée à la production
+  prodReturned: false,   // la production a validé son retour
+  prodSimul: false,      // vue production (simulation) ouverte
+  choixNotif: false,     // notification de retour non lue
   prodView: false,       // vue Sélection production ouverte
   addForm: false,        // feuille "Nouveau profil" ouverte
   newCardId: null,       // carte fraîchement validée (animation d atterrissage)
@@ -1430,6 +1512,118 @@ function renderWorkarea() {
       };
     }
   }
+  else if (state.ws === "choixprod") {
+    wa.style.padding = "18px";
+    const sel = COMEDIENS.filter(c => c.prod);
+    if (!state.prodReturned) {
+      /* En attente du retour */
+      wa.innerHTML = `
+        <div class="cp-wait">
+          <div class="cp-icon">…</div>
+          <h2>Sélection envoyée à la production</h2>
+          <p>${sel.length} comédien·nes présentés. La production consulte les fiches sur son lien privé,
+          fait ses choix, puis valide. Vous serez notifiée ici dès validation.</p>
+          <div class="cp-link">
+            <span class="u">jojo-casting.app/prod/NK24-selection</span>
+            <button class="btn-sec">Copier le lien</button>
+            <button class="btn-prim" id="cp-simul">Ouvrir la vue production</button>
+          </div>
+          <p style="font-size:11px; color:var(--cendre); margin-top:10px">« Ouvrir la vue production » simule ce que la production voit — jouez son rôle pour tester le retour.</p>
+        </div>`;
+      $("#cp-simul").onclick = () => { state.prodSimul = true; render(); };
+    } else {
+      /* Retour reçu */
+      const retenus = sel.filter(c => c.prodChoice === "retenu");
+      const ecartes = sel.filter(c => c.prodChoice === "ecarte");
+      const cpCard = c => `
+        <div class="cp-card ${c.prodChoice}" data-id="${c.id}">
+          <div class="pv-photo" style="background:${TONES[COMEDIENS.indexOf(c) % TONES.length]}">${c.prenom[0]}${c.nom[0]}</div>
+          <div class="pv-nom">${c.prenom} ${c.nom}</div>
+          <div class="pv-meta">${c.prod}</div>
+          <button class="cp-contact" data-id="${c.id}">Contacter</button>
+        </div>`;
+      wa.innerHTML = `
+        <div id="prod-view">
+          <div class="cp-summary">
+            <span>Retour validé par la production</span>
+            <span class="pastille" style="background:var(--oui)"></span><b>${retenus.length}</b> retenu·es
+            <span class="pastille" style="background:var(--non)"></span><b>${ecartes.length}</b> écarté·es
+          </div>
+          ${ROLES.map(r => {
+            const rr = retenus.filter(c => c.prod === r);
+            const re = ecartes.filter(c => c.prod === r);
+            if (!rr.length && !re.length) return "";
+            return `
+              <div class="pv-role" style="padding: 12px 14px">
+                <div class="pv-head" style="margin: -12px -14px 4px; "><span class="pastille" style="background:${roleColor(r)}"></span><span class="pv-name">${r}</span></div>
+                ${rr.length ? `<div class="cp-group-label" style="color:var(--oui)"><span class="pastille" style="width:6px;height:6px;border-radius:50%;background:var(--oui)"></span>Retenu·es</div><div class="cp-grid">${rr.map(cpCard).join("")}</div>` : ""}
+                ${re.length ? `<div class="cp-group-label" style="color:var(--non)"><span class="pastille" style="width:6px;height:6px;border-radius:50%;background:var(--non)"></span>Écarté·es</div><div class="cp-grid">${re.map(cpCard).join("")}</div>` : ""}
+              </div>`;
+          }).join("")}
+        </div>`;
+      wa.querySelectorAll(".cp-card").forEach(el =>
+        el.onclick = () => { state.selected = +el.dataset.id; render(); });
+      wa.querySelectorAll(".cp-contact").forEach(b =>
+        b.onclick = e => { e.stopPropagation(); toast("La prise de contact — c'est la prochaine étape que nous allons construire."); });
+    }
+    /* Vue production (simulation) par-dessus */
+    if (state.prodSimul) {
+      const nR = sel.filter(c => c.prodChoice === "retenu").length;
+      const nE = sel.filter(c => c.prodChoice === "ecarte").length;
+      const page = document.createElement("div");
+      page.id = "prod-page";
+      page.innerHTML = `
+        <div class="pp-head">
+          <span class="pp-title">nike — présentation casting</span>
+          <span class="pp-sub">Joana Fontaine vous présente ${sel.length} comédien·nes. Retenez ou écartez, puis validez.</span>
+          <span class="pp-badge">Vue production</span>
+          <button class="btn-sec" id="pp-quit">Quitter la simulation</button>
+        </div>
+        <div class="pp-body">
+          ${ROLES.map(r => {
+            const rs = sel.filter(c => c.prod === r);
+            if (!rs.length) return "";
+            return `
+              <div class="pp-role-title"><span class="pastille" style="width:7px;height:7px;border-radius:50%;background:${roleColor(r)}"></span>${r}<span style="font-size:12px;color:var(--cendre)">· ${rs.length} proposé·es</span></div>
+              <div class="pp-grid">
+                ${rs.map(c => `
+                  <div class="pp-card ${c.prodChoice || ""}" data-id="${c.id}">
+                    <div class="pv-photo" style="background:${TONES[COMEDIENS.indexOf(c) % TONES.length]}">${c.prenom[0]}${c.nom[0]}</div>
+                    <div class="pv-nom">${c.prenom} ${c.nom}</div>
+                    <div class="pv-meta">${c.age} ans · ${c.taille}${c.agence ? " · " + c.agence : ""}</div>
+                    ${c.tapes ? Array.from({ length: c.tapes }, (_, n) => `<span class="tape">Selftape ${n + 1}</span>`).join("") : ""}
+                    <div class="pp-choice">
+                      <button class="${c.prodChoice === "retenu" ? "on-oui" : ""}" data-c="retenu">Retenir</button>
+                      <button class="${c.prodChoice === "ecarte" ? "on-non" : ""}" data-c="ecarte">Écarter</button>
+                    </div>
+                  </div>`).join("")}
+              </div>`;
+          }).join("")}
+        </div>
+        <div class="pp-foot">
+          <span class="pp-count">${nR} retenu·es · ${nE} écarté·es · ${sel.length - nR - nE} à décider</span>
+          <button class="btn-prim" id="pp-validate">Valider ma sélection</button>
+        </div>`;
+      wa.appendChild(page);
+      page.querySelectorAll(".pp-choice button").forEach(b =>
+        b.onclick = () => {
+          const card = b.closest(".pp-card");
+          const c = COMEDIENS.find(x => x.id === +card.dataset.id);
+          c.prodChoice = c.prodChoice === b.dataset.c ? null : b.dataset.c;
+          render();
+        });
+      page.querySelector("#pp-quit").onclick = () => { state.prodSimul = false; render(); };
+      page.querySelector("#pp-validate").onclick = () => {
+        const undecided = sel.filter(c => !c.prodChoice).length;
+        if (undecided) { toast(`Il reste ${undecided} comédien·ne${undecided > 1 ? "s" : ""} sans décision.`); return; }
+        state.prodSimul = false;
+        state.prodReturned = true;
+        state.choixNotif = true;
+        render();
+        toast(`Retour de la production reçu — ${sel.filter(c => c.prodChoice === "retenu").length} retenu·es, ${sel.filter(c => c.prodChoice === "ecarte").length} écarté·es.`);
+      };
+    }
+  }
   else if (state.ws === "candidatures") {
     wa.style.padding = "0";
     wa.innerHTML = `
@@ -1502,7 +1696,7 @@ function renderWorkarea() {
 
 function renderInspector() {
   const insp = $("#inspector");
-  if (state.ws !== "planche" && state.ws !== "final") {
+  if (state.ws !== "planche" && state.ws !== "final" && state.ws !== "choixprod") {
     insp.innerHTML = `<div style="padding:24px; color:var(--cendre); font-size:13px; text-align:center; margin-top:60px">L'inspecteur affiche le détail<br>de l'élément sélectionné.</div>`;
     return;
   }
@@ -1590,10 +1784,13 @@ function renderStatus() {
 }
 
 function renderWorkspaceUI() {
-  document.getElementById("body").classList.toggle("no-inspector", state.ws !== "planche" && state.ws !== "final");
+  document.getElementById("body").classList.toggle("no-inspector", state.ws !== "planche" && state.ws !== "final" && state.ws !== "choixprod");
+  const navCP = document.getElementById("nav-choixprod");
+  navCP.classList.toggle("locked", !state.prodSent);
+  navCP.innerHTML = "Choix production" + (state.choixNotif ? '<span class="notif-dot"></span>' : "");
   document.querySelectorAll("#workspaces button").forEach(b =>
     b.classList.toggle("active", b.dataset.ws === state.ws));
-  const titles = { planche: "Présélection — Rôle principal", candidatures: "Candidatures", sessions: "Sessions de casting", final: "Casting final", livraison: "Livraison" };
+  const titles = { planche: "Présélection — Rôle principal", choixprod: "Choix de la production", candidatures: "Candidatures", sessions: "Sessions de casting", final: "Casting final", livraison: "Livraison" };
   const isPlanche = state.ws === "planche";
   const pv = isPlanche && state.prodView;
   $("#ws-title").textContent = pv ? "Sélection production" : titles[state.ws];
@@ -1603,7 +1800,15 @@ function renderWorkspaceUI() {
   addBtn.classList.toggle("hidden", !isPlanche || state.addForm);
   addBtn.textContent = pv ? "Envoyer à la production" : "Ajouter un profil";
   addBtn.onclick = pv
-    ? () => toast(`Maquette — la sélection (${COMEDIENS.filter(c => c.prod).length} comédien·nes) partirait ici à la production : lien, PDF ou Excel.`)
+    ? () => {
+        const n = COMEDIENS.filter(c => c.prod).length;
+        if (!n) { toast("Ajoutez au moins un·e comédien·ne à la sélection avant d'envoyer."); return; }
+        state.prodSent = true;
+        state.prodView = false;
+        state.ws = "choixprod";
+        render();
+        toast(`Lien privé envoyé à la production — ${n} comédien·nes présentés. La case « Choix production » est maintenant active.`);
+      }
     : () => { state.addForm = true; render(); };
   const back = $("#btn-back");
   back.classList.toggle("hidden", !pv);
@@ -1618,12 +1823,17 @@ function render() {
 
 // ===== Interactions globales =====
 document.querySelectorAll("#workspaces button").forEach(b =>
-  b.onclick = () => { state.ws = b.dataset.ws; render(); });
+  b.onclick = () => {
+    if (b.dataset.ws === "choixprod" && !state.prodSent) { toast("Envoyez d'abord votre sélection à la production (Présélection → Préparer l'envoi)."); return; }
+    if (b.dataset.ws === "choixprod") state.choixNotif = false;
+    state.ws = b.dataset.ws; render();
+  });
 document.querySelectorAll("#vt button").forEach(b =>
   b.onclick = () => { state.view = b.dataset.v; render(); });
 
 document.addEventListener("keydown", e => {
   if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+  if (state.prodSimul && e.key === "Escape") { state.prodSimul = false; render(); return; }
   if (state.ws === "planche") {
     if (state.addForm && e.key === "Escape") { state.addForm = false; render(); return; }
     if (state.prodMenu) {
