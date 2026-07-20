@@ -368,13 +368,32 @@
   .tc-head { display: flex; align-items: center; gap: 6px; font-size: 11.5px; color: var(--ivoire); }
   .tc-head .pastille { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
   .tc-head .tc-count { margin-left: auto; font-size: 11px; color: var(--cendre); }
-  .tc-body { display: flex; gap: 5px; margin-top: 5px; overflow-x: auto; min-height: 34px; align-items: center; }
+  .tc-body { display: flex; gap: 6px; margin-top: 6px; overflow-x: auto; overflow-y: visible; min-height: 40px; align-items: center; padding-top: 4px; }
   .tc-thumb {
-    width: 27px; height: 34px; border-radius: 3px; border: 1px solid var(--trait); flex-shrink: 0;
-    display: flex; align-items: center; justify-content: center;
-    font-family: Georgia, serif; font-size: 9px; color: rgba(241,237,229,0.5);
+    position: relative; width: 30px; height: 38px; border-radius: 3px; border: 1px solid var(--trait); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center; cursor: pointer;
+    font-family: Georgia, serif; font-size: 10px; color: rgba(241,237,229,0.55);
     animation: fadeIn 250ms var(--ease);
+    transition: transform 160ms var(--ease), box-shadow 160ms var(--ease);
   }
+  .tc-thumb:hover { transform: translateY(-2px); box-shadow: 0 0 0 1px var(--laiton); }
+  .tc-thumb .tcx {
+    position: absolute; top: -5px; right: -5px; width: 14px; height: 14px;
+    background: var(--fond); border: 1px solid var(--trait); border-radius: 50%;
+    color: var(--fumee); font-size: 8px; line-height: 1;
+    display: none; align-items: center; justify-content: center; padding: 0;
+  }
+  .tc-thumb:hover .tcx { display: flex; }
+  .tc-thumb .tcx:hover { color: var(--non); border-color: var(--non); }
+  .tc-plus {
+    width: 30px; height: 38px; border-radius: 3px; border: 1px dashed var(--trait); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    color: var(--cendre); font-size: 14px;
+    transition: border-color 160ms var(--ease), color 160ms var(--ease);
+  }
+  .tray-case:hover { background: var(--s2); }
+  .tray-case:hover .tc-plus { border-color: var(--cendre); color: var(--fumee); }
+  body.drag-live .tc-plus { border-color: var(--laiton); color: var(--laiton); }
   .tc-empty { font-size: 11px; color: var(--cendre); font-style: italic; }
   .tray-go { display: flex; align-items: center; flex-shrink: 0; }
   .card .prod-tag, .row .prod-tag { font-size: 10.5px; margin-top: 2px; font-weight: 600; letter-spacing: 0.03em; }
@@ -1253,16 +1272,18 @@ function renderWorkarea() {
     wa.innerHTML = `
       <div id="planche-scroll">${inner}</div>
       <div id="prod-tray">
-        <div class="tray-label"><span class="t1">Sélection production</span><span class="t2">glissez une fiche<br>dans un rôle</span></div>
+        <div class="tray-label"><span class="t1">Sélection production${nSel ? " · " + nSel : ""}</span><span class="t2">glissez une fiche<br>dans un rôle</span></div>
         <div class="tray-cases">
           ${ROLES.map(r => {
             const sel = COMEDIENS.filter(c => c.prod === r);
             return `
               <div class="tray-case" data-role="${r}">
                 <div class="tc-head"><span class="pastille" style="background:${roleColor(r)}"></span>${r}<span class="tc-count">${sel.length}</span></div>
-                <div class="tc-body">${sel.length
-                  ? sel.map(c => `<div class="tc-thumb" title="${c.prenom} ${c.nom}" style="background:${TONES[COMEDIENS.indexOf(c) % TONES.length]}">${c.prenom[0]}${c.nom[0]}</div>`).join("")
-                  : `<span class="tc-empty">déposer ici</span>`}</div>
+                <div class="tc-body">
+                  ${sel.map(c => `<div class="tc-thumb" data-id="${c.id}" title="${c.prenom} ${c.nom} — cliquer pour ouvrir la fiche" style="background:${TONES[COMEDIENS.indexOf(c) % TONES.length]}">${c.prenom[0]}${c.nom[0]}<button class="tcx" data-id="${c.id}" title="Retirer de la sélection">✕</button></div>`).join("")}
+                  <span class="tc-plus" title="Déposez une fiche ici">+</span>
+                  ${sel.length === 0 ? `<span class="tc-empty">déposer ici</span>` : ""}
+                </div>
               </div>`;
           }).join("")}
         </div>
@@ -1273,6 +1294,10 @@ function renderWorkarea() {
       attachComedienDrag(el);
     });
     attachProdDropZones(wa, ".tray-case", "tray");
+    wa.querySelectorAll(".tc-thumb").forEach(t =>
+      t.onclick = () => { state.selected = +t.dataset.id; render(); });
+    wa.querySelectorAll(".tcx").forEach(b =>
+      b.onclick = e => { e.stopPropagation(); setProd(+b.dataset.id, null); });
     $("#btn-prodview").onclick = () => { state.prodView = true; render(); };
   }
   else if (state.ws === "candidatures") {
@@ -1363,7 +1388,6 @@ function renderInspector() {
       <div id="insp-nom">${c.prenom} ${c.nom}</div>
       <div id="insp-meta">${c.age} ans · ${c.taille} · ${c.cheveux} · ${c.ville}</div>
       ${c.agence ? `<div id="insp-agence">${c.agence}</div>` : ""}
-      ${c.real ? `<div style="font-size:11px; letter-spacing:0.06em; text-transform:uppercase; margin-top:8px; color:${voteColor(c.real)}">Réal : ${voteLabel(c.real)}</div>` : ""}
       <div class="vote">
         <button class="v-oui ${c.vote === "oui" ? "on" : ""}" data-v="oui">Oui</button>
         <button class="v-pe ${c.vote === "peut-etre" ? "on" : ""}" data-v="peut-etre">Peut-être</button>
@@ -1450,7 +1474,7 @@ function renderWorkspaceUI() {
   const isPlanche = state.ws === "planche";
   const pv = isPlanche && state.prodView;
   $("#ws-title").textContent = pv ? "Sélection production" : titles[state.ws];
-  $("#chips").classList.toggle("hidden", !isPlanche || pv);
+  $("#chips").classList.add("hidden");
   $("#vt").classList.toggle("hidden", !isPlanche || pv);
   const addBtn = $("#btn-add");
   addBtn.classList.toggle("hidden", !isPlanche);
