@@ -441,6 +441,119 @@
   .deliver-card p { font-size: 12.5px; color: var(--fumee); margin-bottom: 14px; }
 
   .hidden { display: none !important; }
+
+  /* ===== DENSITÉ — échelle resserrée pour tout lire sans scroller ===== */
+  #app { grid-template-rows: 40px 1fr 28px; }
+  #body { grid-template-columns: 200px 1fr 300px; }
+  #body.no-inspector { grid-template-columns: 200px 1fr 0px; }
+  #workspaces button { padding: 5px 14px; font-size: 12.5px; }
+  #titlebar .project .name { font-size: 15px; }
+  #titlebar .project .sub { font-size: 11px; }
+  .btn-prim { padding: 5px 14px; font-size: 12.5px; }
+  .btn-sec { padding: 4px 12px; font-size: 11.5px; }
+  #statusbar { font-size: 11.5px; gap: 16px; }
+
+  #rail { padding: 14px 0; }
+  .rail-item { padding: 6px 14px; font-size: 13px; }
+  .rail-label { margin-bottom: 6px; font-size: 10.5px; }
+  .rail-stat { font-size: 12px; gap: 7px; }
+  .rail-sep { margin: 12px 14px; }
+
+  #toolbar { padding: 8px 20px; }
+  #toolbar h1 { font-size: 17px; }
+  .chip { padding: 3px 10px; font-size: 11.5px; gap: 6px; }
+  .viewtoggle button { padding: 4px 10px; font-size: 11.5px; }
+  #workarea { padding: 18px; }
+
+  /* Présélection — planche + liste */
+  #grid { grid-template-columns: repeat(auto-fill, minmax(135px, 1fr)); gap: 16px; }
+  .card .photo .init { font-size: 30px; }
+  .card .nom { font-size: 15px; margin-top: 7px; gap: 6px; }
+  .card .meta { font-size: 11.5px; }
+  .row { padding: 8px 4px; gap: 11px; }
+  .row .vignette { width: 46px; height: 58px; font-size: 15px; }
+  .row .nom { font-size: 15.5px; }
+  .row .meta { font-size: 11.5px; }
+
+  /* Inspecteur */
+  #insp-photo { height: 200px; font-size: 40px; }
+  #insp-photo .thumbs span { width: 26px; height: 33px; font-size: 10px; }
+  #insp-body { padding: 13px 16px; }
+  #insp-nom { font-size: 19px; }
+  #insp-meta { font-size: 12px; margin-top: 2px; }
+  #insp-agence { font-size: 11.5px; margin-top: 4px; }
+  .vote { margin-top: 11px; }
+  .vote button { padding: 6px 0; font-size: 11.5px; }
+  .insp-section { margin-top: 14px; }
+  .insp-label { font-size: 10px; margin-bottom: 5px; }
+  .insp-line { padding: 4px 0; font-size: 12px; }
+  .insp-line .k { width: 68px; font-size: 10px; }
+  .insp-line .copy { padding: 1px 8px; font-size: 10.5px; }
+  .tape { padding: 3px 10px; font-size: 11.5px; margin: 0 5px 5px 0; }
+  #insp-notes { padding: 7px 9px; font-size: 12px; min-height: 44px; }
+  #insp-footer { padding: 8px 16px; gap: 8px; }
+  .stars span { font-size: 13px; }
+
+  /* Candidatures — lignes */
+  .cand-row { padding: 10px 18px; gap: 12px; }
+  .cand-row .vignette { width: 46px; height: 58px; font-size: 15px; }
+  .cand-row .nom { font-size: 15.5px; }
+  .cand-row .l2 { font-size: 12px; margin-top: 2px; }
+  .cand-row .apercu { font-size: 11.5px; }
+  .cand-row .decision { font-size: 11.5px; }
+  #cand-split.open #cand-list { flex: 0 0 270px; max-width: 270px; }
+  #cand-split.open .cand-row { padding: 7px 12px; gap: 9px; }
+  #cand-split.open .cand-row .vignette { width: 32px; height: 40px; font-size: 11px; }
+  #cand-split.open .cand-row .nom { font-size: 13px; }
+
+  /* Fiche candidature */
+  .fiche-scroll { padding: 16px 22px 12px; }
+  #cand-detail .close { top: 12px; right: 18px; padding: 3px 10px; font-size: 11px; }
+  .fiche-grid { grid-template-columns: 200px 1fr; gap: 24px; max-width: 720px; }
+  .main-photo { font-size: 36px; }
+  .main-photo .photo-lbl { font-size: 10px; }
+  .thumb { width: 44px; height: 56px; font-size: 12px; }
+  .photos-count { font-size: 10.5px; margin-top: 4px; }
+  .fiche-info h2 { font-size: 22px; padding-right: 70px; }
+  .fiche-info .meta1 { font-size: 13px; margin-top: 3px; }
+  .fiche-info .recu { font-size: 11px; margin-top: 2px; }
+  .fiche-info .meta2 { font-size: 12.5px; margin-top: 9px; }
+  .fiche-info .note { font-size: 10.5px; }
+  .sect { margin-top: 15px; }
+  .c-line { padding: 5px 0; font-size: 12.5px; gap: 10px; }
+  .c-line .k { width: 74px; font-size: 10px; }
+  .c-line .copy { padding: 2px 9px; font-size: 10.5px; }
+  .media-card { padding: 8px 10px; margin-bottom: 7px; }
+  .media-card .mname { font-size: 12px; }
+  .media-card .msub { font-size: 10.5px; }
+  .media-card .mbtns { margin-top: 6px; }
+  .media-card .mbtns .btn-sec { padding: 3px 10px; font-size: 10.5px; }
+  .lien-row { padding: 5px 0; font-size: 11.5px; gap: 7px; }
+  .lien-row .copy { padding: 1px 8px; font-size: 10.5px; }
+  .fiche-actions { padding: 9px 22px; }
+  .fiche-actions .kbd-hints { font-size: 10.5px; }
+  .fiche-actions #role-picker { left: 22px; width: 280px; }
+  #role-picker .q { padding: 8px 13px 6px; font-size: 10px; }
+  .role-opt { padding: 8px 13px; font-size: 12.5px; gap: 8px; }
+  #role-picker .newrole { padding: 8px 10px; }
+  #role-picker .newrole input { padding: 4px 8px; font-size: 12px; }
+
+  /* Bandeau lien public */
+  #cand-split { font-size: 12px; }
+
+  /* Sessions / Final / Livraison */
+  .session-day .day-head { padding: 8px 13px; }
+  .session-day .day-head .georgia { font-size: 15px; }
+  .slot { padding: 6px 13px; font-size: 12px; }
+  .slot .nom { font-size: 13.5px; }
+  .slot .time { width: 50px; }
+  .finalist { width: 116px; }
+  .finalist .photo { font-size: 26px; }
+  .finalist .nom { font-size: 13.5px; margin-top: 6px; }
+  .deliver-card { padding: 14px; }
+  .deliver-card h3 { font-size: 15px; }
+  .deliver-card p { font-size: 11.5px; margin-bottom: 10px; }
+  .ws-intro { font-size: 12px; margin-bottom: 14px; }
 </style>
 </head>
 <body>
