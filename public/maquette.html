@@ -1188,6 +1188,16 @@ function attachComedienDrag(el) {
   });
 }
 
+// Vote — un « non » retire automatiquement de la sélection production
+function setVote(c, v) {
+  c.vote = v;
+  if (c.vote === "non" && c.prod) {
+    c.prod = null;
+    toast(`${c.prenom} ${c.nom} retiré·e de la sélection production (vote non).`);
+  }
+  render();
+}
+
 function setProd(id, role, animTarget) {
   const c = COMEDIENS.find(x => x.id === id);
   if (!c) return;
@@ -1439,7 +1449,7 @@ function renderInspector() {
       <button class="btn-sec">Tout modifier</button>
     </div>`;
   insp.querySelectorAll(".vote button").forEach(b =>
-    b.onclick = () => { c.vote = c.vote === b.dataset.v ? null : b.dataset.v; render(); });
+    b.onclick = () => setVote(c, c.vote === b.dataset.v ? null : b.dataset.v));
   insp.querySelectorAll(".stars span").forEach(s =>
     s.onclick = () => { c.stars = +s.dataset.s; render(); });
   insp.querySelector("#insp-notes").onchange = e => { c.notes = e.target.value; };
@@ -1516,8 +1526,7 @@ document.addEventListener("keydown", e => {
     else if (e.key.toLowerCase() === "p" && getSel()) { state.prodMenu = true; render(); }
     else if (["1", "2", "3", "0"].includes(e.key)) {
       const c = getSel(); if (!c) return;
-      c.vote = e.key === "1" ? "oui" : e.key === "2" ? "peut-etre" : e.key === "3" ? "non" : null;
-      render();
+      setVote(c, e.key === "1" ? "oui" : e.key === "2" ? "peut-etre" : e.key === "3" ? "non" : null);
     }
     else if (e.key.toLowerCase() === "g") { state.view = "grid"; render(); }
     else if (e.key.toLowerCase() === "l") { state.view = "list"; render(); }
