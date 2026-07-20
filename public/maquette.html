@@ -558,13 +558,16 @@ let state = {
 // ===== Candidatures — boîte de réception =====
 const ROLES = ["Rôle principal", "Second rôle"];
 const ROLE_BASE = { "Rôle principal": 12, "Second rôle": 4 };
+// Code couleur par rôle — teintes éteintes, distinctes des statuts oui/peut-être/non
+const ROLE_COLORS = ["#8E9BB0", "#9B8AA6", "#7FA0A0", "#B08D7E", "#94A37C", "#A0968A"];
+const roleColor = name => ROLE_COLORS[Math.max(ROLES.indexOf(name), 0) % ROLE_COLORS.length];
 
 function renderRailRoles() {
   const cont = document.getElementById("rail-roles");
   if (!cont) return;
   const assigned = r => CANDIDATURES.filter(c => c.decision === "oui" && (c.roleFinal || c.role) === r).length;
   cont.innerHTML = ROLES.map((r, i) => `
-    <div class="rail-item rail-role ${i === 0 ? "active" : ""}" data-role="${r}">${r} <span class="count">${(ROLE_BASE[r] || 0) + assigned(r)}</span></div>`).join("");
+    <div class="rail-item rail-role ${i === 0 ? "active" : ""}" data-role="${r}"><span class="pastille" style="width:7px;height:7px;border-radius:50%;background:${roleColor(r)};flex-shrink:0"></span>${r} <span class="count">${(ROLE_BASE[r] || 0) + assigned(r)}</span></div>`).join("");
   cont.querySelectorAll(".rail-role").forEach(el => {
     el.addEventListener("dragover", e => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; el.classList.add("drop-target"); });
     el.addEventListener("dragleave", () => el.classList.remove("drop-target"));
@@ -583,8 +586,9 @@ const updateRailCounts = renderRailRoles;
 
 function candRowHTML(x, i) {
   const roleAff = x.roleFinal || x.role;
-  const dec = x.decision === "oui" ? `<span class="pastille" style="background:var(--oui)"></span>Oui → ${roleAff}`
-            : x.decision === "non" ? `<span class="pastille" style="background:var(--non)"></span>Non` : "";
+  const dec = x.decision === "oui"
+    ? `<span class="pastille" style="background:var(--oui)"></span>Oui → <span style="color:${roleColor(roleAff)}">${roleAff}</span>`
+    : x.decision === "non" ? `<span class="pastille" style="background:var(--non)"></span>Non` : "";
   return `
     <div class="cand-row ${x.lu ? "lu" : ""} ${i === state.depSelected ? "selected" : ""}" data-i="${i}" draggable="true" title="Glissez sur un rôle à gauche pour un oui direct">
       <div class="vignette">${x.prenom[0]}${x.nom[0]}</div>
@@ -593,7 +597,7 @@ function candRowHTML(x, i) {
           ${!x.lu ? '<span class="dot-new" title="Non lue"></span>' : ""}
           <span class="nom">${x.prenom} ${x.nom}</span>
         </div>
-        <div class="l2">${x.age} ans · ${x.ville} · <span class="role">${x.role}</span>${x.agence ? ` · <span class="agence">${x.agence}</span>` : ""}${x.tape ? " · selftape" : ""}</div>
+        <div class="l2">${x.age} ans · ${x.ville} · <span class="role" style="color:${roleColor(x.role)}"><span class="pastille" style="display:inline-block;width:6px;height:6px;border-radius:50%;background:${roleColor(x.role)};margin-right:5px;vertical-align:1px"></span>${x.role}</span>${x.agence ? ` · <span class="agence">${x.agence}</span>` : ""}${x.tape ? " · selftape" : ""}</div>
         <div class="apercu">${x.msg}</div>
       </div>
       <div class="decision">${dec}</div>
@@ -626,6 +630,7 @@ function fillCandDetail() {
         ${ROLES.map((r, ri) => `
           <button class="role-opt ${r === c.role ? "vise" : ""}" data-role="${r}">
             <kbd>${ri + 1}</kbd>
+            <span class="pastille" style="width:7px;height:7px;border-radius:50%;background:${roleColor(r)};flex-shrink:0"></span>
             <span class="rname">${r}</span>
             <span class="hint">${r === c.role ? "visé par le candidat" : ""}</span>
           </button>`).join("")}
@@ -635,7 +640,7 @@ function fillCandDetail() {
       </div>` : "";
   const actionsHTML = c.decision === "oui" ? `
       <div id="dep-actions">
-        <span style="display:inline-flex; align-items:center; gap:8px; font-size:13.5px; color:var(--oui)"><span class="pastille" style="width:6px;height:6px;border-radius:50%;background:var(--oui)"></span>Oui — dans « ${roleAff} »</span>
+        <span style="display:inline-flex; align-items:center; gap:8px; font-size:13.5px; color:var(--oui)"><span class="pastille" style="width:6px;height:6px;border-radius:50%;background:var(--oui)"></span>Oui — dans <span style="color:${roleColor(roleAff)}">« ${roleAff} »</span></span>
         <button class="btn-sec" id="cand-changer">Changer de rôle</button>
         <button class="btn-sec" id="cand-annuler">Annuler la décision</button>
       </div>` : `
@@ -679,7 +684,7 @@ function fillCandDetail() {
           <h2>${c.prenom} ${c.nom}</h2>
           <div class="meta1">${c.age} ans · ${c.taille} · ${c.cheveux} · ${c.sexe} · ${c.ville}</div>
           <div class="recu">Reçue le ${c.recu} · via le lien public</div>
-          <div class="meta2">Vise <span style="color:var(--ivoire)">« ${c.role} »</span>${c.agence ? ` · <span style="color:var(--laiton)">${c.agence}</span>` : " · sans agence"}</div>
+          <div class="meta2">Vise <span style="color:${roleColor(c.role)}"><span style="display:inline-block;width:7px;height:7px;border-radius:50%;background:${roleColor(c.role)};margin-right:5px;vertical-align:1px"></span>« ${c.role} »</span>${c.agence ? ` · <span style="color:var(--laiton)">${c.agence}</span>` : " · sans agence"}</div>
           <div class="note">Rôle choisi par le candidat sur le formulaire — vous pouvez le changer.</div>
           <div class="sect">
             <div class="insp-label">Coordonnées</div>
