@@ -101,6 +101,11 @@
   }
   .rail-item:hover { background: var(--s3); }
   .rail-item.active { color: var(--ivoire); border-left-color: var(--laiton); background: var(--laiton-v); }
+  .rail-item.drop-target {
+    color: var(--ivoire); border-left-color: var(--laiton); background: var(--laiton-v);
+    outline: 1px dashed var(--laiton); outline-offset: -4px;
+  }
+  .rail-item.drop-flash { background: rgba(124,158,130,0.18); border-left-color: var(--oui); }
   .rail-item .count { margin-left: auto; font-size: 12px; color: var(--cendre); }
   .rail-sep { height: 1px; background: var(--trait); margin: 16px 16px; }
   .rail-stats { padding: 0 16px; display: flex; flex-direction: column; gap: 6px; }
@@ -294,6 +299,27 @@
   .cand-row.lu:hover { background: var(--s3); }
   .cand-row.lu.selected { background: var(--laiton-v); }
 
+  .cand-row[draggable="true"] { user-select: none; }
+  .cand-row.dragging { opacity: 0.4; }
+
+  /* Sélecteur de rôle (au clic sur Oui) */
+  #role-picker {
+    margin-top: 14px; border: 1px solid var(--trait); border-radius: 6px;
+    background: var(--s2); padding: 14px 16px; max-width: 440px;
+    animation: pickerIn 200ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  @keyframes pickerIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  #role-picker .q { font-size: 12px; color: var(--fumee); margin-bottom: 10px; }
+  #role-picker .roles { display: flex; gap: 8px; flex-wrap: wrap; }
+  .role-opt {
+    background: none; border: 1px solid var(--trait); border-radius: 6px;
+    padding: 8px 16px; color: var(--ivoire); font-size: 13px; text-align: left;
+  }
+  .role-opt:hover { background: var(--s3); }
+  .role-opt.vise { border-color: var(--laiton); }
+  .role-opt .hint { display: block; font-size: 11px; color: var(--cendre); }
+  .role-opt kbd { background: var(--s3); border: 1px solid var(--trait); border-radius: 4px; padding: 0 5px; font-size: 11px; margin-right: 6px; }
+
   /* Volet fiche */
   #cand-detail {
     flex: 1 1 0; min-width: 0; overflow-y: auto; pointer-events: none;
@@ -377,8 +403,8 @@
     <!-- Rail gauche -->
     <div id="rail">
       <div class="rail-label">Rôles</div>
-      <div class="rail-item active">Rôle principal <span class="count">12</span></div>
-      <div class="rail-item">Second rôle <span class="count">4</span></div>
+      <div class="rail-item rail-role active" data-role="Rôle principal">Rôle principal <span class="count" id="count-rp">12</span></div>
+      <div class="rail-item rail-role" data-role="Second rôle">Second rôle <span class="count" id="count-sr">4</span></div>
       <div class="rail-item" style="color:var(--cendre)">Ajouter un rôle</div>
       <div class="rail-sep"></div>
       <div class="rail-label">Sélection</div>
@@ -455,14 +481,27 @@ let state = {
   filter: null,          // null | oui | peut-etre | non | atrier
   selected: 1,           // comédien sélectionné
   depSelected: null,     // candidature ouverte (null = liste pleine largeur)
+  rolePicker: false,     // sélecteur de rôle ouvert (après clic sur Oui)
 };
 
 // ===== Candidatures — boîte de réception =====
+const ROLES = ["Rôle principal", "Second rôle"];
+const ROLE_BASE = { "Rôle principal": 12, "Second rôle": 4 };
+
+function updateRailCounts() {
+  const assigned = r => CANDIDATURES.filter(c => c.decision === "oui" && (c.roleFinal || c.role) === r).length;
+  const rp = document.getElementById("count-rp");
+  const sr = document.getElementById("count-sr");
+  if (rp) rp.textContent = ROLE_BASE["Rôle principal"] + assigned("Rôle principal");
+  if (sr) sr.textContent = ROLE_BASE["Second rôle"] + assigned("Second rôle");
+}
+
 function candRowHTML(x, i) {
-  const dec = x.decision === "oui" ? `<span class="pastille" style="background:var(--oui)"></span>Oui`
+  const roleAff = x.roleFinal || x.role;
+  const dec = x.decision === "oui" ? `<span class="pastille" style="background:var(--oui)"></span>Oui → ${roleAff}`
             : x.decision === "non" ? `<span class="pastille" style="background:var(--non)"></span>Non` : "";
   return `
-    <div class="cand-row ${x.lu ? "lu" : ""} ${i === state.depSelected ? "selected" : ""}" data-i="${i}">
+    <div class="cand-row ${x.lu ? "lu" : ""} ${i === state.depSelected ? "selected" : ""}" data-i="${i}" draggable="true" title="Glissez sur un rôle à gauche pour un oui direct">
       <div class="vignette">${x.prenom[0]}${x.nom[0]}</div>
       <div class="infos">
         <div class="l1">
@@ -479,14 +518,46 @@ function candRowHTML(x, i) {
 function refreshCandRows() {
   const list = document.getElementById("cand-list");
   if (list) list.innerHTML = CANDIDATURES.map(candRowHTML).join("");
-  document.querySelectorAll(".cand-row").forEach(el =>
-    el.onclick = () => openCand(+el.dataset.i));
+  document.querySelectorAll(".cand-row").forEach(el => {
+    el.onclick = () => openCand(+el.dataset.i);
+    el.addEventListener("dragstart", e => {
+      e.dataTransfer.setData("text/plain", el.dataset.i);
+      e.dataTransfer.effectAllowed = "move";
+      el.classList.add("dragging");
+    });
+    el.addEventListener("dragend", () => el.classList.remove("dragging"));
+  });
+  updateRailCounts();
 }
 
 function fillCandDetail() {
   const c = CANDIDATURES[state.depSelected];
   const det = document.getElementById("cand-detail");
   if (!c || !det) return;
+  const roleAff = c.roleFinal || c.role;
+  const pickerHTML = state.rolePicker ? `
+      <div id="role-picker">
+        <div class="q">Vers quel rôle ? <span style="color:var(--cendre)">— le candidat visait « ${c.role} », mais c'est vous qui décidez.</span></div>
+        <div class="roles">
+          ${ROLES.map((r, ri) => `
+            <button class="role-opt ${r === c.role ? "vise" : ""}" data-role="${r}">
+              <span><kbd>${ri + 1}</kbd>${r}</span>
+              ${r === c.role ? '<span class="hint">choisi par le candidat</span>' : '<span class="hint">changer de rôle</span>'}
+            </button>`).join("")}
+          <button class="btn-sec" id="picker-cancel" style="align-self:center">Annuler</button>
+        </div>
+      </div>` : "";
+  const actionsHTML = c.decision === "oui" ? `
+      <div id="dep-actions">
+        <span style="display:inline-flex; align-items:center; gap:8px; font-size:13.5px; color:var(--oui)"><span class="pastille" style="width:6px;height:6px;border-radius:50%;background:var(--oui)"></span>Oui — dans « ${roleAff} »</span>
+        <button class="btn-sec" id="cand-changer">Changer de rôle</button>
+        <button class="btn-sec" id="cand-annuler">Annuler la décision</button>
+      </div>` : `
+      <div id="dep-actions">
+        <button class="btn-prim" id="cand-oui">Oui — choisir le rôle</button>
+        <button class="btn-sec" id="cand-non">Non</button>
+        <button class="btn-sec" id="cand-passer">Passer</button>
+      </div>`;
   det.innerHTML = `
     <div class="inner">
       <button class="close" id="cand-close">Fermer&nbsp;&nbsp;esc</button>
@@ -494,26 +565,46 @@ function fillCandDetail() {
       <h2>${c.prenom} ${c.nom}</h2>
       <div style="color:var(--fumee); margin-top:4px">${c.age} ans · ${c.ville}</div>
       <div style="margin-top:6px; font-size:13px">Vise <span style="color:var(--ivoire)">« ${c.role} »</span>${c.agence ? ` · <span style="color:var(--laiton)">${c.agence}</span>` : " · sans agence"}</div>
+      <div style="margin-top:2px; font-size:11.5px; color:var(--cendre)">Rôle choisi par le candidat sur le formulaire — vous pouvez le changer.</div>
       ${c.tape ? `<div class="insp-section"><div class="insp-label">Selftape</div><span class="tape">Lire la vidéo</span><span class="tape">Ouvrir le lien Drive</span></div>` : ""}
       <div class="insp-section">
         <div class="insp-label">Message</div>
         <div style="font-size:13.5px; color:var(--fumee); max-width:440px">${c.msg}</div>
       </div>
-      <div id="dep-actions">
-        <button class="btn-prim" id="cand-oui">Oui — vers la présélection « ${c.role} »</button>
-        <button class="btn-sec" id="cand-non">Non</button>
-        <button class="btn-sec" id="cand-passer">Passer</button>
-      </div>
-      <div style="margin-top:14px; font-size:12px; color:var(--cendre)"><kbd style="background:var(--s3);border:1px solid var(--trait);border-radius:4px;padding:0 5px">O</kbd> oui · <kbd style="background:var(--s3);border:1px solid var(--trait);border-radius:4px;padding:0 5px">N</kbd> non · <kbd style="background:var(--s3);border:1px solid var(--trait);border-radius:4px;padding:0 5px">↓</kbd> suivante · <kbd style="background:var(--s3);border:1px solid var(--trait);border-radius:4px;padding:0 5px">esc</kbd> fermer</div>
+      ${actionsHTML}
+      ${pickerHTML}
+      <div style="margin-top:14px; font-size:12px; color:var(--cendre)"><kbd style="background:var(--s3);border:1px solid var(--trait);border-radius:4px;padding:0 5px">O</kbd> oui · <kbd style="background:var(--s3);border:1px solid var(--trait);border-radius:4px;padding:0 5px">N</kbd> non · <kbd style="background:var(--s3);border:1px solid var(--trait);border-radius:4px;padding:0 5px">↓</kbd> suivante · <kbd style="background:var(--s3);border:1px solid var(--trait);border-radius:4px;padding:0 5px">esc</kbd> fermer — ou glissez une ligne sur un rôle à gauche</div>
     </div>`;
   det.querySelector("#cand-close").onclick = closeCand;
-  det.querySelector("#cand-oui").onclick = () => decideCand("oui");
-  det.querySelector("#cand-non").onclick = () => decideCand("non");
-  det.querySelector("#cand-passer").onclick = () => openCand(Math.min(state.depSelected + 1, CANDIDATURES.length - 1));
+  const oui = det.querySelector("#cand-oui");
+  if (oui) oui.onclick = () => { state.rolePicker = true; fillCandDetail(); };
+  const non = det.querySelector("#cand-non");
+  if (non) non.onclick = () => decideCand("non");
+  const passer = det.querySelector("#cand-passer");
+  if (passer) passer.onclick = () => openCand(Math.min(state.depSelected + 1, CANDIDATURES.length - 1));
+  const changer = det.querySelector("#cand-changer");
+  if (changer) changer.onclick = () => { state.rolePicker = true; fillCandDetail(); };
+  const annuler = det.querySelector("#cand-annuler");
+  if (annuler) annuler.onclick = () => { c.decision = null; c.roleFinal = null; refreshCandRows(); fillCandDetail(); };
+  det.querySelectorAll(".role-opt").forEach(b =>
+    b.onclick = () => assignOui(state.depSelected, b.dataset.role));
+  const cancel = det.querySelector("#picker-cancel");
+  if (cancel) cancel.onclick = () => { state.rolePicker = false; fillCandDetail(); };
+}
+
+function assignOui(i, role) {
+  const c = CANDIDATURES[i];
+  if (!c) return;
+  c.decision = "oui"; c.roleFinal = role; c.lu = true;
+  state.rolePicker = false;
+  const next = CANDIDATURES.findIndex((x, j) => j > i && !x.decision);
+  if (state.depSelected === i && next !== -1) openCand(next);
+  else { refreshCandRows(); if (state.depSelected != null) fillCandDetail(); }
 }
 
 function openCand(i) {
   state.depSelected = i;
+  state.rolePicker = false;
   CANDIDATURES[i].lu = true;
   const split = document.getElementById("cand-split");
   if (split) split.classList.add("open");
@@ -534,10 +625,26 @@ function decideCand(d) {
   const c = CANDIDATURES[state.depSelected];
   if (!c) return;
   c.decision = c.decision === d ? null : d;
+  if (c.decision !== "oui") c.roleFinal = null;
   const next = CANDIDATURES.findIndex((x, j) => j > state.depSelected && !x.decision);
   if (c.decision && next !== -1) openCand(next);
   else { refreshCandRows(); fillCandDetail(); }
 }
+
+// Glisser-déposer une ligne sur un rôle du rail = oui direct dans ce rôle
+document.querySelectorAll(".rail-role").forEach(el => {
+  el.addEventListener("dragover", e => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; el.classList.add("drop-target"); });
+  el.addEventListener("dragleave", () => el.classList.remove("drop-target"));
+  el.addEventListener("drop", e => {
+    e.preventDefault();
+    el.classList.remove("drop-target");
+    const i = parseInt(e.dataTransfer.getData("text/plain"), 10);
+    if (isNaN(i)) return;
+    assignOui(i, el.dataset.role);
+    el.classList.add("drop-flash");
+    setTimeout(() => el.classList.remove("drop-flash"), 600);
+  });
+});
 
 const $ = s => document.querySelector(s);
 const voteColor = v => v === "oui" ? "var(--oui)" : v === "peut-etre" ? "var(--pe)" : v === "non" ? "var(--non)" : null;
@@ -787,11 +894,18 @@ document.addEventListener("keydown", e => {
     else if (e.key.toLowerCase() === "l") { state.view = "list"; render(); }
   }
   else if (state.ws === "candidatures") {
+    const c = state.depSelected != null ? CANDIDATURES[state.depSelected] : null;
+    if (state.rolePicker && c) {
+      if (e.key === "1" || e.key === "2") { e.preventDefault(); const r = ROLES[+e.key - 1]; if (r) assignOui(state.depSelected, r); }
+      else if (e.key === "Enter" || e.key.toLowerCase() === "o") { e.preventDefault(); assignOui(state.depSelected, c.role); }
+      else if (e.key === "Escape") { state.rolePicker = false; fillCandDetail(); }
+      return;
+    }
     if (e.key === "ArrowDown") { e.preventDefault(); openCand(state.depSelected == null ? 0 : Math.min(state.depSelected + 1, CANDIDATURES.length - 1)); }
     else if (e.key === "ArrowUp") { e.preventDefault(); openCand(state.depSelected == null ? 0 : Math.max(state.depSelected - 1, 0)); }
     else if (e.key === "Escape" && state.depSelected != null) { closeCand(); }
-    else if (e.key.toLowerCase() === "o" && state.depSelected != null) { decideCand("oui"); }
-    else if (e.key.toLowerCase() === "n" && state.depSelected != null) { decideCand("non"); }
+    else if (e.key.toLowerCase() === "o" && c) { state.rolePicker = true; fillCandDetail(); }
+    else if (e.key.toLowerCase() === "n" && c) { decideCand("non"); }
   }
 });
 
