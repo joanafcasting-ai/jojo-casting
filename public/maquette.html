@@ -302,23 +302,39 @@
   .cand-row[draggable="true"] { user-select: none; }
   .cand-row.dragging { opacity: 0.4; }
 
-  /* Sélecteur de rôle (au clic sur Oui) */
+  /* Sélecteur de rôle — menu déroulant vertical façon Apple */
   #role-picker {
-    margin-top: 14px; border: 1px solid var(--trait); border-radius: 6px;
-    background: var(--s2); padding: 14px 16px; max-width: 440px;
-    animation: pickerIn 200ms cubic-bezier(0.32, 0.72, 0, 1);
+    margin-top: 12px; border: 1px solid var(--trait); border-radius: 8px;
+    background: var(--s2); max-width: 340px; overflow: hidden;
+    transform-origin: top left;
+    animation: pickerIn 220ms cubic-bezier(0.32, 0.72, 0, 1);
   }
-  @keyframes pickerIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
-  #role-picker .q { font-size: 12px; color: var(--fumee); margin-bottom: 10px; }
-  #role-picker .roles { display: flex; gap: 8px; flex-wrap: wrap; }
+  @keyframes pickerIn { from { opacity: 0; transform: scale(0.97) translateY(-5px); } to { opacity: 1; transform: none; } }
+  #role-picker .q {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+    color: var(--cendre); padding: 11px 16px 8px;
+  }
   .role-opt {
-    background: none; border: 1px solid var(--trait); border-radius: 6px;
-    padding: 8px 16px; color: var(--ivoire); font-size: 13px; text-align: left;
+    display: flex; align-items: center; gap: 10px; width: 100%;
+    background: none; border: none; border-top: 1px solid var(--trait); border-radius: 0;
+    padding: 11px 16px; color: var(--ivoire); font-size: 13.5px; text-align: left;
   }
   .role-opt:hover { background: var(--s3); }
-  .role-opt.vise { border-color: var(--laiton); }
-  .role-opt .hint { display: block; font-size: 11px; color: var(--cendre); }
-  .role-opt kbd { background: var(--s3); border: 1px solid var(--trait); border-radius: 4px; padding: 0 5px; font-size: 11px; margin-right: 6px; }
+  .role-opt kbd {
+    background: var(--fond); border: 1px solid var(--trait); border-radius: 4px;
+    padding: 0 6px; font-size: 11px; color: var(--cendre); flex-shrink: 0;
+  }
+  .role-opt .rname { flex: 1; min-width: 0; }
+  .role-opt .hint { font-size: 11px; color: var(--cendre); flex-shrink: 0; }
+  .role-opt.vise .hint { color: var(--laiton); }
+  .role-opt.add { color: var(--laiton); }
+  .role-opt.add:hover { color: var(--laiton-h); }
+  #role-picker .newrole { display: flex; gap: 8px; padding: 10px 12px; border-top: 1px solid var(--trait); }
+  #role-picker .newrole input {
+    flex: 1; min-width: 0; background: var(--fond); border: 1px solid var(--trait); border-radius: 6px;
+    padding: 6px 10px; color: var(--ivoire); font-size: 13px; outline: none;
+  }
+  #role-picker .newrole input:focus { border-color: var(--laiton); }
 
   /* Volet fiche */
   #cand-detail {
@@ -403,8 +419,7 @@
     <!-- Rail gauche -->
     <div id="rail">
       <div class="rail-label">Rôles</div>
-      <div class="rail-item rail-role active" data-role="Rôle principal">Rôle principal <span class="count" id="count-rp">12</span></div>
-      <div class="rail-item rail-role" data-role="Second rôle">Second rôle <span class="count" id="count-sr">4</span></div>
+      <div id="rail-roles"></div>
       <div class="rail-item" style="color:var(--cendre)">Ajouter un rôle</div>
       <div class="rail-sep"></div>
       <div class="rail-label">Sélection</div>
@@ -482,19 +497,34 @@ let state = {
   selected: 1,           // comédien sélectionné
   depSelected: null,     // candidature ouverte (null = liste pleine largeur)
   rolePicker: false,     // sélecteur de rôle ouvert (après clic sur Oui)
+  roleAdding: false,     // champ "nouveau rôle" ouvert dans le menu
 };
 
 // ===== Candidatures — boîte de réception =====
 const ROLES = ["Rôle principal", "Second rôle"];
 const ROLE_BASE = { "Rôle principal": 12, "Second rôle": 4 };
 
-function updateRailCounts() {
+function renderRailRoles() {
+  const cont = document.getElementById("rail-roles");
+  if (!cont) return;
   const assigned = r => CANDIDATURES.filter(c => c.decision === "oui" && (c.roleFinal || c.role) === r).length;
-  const rp = document.getElementById("count-rp");
-  const sr = document.getElementById("count-sr");
-  if (rp) rp.textContent = ROLE_BASE["Rôle principal"] + assigned("Rôle principal");
-  if (sr) sr.textContent = ROLE_BASE["Second rôle"] + assigned("Second rôle");
+  cont.innerHTML = ROLES.map((r, i) => `
+    <div class="rail-item rail-role ${i === 0 ? "active" : ""}" data-role="${r}">${r} <span class="count">${(ROLE_BASE[r] || 0) + assigned(r)}</span></div>`).join("");
+  cont.querySelectorAll(".rail-role").forEach(el => {
+    el.addEventListener("dragover", e => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; el.classList.add("drop-target"); });
+    el.addEventListener("dragleave", () => el.classList.remove("drop-target"));
+    el.addEventListener("drop", e => {
+      e.preventDefault();
+      el.classList.remove("drop-target");
+      const idx = parseInt(e.dataTransfer.getData("text/plain"), 10);
+      if (isNaN(idx)) return;
+      assignOui(idx, el.dataset.role);
+      el.classList.add("drop-flash");
+      setTimeout(() => el.classList.remove("drop-flash"), 600);
+    });
+  });
 }
+const updateRailCounts = renderRailRoles;
 
 function candRowHTML(x, i) {
   const roleAff = x.roleFinal || x.role;
@@ -537,15 +567,16 @@ function fillCandDetail() {
   const roleAff = c.roleFinal || c.role;
   const pickerHTML = state.rolePicker ? `
       <div id="role-picker">
-        <div class="q">Vers quel rôle ? <span style="color:var(--cendre)">— le candidat visait « ${c.role} », mais c'est vous qui décidez.</span></div>
-        <div class="roles">
-          ${ROLES.map((r, ri) => `
-            <button class="role-opt ${r === c.role ? "vise" : ""}" data-role="${r}">
-              <span><kbd>${ri + 1}</kbd>${r}</span>
-              ${r === c.role ? '<span class="hint">choisi par le candidat</span>' : '<span class="hint">changer de rôle</span>'}
-            </button>`).join("")}
-          <button class="btn-sec" id="picker-cancel" style="align-self:center">Annuler</button>
-        </div>
+        <div class="q">Vers quel rôle ?</div>
+        ${ROLES.map((r, ri) => `
+          <button class="role-opt ${r === c.role ? "vise" : ""}" data-role="${r}">
+            <kbd>${ri + 1}</kbd>
+            <span class="rname">${r}</span>
+            <span class="hint">${r === c.role ? "visé par le candidat" : ""}</span>
+          </button>`).join("")}
+        ${state.roleAdding
+          ? `<div class="newrole"><input id="newrole-input" placeholder="Nom du nouveau rôle…"><button class="btn-prim" id="newrole-ok">Créer</button></div>`
+          : `<button class="role-opt add" id="role-add"><span class="rname">Ajouter un rôle…</span></button>`}
       </div>` : "";
   const actionsHTML = c.decision === "oui" ? `
       <div id="dep-actions">
@@ -586,10 +617,44 @@ function fillCandDetail() {
   if (changer) changer.onclick = () => { state.rolePicker = true; fillCandDetail(); };
   const annuler = det.querySelector("#cand-annuler");
   if (annuler) annuler.onclick = () => { c.decision = null; c.roleFinal = null; refreshCandRows(); fillCandDetail(); };
-  det.querySelectorAll(".role-opt").forEach(b =>
+  det.querySelectorAll(".role-opt[data-role]").forEach(b =>
     b.onclick = () => assignOui(state.depSelected, b.dataset.role));
-  const cancel = det.querySelector("#picker-cancel");
-  if (cancel) cancel.onclick = () => { state.rolePicker = false; fillCandDetail(); };
+  const add = det.querySelector("#role-add");
+  if (add) add.onclick = () => { state.roleAdding = true; fillCandDetail(); det.querySelector("#newrole-input")?.focus(); };
+  const nrInput = det.querySelector("#newrole-input");
+  const createRole = () => {
+    const name = nrInput?.value.trim();
+    if (!name) return;
+    if (!ROLES.includes(name)) { ROLES.push(name); ROLE_BASE[name] = 0; }
+    state.roleAdding = false;
+    renderRailRoles();
+    assignOui(state.depSelected, name);
+  };
+  if (nrInput) {
+    nrInput.focus();
+    nrInput.onkeydown = e => {
+      if (e.key === "Enter") createRole();
+      else if (e.key === "Escape") { state.roleAdding = false; fillCandDetail(); }
+      e.stopPropagation();
+    };
+    det.querySelector("#newrole-ok").onclick = createRole;
+  }
+  // Fermeture du menu au clic à l'extérieur, façon Apple
+  if (state._pickerOff) { document.removeEventListener("mousedown", state._pickerOff); state._pickerOff = null; }
+  if (state.rolePicker) {
+    setTimeout(() => {
+      const off = ev => {
+        if (!ev.target.closest("#role-picker")) {
+          document.removeEventListener("mousedown", off);
+          state._pickerOff = null;
+          state.rolePicker = false; state.roleAdding = false;
+          fillCandDetail();
+        }
+      };
+      document.addEventListener("mousedown", off);
+      state._pickerOff = off;
+    }, 0);
+  }
 }
 
 function assignOui(i, role) {
@@ -605,6 +670,7 @@ function assignOui(i, role) {
 function openCand(i) {
   state.depSelected = i;
   state.rolePicker = false;
+  state.roleAdding = false;
   CANDIDATURES[i].lu = true;
   const split = document.getElementById("cand-split");
   if (split) split.classList.add("open");
@@ -631,20 +697,6 @@ function decideCand(d) {
   else { refreshCandRows(); fillCandDetail(); }
 }
 
-// Glisser-déposer une ligne sur un rôle du rail = oui direct dans ce rôle
-document.querySelectorAll(".rail-role").forEach(el => {
-  el.addEventListener("dragover", e => { e.preventDefault(); e.dataTransfer.dropEffect = "move"; el.classList.add("drop-target"); });
-  el.addEventListener("dragleave", () => el.classList.remove("drop-target"));
-  el.addEventListener("drop", e => {
-    e.preventDefault();
-    el.classList.remove("drop-target");
-    const i = parseInt(e.dataTransfer.getData("text/plain"), 10);
-    if (isNaN(i)) return;
-    assignOui(i, el.dataset.role);
-    el.classList.add("drop-flash");
-    setTimeout(() => el.classList.remove("drop-flash"), 600);
-  });
-});
 
 const $ = s => document.querySelector(s);
 const voteColor = v => v === "oui" ? "var(--oui)" : v === "peut-etre" ? "var(--pe)" : v === "non" ? "var(--non)" : null;
@@ -667,6 +719,7 @@ function filtered() {
 
 // ===== Rendus =====
 function renderRail() {
+  renderRailRoles();
   const k = counts();
   $("#rail-stats").innerHTML = `
     <div class="rail-stat"><span class="pastille" style="background:var(--oui)"></span><b>${k.oui}</b> oui</div>
@@ -896,7 +949,7 @@ document.addEventListener("keydown", e => {
   else if (state.ws === "candidatures") {
     const c = state.depSelected != null ? CANDIDATURES[state.depSelected] : null;
     if (state.rolePicker && c) {
-      if (e.key === "1" || e.key === "2") { e.preventDefault(); const r = ROLES[+e.key - 1]; if (r) assignOui(state.depSelected, r); }
+      if (/^[1-9]$/.test(e.key)) { e.preventDefault(); const r = ROLES[+e.key - 1]; if (r) assignOui(state.depSelected, r); }
       else if (e.key === "Enter" || e.key.toLowerCase() === "o") { e.preventDefault(); assignOui(state.depSelected, c.role); }
       else if (e.key === "Escape") { state.rolePicker = false; fillCandDetail(); }
       return;
