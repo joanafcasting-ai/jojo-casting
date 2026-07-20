@@ -300,7 +300,52 @@
   .cand-row.lu.selected { background: var(--laiton-v); }
 
   .cand-row[draggable="true"] { user-select: none; }
-  .cand-row.dragging { opacity: 0.4; }
+  .cand-row.dragging { opacity: 0.35; }
+
+  /* ===== Drag & drop — animations ===== */
+  .drag-ghost {
+    position: fixed; top: -300px; left: -300px; z-index: 9999;
+    display: flex; align-items: center; gap: 10px;
+    background: var(--s2); border: 1px solid var(--laiton); border-radius: 6px;
+    padding: 8px 14px; pointer-events: none; max-width: 240px;
+  }
+  .drag-ghost .gv {
+    width: 30px; height: 38px; border-radius: 4px; border: 1px solid var(--trait);
+    display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    font-family: Georgia, serif; font-size: 12px; color: rgba(241,237,229,0.5);
+  }
+  .drag-ghost .gname { font-family: Georgia, serif; font-size: 14px; color: var(--ivoire); white-space: nowrap; }
+  .drag-ghost .gsub { font-size: 10.5px; color: var(--cendre); white-space: nowrap; }
+  /* Pendant le drag : tous les rôles s'offrent comme cibles */
+  body.drag-live .rail-role {
+    outline: 1px dashed var(--cendre); outline-offset: -3px; background: var(--s2);
+    transition: outline-color 160ms var(--ease), background 160ms var(--ease);
+  }
+  body.drag-live .rail-role.drop-target {
+    outline: 1.5px dashed var(--laiton); background: var(--laiton-v); color: var(--ivoire);
+  }
+  .rail-role { position: relative; }
+  .count-pop { display: inline-block; animation: countPop 450ms cubic-bezier(0.32, 0.72, 0, 1); }
+  @keyframes countPop {
+    0% { transform: scale(1); }
+    40% { transform: scale(1.5); color: var(--oui); }
+    100% { transform: scale(1); }
+  }
+  .plus-one {
+    position: absolute; right: 34px; top: 50%; font-size: 11px; font-weight: 600;
+    color: var(--oui); pointer-events: none;
+    animation: plusUp 750ms cubic-bezier(0.25, 0.1, 0.25, 1) forwards;
+  }
+  @keyframes plusUp {
+    from { opacity: 0; transform: translateY(-30%); }
+    25% { opacity: 1; }
+    to { opacity: 0; transform: translateY(-160%); }
+  }
+  .cand-row.just-assigned .decision { animation: decIn 420ms cubic-bezier(0.32, 0.72, 0, 1); }
+  @keyframes decIn {
+    from { opacity: 0; transform: translateX(10px); }
+    to { opacity: 1; transform: none; }
+  }
 
   /* Sélecteur de rôle — menu déroulant vertical façon Apple */
   #role-picker {
@@ -687,11 +732,27 @@ function renderRailRoles() {
     el.addEventListener("drop", e => {
       e.preventDefault();
       el.classList.remove("drop-target");
+      document.body.classList.remove("drag-live");
       const idx = parseInt(e.dataTransfer.getData("text/plain"), 10);
       if (isNaN(idx)) return;
-      assignOui(idx, el.dataset.role);
-      el.classList.add("drop-flash");
-      setTimeout(() => el.classList.remove("drop-flash"), 600);
+      const role = el.dataset.role;
+      assignOui(idx, role);
+      // Le rail vient d'être re-rendu : viser l'élément frais, pas l'ancien
+      const fresh = document.querySelector(`.rail-role[data-role="${CSS.escape(role)}"]`);
+      if (fresh) {
+        fresh.classList.add("drop-flash");
+        const count = fresh.querySelector(".count");
+        if (count) count.classList.add("count-pop");
+        const plus = document.createElement("span");
+        plus.className = "plus-one";
+        plus.textContent = "+1";
+        fresh.appendChild(plus);
+        setTimeout(() => {
+          fresh.classList.remove("drop-flash");
+          if (count) count.classList.remove("count-pop");
+          plus.remove();
+        }, 800);
+      }
     });
   });
 }
@@ -703,7 +764,7 @@ function candRowHTML(x, i) {
     ? `<span class="pastille" style="background:var(--oui)"></span>Oui → <span style="color:${roleColor(roleAff)}">${roleAff}</span>`
     : x.decision === "non" ? `<span class="pastille" style="background:var(--non)"></span>Non` : "";
   return `
-    <div class="cand-row ${x.lu ? "lu" : ""} ${i === state.depSelected ? "selected" : ""}" data-i="${i}" draggable="true" title="Glissez sur un rôle à gauche pour un oui direct">
+    <div class="cand-row ${x.lu ? "lu" : ""} ${i === state.depSelected ? "selected" : ""} ${i === state.justAssigned ? "just-assigned" : ""}" data-i="${i}" draggable="true" title="Glissez sur un rôle à gauche pour un oui direct">
       <div class="vignette">${x.prenom[0]}${x.nom[0]}</div>
       <div class="infos">
         <div class="l1">
@@ -723,11 +784,25 @@ function refreshCandRows() {
   document.querySelectorAll(".cand-row").forEach(el => {
     el.onclick = () => openCand(+el.dataset.i);
     el.addEventListener("dragstart", e => {
+      const x = CANDIDATURES[+el.dataset.i];
+      // Fantôme de drag : mini-carte au lieu de la capture de la ligne
+      const g = document.createElement("div");
+      g.className = "drag-ghost";
+      g.innerHTML = `<span class="gv">${x.prenom[0]}${x.nom[0]}</span><span><div class="gname">${x.prenom} ${x.nom}</div><div class="gsub">déposer sur un rôle</div></span>`;
+      document.body.appendChild(g);
+      try { e.dataTransfer.setDragImage(g, 26, 26); } catch (err) {}
+      el._ghost = g;
       e.dataTransfer.setData("text/plain", el.dataset.i);
       e.dataTransfer.effectAllowed = "move";
       el.classList.add("dragging");
+      // Les rôles du rail s'offrent comme cibles pendant tout le drag
+      document.body.classList.add("drag-live");
     });
-    el.addEventListener("dragend", () => el.classList.remove("dragging"));
+    el.addEventListener("dragend", () => {
+      el.classList.remove("dragging");
+      document.body.classList.remove("drag-live");
+      if (el._ghost) { el._ghost.remove(); el._ghost = null; }
+    });
   });
   updateRailCounts();
 }
@@ -875,6 +950,8 @@ function assignOui(i, role) {
   if (!c) return;
   c.decision = "oui"; c.roleFinal = role; c.lu = true;
   state.rolePicker = false;
+  state.justAssigned = i;
+  setTimeout(() => { state.justAssigned = null; }, 700);
   const next = CANDIDATURES.findIndex((x, j) => j > i && !x.decision);
   if (state.depSelected === i && next !== -1) openCand(next);
   else { refreshCandRows(); if (state.depSelected != null) fillCandDetail(); }
@@ -1011,8 +1088,7 @@ function renderWorkarea() {
           <div id="cand-detail"></div>
         </div>
       </div>`;
-    wa.querySelectorAll(".cand-row").forEach(el =>
-      el.onclick = () => openCand(+el.dataset.i));
+    refreshCandRows();
     if (state.depSelected != null) fillCandDetail();
   }
   else if (state.ws === "sessions") {
