@@ -81,7 +81,9 @@
   .btn-prim:hover { background: var(--laiton-h); }
 
   /* --- Corps 3 zones --- */
-  #body { display: grid; grid-template-columns: 240px 1fr 340px; overflow: hidden; }
+  #body { display: grid; grid-template-columns: 240px 1fr 340px; overflow: hidden; transition: grid-template-columns 380ms cubic-bezier(0.32, 0.72, 0, 1); }
+  #body.no-inspector { grid-template-columns: 240px 1fr 0px; }
+  #inspector { min-width: 0; }
 
   /* Rail gauche — bibliothèque */
   #rail {
@@ -242,19 +244,76 @@
   .ws-panel { max-width: 1100px; }
   .ws-intro { color: var(--fumee); font-size: 13px; margin-bottom: 20px; }
 
-  /* Présélection */
-  #ws-preselection { display: grid; grid-template-columns: 300px 1fr; gap: 0; height: 100%; }
-  #dep-list { border-right: 1px solid var(--trait); overflow-y: auto; }
-  .dep-item { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--trait); cursor: pointer; }
-  .dep-item:hover { background: var(--s3); }
-  .dep-item.selected { background: var(--laiton-v); box-shadow: inset 2px 0 0 var(--laiton); }
-  .dep-item .vignette { width: 40px; height: 50px; border-radius: 4px; border: 1px solid var(--trait); display: flex; align-items: center; justify-content: center; font-family: Georgia, serif; font-size: 15px; color: rgba(241,237,229,0.4); flex-shrink: 0; }
-  .dep-item .nom { font-family: Georgia, serif; font-size: 15px; }
-  .dep-item .sub { font-size: 11.5px; color: var(--cendre); }
-  .dep-item .new-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--laiton); margin-left: auto; flex-shrink: 0; }
-  #dep-preview { padding: 32px 40px; overflow-y: auto; }
-  #dep-preview .photo-lg { width: 220px; aspect-ratio: 3/4; border-radius: 4px; border: 1px solid var(--trait); background: var(--s2); display: flex; align-items: center; justify-content: center; font-family: Georgia, serif; font-size: 52px; color: rgba(241,237,229,0.35); float: left; margin: 0 28px 16px 0; }
-  #dep-preview h2 { font-family: Georgia, serif; font-weight: 400; font-size: 26px; }
+  /* ===== Candidatures — boîte de réception ===== */
+  #cand-split { display: flex; height: 100%; overflow: hidden; }
+  #cand-list {
+    flex: 1 1 100%; max-width: 100%; overflow-y: auto; overflow-x: hidden;
+    transition: max-width 380ms cubic-bezier(0.32, 0.72, 0, 1), flex-basis 380ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  #cand-split.open #cand-list { flex: 0 0 320px; max-width: 320px; border-right: 1px solid var(--trait); }
+
+  .cand-row {
+    display: flex; align-items: center; gap: 16px; padding: 16px 24px;
+    border-bottom: 1px solid var(--trait); cursor: pointer; overflow: hidden;
+    transition: background 160ms var(--ease), padding 380ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  .cand-row:hover { background: var(--s3); }
+  .cand-row.selected { background: var(--laiton-v); box-shadow: inset 2px 0 0 var(--laiton); }
+  #cand-split.open .cand-row { padding: 10px 14px; gap: 10px; }
+
+  .cand-row .vignette {
+    width: 56px; height: 72px; border-radius: 4px; border: 1px solid var(--trait);
+    background: var(--s2); display: flex; align-items: center; justify-content: center;
+    font-family: Georgia, serif; font-size: 19px; color: rgba(241,237,229,0.4); flex-shrink: 0;
+    transition: width 380ms cubic-bezier(0.32, 0.72, 0, 1), height 380ms cubic-bezier(0.32, 0.72, 0, 1), font-size 380ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  #cand-split.open .cand-row .vignette { width: 38px; height: 48px; font-size: 13px; }
+
+  .cand-row .infos { flex: 1; min-width: 0; }
+  .cand-row .l1 { display: flex; align-items: center; gap: 8px; white-space: nowrap; overflow: hidden; }
+  .cand-row .nom {
+    font-family: Georgia, serif; font-size: 18px; color: var(--ivoire);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+    transition: font-size 380ms cubic-bezier(0.32, 0.72, 0, 1), color 160ms var(--ease);
+  }
+  #cand-split.open .cand-row .nom { font-size: 14.5px; }
+  .cand-row .dot-new { width: 7px; height: 7px; border-radius: 50%; background: var(--laiton); flex-shrink: 0; }
+  .cand-row .l2 { font-size: 13px; color: var(--fumee); margin-top: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cand-row .l2 .role { color: var(--ivoire); }
+  .cand-row .l2 .agence { color: var(--laiton); }
+  .cand-row .apercu { font-size: 12.5px; color: var(--cendre); margin-top: 2px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #cand-split.open .cand-row .apercu { display: none; }
+  .cand-row .decision { margin-left: auto; flex-shrink: 0; display: flex; align-items: center; gap: 6px; font-size: 12px; color: var(--fumee); }
+  .cand-row .decision .pastille { width: 6px; height: 6px; border-radius: 50%; }
+
+  /* Lu / non lu — comme une boîte mail */
+  .cand-row.lu { background: rgba(0,0,0,0.18); }
+  .cand-row.lu .nom { color: var(--fumee); }
+  .cand-row.lu .l2, .cand-row.lu .l2 .role { color: var(--cendre); }
+  .cand-row.lu .l2 .agence { color: var(--cendre); }
+  .cand-row.lu:hover { background: var(--s3); }
+  .cand-row.lu.selected { background: var(--laiton-v); }
+
+  /* Volet fiche */
+  #cand-detail {
+    flex: 1 1 0; min-width: 0; overflow-y: auto; pointer-events: none;
+    opacity: 0; transform: translateX(24px);
+    transition: opacity 300ms cubic-bezier(0.32, 0.72, 0, 1) 90ms, transform 380ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  #cand-split.open #cand-detail { opacity: 1; transform: none; pointer-events: auto; }
+  #cand-detail .inner { padding: 32px 40px; }
+  #cand-detail .photo-lg {
+    width: 200px; aspect-ratio: 3/4; border-radius: 4px; border: 1px solid var(--trait);
+    background: var(--s2); display: flex; align-items: center; justify-content: center;
+    font-family: Georgia, serif; font-size: 48px; color: rgba(241,237,229,0.35);
+    float: left; margin: 0 28px 16px 0;
+  }
+  #cand-detail h2 { font-family: Georgia, serif; font-weight: 400; font-size: 26px; }
+  #cand-detail .close {
+    float: right; background: none; border: 1px solid var(--trait); border-radius: 6px;
+    padding: 4px 12px; color: var(--fumee); font-size: 12px;
+  }
+  #cand-detail .close:hover { background: var(--s3); }
   #dep-actions { clear: both; padding-top: 20px; display: flex; gap: 10px; }
 
   /* Sessions */
@@ -379,11 +438,15 @@ const COMEDIENS = [
 const TONES = ["#3f3a33", "#38332c", "#433d34", "#332f29", "#3c362e", "#46403a"];
 
 const CANDIDATURES = [
-  { prenom: "Alice", nom: "Marek", age: 26, ville: "Paris", role: "Rôle principal", nouveau: true },
-  { prenom: "Karim", nom: "Sadi", age: 31, ville: "Saint-Denis", role: "Rôle principal", nouveau: true },
-  { prenom: "Julie", nom: "Weiss", age: 24, ville: "Lyon", role: "Second rôle", nouveau: true },
-  { prenom: "Marc", nom: "Olivier", age: 40, ville: "Paris", role: "Rôle principal", nouveau: false },
-  { prenom: "Sara", nom: "Benali", age: 22, ville: "Marseille", role: "Rôle principal", nouveau: false },
+  { prenom: "Alice", nom: "Marek", age: 26, ville: "Paris", role: "Rôle principal", agence: "Agence Yay", tape: true, lu: false, decision: null, msg: "Bonjour, je suis très motivée par ce projet. Disponible tout l'été, basée à Paris. Au plaisir d'échanger." },
+  { prenom: "Karim", nom: "Sadi", age: 31, ville: "Saint-Denis", role: "Rôle principal", agence: "", tape: true, lu: false, decision: null, msg: "5 ans de théâtre, 2 courts-métrages. Ma selftape est en lien Drive. Merci !" },
+  { prenom: "Julie", nom: "Weiss", age: 24, ville: "Lyon", role: "Second rôle", agence: "Studio M", tape: false, lu: false, decision: null, msg: "Je monte sur Paris dès que nécessaire. Très disponible en août." },
+  { prenom: "Marc", nom: "Olivier", age: 40, ville: "Paris", role: "Rôle principal", agence: "", tape: true, lu: true, decision: null, msg: "Comédien confirmé, à l'aise en impro. Références sur demande." },
+  { prenom: "Sara", nom: "Benali", age: 22, ville: "Marseille", role: "Rôle principal", agence: "Talents & Co", tape: true, lu: true, decision: "oui", msg: "Première expérience pub mais très motivée. Selftape jointe." },
+  { prenom: "Théo", nom: "Girard", age: 28, ville: "Paris", role: "Second rôle", agence: "", tape: false, lu: false, decision: null, msg: "Danseur à la base, je me lance dans le jeu. Dispo immédiatement." },
+  { prenom: "Lina", nom: "Costa", age: 33, ville: "Bordeaux", role: "Rôle principal", agence: "Agence Yay", tape: true, lu: true, decision: "non", msg: "Bilingue portugais. Tournages réguliers depuis 2019." },
+  { prenom: "Adam", nom: "Fournier", age: 25, ville: "Lille", role: "Rôle principal", agence: "", tape: true, lu: false, decision: null, msg: "Je peux me libérer pour les essais avec 48h de préavis." },
+  { prenom: "Mélissa", nom: "Nguyen", age: 27, ville: "Paris", role: "Second rôle", agence: "Studio M", tape: true, lu: false, decision: null, msg: "Formée au cours Florent. Selftape tournée cette semaine." },
 ];
 
 let state = {
@@ -391,8 +454,90 @@ let state = {
   view: "grid",
   filter: null,          // null | oui | peut-etre | non | atrier
   selected: 1,           // comédien sélectionné
-  depSelected: 0,
+  depSelected: null,     // candidature ouverte (null = liste pleine largeur)
 };
+
+// ===== Candidatures — boîte de réception =====
+function candRowHTML(x, i) {
+  const dec = x.decision === "oui" ? `<span class="pastille" style="background:var(--oui)"></span>Oui`
+            : x.decision === "non" ? `<span class="pastille" style="background:var(--non)"></span>Non` : "";
+  return `
+    <div class="cand-row ${x.lu ? "lu" : ""} ${i === state.depSelected ? "selected" : ""}" data-i="${i}">
+      <div class="vignette">${x.prenom[0]}${x.nom[0]}</div>
+      <div class="infos">
+        <div class="l1">
+          ${!x.lu ? '<span class="dot-new" title="Non lue"></span>' : ""}
+          <span class="nom">${x.prenom} ${x.nom}</span>
+        </div>
+        <div class="l2">${x.age} ans · ${x.ville} · <span class="role">${x.role}</span>${x.agence ? ` · <span class="agence">${x.agence}</span>` : ""}${x.tape ? " · selftape" : ""}</div>
+        <div class="apercu">${x.msg}</div>
+      </div>
+      <div class="decision">${dec}</div>
+    </div>`;
+}
+
+function refreshCandRows() {
+  const list = document.getElementById("cand-list");
+  if (list) list.innerHTML = CANDIDATURES.map(candRowHTML).join("");
+  document.querySelectorAll(".cand-row").forEach(el =>
+    el.onclick = () => openCand(+el.dataset.i));
+}
+
+function fillCandDetail() {
+  const c = CANDIDATURES[state.depSelected];
+  const det = document.getElementById("cand-detail");
+  if (!c || !det) return;
+  det.innerHTML = `
+    <div class="inner">
+      <button class="close" id="cand-close">Fermer&nbsp;&nbsp;esc</button>
+      <div class="photo-lg">${c.prenom[0]}${c.nom[0]}</div>
+      <h2>${c.prenom} ${c.nom}</h2>
+      <div style="color:var(--fumee); margin-top:4px">${c.age} ans · ${c.ville}</div>
+      <div style="margin-top:6px; font-size:13px">Vise <span style="color:var(--ivoire)">« ${c.role} »</span>${c.agence ? ` · <span style="color:var(--laiton)">${c.agence}</span>` : " · sans agence"}</div>
+      ${c.tape ? `<div class="insp-section"><div class="insp-label">Selftape</div><span class="tape">Lire la vidéo</span><span class="tape">Ouvrir le lien Drive</span></div>` : ""}
+      <div class="insp-section">
+        <div class="insp-label">Message</div>
+        <div style="font-size:13.5px; color:var(--fumee); max-width:440px">${c.msg}</div>
+      </div>
+      <div id="dep-actions">
+        <button class="btn-prim" id="cand-oui">Oui — vers la présélection « ${c.role} »</button>
+        <button class="btn-sec" id="cand-non">Non</button>
+        <button class="btn-sec" id="cand-passer">Passer</button>
+      </div>
+      <div style="margin-top:14px; font-size:12px; color:var(--cendre)"><kbd style="background:var(--s3);border:1px solid var(--trait);border-radius:4px;padding:0 5px">O</kbd> oui · <kbd style="background:var(--s3);border:1px solid var(--trait);border-radius:4px;padding:0 5px">N</kbd> non · <kbd style="background:var(--s3);border:1px solid var(--trait);border-radius:4px;padding:0 5px">↓</kbd> suivante · <kbd style="background:var(--s3);border:1px solid var(--trait);border-radius:4px;padding:0 5px">esc</kbd> fermer</div>
+    </div>`;
+  det.querySelector("#cand-close").onclick = closeCand;
+  det.querySelector("#cand-oui").onclick = () => decideCand("oui");
+  det.querySelector("#cand-non").onclick = () => decideCand("non");
+  det.querySelector("#cand-passer").onclick = () => openCand(Math.min(state.depSelected + 1, CANDIDATURES.length - 1));
+}
+
+function openCand(i) {
+  state.depSelected = i;
+  CANDIDATURES[i].lu = true;
+  const split = document.getElementById("cand-split");
+  if (split) split.classList.add("open");
+  refreshCandRows();
+  fillCandDetail();
+  const row = document.querySelector(`.cand-row[data-i="${i}"]`);
+  if (row) row.scrollIntoView({ block: "nearest", behavior: "smooth" });
+}
+
+function closeCand() {
+  state.depSelected = null;
+  const split = document.getElementById("cand-split");
+  if (split) split.classList.remove("open");
+  refreshCandRows();
+}
+
+function decideCand(d) {
+  const c = CANDIDATURES[state.depSelected];
+  if (!c) return;
+  c.decision = c.decision === d ? null : d;
+  const next = CANDIDATURES.findIndex((x, j) => j > state.depSelected && !x.decision);
+  if (c.decision && next !== -1) openCand(next);
+  else { refreshCandRows(); fillCandDetail(); }
+}
 
 const $ = s => document.querySelector(s);
 const voteColor = v => v === "oui" ? "var(--oui)" : v === "peut-etre" ? "var(--pe)" : v === "non" ? "var(--non)" : null;
@@ -476,7 +621,6 @@ function renderWorkarea() {
   }
   else if (state.ws === "candidatures") {
     wa.style.padding = "0";
-    const c = CANDIDATURES[state.depSelected];
     wa.innerHTML = `
       <div style="display:flex; flex-direction:column; height:100%">
         <div style="display:flex; align-items:center; gap:10px; padding:10px 16px; border-bottom:1px solid var(--trait); font-size:12.5px; color:var(--fumee); flex-shrink:0">
@@ -488,38 +632,14 @@ function renderWorkarea() {
           <span style="flex:1"></span>
           <button class="btn-sec" style="padding:3px 10px; font-size:11.5px">Exporter en Excel</button>
         </div>
-        <div id="ws-preselection" style="flex:1; overflow:hidden">
-          <div id="dep-list">
-            ${CANDIDATURES.map((x, i) => `
-              <div class="dep-item ${i === state.depSelected ? "selected" : ""}" data-i="${i}">
-                <div class="vignette">${x.prenom[0]}${x.nom[0]}</div>
-                <div><div class="nom">${x.prenom} ${x.nom}</div><div class="sub">${x.age} ans · ${x.ville}</div></div>
-                ${x.nouveau ? '<span class="new-dot" title="Nouvelle"></span>' : ""}
-              </div>`).join("")}
-          </div>
-          <div id="dep-preview">
-            <div class="photo-lg">${c.prenom[0]}${c.nom[0]}</div>
-            <h2>${c.prenom} ${c.nom}</h2>
-            <div style="color:var(--fumee); margin-top:4px">${c.age} ans · ${c.ville} · vise « ${c.role} »</div>
-            <div class="insp-section">
-              <div class="insp-label">Selftape</div>
-              <span class="tape">Lire la vidéo</span><span class="tape">Ouvrir le lien Drive</span>
-            </div>
-            <div class="insp-section">
-              <div class="insp-label">Message</div>
-              <div style="font-size:13.5px; color:var(--fumee); max-width:420px">Bonjour, je suis très motivée par ce projet. Disponible tout l'été, basée à ${c.ville}. Au plaisir d'échanger.</div>
-            </div>
-            <div id="dep-actions">
-              <button class="btn-prim">Oui — vers la présélection « ${c.role} »</button>
-              <button class="btn-sec">Non</button>
-              <button class="btn-sec">Passer</button>
-            </div>
-            <div style="margin-top:14px; font-size:12px; color:var(--cendre)"><kbd style="background:var(--s3);border:1px solid var(--trait);border-radius:4px;padding:0 5px">O</kbd> oui · <kbd style="background:var(--s3);border:1px solid var(--trait);border-radius:4px;padding:0 5px">N</kbd> non · <kbd style="background:var(--s3);border:1px solid var(--trait);border-radius:4px;padding:0 5px">↓</kbd> suivante</div>
-          </div>
+        <div id="cand-split" class="${state.depSelected != null ? "open" : ""}">
+          <div id="cand-list">${CANDIDATURES.map(candRowHTML).join("")}</div>
+          <div id="cand-detail"></div>
         </div>
       </div>`;
-    wa.querySelectorAll(".dep-item").forEach(el =>
-      el.onclick = () => { state.depSelected = +el.dataset.i; render(); });
+    wa.querySelectorAll(".cand-row").forEach(el =>
+      el.onclick = () => openCand(+el.dataset.i));
+    if (state.depSelected != null) fillCandDetail();
   }
   else if (state.ws === "sessions") {
     wa.innerHTML = `
@@ -628,6 +748,7 @@ function renderStatus() {
 }
 
 function renderWorkspaceUI() {
+  document.getElementById("body").classList.toggle("no-inspector", state.ws !== "planche" && state.ws !== "final");
   document.querySelectorAll("#workspaces button").forEach(b =>
     b.classList.toggle("active", b.dataset.ws === state.ws));
   const titles = { planche: "Présélection — Rôle principal", candidatures: "Candidatures", sessions: "Sessions de casting", final: "Casting final", livraison: "Livraison" };
@@ -666,8 +787,11 @@ document.addEventListener("keydown", e => {
     else if (e.key.toLowerCase() === "l") { state.view = "list"; render(); }
   }
   else if (state.ws === "candidatures") {
-    if (e.key === "ArrowDown") { e.preventDefault(); state.depSelected = Math.min(state.depSelected + 1, CANDIDATURES.length - 1); render(); }
-    else if (e.key === "ArrowUp") { e.preventDefault(); state.depSelected = Math.max(state.depSelected - 1, 0); render(); }
+    if (e.key === "ArrowDown") { e.preventDefault(); openCand(state.depSelected == null ? 0 : Math.min(state.depSelected + 1, CANDIDATURES.length - 1)); }
+    else if (e.key === "ArrowUp") { e.preventDefault(); openCand(state.depSelected == null ? 0 : Math.max(state.depSelected - 1, 0)); }
+    else if (e.key === "Escape" && state.depSelected != null) { closeCand(); }
+    else if (e.key.toLowerCase() === "o" && state.depSelected != null) { decideCand("oui"); }
+    else if (e.key.toLowerCase() === "n" && state.depSelected != null) { decideCand("non"); }
   }
 });
 
