@@ -352,7 +352,7 @@
   }
   #cand-detail .close:hover { background: var(--s3); }
 
-  .fiche-grid { display: grid; grid-template-columns: 250px 1fr; gap: 30px; max-width: 820px; }
+  .fiche-grid { display: grid; grid-template-columns: 280px 1fr; gap: 38px; max-width: 900px; }
   .main-photo {
     width: 100%; aspect-ratio: 3/4; border-radius: 4px; border: 1px solid var(--trait);
     display: flex; align-items: center; justify-content: center; position: relative;
@@ -364,9 +364,9 @@
   }
   .thumbs { display: flex; gap: 8px; margin-top: 10px; overflow-x: auto; padding-bottom: 4px; }
   .thumb {
-    width: 52px; height: 66px; border-radius: 4px; border: 1px solid var(--trait);
+    width: 62px; height: 78px; border-radius: 4px; border: 1px solid var(--trait);
     display: flex; align-items: center; justify-content: center; flex-shrink: 0; cursor: pointer;
-    font-family: Georgia, serif; font-size: 14px; color: rgba(241,237,229,0.35);
+    font-family: Georgia, serif; font-size: 15px; color: rgba(241,237,229,0.35);
     opacity: 0.75; transition: opacity 160ms var(--ease), box-shadow 160ms var(--ease);
   }
   .thumb:hover { opacity: 1; }
@@ -374,25 +374,29 @@
   .photos-count { font-size: 11.5px; color: var(--cendre); margin-top: 6px; }
 
   .fiche-info { min-width: 0; }
-  .fiche-info h2 { font-family: Georgia, serif; font-weight: 400; font-size: 28px; line-height: 1.2; padding-right: 90px; }
-  .fiche-info .meta1 { font-size: 14.5px; color: var(--fumee); margin-top: 5px; }
-  .fiche-info .meta2 { font-size: 13.5px; margin-top: 10px; }
-  .fiche-info .note { font-size: 11.5px; color: var(--cendre); margin-top: 2px; }
-  .sect { margin-top: 24px; }
-  .c-line { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--trait); font-size: 13.5px; }
-  .c-line .k { width: 86px; color: var(--cendre); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; flex-shrink: 0; }
+  .fiche-info h2 { font-family: Georgia, serif; font-weight: 400; font-size: 30px; line-height: 1.15; padding-right: 90px; }
+  .fiche-info .meta1 { font-size: 15px; color: var(--fumee); margin-top: 6px; }
+  .fiche-info .recu { font-size: 12px; color: var(--cendre); margin-top: 4px; }
+  .fiche-info .meta2 { font-size: 14px; margin-top: 14px; }
+  .fiche-info .note { font-size: 11.5px; color: var(--cendre); margin-top: 3px; }
+  .sect { margin-top: 26px; }
+  .c-line { display: flex; align-items: center; gap: 12px; padding: 9px 0; border-bottom: 1px solid var(--trait); font-size: 14px; }
+  .c-line .k { width: 90px; color: var(--cendre); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; flex-shrink: 0; }
   .c-line .v { flex: 1; min-width: 0; color: var(--ivoire); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .c-line .copy { background: none; border: 1px solid var(--trait); border-radius: 6px; padding: 2px 10px; color: var(--fumee); font-size: 11px; flex-shrink: 0; }
+  .c-line .copy { background: none; border: 1px solid var(--trait); border-radius: 6px; padding: 3px 11px; color: var(--fumee); font-size: 11px; flex-shrink: 0; }
   .c-line .copy:hover { background: var(--s3); }
-  .video-card {
-    display: flex; align-items: center; gap: 12px; border: 1px solid var(--trait);
-    border-radius: 6px; padding: 10px 14px; margin-bottom: 8px;
-  }
-  .video-card .vname { flex: 1; min-width: 0; font-size: 13.5px; color: var(--ivoire); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-  .video-card .vsize { font-size: 11.5px; color: var(--cendre); flex-shrink: 0; }
-  .lien-row { display: flex; align-items: center; gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--trait); font-size: 13.5px; }
-  .lien-row .k { width: 86px; color: var(--cendre); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; flex-shrink: 0; }
-  .lien-row .url { flex: 1; min-width: 0; color: var(--fumee); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+  /* Médias (colonne photos) */
+  .media-card { border: 1px solid var(--trait); border-radius: 6px; padding: 11px 13px; margin-bottom: 10px; }
+  .media-card .mname { font-size: 13px; color: var(--ivoire); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .media-card .msub { font-size: 11.5px; color: var(--cendre); margin-top: 1px; }
+  .media-card .mbtns { display: flex; gap: 6px; margin-top: 9px; }
+  .media-card .mbtns .btn-sec { padding: 4px 12px; font-size: 11.5px; }
+  .lien-row { display: flex; align-items: center; gap: 8px; padding: 8px 0; border-bottom: 1px solid var(--trait); font-size: 12.5px; }
+  .lien-row .k { color: var(--ivoire); flex-shrink: 0; }
+  .lien-row .url { flex: 1; min-width: 0; color: var(--cendre); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .lien-row .copy { background: none; border: 1px solid var(--trait); border-radius: 6px; padding: 2px 10px; color: var(--fumee); font-size: 11px; flex-shrink: 0; }
+  .lien-row .copy:hover { background: var(--s3); }
   .empty-hint { font-size: 12.5px; color: var(--cendre); }
 
   .fiche-actions {
@@ -528,15 +532,15 @@ const COMEDIENS = [
 const TONES = ["#3f3a33", "#38332c", "#433d34", "#332f29", "#3c362e", "#46403a"];
 
 const CANDIDATURES = [
-  { prenom: "Alice", nom: "Marek", age: 26, taille: "1m68", cheveux: "Châtain", ville: "Paris", role: "Rôle principal", agence: "Agence Yay", email: "alice.marek@mail.com", tel: "06 12 34 56 78", photos: 4, video: { name: "selftape_alice.mp4", size: "62 Mo" }, liens: [{ label: "Vimeo", url: "vimeo.com/alicemarek/selftape2026" }, { label: "Instagram", url: "instagram.com/alice.marek" }], tape: true, lu: false, decision: null, msg: "Bonjour, je suis très motivée par ce projet. Disponible tout l'été, basée à Paris. Au plaisir d'échanger." },
-  { prenom: "Karim", nom: "Sadi", age: 31, taille: "1m84", cheveux: "Noir", ville: "Saint-Denis", role: "Rôle principal", agence: "", email: "karim.sadi@mail.com", tel: "06 98 76 54 32", photos: 2, video: null, liens: [{ label: "Google Drive", url: "drive.google.com/file/d/1xK…/view" }], tape: true, lu: false, decision: null, msg: "5 ans de théâtre, 2 courts-métrages. Ma selftape est en lien Drive. Merci !" },
-  { prenom: "Julie", nom: "Weiss", age: 24, taille: "1m71", cheveux: "Blond", ville: "Lyon", role: "Second rôle", agence: "Studio M", email: "julie@studiom.fr", tel: "06 11 22 33 44", photos: 3, video: null, liens: [], tape: false, lu: false, decision: null, msg: "Je monte sur Paris dès que nécessaire. Très disponible en août." },
-  { prenom: "Marc", nom: "Olivier", age: 40, taille: "1m79", cheveux: "Poivre et sel", ville: "Paris", role: "Rôle principal", agence: "", email: "marc.olivier@mail.com", tel: "06 55 44 33 22", photos: 3, video: { name: "selftape_marc.mov", size: "118 Mo" }, liens: [{ label: "Site personnel", url: "marcolivier-comedien.fr" }], tape: true, lu: true, decision: null, msg: "Comédien confirmé, à l'aise en impro. Références sur demande." },
-  { prenom: "Sara", nom: "Benali", age: 22, taille: "1m65", cheveux: "Brun", ville: "Marseille", role: "Rôle principal", agence: "Talents & Co", email: "sara@talents.co", tel: "07 61 62 63 64", photos: 2, video: { name: "selftape_sara.mp4", size: "44 Mo" }, liens: [], tape: true, lu: true, decision: "oui", msg: "Première expérience pub mais très motivée. Selftape jointe." },
-  { prenom: "Théo", nom: "Girard", age: 28, taille: "1m88", cheveux: "Châtain", ville: "Paris", role: "Second rôle", agence: "", email: "theo.girard@mail.com", tel: "06 40 41 42 43", photos: 1, video: null, liens: [{ label: "YouTube", url: "youtube.com/watch?v=t9g…" }], tape: false, lu: false, decision: null, msg: "Danseur à la base, je me lance dans le jeu. Dispo immédiatement." },
-  { prenom: "Lina", nom: "Costa", age: 33, taille: "1m70", cheveux: "Noir", ville: "Bordeaux", role: "Rôle principal", agence: "Agence Yay", email: "lina@agenceyay.fr", tel: "06 77 88 99 00", photos: 3, video: { name: "selftape_lina.mp4", size: "71 Mo" }, liens: [], tape: true, lu: true, decision: "non", msg: "Bilingue portugais. Tournages réguliers depuis 2019." },
-  { prenom: "Adam", nom: "Fournier", age: 25, taille: "1m81", cheveux: "Roux", ville: "Lille", role: "Rôle principal", agence: "", email: "adam.fournier@mail.com", tel: "07 12 13 14 15", photos: 2, video: { name: "selftape_adam.mp4", size: "38 Mo" }, liens: [{ label: "Vimeo", url: "vimeo.com/adamfournier" }], tape: true, lu: false, decision: null, msg: "Je peux me libérer pour les essais avec 48h de préavis." },
-  { prenom: "Mélissa", nom: "Nguyen", age: 27, taille: "1m63", cheveux: "Noir", ville: "Paris", role: "Second rôle", agence: "Studio M", email: "melissa@studiom.fr", tel: "06 24 25 26 27", photos: 4, video: { name: "selftape_melissa.mp4", size: "55 Mo" }, liens: [{ label: "Instagram", url: "instagram.com/melissa.ng" }], tape: true, lu: false, decision: null, msg: "Formée au cours Florent. Selftape tournée cette semaine." },
+  { prenom: "Alice", nom: "Marek", age: 26, taille: "1m68", cheveux: "Châtain", sexe: "Femme", recu: "18 juillet, 09:12", ville: "Paris", role: "Rôle principal", agence: "Agence Yay", email: "alice.marek@mail.com", tel: "06 12 34 56 78", photos: 4, video: { name: "selftape_alice.mp4", size: "62 Mo" }, liens: [{ label: "Vimeo", url: "vimeo.com/alicemarek/selftape2026" }, { label: "Instagram", url: "instagram.com/alice.marek" }], tape: true, lu: false, decision: null, msg: "Bonjour, je suis très motivée par ce projet. Disponible tout l'été, basée à Paris. Au plaisir d'échanger." },
+  { prenom: "Karim", nom: "Sadi", age: 31, taille: "1m84", cheveux: "Noir", sexe: "Homme", recu: "18 juillet, 10:47", ville: "Saint-Denis", role: "Rôle principal", agence: "", email: "karim.sadi@mail.com", tel: "06 98 76 54 32", photos: 2, video: null, liens: [{ label: "Google Drive", url: "drive.google.com/file/d/1xK…/view" }], tape: true, lu: false, decision: null, msg: "5 ans de théâtre, 2 courts-métrages. Ma selftape est en lien Drive. Merci !" },
+  { prenom: "Julie", nom: "Weiss", age: 24, taille: "1m71", cheveux: "Blond", sexe: "Femme", recu: "18 juillet, 11:03", ville: "Lyon", role: "Second rôle", agence: "Studio M", email: "julie@studiom.fr", tel: "06 11 22 33 44", photos: 3, video: null, liens: [], tape: false, lu: false, decision: null, msg: "Je monte sur Paris dès que nécessaire. Très disponible en août." },
+  { prenom: "Marc", nom: "Olivier", age: 40, taille: "1m79", cheveux: "Poivre et sel", sexe: "Homme", recu: "18 juillet, 14:20", ville: "Paris", role: "Rôle principal", agence: "", email: "marc.olivier@mail.com", tel: "06 55 44 33 22", photos: 3, video: { name: "selftape_marc.mov", size: "118 Mo" }, liens: [{ label: "Site personnel", url: "marcolivier-comedien.fr" }], tape: true, lu: true, decision: null, msg: "Comédien confirmé, à l'aise en impro. Références sur demande." },
+  { prenom: "Sara", nom: "Benali", age: 22, taille: "1m65", cheveux: "Brun", sexe: "Femme", recu: "18 juillet, 16:55", ville: "Marseille", role: "Rôle principal", agence: "Talents & Co", email: "sara@talents.co", tel: "07 61 62 63 64", photos: 2, video: { name: "selftape_sara.mp4", size: "44 Mo" }, liens: [], tape: true, lu: true, decision: "oui", msg: "Première expérience pub mais très motivée. Selftape jointe." },
+  { prenom: "Théo", nom: "Girard", age: 28, taille: "1m88", cheveux: "Châtain", sexe: "Homme", recu: "19 juillet, 08:31", ville: "Paris", role: "Second rôle", agence: "", email: "theo.girard@mail.com", tel: "06 40 41 42 43", photos: 1, video: null, liens: [{ label: "YouTube", url: "youtube.com/watch?v=t9g…" }], tape: false, lu: false, decision: null, msg: "Danseur à la base, je me lance dans le jeu. Dispo immédiatement." },
+  { prenom: "Lina", nom: "Costa", age: 33, taille: "1m70", cheveux: "Noir", sexe: "Femme", recu: "19 juillet, 09:14", ville: "Bordeaux", role: "Rôle principal", agence: "Agence Yay", email: "lina@agenceyay.fr", tel: "06 77 88 99 00", photos: 3, video: { name: "selftape_lina.mp4", size: "71 Mo" }, liens: [], tape: true, lu: true, decision: "non", msg: "Bilingue portugais. Tournages réguliers depuis 2019." },
+  { prenom: "Adam", nom: "Fournier", age: 25, taille: "1m81", cheveux: "Roux", sexe: "Homme", recu: "19 juillet, 12:40", ville: "Lille", role: "Rôle principal", agence: "", email: "adam.fournier@mail.com", tel: "07 12 13 14 15", photos: 2, video: { name: "selftape_adam.mp4", size: "38 Mo" }, liens: [{ label: "Vimeo", url: "vimeo.com/adamfournier" }], tape: true, lu: false, decision: null, msg: "Je peux me libérer pour les essais avec 48h de préavis." },
+  { prenom: "Mélissa", nom: "Nguyen", age: 27, taille: "1m63", cheveux: "Noir", sexe: "Femme", recu: "19 juillet, 13:05", ville: "Paris", role: "Second rôle", agence: "Studio M", email: "melissa@studiom.fr", tel: "06 24 25 26 27", photos: 4, video: { name: "selftape_melissa.mp4", size: "55 Mo" }, liens: [{ label: "Instagram", url: "instagram.com/melissa.ng" }], tape: true, lu: false, decision: null, msg: "Formée au cours Florent. Selftape tournée cette semaine." },
 ];
 const PHOTO_LABELS = ["portrait", "profil", "en pied", "libre"];
 
@@ -658,10 +662,23 @@ function fillCandDetail() {
               <div class="thumb ${p === state.candPhoto ? "active" : ""}" data-p="${p}" style="background:${tone}" title="${PHOTO_LABELS[p] || ""}">${ini}</div>`).join("")}
           </div>
           <div class="photos-count">${nb} photo${nb > 1 ? "s" : ""} envoyée${nb > 1 ? "s" : ""}</div>
+          <div class="sect">
+            <div class="insp-label">Vidéo et liens</div>
+            ${c.video ? `
+              <div class="media-card">
+                <div class="mname">${c.video.name}</div>
+                <div class="msub">Vidéo envoyée · ${c.video.size}</div>
+                <div class="mbtns"><button class="btn-sec">Lire</button><button class="btn-sec">Télécharger</button></div>
+              </div>` : ""}
+            ${(c.liens || []).map(l => `
+              <div class="lien-row"><span class="k">${l.label}</span><span class="url">${l.url}</span><button class="copy">Ouvrir</button></div>`).join("")}
+            ${!c.video && !(c.liens || []).length ? `<div class="empty-hint">Aucune vidéo ni lien fourni.</div>` : ""}
+          </div>
         </div>
         <div class="fiche-info">
           <h2>${c.prenom} ${c.nom}</h2>
-          <div class="meta1">${c.age} ans · ${c.taille} · ${c.cheveux} · ${c.ville}</div>
+          <div class="meta1">${c.age} ans · ${c.taille} · ${c.cheveux} · ${c.sexe} · ${c.ville}</div>
+          <div class="recu">Reçue le ${c.recu} · via le lien public</div>
           <div class="meta2">Vise <span style="color:var(--ivoire)">« ${c.role} »</span>${c.agence ? ` · <span style="color:var(--laiton)">${c.agence}</span>` : " · sans agence"}</div>
           <div class="note">Rôle choisi par le candidat sur le formulaire — vous pouvez le changer.</div>
           <div class="sect">
@@ -671,21 +688,8 @@ function fillCandDetail() {
             ${c.agence ? `<div class="c-line"><span class="k">Agence</span><span class="v">${c.agence}</span></div>` : ""}
           </div>
           <div class="sect">
-            <div class="insp-label">Selftapes et liens</div>
-            ${c.video ? `
-              <div class="video-card">
-                <button class="btn-sec">Lire</button>
-                <span class="vname">${c.video.name}</span>
-                <span class="vsize">${c.video.size}</span>
-                <button class="btn-sec">Télécharger</button>
-              </div>` : ""}
-            ${(c.liens || []).map(l => `
-              <div class="lien-row"><span class="k">${l.label}</span><span class="url">${l.url}</span><button class="copy">Ouvrir</button></div>`).join("")}
-            ${!c.video && !(c.liens || []).length ? `<div class="empty-hint">Aucune vidéo ni lien fourni.</div>` : ""}
-          </div>
-          <div class="sect">
             <div class="insp-label">Message</div>
-            <div style="font-size:13.5px; color:var(--fumee); max-width:460px; line-height:1.6">${c.msg}</div>
+            <div style="font-size:14px; color:var(--fumee); max-width:460px; line-height:1.65">${c.msg}</div>
           </div>
         </div>
       </div>
