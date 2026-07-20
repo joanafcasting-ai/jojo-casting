@@ -242,8 +242,8 @@
   .ws-panel { max-width: 1100px; }
   .ws-intro { color: var(--fumee); font-size: 13px; margin-bottom: 20px; }
 
-  /* Dépouillement */
-  #ws-depouillement { display: grid; grid-template-columns: 300px 1fr; gap: 0; height: 100%; }
+  /* Présélection */
+  #ws-preselection { display: grid; grid-template-columns: 300px 1fr; gap: 0; height: 100%; }
   #dep-list { border-right: 1px solid var(--trait); overflow-y: auto; }
   .dep-item { display: flex; align-items: center; gap: 10px; padding: 10px 16px; border-bottom: 1px solid var(--trait); cursor: pointer; }
   .dep-item:hover { background: var(--s3); }
@@ -301,7 +301,7 @@
     </div>
     <nav id="workspaces">
       <button data-ws="candidatures">Candidatures<span class="n">8</span></button>
-      <button data-ws="depouillement">Dépouillement<span class="n">3</span></button>
+      <button data-ws="preselection">Présélection<span class="n">3</span></button>
       <button data-ws="planche" class="active">Planche</button>
       <button data-ws="sessions">Sessions</button>
       <button data-ws="final">Final</button>
@@ -475,11 +475,11 @@ function renderWorkarea() {
     wa.querySelectorAll("[data-id]").forEach(el =>
       el.onclick = () => { state.selected = +el.dataset.id; render(); });
   }
-  else if (state.ws === "depouillement") {
+  else if (state.ws === "preselection") {
     wa.style.padding = "0";
     const c = CANDIDATURES[state.depSelected];
     wa.innerHTML = `
-      <div id="ws-depouillement" style="height:100%">
+      <div id="ws-preselection" style="height:100%">
         <div id="dep-list">
           ${CANDIDATURES.map((x, i) => `
             <div class="dep-item ${i === state.depSelected ? "selected" : ""}" data-i="${i}">
@@ -514,7 +514,7 @@ function renderWorkarea() {
   else if (state.ws === "candidatures") {
     wa.innerHTML = `
       <div class="ws-panel">
-        <div class="ws-intro">La porte d'entrée : le lien public, la relève, l'export. Le tri se fait dans « Dépouillement ».</div>
+        <div class="ws-intro">La porte d'entrée : le lien public, la relève, l'export. Le tri se fait dans « Présélection ».</div>
         <div class="deliver-grid">
           <div class="deliver-card"><h3>Lien de candidature</h3><p>jojo-casting.app/postuler/NK24 — actif, 8 reçues cette semaine.</p><button class="btn-prim">Copier le lien</button></div>
           <div class="deliver-card"><h3>Relève</h3><p>Dernière relève il y a 12 min. 3 nouvelles candidatures.</p><button class="btn-sec">Relever maintenant</button></div>
@@ -631,7 +631,7 @@ function renderStatus() {
 function renderWorkspaceUI() {
   document.querySelectorAll("#workspaces button").forEach(b =>
     b.classList.toggle("active", b.dataset.ws === state.ws));
-  const titles = { planche: "Rôle principal", candidatures: "Candidatures", depouillement: "Dépouillement", sessions: "Sessions de casting", final: "Casting final", livraison: "Livraison" };
+  const titles = { planche: "Rôle principal", candidatures: "Candidatures", preselection: "Présélection", sessions: "Sessions de casting", final: "Casting final", livraison: "Livraison" };
   $("#ws-title").textContent = titles[state.ws];
   const isPlanche = state.ws === "planche";
   $("#chips").classList.toggle("hidden", !isPlanche);
@@ -666,7 +666,7 @@ document.addEventListener("keydown", e => {
     else if (e.key.toLowerCase() === "g") { state.view = "grid"; render(); }
     else if (e.key.toLowerCase() === "l") { state.view = "list"; render(); }
   }
-  else if (state.ws === "depouillement") {
+  else if (state.ws === "preselection") {
     if (e.key === "ArrowDown") { e.preventDefault(); state.depSelected = Math.min(state.depSelected + 1, CANDIDATURES.length - 1); render(); }
     else if (e.key === "ArrowUp") { e.preventDefault(); state.depSelected = Math.max(state.depSelected - 1, 0); render(); }
   }
