@@ -431,34 +431,43 @@
   /* Menu rôle dans l'inspecteur (statique, pleine largeur) */
   #inspector #role-picker { position: static; margin-top: 8px; width: 100%; max-width: none; }
 
-  /* ===== Nouveau profil — feuille qui monte sous la planche ===== */
-  #add-sheet {
-    flex-shrink: 0; height: 46%; min-height: 232px;
-    background: var(--s1); border-bottom: 1px solid rgba(198,165,103,0.35);
-    display: flex; flex-direction: column;
-    animation: sheetDown 420ms cubic-bezier(0.32, 0.72, 0, 1);
+  /* ===== Nouveau profil — page par-dessus le board ===== */
+  #add-sheet-overlay {
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(14,13,11,0.74);
+    display: flex; align-items: center; justify-content: center;
+    animation: fadeIn 240ms var(--ease);
   }
-  @keyframes sheetDown { from { transform: translateY(-101%); } to { transform: none; } }
-  .as-head { display: flex; align-items: center; gap: 12px; padding: 10px 18px; border-bottom: 1px solid var(--trait); flex-shrink: 0; }
-  .as-title { font-family: Georgia, serif; font-size: 16px; }
+  #add-sheet {
+    width: min(880px, 94vw); height: min(600px, 88vh);
+    background: var(--s1); border: 1px solid rgba(198,165,103,0.35); border-radius: 8px;
+    display: flex; flex-direction: column; overflow: hidden;
+    animation: modalIn 400ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.93) translateY(22px); }
+    to { opacity: 1; transform: none; }
+  }
+  .as-head { display: flex; align-items: center; gap: 12px; padding: 14px 22px; border-bottom: 1px solid var(--trait); flex-shrink: 0; }
+  .as-title { font-family: Georgia, serif; font-size: 19px; }
   .as-sub { font-size: 11px; color: var(--cendre); flex: 1; }
-  .as-body { flex: 1; display: flex; gap: 16px; padding: 13px 18px; overflow-y: auto; }
+  .as-body { flex: 1; display: flex; gap: 22px; padding: 18px 22px; overflow-y: auto; }
   .as-photo {
-    width: 116px; aspect-ratio: 3/4; flex-shrink: 0;
+    width: 170px; aspect-ratio: 3/4; flex-shrink: 0;
     border: 1px dashed var(--trait); border-radius: 4px;
     display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
   }
-  .as-photo .as-initials { font-family: Georgia, serif; font-size: 30px; color: var(--cendre); }
+  .as-photo .as-initials { font-family: Georgia, serif; font-size: 42px; color: var(--cendre); }
   .as-photo .as-photo-hint { font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cendre); }
-  .as-fields { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; align-content: start; }
+  .as-fields { flex: 1; display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; align-content: start; }
   .as-fields input {
     background: var(--s2); border: 1px solid var(--trait); border-radius: 6px;
-    padding: 7px 10px; color: var(--ivoire); font-size: 12.5px; outline: none; min-width: 0;
+    padding: 9px 12px; color: var(--ivoire); font-size: 13px; outline: none; min-width: 0;
   }
   .as-fields input:focus { border-color: var(--laiton); }
   .as-fields input::placeholder { color: var(--cendre); }
   .as-fields .as-span3 { grid-column: 1 / -1; }
-  .as-actions { padding: 9px 18px; border-top: 1px solid var(--trait); display: flex; gap: 8px; justify-content: flex-end; flex-shrink: 0; }
+  .as-actions { padding: 12px 22px; border-top: 1px solid var(--trait); display: flex; gap: 8px; justify-content: flex-end; flex-shrink: 0; }
   /* La carte fraîchement validée glisse dans la board */
   .card.card-new { animation: cardLand 650ms cubic-bezier(0.32, 0.72, 0, 1); }
   .card.card-new .photo { box-shadow: 0 0 0 1.5px var(--laiton); }
@@ -1327,10 +1336,11 @@ function renderWorkarea() {
     wa.style.display = "flex";
     wa.style.flexDirection = "column";
     const addSheet = `
+      <div id="add-sheet-overlay">
       <div id="add-sheet">
         <div class="as-head">
           <span class="as-title">Nouveau profil</span>
-          <span class="as-sub">remplissez la fiche — validez, elle rejoint la planche au-dessus</span>
+          <span class="as-sub">remplissez la fiche — validez, elle rejoint la planche</span>
           <button class="btn-sec" id="as-cancel">Annuler&nbsp;&nbsp;esc</button>
         </div>
         <div class="as-body">
@@ -1352,11 +1362,12 @@ function renderWorkarea() {
         <div class="as-actions">
           <button class="btn-prim" id="as-validate">Valider le profil</button>
         </div>
+      </div>
       </div>`;
     wa.innerHTML = `
       ${state.addForm ? addSheet : ""}
       <div id="planche-scroll">${inner}</div>
-      ${state.addForm ? "" : `<div id="prod-tray">
+      ${`<div id="prod-tray">
         <div class="tray-label"><span class="t1">Sélection production${nSel ? " · " + nSel : ""}</span><span class="t2">glissez une fiche<br>dans un rôle</span></div>
         <div class="tray-cases">
           ${ROLES.map(r => {
@@ -1395,6 +1406,7 @@ function renderWorkarea() {
       $("#f-nom").oninput = ini;
       $("#f-prenom").focus();
       $("#as-cancel").onclick = () => { state.addForm = false; render(); };
+      $("#add-sheet-overlay").onclick = e => { if (e.target.id === "add-sheet-overlay") { state.addForm = false; render(); } };
       $("#as-validate").onclick = () => {
         const v = id => $(id).value.trim();
         const prenom = v("#f-prenom"), nom = v("#f-nom");
