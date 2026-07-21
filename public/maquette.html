@@ -643,6 +643,120 @@
   .drive-actions { padding: 12px 22px; border-top: 1px solid var(--trait); display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
   .drive-actions .note { font-size: 11px; color: var(--cendre); flex: 1; }
 
+  /* ===== HUB — entrée de l'application ===== */
+  #hub {
+    position: fixed; inset: 0; z-index: 800; background: var(--fond);
+    overflow-y: auto; animation: fadeIn 240ms var(--ease);
+  }
+  .hub-inner { max-width: 880px; margin: 0 auto; padding: 64px 40px; }
+  .hub-title { font-family: Georgia, serif; font-weight: 400; font-size: 34px; }
+  .hub-sub { font-size: 13px; color: var(--fumee); margin-top: 6px; }
+  .hub-label {
+    font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+    color: var(--cendre); margin: 40px 0 14px;
+  }
+  .hub-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+  .hub-card {
+    border: 1px solid var(--trait); border-radius: 6px; padding: 20px; cursor: pointer;
+    transition: background 160ms var(--ease), border-color 160ms var(--ease);
+  }
+  .hub-card:hover { background: var(--s3); border-color: var(--cendre); }
+  .hub-card .hc-status { display: flex; align-items: center; gap: 7px; font-size: 11px; color: var(--fumee); }
+  .hub-card .hc-status .pastille { width: 6px; height: 6px; border-radius: 50%; }
+  .hub-card .hc-name { font-family: Georgia, serif; font-size: 22px; margin-top: 10px; }
+  .hub-card .hc-meta { font-size: 12px; color: var(--fumee); margin-top: 6px; line-height: 1.5; }
+  .hub-card.dim { opacity: 0.6; }
+  .hub-card.add { border-style: dashed; display: flex; align-items: center; justify-content: center; color: var(--laiton); font-size: 14px; min-height: 120px; }
+  .hub-card.add:hover { border-color: var(--laiton); }
+  .hub-wide {
+    border: 1px solid var(--trait); border-radius: 6px; padding: 18px 20px; cursor: pointer;
+    display: flex; align-items: center; gap: 14px;
+    transition: background 160ms var(--ease);
+  }
+  .hub-wide:hover { background: var(--s3); }
+  .hub-wide .hw-name { font-family: Georgia, serif; font-size: 17px; }
+  .hub-wide .hw-meta { font-size: 12px; color: var(--fumee); flex: 1; }
+  #titlebar .project { cursor: pointer; border-radius: 6px; padding: 4px 8px; margin-left: -8px; }
+  #titlebar .project:hover { background: var(--s3); }
+
+  /* ===== Prise de contact ===== */
+  .ct-row {
+    display: flex; align-items: center; gap: 12px; padding: 10px 14px;
+    border-bottom: 1px solid var(--trait);
+  }
+  .ct-row:last-child { border-bottom: none; }
+  .ct-row .vignette {
+    width: 40px; height: 50px; border-radius: 4px; border: 1px solid var(--trait); flex-shrink: 0;
+    display: flex; align-items: center; justify-content: center;
+    font-family: Georgia, serif; font-size: 13px; color: rgba(241,237,229,0.5);
+  }
+  .ct-row .ct-nom { font-family: Georgia, serif; font-size: 15.5px; }
+  .ct-row .ct-mail { font-size: 11.5px; color: var(--fumee); margin-top: 1px; }
+  .ct-row .ct-mail .agent { color: var(--laiton); }
+  .ct-row .ct-sugg { display: inline-flex; align-items: center; gap: 6px; font-size: 11px; padding: 3px 10px; border: 1px solid var(--trait); border-radius: 6px; flex-shrink: 0; }
+  .ct-row .ct-sugg .pastille { width: 6px; height: 6px; border-radius: 50%; }
+  .ct-row .ct-status { font-size: 11.5px; color: var(--cendre); flex-shrink: 0; width: 84px; text-align: right; }
+  .ct-row .ct-status.ok { color: var(--oui); }
+  .ct-row .fill { flex: 1; }
+
+  /* Composeur de mail */
+  #ct-modal {
+    position: fixed; inset: 0; z-index: 700;
+    background: rgba(14,13,11,0.78);
+    display: flex; align-items: center; justify-content: center;
+    animation: fadeIn 220ms var(--ease);
+  }
+  .ct-panel {
+    width: min(1000px, 96vw); height: min(660px, 92vh);
+    background: var(--s1); border: 1px solid rgba(198,165,103,0.35); border-radius: 8px;
+    display: flex; flex-direction: column; overflow: hidden;
+    animation: modalIn 380ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  .ct-head { display: flex; align-items: center; gap: 12px; padding: 13px 22px; border-bottom: 1px solid var(--trait); flex-shrink: 0; }
+  .ct-head .t { font-family: Georgia, serif; font-size: 18px; }
+  .ct-head .s { font-size: 11.5px; color: var(--cendre); flex: 1; }
+  .ct-body { flex: 1; display: grid; grid-template-columns: 1fr 360px; overflow: hidden; }
+  .ct-form { overflow-y: auto; padding: 16px 22px; border-right: 1px solid var(--trait); }
+  .ct-dest { display: flex; align-items: center; gap: 10px; margin-bottom: 14px; }
+  .ct-dest .k { font-size: 11px; color: var(--cendre); text-transform: uppercase; letter-spacing: 0.06em; flex-shrink: 0; }
+  .ct-dest input { flex: 1; background: var(--s2); border: 1px solid var(--trait); border-radius: 6px; padding: 7px 10px; color: var(--ivoire); font-size: 13px; outline: none; }
+  .ct-dest input:focus { border-color: var(--laiton); }
+  .ct-types { display: flex; gap: 6px; margin-bottom: 16px; }
+  .ct-types button {
+    flex: 1; display: flex; flex-direction: column; gap: 3px; align-items: flex-start; text-align: left;
+    border: 1px solid var(--trait); border-radius: 6px; background: none;
+    padding: 9px 12px; color: var(--ivoire); font-size: 12.5px;
+  }
+  .ct-types button .d { font-size: 10.5px; color: var(--cendre); }
+  .ct-types button:hover { background: var(--s3); }
+  .ct-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .ct-fields input, .ct-fields textarea {
+    background: var(--s2); border: 1px solid var(--trait); border-radius: 6px;
+    padding: 8px 10px; color: var(--ivoire); font-size: 12.5px; font-family: inherit; outline: none; min-width: 0;
+  }
+  .ct-fields input:focus, .ct-fields textarea:focus { border-color: var(--laiton); }
+  .ct-fields .span2 { grid-column: 1 / -1; }
+  .ct-flabel { font-size: 10px; color: var(--cendre); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 3px; }
+  .ct-fw { display: flex; flex-direction: column; }
+  .rdv-modes { display: flex; gap: 6px; margin-bottom: 12px; }
+  .rdv-modes button { flex: 1; border: 1px solid var(--trait); border-radius: 6px; background: none; padding: 8px 10px; color: var(--fumee); font-size: 12px; text-align: left; }
+  .rdv-modes button .d { display: block; font-size: 10.5px; color: var(--cendre); }
+  .rdv-modes button.on { border-color: var(--laiton); color: var(--ivoire); background: var(--laiton-v); }
+  .rdv-slots { display: flex; flex-direction: column; gap: 5px; }
+  .rdv-slot { display: flex; align-items: center; gap: 9px; font-size: 12.5px; padding: 7px 11px; border: 1px solid var(--trait); border-radius: 6px; cursor: pointer; color: var(--fumee); }
+  .rdv-slot:hover { background: var(--s3); }
+  .rdv-slot.on { color: var(--ivoire); border-color: var(--laiton); }
+  .rdv-slot .box { width: 13px; height: 13px; border: 1px solid var(--cendre); border-radius: 3px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 9px; }
+  .rdv-slot.on .box { background: var(--laiton); border-color: var(--laiton); color: var(--fond); }
+  .rdv-link { display: flex; align-items: center; gap: 8px; margin-top: 10px; border: 1px solid var(--trait); border-radius: 6px; padding: 7px 8px 7px 12px; font-size: 12px; }
+  .rdv-link .u { flex: 1; color: var(--laiton); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .ct-preview { overflow-y: auto; padding: 16px 20px; background: var(--s2); }
+  .ct-preview .pl { font-size: 10px; color: var(--cendre); text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+  .ct-mailtxt { font-size: 12.5px; color: var(--ivoire); line-height: 1.7; white-space: pre-wrap; font-family: 'Helvetica Neue', sans-serif; }
+  .ct-mailtxt .obj { color: var(--laiton); }
+  .ct-foot { display: flex; align-items: center; gap: 10px; padding: 11px 22px; border-top: 1px solid var(--trait); flex-shrink: 0; }
+  .ct-foot .note { font-size: 11px; color: var(--cendre); flex: 1; }
+
   /* Toast */
   #toast {
     position: fixed; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 9999;
@@ -942,6 +1056,7 @@
       <button data-ws="candidatures">Candidatures<span class="n">5</span></button>
       <button data-ws="planche" class="active">Présélection</button>
       <button data-ws="choixprod" id="nav-choixprod">Choix production</button>
+      <button data-ws="contact" id="nav-contact">Contact</button>
       <button data-ws="sessions">Sessions</button>
       <button data-ws="final">Final</button>
       <button data-ws="livraison">Livraison</button>
@@ -1044,6 +1159,9 @@ let state = {
   prodReturned: false,   // la production a validé son retour
   prodSimul: false,      // vue production (simulation) ouverte
   choixNotif: false,     // notification de retour non lue
+  hub: true,             // page d entree (projets / fichier casting)
+  contactComposer: null, // comedien dont le mail est en preparation
+  projectInfo: { dates: "", lieu: "", salaire: "", production: "Prodco Paris", realisateur: "", script: "" },
   ppDetail: null,        // fiche ouverte dans la vue production
   ppPhoto: 0,            // photo affichee dans cette fiche
   prodView: false,       // vue Sélection production ouverte
@@ -1425,6 +1543,207 @@ function attachComedienDrag(el) {
     document.body.classList.remove("drag-live");
     if (el._ghost) { el._ghost.remove(); el._ghost = null; }
   });
+}
+
+// ===== HUB — entrée de l'application =====
+function renderHub() {
+  document.getElementById("hub")?.remove();
+  if (!state.hub) return;
+  const h = document.createElement("div");
+  h.id = "hub";
+  const nSel = COMEDIENS.filter(c => c.prod).length;
+  h.innerHTML = `
+    <div class="hub-inner">
+      <h1 class="hub-title">Le Studio</h1>
+      <div class="hub-sub">Joana Fontaine — casting director</div>
+      <div class="hub-label">Projets</div>
+      <div class="hub-grid">
+        <div class="hub-card" id="hub-nike">
+          <div class="hc-status"><span class="pastille" style="background:var(--oui)"></span>En cours</div>
+          <div class="hc-name">nike</div>
+          <div class="hc-meta">${COMEDIENS.length} comédien·nes · 2 rôles<br>${state.prodReturned ? "Retour production reçu — prise de contact" : state.prodSent ? "En attente du retour production" : nSel ? nSel + " en sélection production" : "Présélection en cours"}</div>
+        </div>
+        <div class="hub-card dim">
+          <div class="hc-status"><span class="pastille" style="background:var(--cendre)"></span>Terminé</div>
+          <div class="hc-name">PSG hiver</div>
+          <div class="hc-meta">24 comédien·nes · 3 rôles<br>Livré en mars</div>
+        </div>
+        <div class="hub-card add" id="hub-add">Créer un projet</div>
+      </div>
+      <div class="hub-label">Bibliothèque</div>
+      <div class="hub-wide" id="hub-fichier">
+        <span class="hw-name">Fichier casting</span>
+        <span class="hw-meta">14 comédien·nes — partagé entre tous vos projets</span>
+        <button class="btn-sec">Ouvrir</button>
+      </div>
+    </div>`;
+  document.body.appendChild(h);
+  h.querySelector("#hub-nike").onclick = () => { state.hub = false; render(); };
+  h.querySelector("#hub-add").onclick = () => toast("Maquette — ici s'ouvrirait la création d'un projet.");
+  h.querySelector("#hub-fichier").onclick = () => toast("Maquette — ici s'ouvrirait le fichier casting global.");
+}
+
+// ===== Prise de contact =====
+const CONTACT_TYPES = [
+  { k: "finale", label: "Sélection finale", desc: "Le rôle est pour lui/elle", color: "var(--oui)" },
+  { k: "physique", label: "Casting physique", desc: "À voir en essai sur place", color: "var(--pe)" },
+  { k: "non", label: "Non retenu·e", desc: "Prévenir avec politesse", color: "var(--non)" },
+];
+const contactTypeFor = c =>
+  c.prodChoice === "choix" ? "finale" : c.prodChoice === "ecarte" ? "non" : "physique";
+const contactMail = c => c.agence
+  ? { mail: "contact@" + c.agence.toLowerCase().replace(/[^a-z]/g, "") + ".fr", agent: true }
+  : { mail: c.email, agent: false };
+
+const RDV_SLOTS = [
+  "Mardi 22 juillet — 09h30", "Mardi 22 juillet — 10h00", "Mardi 22 juillet — 10h30",
+  "Mercredi 23 juillet — 14h00", "Mercredi 23 juillet — 14h30",
+];
+
+function buildMail(c, type, f) {
+  const dest = c.prenom;
+  if (type === "finale") {
+    return `Objet : ${f.production || "nike"} — vous êtes retenu·e pour « ${c.prod} »\n\nBonjour ${dest},\n\nExcellente nouvelle : vous êtes retenu·e pour le rôle « ${c.prod} » sur le projet ${f.production || "nike"}${f.realisateur ? `, réalisé par ${f.realisateur}` : ""}.\n\n${f.dates ? `Dates de tournage : ${f.dates}\n` : ""}${f.lieu ? `Lieu : ${f.lieu}\n` : ""}${f.salaire ? `Rémunération et droits : ${f.salaire}\n` : ""}${f.script ? `\nLe script à préparer est joint à ce mail.\n` : ""}\nMerci de me confirmer votre disponibilité par retour de mail.\n\nBien à vous,\nJoana Fontaine — Casting Director`;
+  }
+  if (type === "physique") {
+    const rdv = c.rdv || {};
+    const creneau = rdv.mode === "impose"
+      ? `Votre créneau : ${rdv.date || "[date]"} à ${rdv.heure || "[heure]"}${f.lieu ? `, ${f.lieu}` : ""}.\nMerci de me confirmer votre présence.`
+      : `Choisissez le créneau qui vous convient ici :\njojo-casting.app/rdv/NK24-${c.prenom.toLowerCase()}\n${(rdv.slots || []).length ? `(${(rdv.slots || []).length} créneaux proposés${f.lieu ? ", " + f.lieu : ""})` : ""}`;
+    return `Objet : ${f.production || "nike"} — casting en personne pour « ${c.prod} »\n\nBonjour ${dest},\n\nVotre profil a retenu l'attention de la production pour le rôle « ${c.prod} » : nous souhaitons vous rencontrer en casting physique.\n\n${creneau}\n\nBien à vous,\nJoana Fontaine — Casting Director`;
+  }
+  return `Objet : ${f.production || "nike"} — suite de votre candidature\n\nBonjour ${dest},\n\nMerci sincèrement pour votre candidature et le temps consacré à votre selftape pour « ${c.prod} ».\n\nLa production s'est orientée vers un autre profil pour ce rôle. J'ai été très sensible à votre travail et je garde précieusement votre fiche pour mes prochains castings.\n\nAu plaisir de collaborer bientôt,\nJoana Fontaine — Casting Director`;
+}
+
+function openContactComposer(id) {
+  state.contactComposer = id;
+  const c = COMEDIENS.find(x => x.id === id);
+  if (!c.contactType) c.contactType = contactTypeFor(c);
+  if (!c.rdv) c.rdv = { mode: "lien", slots: [...RDV_SLOTS.slice(0, 3)], date: "", heure: "" };
+  render();
+}
+
+function renderContactComposer() {
+  document.getElementById("ct-modal")?.remove();
+  if (state.contactComposer == null) return;
+  const c = COMEDIENS.find(x => x.id === state.contactComposer);
+  if (!c) return;
+  const type = c.contactType;
+  const f = state.projectInfo;
+  const dest = contactMail(c);
+  const m = document.createElement("div");
+  m.id = "ct-modal";
+  const fieldsFinale = `
+    <div class="ct-fields">
+      <div class="ct-fw"><div class="ct-flabel">Dates de tournage</div><input id="cf-dates" value="${f.dates}" placeholder="12–14 août 2026"></div>
+      <div class="ct-fw"><div class="ct-flabel">Lieu de tournage</div><input id="cf-lieu" value="${f.lieu}" placeholder="Paris 10ᵉ, studio + extérieurs"></div>
+      <div class="ct-fw"><div class="ct-flabel">Salaire / droits</div><input id="cf-salaire" value="${f.salaire}" placeholder="800 € / jour + droits 2 ans"></div>
+      <div class="ct-fw"><div class="ct-flabel">Nom de la production</div><input id="cf-production" value="${f.production}"></div>
+      <div class="ct-fw"><div class="ct-flabel">Réalisateur·ice</div><input id="cf-realisateur" value="${f.realisateur}" placeholder="…"></div>
+      <div class="ct-fw"><div class="ct-flabel">Script à apprendre</div><input id="cf-script" value="${f.script}" placeholder="Scène 4 — dialogue vestiaire"></div>
+      <div class="span2" style="display:flex; gap:8px; align-items:center">
+        <button class="btn-sec" id="cf-join">Joindre un fichier</button>
+        <span style="font-size:11px; color:var(--cendre)">${f.script ? "script_v2.pdf sera joint" : "aucune pièce jointe"}</span>
+      </div>
+    </div>`;
+  const rdv = c.rdv;
+  const fieldsPhysique = `
+    <div class="rdv-modes">
+      <button class="${rdv.mode === "lien" ? "on" : ""}" data-m="lien">Lien de créneaux<span class="d">l'acteur choisit lui-même — fini les horaires à la con</span></button>
+      <button class="${rdv.mode === "impose" ? "on" : ""}" data-m="impose">Créneau imposé<span class="d">vous fixez la date et l'heure</span></button>
+    </div>
+    ${rdv.mode === "lien" ? `
+      <div class="ct-flabel" style="margin-bottom:6px">Créneaux proposés (cochez)</div>
+      <div class="rdv-slots">
+        ${RDV_SLOTS.map(s => `<div class="rdv-slot ${rdv.slots.includes(s) ? "on" : ""}" data-s="${s}"><span class="box">${rdv.slots.includes(s) ? "✓" : ""}</span>${s}</div>`).join("")}
+      </div>
+      <div class="rdv-link"><span class="u">jojo-casting.app/rdv/NK24-${c.prenom.toLowerCase()}</span><button class="btn-sec" style="padding:3px 10px; font-size:11px">Copier</button></div>`
+    : `
+      <div class="ct-fields">
+        <div class="ct-fw"><div class="ct-flabel">Date</div><input id="cf-rdvdate" value="${rdv.date}" placeholder="Mardi 22 juillet"></div>
+        <div class="ct-fw"><div class="ct-flabel">Heure</div><input id="cf-rdvheure" value="${rdv.heure}" placeholder="10h00"></div>
+        <div class="ct-fw span2"><div class="ct-flabel">Lieu</div><input id="cf-lieu" value="${f.lieu}" placeholder="Studio Harcourt, Paris 8ᵉ"></div>
+      </div>`}`;
+  m.innerHTML = `
+    <div class="ct-panel">
+      <div class="ct-head">
+        <span class="t">${c.prenom} ${c.nom}</span>
+        <span class="s">« ${c.prod} » · décision production : ${prodChoiceMeta(c.prodChoice)?.label || "—"}</span>
+        <button class="btn-sec" id="ct-close">Fermer&nbsp;&nbsp;esc</button>
+      </div>
+      <div class="ct-body">
+        <div class="ct-form">
+          <div class="ct-dest">
+            <span class="k">À</span>
+            <input id="cf-dest" value="${dest.mail}">
+            ${dest.agent ? `<span style="font-size:11px; color:var(--laiton); flex-shrink:0">via l'agence ${c.agence}</span>` : ""}
+          </div>
+          <div class="ct-types">
+            ${CONTACT_TYPES.map(t => `
+              <button class="${type === t.k ? "on-" + (t.k === "finale" ? "choix" : t.k === "physique" ? "essai" : "ecarte") : ""}" data-t="${t.k}">
+                <span style="display:flex; align-items:center; gap:6px"><span class="pastille" style="width:6px;height:6px;border-radius:50%;background:${t.color}"></span>${t.label}</span>
+                <span class="d">${t.desc}</span>
+              </button>`).join("")}
+          </div>
+          <div class="ct-flabel" style="margin-bottom:8px">${type === "finale" ? "Informations du tournage — reprises dans le mail" : type === "physique" ? "Organisation du casting physique" : "Message de courtoisie — généré automatiquement"}</div>
+          ${type === "finale" ? fieldsFinale : type === "physique" ? fieldsPhysique : `<div style="font-size:12px; color:var(--fumee); line-height:1.6">Rien à remplir : le mail remercie, annonce la décision avec délicatesse et garde la porte ouverte. Vous pouvez l'ajuster avant envoi dans votre messagerie.</div>`}
+        </div>
+        <div class="ct-preview">
+          <div class="pl">Aperçu du mail — se met à jour en direct</div>
+          <div class="ct-mailtxt" id="ct-mailtxt"></div>
+        </div>
+      </div>
+      <div class="ct-foot">
+        <span class="note">Les informations projet sont mémorisées — les prochains mails seront préremplis.</span>
+        <button class="btn-sec" id="ct-copy">Copier le mail</button>
+        <button class="btn-prim" id="ct-send">Marquer comme envoyé</button>
+      </div>
+    </div>`;
+  document.body.appendChild(m);
+  const collect = () => {
+    const g = id => m.querySelector(id)?.value ?? state.projectInfo[id?.slice(4)] ?? "";
+    state.projectInfo = {
+      dates: m.querySelector("#cf-dates")?.value ?? state.projectInfo.dates,
+      lieu: m.querySelector("#cf-lieu")?.value ?? state.projectInfo.lieu,
+      salaire: m.querySelector("#cf-salaire")?.value ?? state.projectInfo.salaire,
+      production: m.querySelector("#cf-production")?.value ?? state.projectInfo.production,
+      realisateur: m.querySelector("#cf-realisateur")?.value ?? state.projectInfo.realisateur,
+      script: m.querySelector("#cf-script")?.value ?? state.projectInfo.script,
+    };
+    if (c.rdv.mode === "impose") {
+      c.rdv.date = m.querySelector("#cf-rdvdate")?.value ?? c.rdv.date;
+      c.rdv.heure = m.querySelector("#cf-rdvheure")?.value ?? c.rdv.heure;
+    }
+    return state.projectInfo;
+  };
+  const updatePreview = () => {
+    m.querySelector("#ct-mailtxt").textContent = buildMail(c, type, collect());
+  };
+  updatePreview();
+  m.querySelectorAll("input").forEach(i => i.oninput = updatePreview);
+  m.querySelector("#ct-close").onclick = () => { collect(); state.contactComposer = null; render(); };
+  m.onclick = e => { if (e.target.id === "ct-modal") { collect(); state.contactComposer = null; render(); } };
+  m.querySelectorAll(".ct-types button").forEach(b =>
+    b.onclick = () => { collect(); c.contactType = b.dataset.t; render(); });
+  m.querySelectorAll(".rdv-modes button").forEach(b =>
+    b.onclick = () => { collect(); c.rdv.mode = b.dataset.m; render(); });
+  m.querySelectorAll(".rdv-slot").forEach(s =>
+    s.onclick = () => {
+      collect();
+      const v = s.dataset.s;
+      c.rdv.slots = c.rdv.slots.includes(v) ? c.rdv.slots.filter(x => x !== v) : [...c.rdv.slots, v];
+      render();
+    });
+  const join = m.querySelector("#cf-join");
+  if (join) join.onclick = () => toast("Maquette — ici vous joindriez le script (PDF).");
+  m.querySelector("#ct-copy").onclick = () => { toast("Mail copié — collez-le dans votre messagerie."); };
+  m.querySelector("#ct-send").onclick = () => {
+    collect();
+    c.contactStatus = "envoye";
+    state.contactComposer = null;
+    render();
+    toast(`${c.prenom} ${c.nom} — mail « ${CONTACT_TYPES.find(t => t.k === c.contactType).label} » marqué comme envoyé.`);
+  };
 }
 
 // ===== Tableau Drive de secours (aucune connexion Google requise) =====
@@ -1858,6 +2177,49 @@ function renderWorkarea() {
       }
     }
   }
+  else if (state.ws === "contact") {
+    wa.style.padding = "18px";
+    const sel = COMEDIENS.filter(c => c.prod && c.prodChoice);
+    const nEnv = sel.filter(c => c.contactStatus === "envoye").length;
+    const ctRow = c => {
+      const t = CONTACT_TYPES.find(x => x.k === (c.contactType || contactTypeFor(c)));
+      const dest = contactMail(c);
+      return `
+        <div class="ct-row" data-id="${c.id}">
+          <div class="vignette" style="background:${TONES[COMEDIENS.indexOf(c) % TONES.length]}">${c.prenom[0]}${c.nom[0]}</div>
+          <div>
+            <div class="ct-nom">${c.prenom} ${c.nom}</div>
+            <div class="ct-mail">${dest.agent ? `<span class="agent">via agence</span> · ` : ""}${dest.mail}</div>
+          </div>
+          <span class="fill"></span>
+          <span class="ct-sugg"><span class="pastille" style="background:${t.color}"></span>${t.label}</span>
+          <span class="ct-status ${c.contactStatus === "envoye" ? "ok" : ""}">${c.contactStatus === "envoye" ? "Envoyé" : "À contacter"}</span>
+          <button class="btn-sec ct-open" data-id="${c.id}">${c.contactStatus === "envoye" ? "Revoir" : "Préparer le mail"}</button>
+        </div>`;
+    };
+    wa.innerHTML = `
+      <div id="prod-view">
+        <div class="cp-summary">
+          <span>Prise de contact</span>
+          <span class="pastille" style="background:var(--oui)"></span><b>${nEnv}</b> envoyé·s
+          <span class="pastille" style="background:var(--cendre)"></span><b>${sel.length - nEnv}</b> à contacter
+        </div>
+        ${ROLES.map(r => {
+          const rs = sel.filter(c => c.prod === r);
+          if (!rs.length) return "";
+          const pris = rs.filter(c => c.prodChoice !== "ecarte");
+          const nonPris = rs.filter(c => c.prodChoice === "ecarte");
+          return `
+            <div class="pv-role" style="margin-bottom:16px">
+              <div class="pv-head"><span class="pastille" style="background:${roleColor(r)}"></span><span class="pv-name">${r}</span></div>
+              ${pris.length ? `<div class="cp-group-label" style="color:var(--oui); padding: 0 14px"><span class="pastille" style="width:6px;height:6px;border-radius:50%;background:var(--oui)"></span>Sélectionné·es par la production</div>${pris.map(ctRow).join("")}` : ""}
+              ${nonPris.length ? `<div class="cp-group-label" style="color:var(--non); padding: 0 14px"><span class="pastille" style="width:6px;height:6px;border-radius:50%;background:var(--non)"></span>Non retenu·es — à prévenir</div>${nonPris.map(ctRow).join("")}` : ""}
+            </div>`;
+        }).join("")}
+      </div>`;
+    wa.querySelectorAll(".ct-open").forEach(b =>
+      b.onclick = () => openContactComposer(+b.dataset.id));
+  }
   else if (state.ws === "candidatures") {
     wa.style.padding = "0";
     wa.innerHTML = `
@@ -2020,12 +2382,14 @@ function renderStatus() {
 
 function renderWorkspaceUI() {
   document.getElementById("body").classList.toggle("no-inspector", state.ws !== "planche" && state.ws !== "final" && state.ws !== "choixprod");
+  const navCT = document.getElementById("nav-contact");
+  navCT.classList.toggle("locked", !state.prodReturned);
   const navCP = document.getElementById("nav-choixprod");
   navCP.classList.toggle("locked", !state.prodSent);
   navCP.innerHTML = "Choix production" + (state.choixNotif ? '<span class="notif-dot"></span>' : "");
   document.querySelectorAll("#workspaces button").forEach(b =>
     b.classList.toggle("active", b.dataset.ws === state.ws));
-  const titles = { planche: "Présélection — Rôle principal", choixprod: "Choix de la production", candidatures: "Candidatures", sessions: "Sessions de casting", final: "Casting final", livraison: "Livraison" };
+  const titles = { planche: "Présélection — Rôle principal", choixprod: "Choix de la production", contact: "Prise de contact", candidatures: "Candidatures", sessions: "Sessions de casting", final: "Casting final", livraison: "Livraison" };
   const isPlanche = state.ws === "planche";
   const pv = isPlanche && state.prodView;
   $("#ws-title").textContent = pv ? "Sélection production" : titles[state.ws];
@@ -2054,20 +2418,27 @@ function renderWorkspaceUI() {
 
 function render() {
   renderRail(); renderChips(); renderWorkspaceUI(); renderWorkarea(); renderInspector(); renderStatus();
+  renderHub(); renderContactComposer();
 }
 
 // ===== Interactions globales =====
 document.querySelectorAll("#workspaces button").forEach(b =>
   b.onclick = () => {
     if (b.dataset.ws === "choixprod" && !state.prodSent) { toast("Envoyez d'abord votre sélection à la production (Présélection → Préparer l'envoi)."); return; }
+    if (b.dataset.ws === "contact" && !state.prodReturned) { toast("La prise de contact se débloque quand la production a validé son retour."); return; }
     if (b.dataset.ws === "choixprod") state.choixNotif = false;
     state.ws = b.dataset.ws; render();
   });
 document.querySelectorAll("#vt button").forEach(b =>
   b.onclick = () => { state.view = b.dataset.v; render(); });
+document.querySelector("#titlebar .project").onclick = () => { state.hub = true; render(); };
 
 document.addEventListener("keydown", e => {
-  if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
+  if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") {
+    if (e.key === "Escape" && state.contactComposer != null) { state.contactComposer = null; render(); }
+    return;
+  }
+  if (state.contactComposer != null && e.key === "Escape") { state.contactComposer = null; render(); return; }
   if (state.prodSimul) {
     if (e.key === "Escape") { if (state.ppDetail != null) { state.ppDetail = null; } else { state.prodSimul = false; } render(); return; }
     if (state.ppDetail != null && e.key === "ArrowRight") { e.preventDefault(); const sel = COMEDIENS.filter(c => c.prod); const i = sel.findIndex(c => c.id === state.ppDetail); state.ppDetail = sel[(i + 1) % sel.length].id; state.ppPhoto = 0; render(); return; }
