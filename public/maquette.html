@@ -1548,6 +1548,8 @@ function renderWorkarea() {
             <span>Retour validé par la production</span>
             <span class="pastille" style="background:var(--oui)"></span><b>${retenus.length}</b> retenu·es
             <span class="pastille" style="background:var(--non)"></span><b>${ecartes.length}</b> écarté·es
+            <span style="flex:1"></span>
+            <button class="btn-sec" id="cp-simul2">Revoir la vue production</button>
           </div>
           ${ROLES.map(r => {
             const rr = retenus.filter(c => c.prod === r);
@@ -1565,6 +1567,8 @@ function renderWorkarea() {
         el.onclick = () => { state.selected = +el.dataset.id; render(); });
       wa.querySelectorAll(".cp-contact").forEach(b =>
         b.onclick = e => { e.stopPropagation(); toast("La prise de contact — c'est la prochaine étape que nous allons construire."); });
+      const s2 = $("#cp-simul2");
+      if (s2) s2.onclick = () => { state.prodSimul = true; render(); };
     }
     /* Vue production (simulation) par-dessus */
     if (state.prodSimul) {
