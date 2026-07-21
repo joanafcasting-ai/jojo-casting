@@ -553,6 +553,70 @@
   }
   #prod-page .pp-count { font-size: 12.5px; color: var(--fumee); flex: 1; }
 
+  /* 4 décisions par fiche */
+  .pp-choice4 { display: grid; grid-template-columns: 1fr 1fr; gap: 4px; margin-top: 8px; }
+  .pp-choice4 button {
+    border: 1px solid var(--trait); border-radius: 6px; background: none;
+    padding: 5px 4px; font-size: 10.5px; color: var(--cendre);
+    display: flex; align-items: center; gap: 5px; justify-content: center;
+  }
+  .pp-choice4 button .dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+  .pp-choice4 button:hover { background: var(--s3); color: var(--ivoire); }
+  button.on-choix { background: rgba(124,158,130,0.16) !important; color: var(--oui) !important; border-color: rgba(124,158,130,0.45) !important; }
+  button.on-presel { background: rgba(198,165,103,0.14) !important; color: var(--laiton) !important; border-color: rgba(198,165,103,0.45) !important; }
+  button.on-essai { background: rgba(168,141,85,0.16) !important; color: var(--pe) !important; border-color: rgba(168,141,85,0.5) !important; }
+  button.on-ecarte { background: rgba(158,107,96,0.16) !important; color: var(--non) !important; border-color: rgba(158,107,96,0.45) !important; }
+  .pp-card.c-choix .pv-photo { box-shadow: 0 0 0 1.5px var(--oui); }
+  .pp-card.c-presel .pv-photo { box-shadow: 0 0 0 1.5px var(--laiton); }
+  .pp-card.c-essai .pv-photo { box-shadow: 0 0 0 1.5px var(--pe); }
+  .pp-card.c-ecarte { opacity: 0.5; }
+  .pp-card .pv-photo { cursor: pointer; }
+  .pp-card .pp-open { margin-top: 6px; width: 100%; background: none; border: 1px solid var(--trait); border-radius: 6px; padding: 4px 0; color: var(--fumee); font-size: 11px; }
+  .pp-card .pp-open:hover { background: var(--s3); color: var(--ivoire); }
+  .pp-comment-flag { font-size: 10.5px; color: var(--laiton); margin-top: 4px; }
+
+  /* Fiche complète côté production */
+  #pp-detail {
+    position: fixed; inset: 0; z-index: 650;
+    background: rgba(14,13,11,0.78);
+    display: flex; align-items: center; justify-content: center;
+    animation: fadeIn 220ms var(--ease);
+  }
+  #pp-detail .ppd {
+    width: min(900px, 94vw); height: min(620px, 90vh);
+    background: var(--s1); border: 1px solid var(--trait); border-radius: 8px;
+    display: grid; grid-template-columns: 300px 1fr; overflow: hidden;
+    animation: modalIn 380ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  .ppd-photos { background: var(--s2); border-right: 1px solid var(--trait); display: flex; flex-direction: column; }
+  .ppd-main { flex: 1; display: flex; align-items: center; justify-content: center; font-family: Georgia, serif; font-size: 54px; color: rgba(241,237,229,0.4); }
+  .ppd-thumbs { display: flex; gap: 6px; padding: 10px; justify-content: center; border-top: 1px solid var(--trait); }
+  .ppd-thumbs span { width: 34px; height: 43px; border: 1px solid var(--trait); border-radius: 4px; display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--cendre); cursor: pointer; }
+  .ppd-thumbs span.active { border-color: var(--laiton); color: var(--ivoire); }
+  .ppd-info { padding: 22px 26px; overflow-y: auto; position: relative; }
+  .ppd-info h2 { font-family: Georgia, serif; font-weight: 400; font-size: 24px; padding-right: 80px; }
+  .ppd-meta { font-size: 13.5px; color: var(--fumee); margin-top: 4px; }
+  .ppd-close { position: absolute; top: 18px; right: 20px; background: none; border: 1px solid var(--trait); border-radius: 6px; padding: 3px 10px; color: var(--fumee); font-size: 11px; }
+  .ppd-close:hover { background: var(--s3); }
+  .ppd-choice { display: flex; flex-direction: column; gap: 6px; margin-top: 16px; }
+  .ppd-choice button {
+    display: flex; align-items: center; gap: 10px; text-align: left;
+    border: 1px solid var(--trait); border-radius: 6px; background: none;
+    padding: 9px 13px; color: var(--ivoire); font-size: 13px;
+  }
+  .ppd-choice button:hover { background: var(--s3); }
+  .ppd-choice button .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .ppd-choice button .d { display: block; font-size: 11px; color: var(--cendre); }
+  .ppd-nav { position: fixed; top: 50%; transform: translateY(-50%); z-index: 651; width: 40px; height: 40px; border-radius: 50%; background: var(--s2); border: 1px solid var(--trait); color: var(--ivoire); font-size: 17px; display: flex; align-items: center; justify-content: center; }
+  .ppd-nav:hover { background: var(--s3); }
+
+  /* Retour : groupes et commentaires */
+  .cp-card.c-choix .pv-photo { box-shadow: 0 0 0 1.5px var(--oui); }
+  .cp-card.c-presel .pv-photo { box-shadow: 0 0 0 1.5px var(--laiton); }
+  .cp-card.c-essai .pv-photo { box-shadow: 0 0 0 1.5px var(--pe); }
+  .cp-card.c-ecarte { opacity: 0.55; }
+  .cp-quote { font-size: 11px; color: var(--fumee); font-style: italic; margin-top: 4px; line-height: 1.4; }
+
   /* Toast */
   #toast {
     position: fixed; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 9999;
@@ -954,6 +1018,8 @@ let state = {
   prodReturned: false,   // la production a validé son retour
   prodSimul: false,      // vue production (simulation) ouverte
   choixNotif: false,     // notification de retour non lue
+  ppDetail: null,        // fiche ouverte dans la vue production
+  ppPhoto: 0,            // photo affichee dans cette fiche
   prodView: false,       // vue Sélection production ouverte
   addForm: false,        // feuille "Nouveau profil" ouverte
   newCardId: null,       // carte fraîchement validée (animation d atterrissage)
@@ -1335,6 +1401,15 @@ function attachComedienDrag(el) {
   });
 }
 
+// Décisions possibles côté production
+const PROD_CHOICES = [
+  { k: "choix", label: "Choix", desc: "C'est notre choix pour le rôle", color: "var(--oui)" },
+  { k: "presel", label: "Présélection", desc: "À garder — on en discute", color: "var(--laiton)" },
+  { k: "essai", label: "Essai", desc: "À convoquer au casting physique", color: "var(--pe)" },
+  { k: "ecarte", label: "Écarter", desc: "Pas pour ce rôle", color: "var(--non)" },
+];
+const prodChoiceMeta = k => PROD_CHOICES.find(p => p.k === k);
+
 function setProd(id, role, animTarget) {
   const c = COMEDIENS.find(x => x.id === id);
   if (!c) return;
@@ -1533,33 +1608,36 @@ function renderWorkarea() {
       $("#cp-simul").onclick = () => { state.prodSimul = true; render(); };
     } else {
       /* Retour reçu */
-      const retenus = sel.filter(c => c.prodChoice === "retenu");
-      const ecartes = sel.filter(c => c.prodChoice === "ecarte");
       const cpCard = c => `
-        <div class="cp-card ${c.prodChoice}" data-id="${c.id}">
+        <div class="cp-card ${c.prodChoice ? "c-" + c.prodChoice : ""}" data-id="${c.id}">
           <div class="pv-photo" style="background:${TONES[COMEDIENS.indexOf(c) % TONES.length]}">${c.prenom[0]}${c.nom[0]}</div>
           <div class="pv-nom">${c.prenom} ${c.nom}</div>
           <div class="pv-meta">${c.prod}</div>
+          ${c.prodComment ? `<div class="cp-quote">« ${c.prodComment} »</div>` : ""}
           <button class="cp-contact" data-id="${c.id}">Contacter</button>
         </div>`;
       wa.innerHTML = `
         <div id="prod-view">
           <div class="cp-summary">
             <span>Retour validé par la production</span>
-            <span class="pastille" style="background:var(--oui)"></span><b>${retenus.length}</b> retenu·es
-            <span class="pastille" style="background:var(--non)"></span><b>${ecartes.length}</b> écarté·es
+            ${PROD_CHOICES.map(p => {
+              const n = sel.filter(c => c.prodChoice === p.k).length;
+              return n ? `<span class="pastille" style="background:${p.color}"></span><b>${n}</b> ${p.label.toLowerCase()}` : "";
+            }).join("")}
             <span style="flex:1"></span>
             <button class="btn-sec" id="cp-simul2">Revoir la vue production</button>
           </div>
           ${ROLES.map(r => {
-            const rr = retenus.filter(c => c.prod === r);
-            const re = ecartes.filter(c => c.prod === r);
-            if (!rr.length && !re.length) return "";
+            const rs = sel.filter(c => c.prod === r && c.prodChoice);
+            if (!rs.length) return "";
             return `
               <div class="pv-role" style="padding: 12px 14px">
                 <div class="pv-head" style="margin: -12px -14px 4px; "><span class="pastille" style="background:${roleColor(r)}"></span><span class="pv-name">${r}</span></div>
-                ${rr.length ? `<div class="cp-group-label" style="color:var(--oui)"><span class="pastille" style="width:6px;height:6px;border-radius:50%;background:var(--oui)"></span>Retenu·es</div><div class="cp-grid">${rr.map(cpCard).join("")}</div>` : ""}
-                ${re.length ? `<div class="cp-group-label" style="color:var(--non)"><span class="pastille" style="width:6px;height:6px;border-radius:50%;background:var(--non)"></span>Écarté·es</div><div class="cp-grid">${re.map(cpCard).join("")}</div>` : ""}
+                ${PROD_CHOICES.map(p => {
+                  const g = rs.filter(c => c.prodChoice === p.k);
+                  if (!g.length) return "";
+                  return `<div class="cp-group-label" style="color:${p.color}"><span class="pastille" style="width:6px;height:6px;border-radius:50%;background:${p.color}"></span>${p.label}${p.k === "essai" ? " — casting physique" : ""}</div><div class="cp-grid">${g.map(cpCard).join("")}</div>`;
+                }).join("")}
               </div>`;
           }).join("")}
         </div>`;
@@ -1572,14 +1650,14 @@ function renderWorkarea() {
     }
     /* Vue production (simulation) par-dessus */
     if (state.prodSimul) {
-      const nR = sel.filter(c => c.prodChoice === "retenu").length;
-      const nE = sel.filter(c => c.prodChoice === "ecarte").length;
+      const counts = PROD_CHOICES.map(p => `${sel.filter(c => c.prodChoice === p.k).length} ${p.label.toLowerCase()}`).join(" · ");
+      const undecided = sel.filter(c => !c.prodChoice).length;
       const page = document.createElement("div");
       page.id = "prod-page";
       page.innerHTML = `
         <div class="pp-head">
           <span class="pp-title">nike — présentation casting</span>
-          <span class="pp-sub">Joana Fontaine vous présente ${sel.length} comédien·nes. Retenez ou écartez, puis validez.</span>
+          <span class="pp-sub">Joana Fontaine vous présente ${sel.length} comédien·nes. Ouvrez les fiches, décidez pour chacun·e, puis validez.</span>
           <span class="pp-badge">Vue production</span>
           <button class="btn-sec" id="pp-quit">Quitter la simulation</button>
         </div>
@@ -1591,41 +1669,94 @@ function renderWorkarea() {
               <div class="pp-role-title"><span class="pastille" style="width:7px;height:7px;border-radius:50%;background:${roleColor(r)}"></span>${r}<span style="font-size:12px;color:var(--cendre)">· ${rs.length} proposé·es</span></div>
               <div class="pp-grid">
                 ${rs.map(c => `
-                  <div class="pp-card ${c.prodChoice || ""}" data-id="${c.id}">
-                    <div class="pv-photo" style="background:${TONES[COMEDIENS.indexOf(c) % TONES.length]}">${c.prenom[0]}${c.nom[0]}</div>
+                  <div class="pp-card ${c.prodChoice ? "c-" + c.prodChoice : ""}" data-id="${c.id}">
+                    <div class="pv-photo pp-openzone" style="background:${TONES[COMEDIENS.indexOf(c) % TONES.length]}">${c.prenom[0]}${c.nom[0]}</div>
                     <div class="pv-nom">${c.prenom} ${c.nom}</div>
                     <div class="pv-meta">${c.age} ans · ${c.taille}${c.agence ? " · " + c.agence : ""}</div>
-                    ${c.tapes ? Array.from({ length: c.tapes }, (_, n) => `<span class="tape">Selftape ${n + 1}</span>`).join("") : ""}
-                    <div class="pp-choice">
-                      <button class="${c.prodChoice === "retenu" ? "on-oui" : ""}" data-c="retenu">Retenir</button>
-                      <button class="${c.prodChoice === "ecarte" ? "on-non" : ""}" data-c="ecarte">Écarter</button>
+                    <button class="pp-open">Voir la fiche complète</button>
+                    <div class="pp-choice4">
+                      ${PROD_CHOICES.map(p => `
+                        <button class="${c.prodChoice === p.k ? "on-" + p.k : ""}" data-c="${p.k}">
+                          <span class="dot" style="background:${p.color}"></span>${p.label}
+                        </button>`).join("")}
                     </div>
+                    ${c.prodComment ? `<div class="pp-comment-flag">Commentaire ajouté</div>` : ""}
                   </div>`).join("")}
               </div>`;
           }).join("")}
         </div>
         <div class="pp-foot">
-          <span class="pp-count">${nR} retenu·es · ${nE} écarté·es · ${sel.length - nR - nE} à décider</span>
+          <span class="pp-count">${counts} · <span style="color:${undecided ? "var(--ivoire)" : "var(--oui)"}">${undecided} à décider</span></span>
           <button class="btn-prim" id="pp-validate">Valider ma sélection</button>
         </div>`;
       wa.appendChild(page);
-      page.querySelectorAll(".pp-choice button").forEach(b =>
+      page.querySelectorAll(".pp-choice4 button").forEach(b =>
         b.onclick = () => {
-          const card = b.closest(".pp-card");
-          const c = COMEDIENS.find(x => x.id === +card.dataset.id);
+          const c = COMEDIENS.find(x => x.id === +b.closest(".pp-card").dataset.id);
           c.prodChoice = c.prodChoice === b.dataset.c ? null : b.dataset.c;
           render();
         });
-      page.querySelector("#pp-quit").onclick = () => { state.prodSimul = false; render(); };
+      page.querySelectorAll(".pp-openzone, .pp-open").forEach(el =>
+        el.onclick = () => { state.ppDetail = +el.closest(".pp-card").dataset.id; state.ppPhoto = 0; render(); });
+      page.querySelector("#pp-quit").onclick = () => { state.prodSimul = false; state.ppDetail = null; render(); };
       page.querySelector("#pp-validate").onclick = () => {
-        const undecided = sel.filter(c => !c.prodChoice).length;
         if (undecided) { toast(`Il reste ${undecided} comédien·ne${undecided > 1 ? "s" : ""} sans décision.`); return; }
         state.prodSimul = false;
+        state.ppDetail = null;
         state.prodReturned = true;
         state.choixNotif = true;
         render();
-        toast(`Retour de la production reçu — ${sel.filter(c => c.prodChoice === "retenu").length} retenu·es, ${sel.filter(c => c.prodChoice === "ecarte").length} écarté·es.`);
+        toast(`Retour de la production reçu — ${counts}.`);
       };
+      /* Fiche complète côté production */
+      if (state.ppDetail != null) {
+        const c = sel.find(x => x.id === state.ppDetail) || sel[0];
+        const idx = sel.indexOf(c);
+        const det = document.createElement("div");
+        det.id = "pp-detail";
+        det.innerHTML = `
+          <button class="ppd-nav" style="left:16px" id="ppd-prev">‹</button>
+          <button class="ppd-nav" style="right:16px" id="ppd-next">›</button>
+          <div class="ppd">
+            <div class="ppd-photos">
+              <div class="ppd-main" style="background:${TONES[COMEDIENS.indexOf(c) % TONES.length]}">${c.prenom[0]}${c.nom[0]}</div>
+              <div class="ppd-thumbs">${[0,1,2].map(p => `<span class="${p === state.ppPhoto ? "active" : ""}" data-p="${p}">${p + 1}</span>`).join("")}</div>
+            </div>
+            <div class="ppd-info">
+              <button class="ppd-close" id="ppd-close">Fermer&nbsp;&nbsp;esc</button>
+              <h2>${c.prenom} ${c.nom}</h2>
+              <div class="ppd-meta">${c.age} ans · ${c.taille} · ${c.cheveux} · ${c.ville}</div>
+              ${c.agence ? `<div style="font-size:12.5px; color:var(--laiton); margin-top:4px">${c.agence}</div>` : ""}
+              <div style="font-size:12px; margin-top:8px">Proposé·e pour <span style="color:${roleColor(c.prod)}">« ${c.prod} »</span> · ${idx + 1} / ${sel.length}</div>
+              ${c.tapes ? `<div class="insp-section"><div class="insp-label">Selftapes (${c.tapes})</div>${Array.from({ length: c.tapes }, (_, n) => `<span class="tape">Lire la selftape ${n + 1}</span>`).join("")}</div>` : ""}
+              <div class="insp-section">
+                <div class="insp-label">Votre décision</div>
+                <div class="ppd-choice">
+                  ${PROD_CHOICES.map(p => `
+                    <button class="${c.prodChoice === p.k ? "on-" + p.k : ""}" data-c="${p.k}">
+                      <span class="dot" style="background:${p.color}"></span>
+                      <span>${p.label}<span class="d">${p.desc}</span></span>
+                    </button>`).join("")}
+                </div>
+              </div>
+              <div class="insp-section">
+                <div class="insp-label">Votre commentaire pour Joana</div>
+                <textarea id="ppd-comment" placeholder="Un mot sur ce profil (optionnel)…" style="width:100%; background:var(--s2); border:1px solid var(--trait); border-radius:6px; padding:8px 10px; color:var(--ivoire); font-size:12.5px; font-family:inherit; resize:vertical; min-height:52px; outline:none">${c.prodComment || ""}</textarea>
+              </div>
+            </div>
+          </div>`;
+        page.appendChild(det);
+        const go = d => { state.ppDetail = sel[(idx + d + sel.length) % sel.length].id; state.ppPhoto = 0; render(); };
+        det.querySelector("#ppd-prev").onclick = () => go(-1);
+        det.querySelector("#ppd-next").onclick = () => go(1);
+        det.querySelector("#ppd-close").onclick = () => { state.ppDetail = null; render(); };
+        det.onclick = e => { if (e.target.id === "pp-detail") { state.ppDetail = null; render(); } };
+        det.querySelectorAll(".ppd-thumbs span").forEach(t =>
+          t.onclick = () => { state.ppPhoto = +t.dataset.p; render(); });
+        det.querySelectorAll(".ppd-choice button").forEach(b =>
+          b.onclick = () => { c.prodChoice = c.prodChoice === b.dataset.c ? null : b.dataset.c; render(); });
+        det.querySelector("#ppd-comment").onchange = e => { c.prodComment = e.target.value; render(); };
+      }
     }
   }
   else if (state.ws === "candidatures") {
@@ -1716,6 +1847,7 @@ function renderInspector() {
       <div id="insp-nom">${c.prenom} ${c.nom}</div>
       <div id="insp-meta">${c.age} ans · ${c.taille} · ${c.cheveux} · ${c.ville}</div>
       ${c.agence ? `<div id="insp-agence">${c.agence}</div>` : ""}
+      ${state.prodReturned && c.prodChoice ? `<div style="margin-top:8px; font-size:11px; letter-spacing:0.06em; text-transform:uppercase; color:${prodChoiceMeta(c.prodChoice).color}">Production : ${prodChoiceMeta(c.prodChoice).label}</div>${c.prodComment ? `<div class="cp-quote">« ${c.prodComment} »</div>` : ""}` : ""}
       <div class="insp-section">
         <div class="insp-label">Sélection production</div>
         ${c.prod ? `
@@ -1837,7 +1969,12 @@ document.querySelectorAll("#vt button").forEach(b =>
 
 document.addEventListener("keydown", e => {
   if (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA") return;
-  if (state.prodSimul && e.key === "Escape") { state.prodSimul = false; render(); return; }
+  if (state.prodSimul) {
+    if (e.key === "Escape") { if (state.ppDetail != null) { state.ppDetail = null; } else { state.prodSimul = false; } render(); return; }
+    if (state.ppDetail != null && e.key === "ArrowRight") { e.preventDefault(); const sel = COMEDIENS.filter(c => c.prod); const i = sel.findIndex(c => c.id === state.ppDetail); state.ppDetail = sel[(i + 1) % sel.length].id; state.ppPhoto = 0; render(); return; }
+    if (state.ppDetail != null && e.key === "ArrowLeft") { e.preventDefault(); const sel = COMEDIENS.filter(c => c.prod); const i = sel.findIndex(c => c.id === state.ppDetail); state.ppDetail = sel[(i - 1 + sel.length) % sel.length].id; state.ppPhoto = 0; render(); return; }
+    return;
+  }
   if (state.ws === "planche") {
     if (state.addForm && e.key === "Escape") { state.addForm = false; render(); return; }
     if (state.prodMenu) {
