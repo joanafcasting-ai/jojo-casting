@@ -617,6 +617,32 @@
   .cp-card.c-ecarte { opacity: 0.55; }
   .cp-quote { font-size: 11px; color: var(--fumee); font-style: italic; margin-top: 4px; line-height: 1.4; }
 
+  /* ===== Tableau Drive de secours ===== */
+  .drive-line { display: flex; align-items: center; gap: 10px; font-size: 12px; color: var(--fumee); margin: -4px 0 16px; }
+  #drive-modal {
+    position: fixed; inset: 0; z-index: 700;
+    background: rgba(14,13,11,0.78);
+    display: flex; align-items: center; justify-content: center;
+    animation: fadeIn 220ms var(--ease);
+  }
+  .drive-panel {
+    width: min(940px, 95vw); height: min(640px, 90vh);
+    background: var(--s1); border: 1px solid rgba(198,165,103,0.35); border-radius: 8px;
+    display: flex; flex-direction: column; overflow: hidden;
+    animation: modalIn 380ms cubic-bezier(0.32, 0.72, 0, 1);
+  }
+  .drive-head { display: flex; align-items: center; gap: 12px; padding: 14px 22px; border-bottom: 1px solid var(--trait); flex-shrink: 0; }
+  .drive-head .t { font-family: Georgia, serif; font-size: 18px; }
+  .drive-head .s { font-size: 11.5px; color: var(--cendre); flex: 1; }
+  .drive-steps { display: flex; gap: 18px; padding: 12px 22px; border-bottom: 1px solid var(--trait); flex-shrink: 0; }
+  .drive-steps .st { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--fumee); }
+  .drive-steps .st b { width: 20px; height: 20px; border-radius: 50%; background: rgba(198,165,103,0.15); color: var(--laiton); font-size: 11px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .drive-preview { flex: 1; overflow: auto; margin: 14px 22px; border-radius: 4px; background: #fff; padding: 12px; }
+  .drive-preview table { border-collapse: collapse; font-family: Arial, sans-serif; font-size: 11px; color: #000; width: 100%; }
+  .drive-preview td { border: 1px solid #999; padding: 6px 8px; text-align: center; vertical-align: middle; }
+  .drive-actions { padding: 12px 22px; border-top: 1px solid var(--trait); display: flex; align-items: center; gap: 12px; flex-shrink: 0; }
+  .drive-actions .note { font-size: 11px; color: var(--cendre); flex: 1; }
+
   /* Toast */
   #toast {
     position: fixed; bottom: 44px; left: 50%; transform: translateX(-50%); z-index: 9999;
@@ -1401,6 +1427,73 @@ function attachComedienDrag(el) {
   });
 }
 
+// ===== Tableau Drive de secours (aucune connexion Google requise) =====
+function driveTableHTML(sel) {
+  return `<table>
+    <tr><td colspan="10" style="font-weight:bold; text-align:left; border:1px solid #999">PROJET : NIKE — PRÉSÉLECTION CASTING · Joana Fontaine</td></tr>
+    <tr style="background:#333; color:#fff; font-weight:bold">
+      <td>N°</td><td>RÔLE</td><td>Prénom, NOM</td><td>PHOTOS</td><td>Âge</td><td>Mensurations</td>
+      <td>CONTACT + INSTAGRAM</td><td>DISPO</td><td>DÉCISION PRODUCTION<br>(Choix / Présélection / Essai / Écarté)</td><td>COMMENTAIRE</td>
+    </tr>
+    ${sel.map((c, i) => `
+    <tr>
+      <td>${i + 1}</td>
+      <td style="background:#d8e4ea">${c.prod}</td>
+      <td style="background:#dcead8; font-weight:bold">${c.prenom} ${c.nom.toUpperCase()}</td>
+      <td style="color:#888">[3 photos]</td>
+      <td>${c.age}</td>
+      <td>${c.taille}<br>Cheveux : ${c.cheveux}</td>
+      <td>${c.email}<br>${c.tel}</td>
+      <td>OUI</td>
+      <td style="background:#fdf3d7"></td>
+      <td style="background:#fdf3d7"></td>
+    </tr>`).join("")}
+  </table>`;
+}
+
+function downloadDriveTable(sel) {
+  const html = `<html><head><meta charset="UTF-8"><style>td{border:1px solid #999;padding:6px 8px;text-align:center;font-family:Arial;font-size:11px}</style></head><body>${driveTableHTML(sel)}</body></html>`;
+  const blob = new Blob(["﻿" + html], { type: "application/vnd.ms-excel" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "CASTING nike — présélection.xls";
+  a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 10000);
+  toast("Tableau téléchargé — glissez-le dans votre dossier Drive, puis partagez le lien à la production.");
+}
+
+function openDriveModal() {
+  document.getElementById("drive-modal")?.remove();
+  const sel = COMEDIENS.filter(c => c.prod);
+  if (!sel.length) { toast("Ajoutez d'abord des comédien·nes à la sélection production."); return; }
+  const m = document.createElement("div");
+  m.id = "drive-modal";
+  m.innerHTML = `
+    <div class="drive-panel">
+      <div class="drive-head">
+        <span class="t">Tableau Drive de secours</span>
+        <span class="s">le même tableau que vous faisiez à la main — généré en un clic, aucune connexion Google requise</span>
+        <button class="btn-sec" id="drive-close">Fermer&nbsp;&nbsp;esc</button>
+      </div>
+      <div class="drive-steps">
+        <span class="st"><b>1</b>Téléchargez le tableau</span>
+        <span class="st"><b>2</b>Glissez-le dans votre dossier Drive</span>
+        <span class="st"><b>3</b>Partagez le lien — la production remplit la colonne « Décision »</span>
+      </div>
+      <div class="drive-preview">${driveTableHTML(sel)}</div>
+      <div class="drive-actions">
+        <span class="note">Le fichier s'ouvre directement dans Google Sheets. Dans l'application réelle : photos intégrées dans les cellules et menu déroulant Choix / Présélection / Essai / Écarté dans la colonne Décision.</span>
+        <button class="btn-prim" id="drive-dl">Télécharger le tableau</button>
+      </div>
+    </div>`;
+  document.body.appendChild(m);
+  m.querySelector("#drive-close").onclick = () => m.remove();
+  m.onclick = e => { if (e.target.id === "drive-modal") m.remove(); };
+  m.querySelector("#drive-dl").onclick = () => downloadDriveTable(sel);
+  const esc = ev => { if (ev.key === "Escape") { m.remove(); document.removeEventListener("keydown", esc); } };
+  document.addEventListener("keydown", esc);
+}
+
 // Décisions possibles côté production
 const PROD_CHOICES = [
   { k: "choix", label: "Choix", desc: "C'est notre choix pour le rôle", color: "var(--oui)" },
@@ -1454,6 +1547,7 @@ function renderWorkarea() {
     wa.innerHTML = `
       <div id="prod-view">
         <div class="ws-intro">Votre sélection pour la production. Glissez une fiche d'un rôle à l'autre, retirez au survol, puis « Envoyer à la production ».</div>
+        <div class="drive-line">Plan B sans l'application : <button class="btn-sec" id="drive-open">Générer le tableau Drive de secours</button></div>
         ${ROLES.map(r => {
           const sel = COMEDIENS.filter(c => c.prod === r);
           return `
@@ -1480,6 +1574,8 @@ function renderWorkarea() {
       el.onclick = () => { state.selected = +el.dataset.id; render(); };
     });
     attachProdDropZones(wa, ".pv-role", "pv");
+    const d1 = $("#drive-open");
+    if (d1) d1.onclick = openDriveModal;
     wa.querySelectorAll(".pv-remove").forEach(b =>
       b.onclick = e => { e.stopPropagation(); setProd(+b.dataset.id, null); });
   }
@@ -1604,8 +1700,11 @@ function renderWorkarea() {
             <button class="btn-prim" id="cp-simul">Ouvrir la vue production</button>
           </div>
           <p style="font-size:11px; color:var(--cendre); margin-top:10px">« Ouvrir la vue production » simule ce que la production voit — jouez son rôle pour tester le retour.</p>
+          <div class="drive-line" style="justify-content:center; margin-top:14px">Le lien ne passe pas ? <button class="btn-sec" id="drive-open2">Envoyer un tableau Drive à la place</button></div>
         </div>`;
       $("#cp-simul").onclick = () => { state.prodSimul = true; render(); };
+      const d2 = $("#drive-open2");
+      if (d2) d2.onclick = openDriveModal;
     } else {
       /* Retour reçu */
       const cpCard = c => `
