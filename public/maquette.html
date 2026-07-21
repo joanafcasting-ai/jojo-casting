@@ -649,6 +649,45 @@
     overflow-y: auto; animation: fadeIn 240ms var(--ease);
   }
   .hub-inner { max-width: 880px; margin: 0 auto; padding: 64px 40px; }
+  .hub-inner > * { animation: hubUp 520ms cubic-bezier(0.32, 0.72, 0, 1) both; }
+  @keyframes hubUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+  /* Écran de démarrage — logo à la Apple */
+  #splash {
+    position: fixed; inset: 0; z-index: 900; background: var(--fond);
+    display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 22px;
+  }
+  #splash.out { animation: splashOut 560ms cubic-bezier(0.32, 0.72, 0, 1) forwards; }
+  @keyframes splashOut { to { opacity: 0; transform: scale(1.015); } }
+  .splash-mark {
+    width: 96px; height: 96px; position: relative;
+    display: flex; align-items: center; justify-content: center;
+    animation: markIn 900ms cubic-bezier(0.32, 0.72, 0, 1) both;
+  }
+  @keyframes markIn { from { opacity: 0; transform: scale(0.84); } to { opacity: 1; transform: none; } }
+  .splash-mark svg { position: absolute; inset: 0; transform: rotate(-90deg); }
+  .splash-mark circle {
+    fill: none; stroke: var(--laiton); stroke-width: 1.5;
+    stroke-dasharray: 289; stroke-dashoffset: 289; stroke-linecap: round;
+    animation: ringDraw 1150ms cubic-bezier(0.4, 0, 0.2, 1) 200ms forwards;
+  }
+  @keyframes ringDraw { to { stroke-dashoffset: 0; } }
+  .splash-mark .letter {
+    font-family: Georgia, serif; font-size: 42px; color: var(--ivoire);
+    animation: fadeIn 650ms var(--ease) 620ms both;
+  }
+  .splash-word {
+    font-family: Georgia, serif; font-size: 31px; color: var(--ivoire);
+    animation: trackIn 1050ms cubic-bezier(0.32, 0.72, 0, 1) 750ms both;
+  }
+  @keyframes trackIn {
+    from { opacity: 0; letter-spacing: 0.4em; }
+    to { opacity: 1; letter-spacing: 0.02em; }
+  }
+  .splash-sub {
+    font-size: 12px; color: var(--cendre); letter-spacing: 0.14em; text-transform: uppercase;
+    animation: fadeIn 600ms var(--ease) 1350ms both;
+  }
   .hub-title { font-family: Georgia, serif; font-weight: 400; font-size: 34px; }
   .hub-sub { font-size: 13px; color: var(--fumee); margin-top: 6px; }
   .hub-label {
@@ -1548,7 +1587,10 @@ function attachComedienDrag(el) {
 // ===== HUB — entrée de l'application =====
 function renderHub() {
   document.getElementById("hub")?.remove();
+  document.getElementById("splash")?.remove();
   if (!state.hub) return;
+  const boot = !window.__booted;
+  window.__booted = true;
   const h = document.createElement("div");
   h.id = "hub";
   const nSel = COMEDIENS.filter(c => c.prod).length;
@@ -1581,6 +1623,28 @@ function renderHub() {
   h.querySelector("#hub-nike").onclick = () => { state.hub = false; render(); };
   h.querySelector("#hub-add").onclick = () => toast("Maquette — ici s'ouvrirait la création d'un projet.");
   h.querySelector("#hub-fichier").onclick = () => toast("Maquette — ici s'ouvrirait le fichier casting global.");
+  // Cascade d'entrée du hub — décalée derrière le logo au premier lancement
+  const base = boot ? 2050 : 0;
+  [...h.querySelectorAll(".hub-inner > *")].forEach((el, i) => {
+    el.style.animationDelay = (base + i * 80) + "ms";
+  });
+  // Écran de démarrage
+  if (boot) {
+    const s = document.createElement("div");
+    s.id = "splash";
+    s.innerHTML = `
+      <div class="splash-mark">
+        <svg viewBox="0 0 96 96"><circle cx="48" cy="48" r="46"></circle></svg>
+        <span class="letter">S</span>
+      </div>
+      <div class="splash-word">Le Studio</div>
+      <div class="splash-sub">Joana Fontaine — Casting Director</div>`;
+    document.body.appendChild(s);
+    setTimeout(() => {
+      s.classList.add("out");
+      setTimeout(() => s.remove(), 600);
+    }, 2050);
+  }
 }
 
 // ===== Prise de contact =====
